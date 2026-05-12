@@ -50,7 +50,7 @@
   --color-shadow: #0000001A;
   --color-muted: #62748E;
   
-  --font-sans: Arial, Helvetica, sans-serif;
+  --font-sans: var(--font-montserrat), Arial, Helvetica, sans-serif;
 }
 
 body {
