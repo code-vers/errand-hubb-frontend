@@ -1,8 +1,8 @@
 "use client";
+import { Errand } from "@/types/errand";
 import { useState } from "react";
 import ErrandDetailsForm from "./ErrandDetailsForm";
 import ErrandTypePicker from "./ErrandTypePicker";
-import { Errand } from "@/types/errand";
 
 const PostErrandPage = () => {
   const [formData, setFormData] = useState<Errand>({
@@ -28,16 +28,16 @@ const PostErrandPage = () => {
 
   return (
     <section className='w-full bg-[#efefef] min-h-screen py-10'>
-      <div className='mx-auto w-full max-w-290 px-6'>
+      <div className='mx-auto w-full max-w-360 px-6'>
         <div className='grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10 items-start'>
-          <ErrandDetailsForm 
-            formData={formData} 
-            onChange={handleUpdateField} 
+          <ErrandDetailsForm
+            formData={formData}
+            onChange={handleUpdateField}
             onSubmit={handleSubmit}
           />
-          <ErrandTypePicker 
-            selectedType={formData.type} 
-            onSelect={(type) => handleUpdateField("type", type)} 
+          <ErrandTypePicker
+            selectedType={formData.type}
+            onSelect={(type) => handleUpdateField("type", type)}
           />
         </div>
       </div>

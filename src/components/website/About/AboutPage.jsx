@@ -1,6 +1,6 @@
 const AboutPage = () => {
   return (
-    <div className='w-full max-w-5xl bg-white font-sans px-6 py-8 md:px-16 md:py-10 mx-auto'>
+    <div className='w-full max-w-385 bg-white font-sans px-6 py-8 md:px-16 md:py-10 mx-auto'>
       {/* ── About Us Heading ── */}
       <div className='mb-1'>
         <h1 className='text-4xl font-extrabold pb-2 text-secondary tracking-tight'>

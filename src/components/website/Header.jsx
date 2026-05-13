@@ -16,6 +16,7 @@ export default function Header() {
     { name: "Errand Gallery", href: "/gallery" },
     { name: "Client Registration", href: "/client-reg" },
     { name: "ErrandR Registration", href: "/errandr-reg" },
+    { name: "Contact", href: "/contact" },
     { name: "Legal", href: "/legal" },
   ];
 
