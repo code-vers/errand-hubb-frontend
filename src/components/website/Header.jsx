@@ -12,7 +12,7 @@ export default function Header() {
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
     { name: "Search For ErrandR", href: "/search" },
-    { name: "Post An Errand", href: "/post" },
+    { name: "Post An Errand", href: "/post-errand" },
     { name: "Errand Gallery", href: "/gallery" },
     { name: "Client Registration", href: "/client-reg" },
     { name: "ErrandR Registration", href: "/errandr-reg" },
