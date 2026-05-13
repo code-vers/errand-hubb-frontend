@@ -61,7 +61,7 @@ const SearchPage = () => {
   };
 
   return (
-    <div className='bg-[#f4f5f7] min-h-screen py-8'>
+    <div className='bg-[#f4f5f7] min-h-screen pt-12 pb-8'>
       <div className='max-w-385 mx-auto px-4 flex flex-col gap-8'>
         <FilterSearching onSearch={handleSearch} initialFilters={filters} />
         <SearchResult errandrs={mockErrandrs} />
