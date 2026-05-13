@@ -1,3 +1,9 @@
+import Homepage from "@/components/(website)/Homepage";
+
 export default function Home() {
-  return <div className='bg-success min-h-full'></div>;
+  return (
+    <div>
+      <Homepage />
+    </div>
+  );
 }

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import logo from "../../public/logo.svg";
+import logo from "../../../public/logo.svg";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,7 +20,7 @@ export default function Header() {
   ];
 
   return (
-    <header className='w-full  bg-white font-sans' data-purpose='main-header'>
+    <header className='w-full sticky top-0 z-50 bg-white font-sans shadow-sm' data-purpose='main-header'>
       {/* Main Navigation Area */}
       <div
         className='flex flex-col md:flex-row w-full '
