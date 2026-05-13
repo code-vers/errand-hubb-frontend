@@ -3,7 +3,7 @@ import logo from "../../../public/logo.svg";
 
 const Homepage = () => {
   return (
-    <section className='py-20 bg-white flex flex-col items-center justify-center font-sans antialiased'>
+    <section className='min-h-full w-full flex flex-col justify-center items-center bg-white font-sans antialiased py-10'>
       {/* Logo Section */}
       <div className='flex flex-col items-center mb-10'>
         <Image
