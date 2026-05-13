@@ -2,7 +2,7 @@ import Homepage from "../components/website/Homepage";
 
 export default function Home() {
   return (
-    <div className='flex flex-1 items-center justify-center w-full'>
+    <div className='flex min-h-[80vh] items-center justify-center w-full'>
       <Homepage />
     </div>
   );

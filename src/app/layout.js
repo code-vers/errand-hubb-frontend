@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
     <html lang='en' className={`${montserrat.variable} h-full antialiased`}>
       <body className='min-h-screen flex flex-col font-sans'>
         <Header />
-        <main className='flex flex-1'>{children}</main>
+        <main className=''>{children}</main>
         <Footer />
       </body>
     </html>
