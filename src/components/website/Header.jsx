@@ -17,6 +17,8 @@ export default function Header() {
     { name: "Client Registration", href: "/client-registration" },
     { name: "ErrandR Registration", href: "/errand-registration" },
     { name: "Contact", href: "/contact" },
+    { name: "Errand", href: "/errand" },
+    { name: "Errand's", href: "/errand's" },
     { name: "Legal", href: "/legal" },
   ];
 
