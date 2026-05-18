@@ -52,13 +52,13 @@ const SearchResult = ({ errandrs }: SearchResultProps) => {
                     <button className='text-[#1b539c] hover:text-blue-800 transition-colors'>
                       <Image src={icon} height={50} width={50} alt='icon' />
                     </button>
-                    <Image
+                    {/* <Image
                       height={60}
                       width={80}
                       src={person.videoThumb}
                       alt='Video preview'
                       className='w-10 h-10 rounded object-cover border border-gray-200'
-                    />
+                    /> */}
                   </div>
                 </div>
 

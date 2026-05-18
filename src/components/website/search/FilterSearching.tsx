@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
 import { SearchFilters } from "@/types/search";
+import { useState } from "react";
 
 interface FilterSearchingProps {
   onSearch: (filters: SearchFilters) => void;
@@ -24,12 +24,12 @@ const FilterSearching = ({
   return (
     <div className=' max-w-7xl mx-auto'>
       {/* Search Card */}
-      <div className='bg-white rounded-[10px] shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-5 px-6 flex flex-col md:flex-row items-start md:items-end gap-4 w-full'>
+      <div className='bg-white rounded-[10px] shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-6 px-7  flex flex-col md:flex-row items-start md:items-end gap-4 w-full'>
         {/* Type of Errand */}
         <div className='flex flex-col gap-1.5 flex-1 w-full'>
           <label
             htmlFor='errand-type'
-            className='text-[10px] font-bold text-gray-500 uppercase tracking-wider'>
+            className='text-[12px] font-bold text-[#555555] uppercase tracking-wider'>
             Type of Errand
           </label>
           <input
@@ -45,7 +45,7 @@ const FilterSearching = ({
         <div className='flex flex-col gap-1.5 flex-1 w-full'>
           <label
             htmlFor='city'
-            className='text-[10px] font-bold text-gray-500 uppercase tracking-wider'>
+            className='text-[12px] font-bold text-[#555555] uppercase tracking-wider'>
             City
           </label>
           <input
@@ -62,7 +62,7 @@ const FilterSearching = ({
         <div className='flex flex-col gap-1.5 flex-1 w-full'>
           <label
             htmlFor='state'
-            className='text-[10px] font-bold text-gray-500 uppercase tracking-wider'>
+            className='text-[12px] font-bold text-[#555555] uppercase tracking-wider'>
             State
           </label>
           <input
