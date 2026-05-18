@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import logo from "../../../public/logo.svg";
 
 const Homepage = () => {
@@ -9,8 +10,8 @@ const Homepage = () => {
         <Image
           src={logo}
           alt='ErrandHubb Logo'
-          width={240}
-          height={80}
+          width={610}
+          height={104}
           priority
         />
       </div>
@@ -19,20 +20,26 @@ const Homepage = () => {
       <div className='flex flex-col items-center gap-4 w-full max-w-md px-4'>
         {/* Top row */}
         <div className='flex flex-col sm:flex-row gap-4 w-full justify-center'>
-          <button className='bg-primary hover:bg-primary-dark active:scale-95 whitespace-nowrap text-white font-extrabold py-3 px-6 rounded-md uppercase tracking-widest text-sm transition-all duration-200 shadow-sm w-full sm:w-auto'>
+          <Link
+            href='/errand-registration'
+            className='bg-primary  active:scale-95 whitespace-nowrap text-white font-extrabold py-3 px-6 rounded-md uppercase tracking-widest text-sm transition-all duration-200 shadow-sm w-full sm:w-auto'>
             Become an Errandr
-          </button>
+          </Link>
 
-          <button className='bg-primary hover:bg-primary-dark active:scale-95 whitespace-nowrap text-white font-extrabold py-3 px-6 rounded-md uppercase tracking-widest text-sm transition-all duration-200 shadow-sm w-full sm:w-auto'>
+          <Link
+            href='/search'
+            className='bg-primary  active:scale-95 whitespace-nowrap text-white font-extrabold py-3 px-6 rounded-md uppercase tracking-widest text-sm transition-all duration-200 shadow-sm w-full sm:w-auto'>
             Search For
             <br className='sm:hidden' /> Errandr
-          </button>
+          </Link>
         </div>
 
         {/* Bottom centered button */}
-        <button className='bg-primary hover:bg-primary-dark active:scale-95 text-white font-extrabold py-3 px-6 rounded-md uppercase tracking-widest text-sm transition-all duration-200 shadow-sm w-full sm:w-auto'>
+        <Link
+          href='/post-errand'
+          className='bg-primary  active:scale-95 text-white font-extrabold py-3 px-6 rounded-md uppercase tracking-widest text-sm transition-all duration-200 shadow-sm w-full sm:w-auto'>
           Post An Errand
-        </button>
+        </Link>
       </div>
     </section>
   );

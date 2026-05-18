@@ -30,9 +30,10 @@ const errandrProfiles: ErrandrProfile[] = [
     bioLink: "#",
     services: ["Grocery Shopping", "Delivery", "Pet Care", "Errands"],
     pricingText: "Errands from $25 to $100 per hour",
-    imageUrl: "https://randomuser.me/api/portraits/women/44.jpg",
+    imageUrl:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800",
     videoThumbUrl:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=66&h=40&fit=crop",
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400",
   },
   {
     id: 2,
@@ -40,9 +41,10 @@ const errandrProfiles: ErrandrProfile[] = [
     bioLink: "#",
     services: ["Moving Help", "Handyman", "Delivery", "Shopping"],
     pricingText: "Errands from $25 to $100 per hour",
-    imageUrl: "https://randomuser.me/api/portraits/men/32.jpg",
+    imageUrl:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800",
     videoThumbUrl:
-      "https://images.unsplash.com/photo-1520341280432-4749d4d7bcf9?w=66&h=40&fit=crop",
+      "https://images.unsplash.com/photo-1520341280432-4749d4d7bcf9?auto=format&fit=crop&q=80&w=400",
   },
   {
     id: 3,
@@ -50,9 +52,10 @@ const errandrProfiles: ErrandrProfile[] = [
     bioLink: "#",
     services: ["Scheduling", "Admin Help", "Research", "Errands"],
     pricingText: "Errands from $25 to $100 per hour",
-    imageUrl: "https://randomuser.me/api/portraits/women/68.jpg",
+    imageUrl:
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=800",
     videoThumbUrl:
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=66&h=40&fit=crop",
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400",
   },
 ];
 
@@ -60,7 +63,7 @@ const ErrandPage = () => {
   return (
     <section className='w-full bg-(--color-warning-bg)'>
       <div className='bg-white py-8 pb-8'>
-        <div className='mx-auto max-w-310 px-6 lg:px-10'>
+        <div className='mx-auto  px-6 lg:px-10'>
           <div className='grid grid-cols-1 items-center gap-6 text-center xl:grid-cols-[1fr_auto_1fr] xl:items-end xl:text-left'>
             <div className='flex flex-col items-center gap-4 xl:items-start'>
               <p className=' text-[18px] lg:whitespace-nowrap font-bold leading-tight tracking-[0.4px] text-(--color-secondary) md:text-[34px]'>
@@ -98,7 +101,7 @@ const ErrandPage = () => {
       </div>
 
       <div className='px-0 py-13 pb-20'>
-        <div className='mx-auto max-w-[1240px] px-6 lg:px-10'>
+        <div className='mx-auto  px-6 lg:px-10'>
           <header>
             <h1 className='text-[34px] font-extrabold tracking-[0.5px] text-(--color-secondary) md:text-[46px]'>
               ERRANDR&apos;S
@@ -143,17 +146,17 @@ const ErrandPage = () => {
                         <Image
                           src={icon}
                           alt='Play intro'
-                          width={22}
-                          height={22}
+                          width={40}
+                          height={40}
                         />
                       </button>
-                      <Image
+                      {/* <Image
                         src={profile.videoThumbUrl}
                         alt='Video preview'
                         width={33}
                         height={20}
                         className='rounded-xs object-cover'
-                      />
+                      /> */}
                     </div>
                   </div>
 
