@@ -6,7 +6,7 @@ const Homepage = () => {
   return (
     <section className='w-full flex flex-1 flex-col justify-center items-center bg-white font-sans antialiased py-10'>
       {/* Logo Section */}
-      <div className='flex flex-col items-center mb-10'>
+      <div className='flex px-8 md:px-0 flex-col items-center mb-10'>
         <Image
           src={logo}
           alt='ErrandHubb Logo'
