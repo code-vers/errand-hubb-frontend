@@ -24,16 +24,15 @@ export default function Header() {
 
   return (
     <header
-      className='w-full sticky top-0 z-50 bg-white font-sans 
-    '
+      className='w-full sticky top-0 z-50 bg-white font-sans'
       data-purpose='main-header'>
       {/* Main Navigation Area */}
       <div
-        className='flex flex-col md:flex-row w-full '
+        className='flex flex-col md:flex-row w-full relative'
         data-purpose='logo-nav-container'>
         {/* Logo Section */}
         <div
-          className='bg-white flex items-center justify-between py-4 px-6 md:w-62.5 shrink-0'
+          className='bg-white flex items-center justify-between py-4 px-6 md:w-62.5 shrink-0 z-50'
           data-purpose='logo-section'>
           <Link href='/' className='flex flex-col items-center no-underline'>
             <Image src={logo} alt='logo' />
@@ -76,15 +75,24 @@ export default function Header() {
 
         {/* Navigation Menu */}
         <nav
-          className={`${
-            isMenuOpen ? "block" : "hidden"
-          } md:flex bg-primary flex-1 items-center overflow-x-auto whitespace-nowrap transition-all duration-300 ease-in-out`}
+          className={`bg-primary flex-1 items-center transition-all duration-500 ease-in-out overflow-hidden md:overflow-x-auto whitespace-nowrap
+            absolute md:static top-full left-0 w-full md:w-auto z-40
+            ${
+              isMenuOpen
+                ? "max-h-[90vh] opacity-100 translate-y-0 visible shadow-lg"
+                : "max-h-0 opacity-0 -translate-y-4 invisible md:max-h-none md:opacity-100 md:translate-y-0 md:visible"
+            } md:flex`}
           data-purpose='main-navigation'>
           <ul className='flex flex-col md:flex-row w-full items-start md:items-center px-4 py-3 md:py-0 md:min-h-15'>
             {navLinks.map((link, index) => (
               <li
                 key={link.name}
-                className={`w-full md:w-auto px-3 md:px-4 py-2 md:py-0 border-b md:border-b-0 md:border-r border-[#E8670A]/30 last:border-0`}>
+                style={{ transitionDelay: isMenuOpen ? `${index * 40}ms` : '0ms' }}
+                className={`w-full md:w-auto px-3 md:px-4 py-2 md:py-0 border-b md:border-b-0 md:border-r border-[#E8670A]/30 last:border-0 transition-all duration-500 ${
+                  isMenuOpen
+                    ? "opacity-100 translate-x-0"
+                    : "opacity-0 -translate-x-4 md:opacity-100 md:translate-x-0"
+                }`}>
                 <Link
                   href={link.href}
                   className='text-white text-[13px] font-semibold hover:text-gray-200 transition-colors block'
