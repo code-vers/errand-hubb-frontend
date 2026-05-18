@@ -51,7 +51,7 @@ const ErrandRegistrationPage = () => {
 
   return (
     <div
-      className='min-h-screen flex items-center justify-center p-4'
+      className='min-h-screen py-8 flex items-center justify-center p-4'
       style={{ backgroundColor: "var(--color-surface-dim)" }}>
       <main
         className='w-full max-w-240 rounded-lg p-6'

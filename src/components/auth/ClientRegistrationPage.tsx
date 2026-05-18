@@ -31,7 +31,7 @@ const ClientRegistrationPage = () => {
 
   return (
     <div
-      className='min-h-screen flex items-center justify-center p-4'
+      className=' flex items-center justify-center p-4 py-12'
       style={{ backgroundColor: "var(--color-surface-dim)" }}>
       <main
         className='w-full max-w-230 rounded-lg p-8'
