@@ -70,7 +70,7 @@ const ErrandRegistrationPage = () => {
           <p
             className='text-xs font-bold uppercase tracking-wide'
             style={{ color: "var(--color-primary)" }}>
-            Just $10 / Month
+            Just $5 / Month
           </p>
           <p className='text-xs mt-0.5' style={{ color: "var(--color-muted)" }}>
             Create your ErrandR profile and start getting hired

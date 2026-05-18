@@ -19,7 +19,7 @@ interface ErrandrProfile {
 }
 
 const membershipPlan: MembershipPlan = {
-  priceLabel: "JUST $10",
+  priceLabel: "JUST $5",
   billingCycle: "MONTHLY",
 };
 
