@@ -60,7 +60,7 @@ const ErrandPage = () => {
   return (
     <section className='w-full bg-(--color-warning-bg)'>
       <div className='bg-white py-8 pb-8'>
-        <div className='mx-auto px-24'>
+        <div className='mx-auto max-w-310 px-6 lg:px-10'>
           <div className='grid grid-cols-1 items-center gap-6 text-center xl:grid-cols-[1fr_auto_1fr] xl:items-end xl:text-left'>
             <div className='flex flex-col items-center gap-4 xl:items-start'>
               <p className=' text-[18px] lg:whitespace-nowrap font-bold leading-tight tracking-[0.4px] text-(--color-secondary) md:text-[34px]'>
@@ -98,7 +98,7 @@ const ErrandPage = () => {
       </div>
 
       <div className='px-0 py-13 pb-20'>
-        <div className='mx-auto px-24'>
+        <div className='mx-auto max-w-[1240px] px-6 lg:px-10'>
           <header>
             <h1 className='text-[34px] font-extrabold tracking-[0.5px] text-(--color-secondary) md:text-[46px]'>
               ERRANDR&apos;S
