@@ -111,7 +111,7 @@ const errandrProfiles: ErrandrProfile[] = [
 
 const ErrandPage = () => {
   const [hiringProfile, setHiringProfile] = useState<ErrandrProfile | null>(
-    null
+    null,
   );
 
   return (
@@ -391,41 +391,6 @@ const ErrandPage = () => {
                 <div className='bg-[#FFF5EE] rounded-xl p-3.5 flex flex-col gap-2'>
                   {hiringProfile.services.map((service, i) => (
                     <div key={service} className='flex items-center gap-2'>
-                      <svg
-                        width='15'
-                        height='15'
-                        viewBox='0 0 15 15'
-                        fill='none'
-                        className={
-                          i < hiringProfile.services.length - 1
-                            ? "text-[#F47A22] shrink-0"
-                            : "text-gray-300 shrink-0"
-                        }>
-                        <circle
-                          cx='7.5'
-                          cy='7.5'
-                          r='6.5'
-                          stroke='currentColor'
-                          strokeWidth='1.2'
-                        />
-                        {i < hiringProfile.services.length - 1 && (
-                          <path
-                            d='M4.5 7.5l2 2 4-4'
-                            stroke='currentColor'
-                            strokeWidth='1.3'
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                          />
-                        )}
-                        {i === hiringProfile.services.length - 1 && (
-                          <path
-                            d='M7.5 4.5v6M4.5 7.5h6'
-                            stroke='currentColor'
-                            strokeWidth='1.3'
-                            strokeLinecap='round'
-                          />
-                        )}
-                      </svg>
                       <span className='text-[12px] text-gray-600 leading-tight'>
                         {service}
                       </span>
