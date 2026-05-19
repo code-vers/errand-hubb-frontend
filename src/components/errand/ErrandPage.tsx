@@ -1,7 +1,11 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { X } from "lucide-react";
 import icon from "../../../public/icon.svg";
-import logo from "../../../public/logo.svg";
+import logo from "../../../public/logo2.svg";
 
 interface MembershipPlan {
   priceLabel: string;
@@ -11,10 +15,17 @@ interface MembershipPlan {
 interface ErrandrProfile {
   id: number;
   name: string;
-  bioLink: string;
+  location: string;
+  bio: string;
+  tags: string[];
+  availability: string;
+  availabilityNote: string;
+  responseTime: string;
   services: string[];
+  pricingLabel: string;
   pricingText: string;
   imageUrl: string;
+  bioLink: string;
   videoThumbUrl: string;
 }
 
@@ -27,39 +38,82 @@ const errandrProfiles: ErrandrProfile[] = [
   {
     id: 1,
     name: "Jessica M.",
-    bioLink: "#",
-    services: ["Grocery Shopping", "Delivery", "Pet Care", "Errands"],
-    pricingText: "Errands from $25 to $100 per hour",
+    location: "New York, NY",
+    bio: "I am a highly organized and reliable professional dedicated to helping busy individuals reclaim their time. Whether it's running daily errands, managing deliveries, or providing dedicated senior assistance.",
+    tags: ["Driver", "Shopping", "Senior Assisting"],
+    availability: "Mon-Fri: 8:00 AM – 6:00 PM",
+    availabilityNote: "Available Weekdays",
+    responseTime: "15 minutes",
+    services: [
+      "Grocery Shopping",
+      "Food Pickup & Delivery",
+      "Pharmacy Pickup",
+      "General Errands",
+      "And more...",
+    ],
+    pricingLabel: "Errands from",
+    pricingText: "$25 to $100 per hour",
     imageUrl:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800",
+    bioLink: "#",
     videoThumbUrl:
       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400",
   },
   {
     id: 2,
     name: "Marcus T.",
-    bioLink: "#",
-    services: ["Moving Help", "Handyman", "Delivery", "Shopping"],
-    pricingText: "Errands from $25 to $100 per hour",
+    location: "Los Angeles, CA",
+    bio: "I am a highly organized and reliable professional dedicated to helping busy individuals reclaim their time. Whether it's running daily errands, managing deliveries, or providing dedicated handyman services.",
+    tags: ["Driver", "Cleaning", "Shopping", "Handyman"],
+    availability: "Mon-Sun: 7:00 AM – 8:00 PM",
+    availabilityNote: "Available 7 days a week",
+    responseTime: "30 minutes",
+    services: [
+      "Moving Help",
+      "Handyman",
+      "Delivery",
+      "Shopping",
+      "And more...",
+    ],
+    pricingLabel: "Errands from",
+    pricingText: "$25 to $100 per hour",
     imageUrl:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800",
+    bioLink: "#",
     videoThumbUrl:
       "https://images.unsplash.com/photo-1520341280432-4749d4d7bcf9?auto=format&fit=crop&q=80&w=400",
   },
   {
     id: 3,
     name: "Sandra R.",
-    bioLink: "#",
-    services: ["Scheduling", "Admin Help", "Research", "Errands"],
-    pricingText: "Errands from $25 to $100 per hour",
+    location: "Chicago, IL",
+    bio: "Specializing in administrative support and research. I help manage your schedule and take care of the small details so you can focus on what matters most.",
+    tags: ["Admin", "Research", "Scheduling"],
+    availability: "Mon-Sat: 9:00 AM – 5:00 PM",
+    availabilityNote: "Available Mon-Sat",
+    responseTime: "1 hour",
+    services: [
+      "Scheduling",
+      "Admin Help",
+      "Research",
+      "General Errands",
+      "And more...",
+    ],
+    pricingLabel: "Errands from",
+    pricingText: "$25 to $100 per hour",
     imageUrl:
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=800",
+    bioLink: "#",
     videoThumbUrl:
       "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400",
   },
 ];
 
 const ErrandPage = () => {
+  const [hiringProfile, setHiringProfile] = useState<ErrandrProfile | null>(
+    null
+  );
+
   return (
     <section className='w-full bg-(--color-warning-bg)'>
       <div className='bg-white py-8 pb-8'>
@@ -150,13 +204,6 @@ const ErrandPage = () => {
                           height={40}
                         />
                       </button>
-                      {/* <Image
-                        src={profile.videoThumbUrl}
-                        alt='Video preview'
-                        width={33}
-                        height={20}
-                        className='rounded-xs object-cover'
-                      /> */}
                     </div>
                   </div>
 
@@ -164,7 +211,7 @@ const ErrandPage = () => {
                     SERVICES
                   </p>
                   <div className='mt-2 flex flex-wrap gap-1.5'>
-                    {profile.services.map((service) => (
+                    {profile.services.slice(0, 4).map((service) => (
                       <span
                         key={service}
                         className='rounded-full border border-(--color-primary) bg-[#fff3ea] px-2.5 py-0.75 text-[12px] leading-[1.2] text-[#d96f1f]'>
@@ -182,6 +229,7 @@ const ErrandPage = () => {
 
                   <button
                     type='button'
+                    onClick={() => setHiringProfile(profile)}
                     className='mt-4 min-h-10 w-full rounded-md bg-(--color-primary) text-[13px] font-extrabold tracking-[1px] text-white hover:bg-(--color-primary-dark)'>
                     HIRE NOW
                   </button>
@@ -191,6 +239,226 @@ const ErrandPage = () => {
           </div>
         </div>
       </div>
+
+      {/* ── Hiring Modal ── */}
+      {hiringProfile && (
+        <div
+          className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'
+          onClick={() => setHiringProfile(null)}>
+          <div
+            className='relative w-full max-w-[560px] bg-white rounded-2xl shadow-2xl overflow-hidden'
+            onClick={(e) => e.stopPropagation()}>
+            {/* ── TOP HEADER: avatar + name + close + play ── */}
+            <div className='flex items-center gap-4 px-5 pt-5 pb-4'>
+              {/* Avatar */}
+              <div className='w-[72px] h-[72px] rounded-xl overflow-hidden shrink-0 border border-gray-100'>
+                <img
+                  src={hiringProfile.imageUrl}
+                  alt={hiringProfile.name}
+                  className='w-full h-full object-cover'
+                />
+              </div>
+
+              {/* Name + location */}
+              <div className='flex-1 min-w-0'>
+                <h2 className='text-[22px] font-extrabold text-[#111111] leading-tight'>
+                  {hiringProfile.name}
+                </h2>
+                <p className='text-sm text-gray-400 mt-0.5'>
+                  {hiringProfile.location}
+                </p>
+              </div>
+
+              {/* Play button (teal circle) */}
+              <button className='w-10 h-10 rounded-full bg-[#1ABFBF] flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity'>
+                <svg width='14' height='16' viewBox='0 0 14 16' fill='none'>
+                  <path d='M1.5 1.5L12.5 8L1.5 14.5V1.5Z' fill='white' />
+                </svg>
+              </button>
+
+              {/* Close button */}
+              <button
+                onClick={() => setHiringProfile(null)}
+                className='w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400'>
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* ── DIVIDER ── */}
+            <div className='h-px bg-gray-100 mx-5' />
+
+            {/* ── BODY: two-column layout ── */}
+            <div className='flex flex-col md:flex-row gap-4 px-5 pt-4 pb-4'>
+              {/* LEFT COLUMN */}
+              <div className='flex-1 min-w-0 flex flex-col gap-4'>
+                {/* About section */}
+                <div>
+                  <p className='text-[11px] font-extrabold text-[#F47A22] uppercase tracking-widest mb-2'>
+                    ABOUT {hiringProfile.name.split(" ")[0].toUpperCase()}
+                  </p>
+                  <p className='text-[13px] text-gray-600 leading-relaxed'>
+                    {hiringProfile.bio}
+                  </p>
+                </div>
+
+                {/* Tags */}
+                <div className='flex flex-wrap gap-1.5'>
+                  {hiringProfile.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className='px-3 py-1 rounded-full border border-gray-200 text-[12px] font-semibold text-gray-600 bg-white'>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Divider */}
+                <div className='h-px bg-gray-100' />
+
+                {/* Availability */}
+                <div className='flex flex-col gap-2.5'>
+                  {/* Schedule row */}
+                  <div className='flex items-start gap-2'>
+                    <div className='mt-0.5'>
+                      {/* Calendar icon */}
+                      <svg
+                        width='16'
+                        height='16'
+                        viewBox='0 0 16 16'
+                        fill='none'
+                        className='text-gray-400'>
+                        <rect
+                          x='1'
+                          y='2.5'
+                          width='14'
+                          height='12'
+                          rx='2'
+                          stroke='currentColor'
+                          strokeWidth='1.3'
+                        />
+                        <path
+                          d='M5 1v3M11 1v3M1 6.5h14'
+                          stroke='currentColor'
+                          strokeWidth='1.3'
+                          strokeLinecap='round'
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className='text-[13px] font-semibold text-gray-700 leading-tight'>
+                        {hiringProfile.availability}
+                      </p>
+                      <p className='text-[12px] font-semibold text-[#F47A22] mt-0.5'>
+                        {hiringProfile.availabilityNote}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Response time row */}
+                  <div className='flex items-center gap-2'>
+                    <svg
+                      width='16'
+                      height='16'
+                      viewBox='0 0 16 16'
+                      fill='none'
+                      className='text-gray-400'>
+                      <circle
+                        cx='8'
+                        cy='8'
+                        r='6.5'
+                        stroke='currentColor'
+                        strokeWidth='1.3'
+                      />
+                      <path
+                        d='M8 4.5V8l2.5 2'
+                        stroke='currentColor'
+                        strokeWidth='1.3'
+                        strokeLinecap='round'
+                      />
+                    </svg>
+                    <p className='text-[13px] text-gray-600'>
+                      Usually responds within{" "}
+                      <span className='font-semibold text-[#F47A22]'>
+                        {hiringProfile.responseTime}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* RIGHT COLUMN — services card */}
+              <div className='w-full md:w-[200px] shrink-0'>
+                <div className='bg-[#FFF5EE] rounded-xl p-3.5 flex flex-col gap-2'>
+                  {hiringProfile.services.map((service, i) => (
+                    <div key={service} className='flex items-center gap-2'>
+                      <svg
+                        width='15'
+                        height='15'
+                        viewBox='0 0 15 15'
+                        fill='none'
+                        className={
+                          i < hiringProfile.services.length - 1
+                            ? "text-[#F47A22] shrink-0"
+                            : "text-gray-300 shrink-0"
+                        }>
+                        <circle
+                          cx='7.5'
+                          cy='7.5'
+                          r='6.5'
+                          stroke='currentColor'
+                          strokeWidth='1.2'
+                        />
+                        {i < hiringProfile.services.length - 1 && (
+                          <path
+                            d='M4.5 7.5l2 2 4-4'
+                            stroke='currentColor'
+                            strokeWidth='1.3'
+                            strokeLinecap='round'
+                            strokeLinejoin='round'
+                          />
+                        )}
+                        {i === hiringProfile.services.length - 1 && (
+                          <path
+                            d='M7.5 4.5v6M4.5 7.5h6'
+                            stroke='currentColor'
+                            strokeWidth='1.3'
+                            strokeLinecap='round'
+                          />
+                        )}
+                      </svg>
+                      <span className='text-[12px] text-gray-600 leading-tight'>
+                        {service}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pricing row */}
+                <div className='flex items-center justify-between mt-3 px-1'>
+                  <span className='text-[12px] text-gray-500'>
+                    {hiringProfile.pricingLabel}
+                  </span>
+                  <span className='text-[13px] font-extrabold text-[#F47A22]'>
+                    {hiringProfile.pricingText}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* ── HIRE BUTTON ── */}
+            <div className='px-5 pb-5 pt-1'>
+              <button
+                onClick={() => {
+                  alert("Hiring request sent!");
+                  setHiringProfile(null);
+                }}
+                className='h-11 px-8 rounded-full bg-[#F47A22] text-white font-extrabold text-[13px] uppercase tracking-wider hover:bg-[#BB4D00] transition-colors shadow-md'>
+                HIRE {hiringProfile.name.split(" ")[0].toUpperCase()}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

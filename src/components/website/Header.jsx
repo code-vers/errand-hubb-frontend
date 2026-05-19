@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import logo from "../../../public/logo.svg";
+import logo from "../../../public/logo2.svg";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -44,7 +44,7 @@ export default function Header() {
             className='bg-white flex items-center justify-between py-4 px-6 md:w-62.5 shrink-0 z-50'
             data-purpose='logo-section'>
             <Link href='/' className='flex flex-col items-center no-underline'>
-              <Image src={logo} alt='logo' />
+              <Image src={logo} alt='logo' className='h-12' />
             </Link>
 
             {/* Mobile Menu Button */}
