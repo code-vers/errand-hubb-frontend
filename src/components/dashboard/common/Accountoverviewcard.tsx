@@ -137,7 +137,7 @@ const AccountOverviewCard: React.FC<AccountOverviewCardProps> = ({
   ];
 
   return (
-    <div className='bg-white  rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]'>
+    <div className='bg-white h-full  rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]'>
       <div className='text-[18px] font-semibold  text-foreground px-4.5 pt-4 pb-3 border-b border-[#F5E9D3] tracking-tight'>
         Account Overview
       </div>

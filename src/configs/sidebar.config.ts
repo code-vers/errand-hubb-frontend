@@ -21,7 +21,7 @@ export const sidebarConfig: SidebarMenuItem[] = [
   },
   {
     title: "Profile",
-    path: "/dashboard/Profile",
+    path: "/dashboard/profile",
     icon: Briefcase,
     roles: ["client"],
   },

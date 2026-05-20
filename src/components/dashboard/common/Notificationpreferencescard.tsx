@@ -72,7 +72,7 @@ const NotificationPreferencesCard: React.FC<
     onToggle?.(key, !preferences[key]);
 
   return (
-    <div className='bg-white border border-[#F5E9D3] rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]'>
+    <div className='bg-white h-full border border-[#F5E9D3] rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]'>
       <div className='text-[18px] font-semibold text-foreground px-4.5 pt-4 pb-3 border-b border-[#F5E9D3] tracking-tight'>
         Notification Preferences
       </div>

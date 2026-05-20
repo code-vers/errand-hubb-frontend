@@ -128,7 +128,7 @@ const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({ info }) => {
   ];
 
   return (
-    <div className='bg-white   rounded-lg overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]'>
+    <div className='bg-white h-full  rounded-lg overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]'>
       <div className='text-[18px] font-semibold text-[var(--color-foreground)] px-4.5 pt-4 pb-3 border-b border-[#F5E9D3] tracking-tight'>
         Personal Information
       </div>

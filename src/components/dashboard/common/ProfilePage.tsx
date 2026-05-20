@@ -67,22 +67,17 @@ export default function ProfilePage() {
           onEditProfile={() => alert("Edit Profile")}
         />
 
-        <div className='grid grid-cols-2 gap-3.5 max-sm:grid-cols-1'>
-          <div className='flex flex-col gap-3.5'>
-            <PersonalInfoCard info={personalInfo} />
-            <NotificationPreferencesCard
-              preferences={notifications}
-              onToggle={handleToggle}
-            />
-          </div>
-
-          <div className='flex flex-col gap-3.5'>
-            <AccountOverviewCard overview={accountOverview} />
-            <QuickActionsCard
-              onPostOnBoard={() => alert("Post on Board")}
-              onViewMyPosts={() => alert("View My Posts")}
-            />
-          </div>
+        <div className='grid grid-cols-2 gap-3.5 max-sm:grid-cols-1 items-stretch'>
+          <PersonalInfoCard info={personalInfo} />
+          <AccountOverviewCard overview={accountOverview} />
+          <NotificationPreferencesCard
+            preferences={notifications}
+            onToggle={handleToggle}
+          />
+          <QuickActionsCard
+            onPostOnBoard={() => alert("Post on Board")}
+            onViewMyPosts={() => alert("View My Posts")}
+          />
         </div>
       </div>
     </div>
