@@ -13,6 +13,7 @@ import NotificationPreferencesCard from "./Notificationpreferencescard";
 import QuickActionsCard from "./QuickActionsCard";
 import AccountOverviewCard from "./Accountoverviewcard";
 import PersonalInfoCard from "./Personalinfocard";
+import PageHeader from "./PageHeader";
 
 // Mock data (replace with API later)
 const mockProfile: UserProfile = {
@@ -62,6 +63,8 @@ export default function ProfilePage() {
   return (
     <div className=' min-h-screen  py-5 px-12 font-sans'>
       <div className=' mx-auto flex flex-col gap-3.5'>
+        <PageHeader title='Profile' />
+
         <ProfileHeader
           profile={profile}
           onEditProfile={() => alert("Edit Profile")}
