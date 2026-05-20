@@ -16,10 +16,10 @@ export default function CategoryFilters({
       {categories.map((category) => (
         <button
           key={category}
-          className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+          className={`px-6 py-2 rounded-lg text-[12px] font-medium transition-all duration-200 ${
             selectedCategory === category
-              ? "bg-primary text-white shadow-md"
-              : "bg-white border border-gray-200 text-gray-500 hover:border-primary hover:text-primary"
+              ? "bg-[#EC6F27] text-white "
+              : "bg-white border border-gray-200 text-text-placeholder font-normal  hover:border-primary hover:text-primary"
           }`}
           onClick={() => onCategoryChange(category)}>
           {category}

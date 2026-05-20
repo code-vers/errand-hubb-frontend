@@ -1,8 +1,9 @@
 "use client";
 
 import { ServiceProvider } from "@/types/provider";
-import StarRating from "./StarRating";
+import { CheckCircle2, CircleCheckBig, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
+import StarRating from "./StarRating";
 
 interface ProviderCardProps {
   provider: ServiceProvider;
@@ -12,51 +13,49 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
   return (
     <article className='bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between h-full hover:shadow-md transition-shadow duration-300'>
       {/* Header */}
-      <div className='flex justify-between items-start mb-4'>
-        <div className='flex items-center gap-3'>
+      <div className='flex justify-between items-start mb-4 '>
+        <div className='flex items-center gap-3 '>
           <div className='relative'>
             <Image
               alt={provider.name}
-              className='w-12 h-12 rounded-lg object-cover'
+              className='w-16 h-16 rounded-lg border-[2px] border-[#FDCBA4]  object-cover'
               height={200}
               width={200}
               src={provider.imageUrl}
             />
             {provider.isVerified && (
-              <div className='absolute -bottom-1 -right-1 bg-yellow-400 text-white rounded-full p-0.5'>
-                <svg
-                  className='w-3 h-3'
-                  fill='currentColor'
-                  viewBox='0 0 20 20'>
-                  <path d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z' />
-                </svg>
+              <div className='absolute -bottom-1 -right-1 bg-white text-white rounded-full p-0.5'>
+                <CircleCheckBig size={20} className='text-[#FBBC04]' />
               </div>
             )}
           </div>
           <div>
-            <h3 className='font-bold text-gray-900 leading-tight'>
+            <h3 className='font-semibold text-foreground text-[16px]  leading-tight'>
               {provider.name}
             </h3>
-            <p className='text-xs text-gray-400'>{provider.location}</p>
+            <p className='text-xs flex items-center py-1 gap-1 font-normal text-[#6B6B6B]  '>
+              <MapPin size={14} color='#FBBC04' />
+              {provider.location}
+            </p>
             <div className='flex items-center mt-1'>
               <StarRating rating={provider.rating} size='sm' />
-              <span className='text-[10px] text-gray-400 ml-1'>
+              <span className='text-[11px] text-[#6B6B6B] ml-1'>
                 {provider.rating} ({provider.reviewCount} reviews)
               </span>
             </div>
           </div>
         </div>
-        <span className='px-3 py-1 border border-primary/20 text-primary rounded-full text-[10px] font-bold'>
+        <span className='px-3 py-1 text-[#ec6f27] border border-[#ec6f27] bg-[#FDF0E3]  rounded-full text-[14px] font-normal'>
           {provider.category}
         </span>
       </div>
-
+      <div className='bg-[#f5e9d3] w-full h-px mb-4 mt-1'></div>
       {/* Body */}
-      <div className='flex-grow'>
-        <h4 className='text-sm font-bold text-gray-800 mb-2'>
+      <div className='grow'>
+        <h4 className='text-[14px]  text-foreground font-semibold mb-1'>
           {provider.title}
         </h4>
-        <p className='text-xs text-gray-500 mb-4 line-clamp-2'>
+        <p className='text-xs text-text-secondary mb-4 line-clamp-2'>
           {provider.description}
         </p>
 
@@ -64,50 +63,34 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
           {provider.skills.map((skill) => (
             <span
               key={skill}
-              className='px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-[10px] font-medium'>
+              className='px-3 py-1 bg-warning-light text-[#6B6B6B] rounded-lg text-[10px] font-medium'>
               {skill}
             </span>
           ))}
         </div>
 
-        <div className='flex items-center gap-4 text-xs text-gray-400 mb-6 border-t border-gray-50 pt-4'>
-          <div className='flex items-center gap-1'>
-            <svg
-              className='w-3.5 h-3.5 text-green-500'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'>
-              <path
-                d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth='2'
-              />
-            </svg>
+        <div className='flex items-center gap-4 text-xs text-gray-400 mb-6 border-b pb-4 border-[#f5e9d3]'>
+          <div className='flex items-center gap-1.5'>
+            <CheckCircle2
+              size={15}
+              className='text-green-500'
+              strokeWidth={2.5}
+            />
             <span>{provider.jobCount} jobs</span>
           </div>
-          <div className='flex items-center gap-1'>
-            <svg
-              className='w-3.5 h-3.5'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'>
-              <path
-                d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                strokeWidth='2'
-              />
-            </svg>
+          <div className='flex items-center gap-1.5'>
+            <Clock size={15} className='text-[#FBBC04]' strokeWidth={2.5} />
             <span>{provider.responseTime}</span>
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className='flex items-center justify-between mt-auto'>
+      <div className='flex items-center justify-between'>
         <div>
-          <p className='text-[10px] text-gray-400'>Starting from</p>
+          <p className='text-[10px] text-text-secondary'>
+            Starting from
+          </p>
           <p className='font-bold text-gray-900'>
             ${provider.startingPrice}
             <span className='text-xs text-gray-400'>/hr</span>
