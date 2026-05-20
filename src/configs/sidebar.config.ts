@@ -1,100 +1,100 @@
-import { 
-  LayoutDashboard, 
-  User, 
-  Settings, 
-  Briefcase, 
-  Search, 
-  History, 
+import { SidebarMenuItem, UserRole } from "@/types/dashboard";
+import {
+  Briefcase,
+  CreditCard,
+  History,
+  LayoutDashboard,
   MessageSquare,
-  Users,
+  Search,
+  Settings,
   ShieldAlert,
-  CreditCard
-} from 'lucide-react';
-import { SidebarMenuItem, UserRole } from '@/types/dashboard';
+  User,
+  Users,
+} from "lucide-react";
 
 export const sidebarConfig: SidebarMenuItem[] = [
   {
-    title: 'Dashboard',
-    path: '/dashboard',
+    title: "Dashboard",
+    path: "/dashboard",
     icon: LayoutDashboard,
-    roles: ['client', 'errand', 'admin'],
+    roles: ["client", "errand", "admin"],
   },
   {
-    title: 'Post New Errand',
-    path: '/dashboard/post-errand',
+    title: "Profile",
+    path: "/dashboard/Profile",
     icon: Briefcase,
-    roles: ['client'],
+    roles: ["client"],
   },
   {
-    title: 'My Errands',
-    path: '/dashboard/my-errands',
+    title: "Search Errandrs",
+    path: "/dashboard/search-errands",
     icon: History,
-    roles: ['client'],
+    roles: ["client"],
   },
   {
-    title: 'Find Errands',
-    path: '/dashboard/find-errands',
+    title: "My Posts",
+    path: "/dashboard/my-posts",
     icon: Search,
-    roles: ['errand'],
+    roles: ["client"],
   },
   {
-    title: 'Active Tasks',
-    path: '/dashboard/active-tasks',
+    title: "Active Tasks",
+    path: "/dashboard/active-tasks",
     icon: Briefcase,
-    roles: ['errand'],
+    roles: ["errand"],
   },
   {
-    title: 'User Management',
-    path: '/dashboard/users',
+    title: "User Management",
+    path: "/dashboard/users",
     icon: Users,
-    roles: ['admin'],
+    roles: ["admin"],
     children: [
       {
-        title: 'Clients',
-        path: '/dashboard/users/clients',
+        title: "Clients",
+        path: "/dashboard/users/clients",
         icon: User,
-        roles: ['admin'],
+        roles: ["admin"],
       },
       {
-        title: 'Errands',
-        path: '/dashboard/users/errands',
+        title: "Errands",
+        path: "/dashboard/users/errands",
         icon: User,
-        roles: ['admin'],
-      }
-    ]
+        roles: ["admin"],
+      },
+    ],
   },
   {
-    title: 'System Logs',
-    path: '/dashboard/logs',
+    title: "System Logs",
+    path: "/dashboard/logs",
     icon: ShieldAlert,
-    roles: ['admin'],
+    roles: ["admin"],
   },
   {
-    title: 'Messages',
-    path: '/dashboard/messages',
+    title: "Messages",
+    path: "/dashboard/messages",
     icon: MessageSquare,
-    roles: ['client', 'errand', 'admin'],
+    roles: ["errand", "admin"],
   },
   {
-    title: 'Payments',
-    path: '/dashboard/payments',
+    title: "Payments",
+    path: "/dashboard/payments",
     icon: CreditCard,
-    roles: ['client', 'errand', 'admin'],
+    roles: ["errand", "admin"],
   },
   {
-    title: 'Profile',
-    path: '/dashboard/profile',
+    title: "Profile",
+    path: "/dashboard/profile",
     icon: User,
-    roles: ['client', 'errand', 'admin'],
+    roles: ["errand", "admin"],
   },
   {
-    title: 'Settings',
-    path: '/dashboard/settings',
+    title: "Settings",
+    path: "/dashboard/settings",
     icon: Settings,
-    roles: ['client', 'errand', 'admin'],
+    roles: ["errand", "admin"],
   },
 ];
 
 export const getSidebarItemsByRole = (role: UserRole): SidebarMenuItem[] => {
-  return sidebarConfig.filter(item => item.roles.includes(role));
+  return sidebarConfig.filter((item) => item.roles.includes(role));
 };
