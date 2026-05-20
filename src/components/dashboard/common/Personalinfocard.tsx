@@ -14,15 +14,15 @@ interface InfoRowProps {
 
 const InfoRow: React.FC<InfoRowProps> = ({ icon, label, value, isLast }) => (
   <div
-    className={`flex items-start gap-3 px-[18px] py-[11px] ${!isLast ? "border-b border-[var(--color-border)]" : ""}`}>
-    <div className='shrink-0 w-7 h-7 flex items-center justify-center text-[var(--color-muted)] opacity-60'>
+    className={`flex items-start gap-3 px-4.5 py-2.75 ${!isLast ? "border-b border-(--color-border)" : ""}`}>
+    <div className='shrink-0 w-10 h-10 bg-[#FFF3CD99] flex items-center font-bold justify-center text-[#EC6F27] '>
       {icon}
     </div>
     <div className='flex flex-col gap-0.5 min-w-0'>
-      <span className='text-[10.5px] font-medium text-[var(--color-text-placeholder)]'>
+      <span className='text-[12px] font-medium text-text-secondary'>
         {label}
       </span>
-      <span className='text-[12.5px] font-medium text-[var(--color-foreground)] break-words'>
+      <span className='text-[14px] font-medium text-foreground wrap-break-word'>
         {value}
       </span>
     </div>
@@ -128,8 +128,8 @@ const PersonalInfoCard: React.FC<PersonalInfoCardProps> = ({ info }) => {
   ];
 
   return (
-    <div className='bg-white border border-[var(--color-border)] rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]'>
-      <div className='text-[13.5px] font-bold text-[var(--color-foreground)] px-[18px] pt-4 pb-3 border-b border-[var(--color-border)] tracking-tight'>
+    <div className='bg-white   rounded-lg overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]'>
+      <div className='text-[18px] font-semibold text-[var(--color-foreground)] px-4.5 pt-4 pb-3 border-b border-[#F5E9D3] tracking-tight'>
         Personal Information
       </div>
       {rows.map((row, i) => (
