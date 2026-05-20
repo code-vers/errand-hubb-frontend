@@ -13,7 +13,7 @@ import NotificationPreferencesCard from "./Notificationpreferencescard";
 import QuickActionsCard from "./QuickActionsCard";
 import AccountOverviewCard from "./Accountoverviewcard";
 import PersonalInfoCard from "./Personalinfocard";
-import PageHeader from "./PageHeader";
+import PageHeader from "../PageHeader";
 
 // Mock data (replace with API later)
 const mockProfile: UserProfile = {

@@ -27,7 +27,7 @@ export const sidebarConfig: SidebarMenuItem[] = [
   },
   {
     title: "Search Errandrs",
-    path: "/dashboard/search-errands",
+    path: "/dashboard/client-search-errands",
     icon: History,
     roles: ["client"],
   },
