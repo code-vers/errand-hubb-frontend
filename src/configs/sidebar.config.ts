@@ -38,10 +38,10 @@ export const sidebarConfig: SidebarMenuItem[] = [
     roles: ["client"],
   },
   {
-    title: "Active Tasks",
-    path: "/dashboard/active-tasks",
+    title: "Security",
+    path: "/dashboard/Security",
     icon: Briefcase,
-    roles: ["errand"],
+    roles: ["client"],
   },
   {
     title: "User Management",
