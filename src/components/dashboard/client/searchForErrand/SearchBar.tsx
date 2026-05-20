@@ -5,10 +5,9 @@ import { useCallback, useState } from "react";
 
 interface SearchBarProps {
   onSearch: (search: string) => void;
-  onFilterOpen: () => void;
 }
 
-export default function SearchBar({ onSearch, onFilterOpen }: SearchBarProps) {
+export default function SearchBar({ onSearch }: SearchBarProps) {
   const [query, setQuery] = useState("");
 
   const handleSearch = useCallback(() => {
@@ -37,8 +36,7 @@ export default function SearchBar({ onSearch, onFilterOpen }: SearchBarProps) {
         />
         <div className='absolute right-12 h-6 w-[1.5px] bg-gray-200' />
         <button
-          onClick={onFilterOpen}
-          className='absolute right-2 p-2 text-gray-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200'
+          className='absolute right-2 p-2 text-gray-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all duration-200 cursor-default'
           title='Filters'>
           <SlidersHorizontal size={20} />
         </button>

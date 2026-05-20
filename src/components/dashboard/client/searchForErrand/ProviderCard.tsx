@@ -11,9 +11,9 @@ interface ProviderCardProps {
 
 export default function ProviderCard({ provider }: ProviderCardProps) {
   return (
-    <article className='bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between h-full hover:shadow-md transition-shadow duration-300'>
+    <article className='bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between h-full hover:shadow-md transition-shadow duration-300'>
       {/* Header */}
-      <div className='flex justify-between items-start mb-4 '>
+      <div className='flex justify-between items-start mb-4 px-6 pt-6'>
         <div className='flex items-center gap-3 '>
           <div className='relative'>
             <Image
@@ -52,41 +52,44 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
       <div className='bg-[#f5e9d3] w-full h-px mb-4 mt-1'></div>
       {/* Body */}
       <div className='grow'>
-        <h4 className='text-[14px]  text-foreground font-semibold mb-1'>
-          {provider.title}
-        </h4>
-        <p className='text-xs text-text-secondary mb-4 line-clamp-2'>
-          {provider.description}
-        </p>
+        <div className='px-6'>
+          <h4 className='text-[14px]  text-foreground font-semibold mb-1'>
+            {provider.title}
+          </h4>
+          <p className='text-xs text-text-secondary mb-4 line-clamp-2'>
+            {provider.description}
+          </p>
 
-        <div className='flex flex-wrap gap-2 mb-4'>
-          {provider.skills.map((skill) => (
-            <span
-              key={skill}
-              className='px-3 py-1 bg-warning-light text-[#6B6B6B] rounded-lg text-[10px] font-medium'>
-              {skill}
-            </span>
-          ))}
-        </div>
+          <div className='flex flex-wrap gap-2 mb-4'>
+            {provider.skills.map((skill) => (
+              <span
+                key={skill}
+                className='px-3 py-1 bg-warning-light text-[#6B6B6B] rounded-lg text-[10px] font-medium'>
+                {skill}
+              </span>
+            ))}
+          </div>
 
-        <div className='flex items-center gap-4 text-xs text-gray-400 mb-6 border-b pb-4 border-[#f5e9d3]'>
-          <div className='flex items-center gap-1.5'>
-            <CheckCircle2
-              size={15}
-              className='text-green-500'
-              strokeWidth={2.5}
-            />
-            <span>{provider.jobCount} jobs</span>
-          </div>
-          <div className='flex items-center gap-1.5'>
-            <Clock size={15} className='text-[#FBBC04]' strokeWidth={2.5} />
-            <span>{provider.responseTime}</span>
+          <div className='flex items-center gap-4 text-xs text-gray-400 pb-4'>
+            <div className='flex items-center gap-1.5'>
+              <CheckCircle2
+                size={15}
+                className='text-green-500'
+                strokeWidth={2.5}
+              />
+              <span>{provider.jobCount} jobs</span>
+            </div>
+            <div className='flex items-center gap-1.5'>
+              <Clock size={15} className='text-[#FBBC04]' strokeWidth={2.5} />
+              <span>{provider.responseTime}</span>
+            </div>
           </div>
         </div>
+        <div className='bg-[#f5e9d3] w-full h-px mb-6'></div>
       </div>
 
       {/* Footer */}
-      <div className='flex items-center justify-between'>
+      <div className='flex items-center justify-between px-6 pb-6'>
         <div>
           <p className='text-[10px] text-text-secondary'>
             Starting from
