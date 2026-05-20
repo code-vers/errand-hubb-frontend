@@ -1,6 +1,6 @@
 import { NotificationPreferences } from "@/types/profile";
+import { Bell, Mail, MessageSquare } from "lucide-react";
 import React from "react";
-
 
 interface NotificationPreferencesCardProps {
   preferences: NotificationPreferences;
@@ -46,8 +46,11 @@ const ToggleRow: React.FC<ToggleRowProps> = ({
   isLast,
 }) => (
   <div
-    className={`flex items-center gap-3 px-4.5 py-3 ${!isLast ? "border-b text-(--color-muted)" : ""}`}>
-    <div className='shrink-0 w-7 h-7 flex items-center justify-center text-(--color-muted) opacity-60'>
+    className={`flex items-center gap-3 px-4.5 py-3 ${!isLast ? "border-b border-[#F5E9D3] text-(--color-muted)" : ""}`}>
+    <div
+      className={`shrink-0 w-10 h-10 flex items-center justify-center font-bold transition-colors duration-200 ${
+        checked ? "bg-[#FFF3CD99] text-[#EC6F27]" : "bg-[#F1F5F9] text-[#94A3B8]"
+      }`}>
       {icon}
     </div>
     <div className='flex-1 flex flex-col gap-0.5 min-w-0'>
@@ -69,8 +72,8 @@ const NotificationPreferencesCard: React.FC<
     onToggle?.(key, !preferences[key]);
 
   return (
-    <div className='bg-white border border-(--color-border) rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]'>
-      <div className='text-[13.5px] font-bold text-(--color-foreground) px-4.5 pt-4 pb-3 border-b border-(--color-border) tracking-tight'>
+    <div className='bg-white border border-[#F5E9D3] rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]'>
+      <div className='text-[18px] font-semibold text-foreground px-4.5 pt-4 pb-3 border-b border-[#F5E9D3] tracking-tight'>
         Notification Preferences
       </div>
       <ToggleRow
@@ -78,35 +81,14 @@ const NotificationPreferencesCard: React.FC<
         description='Receive updates via email'
         checked={preferences.emailNotifications}
         onToggle={() => toggle("emailNotifications")}
-        icon={
-          <svg
-            width='15'
-            height='15'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='1.5'>
-            <path d='M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z' />
-            <polyline points='22,6 12,13 2,6' />
-          </svg>
-        }
+        icon={<Mail size={16} strokeWidth={2} />}
       />
       <ToggleRow
         label='SMS Notifications'
         description='Receive text message alerts'
         checked={preferences.smsNotifications}
         onToggle={() => toggle("smsNotifications")}
-        icon={
-          <svg
-            width='15'
-            height='15'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='1.5'>
-            <path d='M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z' />
-          </svg>
-        }
+        icon={<MessageSquare size={16} strokeWidth={2} />}
       />
       <ToggleRow
         label='Push Notifications'
@@ -114,18 +96,7 @@ const NotificationPreferencesCard: React.FC<
         checked={preferences.pushNotifications}
         onToggle={() => toggle("pushNotifications")}
         isLast
-        icon={
-          <svg
-            width='15'
-            height='15'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='1.5'>
-            <path d='M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9' />
-            <path d='M13.73 21a2 2 0 0 1-3.46 0' />
-          </svg>
-        }
+        icon={<Bell size={16} strokeWidth={2} />}
       />
     </div>
   );

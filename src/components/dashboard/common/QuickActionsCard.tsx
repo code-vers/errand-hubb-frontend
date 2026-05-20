@@ -10,13 +10,13 @@ const QuickActionsCard: React.FC<QuickActionsCardProps> = ({
   onViewMyPosts,
 }) => {
   return (
-    <div className='bg-white border border-[var(--color-border)] rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]'>
-      <div className='text-[13.5px] font-bold text-[var(--color-foreground)] px-[18px] pt-4 pb-3 border-b border-[var(--color-border)] tracking-tight'>
+    <div className='bg-white rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]'>
+      <div className='text-[18px] font-bold text-(--color-foreground) px-4.5 pt-4 pb-3 border-b border-[#F5E9D3] tracking-tight'>
         Quick Actions
       </div>
 
-      <div className='px-[18px] py-4 flex flex-col gap-2.5'>
-        <p className='text-xs text-[var(--color-text-placeholder)] m-0'>
+      <div className='px-4.5 py-4 flex flex-col gap-2.5'>
+        <p className='text-xs text-(--color-text-placeholder) m-0'>
           Get things done faster with one click.
         </p>
 
@@ -41,7 +41,7 @@ const QuickActionsCard: React.FC<QuickActionsCardProps> = ({
         {/* VIEW MY POSTS */}
         <button
           onClick={onViewMyPosts}
-          className='flex items-center justify-center gap-2 w-full py-[10px] px-4 bg-white hover:bg-[var(--color-hover)] text-[var(--color-text-secondary)] border border-[var(--color-border)] rounded-md text-[13px] font-medium cursor-pointer transition-colors duration-150 font-[var(--font-sans)]'>
+          className='flex items-center justify-center gap-2 w-full py-[10px] px-4 bg-white hover:bg-[var(--color-hover)] text-[#EC6F27] border border-[#EC6F27] rounded-md text-[13px] font-medium cursor-pointer transition-colors duration-150 font-[var(--font-sans)]'>
           <svg
             width='15'
             height='15'
@@ -60,23 +60,9 @@ const QuickActionsCard: React.FC<QuickActionsCardProps> = ({
         </button>
 
         {/* Tip */}
-        <div className='flex items-start gap-1.5 mt-0.5'>
-          <svg
-            width='12'
-            height='12'
-            viewBox='0 0 24 24'
-            fill='none'
-            stroke='var(--color-primary)'
-            strokeWidth='2'
-            className='shrink-0 mt-[1px]'>
-            <circle cx='12' cy='12' r='10' />
-            <line x1='12' y1='8' x2='12' y2='12' />
-            <line x1='12' y1='16' x2='12.01' y2='16' />
-          </svg>
-          <span className='text-[11px] text-[var(--color-text-placeholder)] leading-relaxed'>
-            <strong className='text-[var(--color-primary)] font-semibold'>
-              Tip:
-            </strong>{" "}
+        <div className='flex bg-[#FFF3CD99] px-4 py-1 items-start gap-1.5 mt-0.5'>
+          <span className='text-[11px] text-[#6B7280] leading-relaxed'>
+            <strong className='text-[#4B5563] font-semibold'>Tip:</strong>{" "}
             Posting on the board connects you with verified Errands in your
             area.
           </span>
