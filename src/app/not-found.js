@@ -22,7 +22,7 @@ export default function NotFound() {
       </h2>
 
       <p className='text-text-secondary max-w-md mx-auto mb-10 text-lg leading-relaxed'>
-        Oops! The page you're looking for doesn't exist or has been moved. Don't
+        Oops! The page you&apos;re looking for doesn&apos;t exist or has been moved. Don&apos;t
         worry, even the best Errandrs get lost sometimes.
       </p>
 
