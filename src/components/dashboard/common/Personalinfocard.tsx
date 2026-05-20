@@ -14,7 +14,7 @@ interface InfoRowProps {
 
 const InfoRow: React.FC<InfoRowProps> = ({ icon, label, value, isLast }) => (
   <div
-    className={`flex items-start gap-3 px-4.5 py-2.75 ${!isLast ? "border-b border-(--color-border)" : ""}`}>
+    className={`flex items-start gap-3 px-4.5 py-2.75 ${!isLast ? "border-b border-[#F5E9D3]" : ""}`}>
     <div className='shrink-0 w-10 h-10 bg-[#FFF3CD99] flex items-center font-bold justify-center text-[#EC6F27] '>
       {icon}
     </div>

@@ -23,26 +23,21 @@ const StatRow: React.FC<StatRowProps> = ({
   isLast,
 }) => (
   <div
-    className={`flex items-center justify-between px-[18px] py-3 ${!isLast ? "border-b border-[var(--color-border)]" : ""}`}>
+    className={`flex items-center justify-between px-4.5 py-3 ${!isLast ? "border-b border-[#F5E9D3]" : ""}`}>
     <div className='flex items-center gap-2.5'>
       <div
         className='w-7 h-7 rounded-lg flex items-center justify-center shrink-0'
         style={{ background: iconBg }}>
         {icon}
       </div>
-      <span className='text-[12.5px] font-medium text-[var(--color-text-secondary)]'>
+      <span className='text-[12.5px] font-medium text-(--color-text-secondary)'>
         {label}
       </span>
     </div>
-    {isPill ? (
-      <span className='text-[12px] font-semibold text-[#c47a3a] bg-[#fdf3e8] rounded-full px-3 py-0.5 border border-[1.5px] border-[#e8d8c0]'>
-        {value}
-      </span>
-    ) : (
-      <span className='text-[12.5px] font-semibold text-[var(--color-foreground)]'>
-        {value}
-      </span>
-    )}
+
+    <span className='text-[12px]  text-[#EC6F27] bg-[#fdf3e8] rounded-full px-3 py-0.5 border border-[1.5px] border-[#ec6f27]'>
+      {value}
+    </span>
   </div>
 );
 
@@ -142,8 +137,8 @@ const AccountOverviewCard: React.FC<AccountOverviewCardProps> = ({
   ];
 
   return (
-    <div className='bg-white border border-[var(--color-border)] rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]'>
-      <div className='text-[13.5px] font-bold text-[var(--color-foreground)] px-[18px] pt-4 pb-3 border-b border-[var(--color-border)] tracking-tight'>
+    <div className='bg-white  rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]'>
+      <div className='text-[18px] font-semibold  text-foreground px-4.5 pt-4 pb-3 border-b border-[#F5E9D3] tracking-tight'>
         Account Overview
       </div>
       {stats.map((stat, i) => (
