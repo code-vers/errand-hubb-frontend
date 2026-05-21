@@ -37,7 +37,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const newUser = { email, role };
     setUser(newUser);
     localStorage.setItem('errand_user', JSON.stringify(newUser));
-    router.push('/dashboard');
+    if (role === 'client') {
+      router.push('/dashboard/profile');
+    } else {
+      router.push('/dashboard');
+    }
   }, [router]);
   const logout = useCallback(() => {
     setUser(null);

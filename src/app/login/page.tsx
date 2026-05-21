@@ -11,7 +11,11 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (user) {
-      router.push('/dashboard');
+      if (user.role === 'client') {
+        router.push('/dashboard/profile');
+      } else {
+        router.push('/dashboard');
+      }
     }
   }, [user, router]);
 

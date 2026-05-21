@@ -1,8 +1,9 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import { Briefcase, Users, CheckCircle, Clock } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const StatCard = ({ title, value, icon: Icon, color }: any) => (
   <div className="bg-white p-6 rounded-xl border border-border shadow-sm">
@@ -20,8 +21,15 @@ const StatCard = ({ title, value, icon: Icon, color }: any) => (
 
 const DashboardPage = () => {
   const { user } = useAuth();
+  const router = useRouter();
 
-  if (!user) return null;
+  useEffect(() => {
+    if (user?.role === 'client') {
+      router.push('/dashboard/profile');
+    }
+  }, [user, router]);
+
+  if (!user || user.role === 'client') return null;
 
   return (
     <DashboardContainer>
@@ -33,15 +41,6 @@ const DashboardPage = () => {
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {user.role === 'client' && (
-          <>
-            <StatCard title="Active Errands" value="3" icon={Briefcase} color="bg-blue-50 text-blue-600" />
-            <StatCard title="Pending Offers" value="12" icon={Clock} color="bg-orange-50 text-orange-600" />
-            <StatCard title="Completed" value="45" icon={CheckCircle} color="bg-green-50 text-green-600" />
-            <StatCard title="Total Spent" value="$1,240" icon={Briefcase} color="bg-purple-50 text-purple-600" />
-          </>
-        )}
-
         {user.role === 'errand' && (
           <>
             <StatCard title="Active Tasks" value="2" icon={Briefcase} color="bg-blue-50 text-blue-600" />

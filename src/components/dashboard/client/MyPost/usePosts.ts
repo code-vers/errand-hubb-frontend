@@ -1,8 +1,8 @@
 "use client";
 
-import { PostFilters } from "@/types/post";
+import { ErrandPost, PostFilters } from "@/types/post";
 import { useCallback, useMemo, useState } from "react";
-import { mockPosts, statusCounts } from "./post";
+import { mockPosts, statusCounts as initialStatusCounts } from "./post";
 
 const initialFilters: PostFilters = {
   search: "",
@@ -11,10 +11,11 @@ const initialFilters: PostFilters = {
 };
 
 export function usePosts() {
+  const [allPosts, setAllPosts] = useState<ErrandPost[]>(mockPosts);
   const [filters, setFilters] = useState<PostFilters>(initialFilters);
 
   const filteredPosts = useMemo(() => {
-    let result = [...mockPosts];
+    let result = [...allPosts];
 
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
@@ -32,7 +33,7 @@ export function usePosts() {
     }
 
     return result;
-  }, [filters]);
+  }, [allPosts, filters]);
 
   const itemsPerPage = 6;
   const totalPages = Math.ceil(filteredPosts.length / itemsPerPage);
@@ -40,6 +41,16 @@ export function usePosts() {
     (filters.page - 1) * itemsPerPage,
     filters.page * itemsPerPage,
   );
+
+  const statusCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      All: allPosts.length,
+    };
+    allPosts.forEach((post) => {
+      counts[post.status] = (counts[post.status] || 0) + 1;
+    });
+    return counts;
+  }, [allPosts]);
 
   const updateFilter = useCallback((key: keyof PostFilters, value: any) => {
     setFilters((prev) => ({
@@ -66,6 +77,10 @@ export function usePosts() {
   
   const resetFilters = useCallback(() => setFilters(initialFilters), []);
 
+  const addPost = useCallback((newPost: ErrandPost) => {
+    setAllPosts((prev) => [newPost, ...prev]);
+  }, []);
+
   return {
     posts: paginatedPosts,
     total: filteredPosts.length,
@@ -79,5 +94,6 @@ export function usePosts() {
     setStatus,
     setPage,
     resetFilters,
+    addPost,
   };
 }

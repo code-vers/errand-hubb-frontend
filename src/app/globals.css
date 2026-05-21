@@ -50,7 +50,29 @@
   --color-shadow: #0000001A;
   --color-muted: #62748E;
   
+  /* Status Colors */
+  --color-status-orange: #EC6F27;
+  --color-status-red: #EF4444;
+  --color-status-blue: #3B82F6;
+  --color-status-purple: #A855F7;
+  --color-status-green: #22C55E;
+  --color-status-pink: #EC4899;
+
+  /* Badge Backgrounds (Translucent) */
+  --color-badge-pending: #FFF7ED;
+  --color-badge-asap: #FEF2F2;
+  --color-badge-scheduled: #EFF6FF;
+  --color-badge-progress: #FAF5FF;
+  --color-badge-completed: #F0FDF4;
+  --color-badge-cancelled: #FDF2F2;
+
   --font-sans: var(--font-montserrat), Arial, Helvetica, sans-serif;
+}
+
+@layer components {
+  .status-dot {
+    @apply w-1.5 h-1.5 rounded-full mr-2;
+  }
 }
 
 body {

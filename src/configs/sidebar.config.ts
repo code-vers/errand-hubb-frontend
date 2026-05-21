@@ -17,7 +17,7 @@ export const sidebarConfig: SidebarMenuItem[] = [
     title: "Dashboard",
     path: "/dashboard",
     icon: LayoutDashboard,
-    roles: ["client", "errand", "admin"],
+    roles: ["errand", "admin"],
   },
   {
     title: "Profile",
@@ -39,9 +39,9 @@ export const sidebarConfig: SidebarMenuItem[] = [
   },
   {
     title: "Security",
-    path: "/dashboard/Security",
+    path: "/dashboard/security",
     icon: Briefcase,
-    roles: ["client"],
+    roles: ["client", "errand"],
   },
   {
     title: "User Management",

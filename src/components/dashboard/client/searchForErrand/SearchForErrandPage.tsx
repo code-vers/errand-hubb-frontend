@@ -90,7 +90,7 @@ const SearchForErrandPage = () => {
       <div className='mx-auto flex flex-col gap-3.5'>
         <PageHeader title='Search For Errand' />
 
-        <div className='max-w-6xl mx-auto w-full mt-4'>
+        <div className=' mx-auto w-full mt-4'>
           {/* Search Section */}
           <div className='mb-6'>
             <SearchBar onSearch={setSearch} />
