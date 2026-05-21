@@ -33,7 +33,7 @@ const DashboardNavbar = () => {
             {user?.avatarUrl ? (
               <Image
                 src={user.avatarUrl}
-                alt={user.name ?? "User"}
+                alt={user.name ?? user.email ?? "User"}
                 width={36}
                 height={36}
                 className='w-full h-full object-cover'
@@ -42,7 +42,7 @@ const DashboardNavbar = () => {
               /* Fallback: initials circle */
               <div className='w-full h-full bg-primary flex items-center justify-center'>
                 <span className='text-white text-xs font-bold'>
-                  {user?.name?.charAt(0).toUpperCase() ?? "U"}
+                  {(user?.name ?? user?.email ?? "User")[0]?.toUpperCase() ?? "U"}
                 </span>
               </div>
             )}

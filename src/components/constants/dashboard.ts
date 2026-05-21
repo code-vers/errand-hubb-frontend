@@ -1,4 +1,6 @@
 // constants/dashboard.ts
+import type { TaskStatus } from "@/types/dashboard";
+
 export const STATUS_STYLES: Record<
   TaskStatus,
   { bg: string; text: string; border?: string }

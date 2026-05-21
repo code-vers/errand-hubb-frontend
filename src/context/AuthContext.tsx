@@ -3,7 +3,12 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { UserRole } from '@/types/dashboard';
 import { useRouter } from 'next/navigation';
 
-interface User { email: string; role: UserRole; }
+interface User {
+  email: string;
+  role: UserRole;
+  name?: string;
+  avatarUrl?: string;
+}
 interface AuthContextType {
   user: User | null;
   login: (email: string) => void;

@@ -11,10 +11,9 @@ interface BadgeProps {
 const variantStyles = {
   asap: "bg-[var(--color-badge-asap)] text-[var(--color-status-red)]",
   pending: "bg-[var(--color-badge-pending)] text-[var(--color-status-orange)]",
-  scheduled:
-    "bg-[var(--color-badge-scheduled)] text-[var(--color-status-blue)]",
-  completed: "bg-gray-100 text-[var(--color-muted)] border border-gray-200",
-  default: "bg-gray-100 text-gray-600",
+  scheduled: "bg-[var(--color-badge-scheduled)] text-[var(--color-status-blue)]",
+  completed: "bg-[var(--color-badge-completed)] text-[var(--color-status-green)] border border-[#f5ebd8]",
+  default: "bg-surface-dim text-muted",
 };
 
 export const Badge: FC<BadgeProps> = ({

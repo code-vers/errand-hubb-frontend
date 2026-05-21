@@ -2,7 +2,7 @@
 
 :root {
   /* Brand Colors */
-  --color-primary: #f47a22; /* F47A22 */
+  --color-primary: #f47a22;
   --color-primary-dark: #bb4d00;
   --color-secondary: #063b5c;
   --color-background: #ffffff;
@@ -27,28 +27,6 @@
   /* Utils */
   --color-shadow: #0000001a;
   --color-muted: #62748e;
-}
-
-@theme inline {
-  --color-primary: #f47a22;
-  --color-primary-dark: #bb4d00;
-  --color-secondary: #063b5c;
-  --color-background: #ffffff;
-  --color-foreground: #111111;
-  --color-text-secondary: #4b5563;
-  --color-text-placeholder: #6b7280;
-  --color-success: #16a34a;
-  --color-error: #d93025;
-  --color-surface-dim: #f4f4f4;
-  --color-border: #e2e8f0;
-  --color-hover: #f1f5f9;
-  --color-warning-light: #fff3cd;
-  --color-warning-bg: #ffe6b3;
-  --color-warning-border: #fee685;
-  --color-error-light: #ffe2e2;
-  --color-error-border: #ffc9c9;
-  --color-shadow: #0000001a;
-  --color-muted: #62748e;
 
   /* Status Colors */
   --color-status-orange: #ec6f27;
@@ -65,6 +43,44 @@
   --color-badge-progress: #faf5ff;
   --color-badge-completed: #f0fdf4;
   --color-badge-cancelled: #fdf2f2;
+}
+
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-primary-dark: var(--color-primary-dark);
+  --color-secondary: var(--color-secondary);
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-placeholder: var(--color-text-placeholder);
+  --color-success: var(--color-success);
+  --color-error: var(--color-error);
+  --color-surface-dim: var(--color-surface-dim);
+  --color-border: var(--color-border);
+  --color-hover: var(--color-hover);
+  --color-warning-light: var(--color-warning-light);
+  --color-warning-bg: var(--color-warning-bg);
+  --color-warning-border: var(--color-warning-border);
+  --color-error-light: var(--color-error-light);
+  --color-error-border: var(--color-error-border);
+  --color-shadow: var(--color-shadow);
+  --color-muted: var(--color-muted);
+
+  /* Status Colors Mapping */
+  --color-status-orange: var(--color-status-orange);
+  --color-status-red: var(--color-status-red);
+  --color-status-blue: var(--color-status-blue);
+  --color-status-purple: var(--color-status-purple);
+  --color-status-green: var(--color-status-green);
+  --color-status-pink: var(--color-status-pink);
+
+  /* Badge Backgrounds Mapping */
+  --color-badge-pending: var(--color-badge-pending);
+  --color-badge-asap: var(--color-badge-asap);
+  --color-badge-scheduled: var(--color-badge-scheduled);
+  --color-badge-progress: var(--color-badge-progress);
+  --color-badge-completed: var(--color-badge-completed);
+  --color-badge-cancelled: var(--color-badge-cancelled);
 
   --font-sans: var(--font-montserrat), Arial, Helvetica, sans-serif;
 }
@@ -81,9 +97,7 @@ body {
   font-family: var(--font-sans);
 }
 
-/* Add to your global.css */
 @layer components {
-  /* Toggle Switch Styles - Add these to your existing global.css */
   .toggle-checkbox:checked {
     right: 0;
     border-color: var(--color-primary);
@@ -122,7 +136,6 @@ body {
     transform: translateX(1.625rem);
   }
 
-  /* Custom input focus color */
   input:focus {
     outline: none;
     border-color: var(--color-primary) !important;
