@@ -75,24 +75,24 @@ export const sidebarConfig: SidebarMenuItem[] = [
     icon: MessageSquare,
     roles: ["errand", "admin"],
   },
-  {
-    title: "Payments",
-    path: "/dashboard/payments",
-    icon: CreditCard,
-    roles: ["errand", "admin"],
-  },
+  // {
+  //   title: "Payments",
+  //   path: "/dashboard/payments",
+  //   icon: CreditCard,
+  //   roles: ["errand", "admin"],
+  // },
   {
     title: "Profile",
     path: "/dashboard/profile",
     icon: User,
     roles: ["errand", "admin"],
   },
-  {
-    title: "Settings",
-    path: "/dashboard/settings",
-    icon: Settings,
-    roles: ["errand", "admin"],
-  },
+  // {
+  //   title: "Settings",
+  //   path: "/dashboard/settings",
+  //   icon: Settings,
+  //   roles: ["errand", "admin"],
+  // },
 ];
 
 export const getSidebarItemsByRole = (role: UserRole): SidebarMenuItem[] => {
