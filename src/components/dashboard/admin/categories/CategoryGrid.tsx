@@ -1,7 +1,7 @@
-import React from "react";
 import { Category } from "@/types/categories";
-import CategoryCard from "./CategoryCard";
 import { FolderX } from "lucide-react";
+import React from "react";
+import CategoryCard from "./CategoryCard";
 
 interface CategoryGridProps {
   categories: Category[];
@@ -49,7 +49,10 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({
   if (categories.length === 0) {
     return (
       <div className='text-center py-20 bg-white rounded-[32px] border border-dashed border-gray-200'>
-        <FolderX className='mx-auto h-16 w-16 text-muted/30 mb-4' strokeWidth={1} />
+        <FolderX
+          className='mx-auto h-16 w-16 text-muted/30 mb-4'
+          strokeWidth={1}
+        />
         <h3 className='text-xl font-bold text-foreground'>No Categories</h3>
         <p className='mt-2 text-muted font-medium'>{emptyStateMessage}</p>
       </div>
