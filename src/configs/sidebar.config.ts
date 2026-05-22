@@ -48,20 +48,20 @@ export const sidebarConfig: SidebarMenuItem[] = [
     path: "/dashboard/users",
     icon: Users,
     roles: ["admin"],
-    children: [
-      {
-        title: "Clients",
-        path: "/dashboard/users/clients",
-        icon: User,
-        roles: ["admin"],
-      },
-      {
-        title: "Errands",
-        path: "/dashboard/users/errands",
-        icon: User,
-        roles: ["admin"],
-      },
-    ],
+    // children: [
+    //   {
+    //     title: "Clients",
+    //     path: "/dashboard/users/clients",
+    //     icon: User,
+    //     roles: ["admin"],
+    //   },
+    //   {
+    //     title: "Errands",
+    //     path: "/dashboard/users/errands",
+    //     icon: User,
+    //     roles: ["admin"],
+    //   },
+    // ],
   },
   {
     title: "System Logs",

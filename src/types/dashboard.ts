@@ -44,3 +44,46 @@ export interface DashboardData {
   tasks: Task[];
   totalPosts: number;
 }
+
+// admin
+
+export interface StatCardData {
+  id: string;
+  icon: string;
+  label: string;
+  value: number;
+  trend: {
+    direction: "up" | "down";
+    percentage: number;
+    comparisonText: string;
+  };
+  iconBgColor: string;
+  iconColor: string;
+  valueColor: string;
+}
+
+export interface ActivityItem {
+  id: string;
+  user: {
+    initials: string;
+    name: string;
+    avatarColor: string;
+  };
+  action: string;
+  status: {
+    label: string;
+    type: "new" | "completed" | "flagged" | "approved" | "report" | "paused";
+  };
+  timestamp: string;
+  timeAgo: string;
+}
+
+export interface GrowthData {
+  month: string;
+  value: number;
+}
+
+export interface WeeklyActivity {
+  day: string;
+  value: number;
+}
