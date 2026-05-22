@@ -1,10 +1,10 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
+import { Bell } from "lucide-react";
 import Image from "next/image";
-import logo from "../../../public/logo2.svg";
-import { Bell, Plus } from "lucide-react";
 import Link from "next/link";
+import logo from "../../../public/logo2.svg";
 
 const DashboardNavbar = () => {
   const { user } = useAuth();
@@ -42,7 +42,8 @@ const DashboardNavbar = () => {
               /* Fallback: initials circle */
               <div className='w-full h-full bg-primary flex items-center justify-center'>
                 <span className='text-white text-xs font-bold'>
-                  {(user?.name ?? user?.email ?? "User")[0]?.toUpperCase() ?? "U"}
+                  {(user?.name ?? user?.email ?? "User")[0]?.toUpperCase() ??
+                    "U"}
                 </span>
               </div>
             )}
