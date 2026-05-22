@@ -1,6 +1,6 @@
 "use client";
 
-import { ErrandPost, PostStatus, PostType, ServiceType } from "@/types/post";
+import { ErrandPost, ErrandStatus, PostType, ServiceType } from "@/types/post";
 import {
   Calendar,
   Clock,
@@ -32,7 +32,7 @@ const POST_TYPES: PostType[] = [
 
 const SERVICE_TYPES: ServiceType[] = ["Pickup", "Delivery", "Both"];
 
-const STATUS_OPTIONS: PostStatus[] = [
+const STATUS_OPTIONS: ErrandStatus[] = [
   "Pending Pickup",
   "In Progress",
   "Completed",
@@ -83,7 +83,7 @@ export default function PostModal({
     time: "",
     location: "",
     serviceType: "Delivery" as ServiceType,
-    status: "Pending Pickup" as PostStatus,
+    status: "Pending Pickup" as ErrandStatus,
   });
 
   if (!isOpen) return null;
@@ -246,7 +246,7 @@ export default function PostModal({
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      status: e.target.value as PostStatus,
+                      status: e.target.value as ErrandStatus,
                     })
                   }>
                   {STATUS_OPTIONS.map((s) => (

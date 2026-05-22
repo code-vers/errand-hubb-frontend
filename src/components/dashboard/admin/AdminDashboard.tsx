@@ -6,7 +6,7 @@ import {
   ActivityItem,
   GrowthData,
   WeeklyActivity,
-} from "./types";
+} from "@/types/dashboard";
 import StatCard from "./StatCard";
 import UserJobGrowthChart from "./UserJobGrowthChart";
 import WeeklyErrandActivity from "./WeeklyErrandActivity";

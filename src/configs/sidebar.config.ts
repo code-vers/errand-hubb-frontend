@@ -5,6 +5,7 @@ import {
   History,
   LayoutDashboard,
   MessageSquare,
+  MessageSquareText,
   Search,
   Settings,
   ShieldAlert,
@@ -64,11 +65,24 @@ export const sidebarConfig: SidebarMenuItem[] = [
     // ],
   },
   {
+    title: "Post Management",
+    path: "/dashboard/post-management",
+    icon: MessageSquareText,
+    roles: ["admin"],
+  },
+  {
+    title: "Category",
+    path: "/dashboard/category",
+    icon: LayoutDashboard,
+    roles: ["admin"],
+  },
+  {
     title: "System Logs",
     path: "/dashboard/logs",
     icon: ShieldAlert,
     roles: ["admin"],
   },
+
   {
     title: "Messages",
     path: "/dashboard/messages",
