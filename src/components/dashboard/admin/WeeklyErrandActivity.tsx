@@ -77,8 +77,8 @@ const WeeklyErrandActivity = ({
             grid: {
               display: true,
               color: "rgba(0,0,0,0.05)",
-              drawBorder: false,
             },
+            border: { display: false },
           },
         },
       },

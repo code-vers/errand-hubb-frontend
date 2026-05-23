@@ -70,7 +70,6 @@ const UserJobGrowthChart = ({
             max: 1600,
             grid: {
               color: "rgba(0,0,0,0.05)",
-              drawBorder: false,
             },
             border: { display: false, dash: [4, 4] },
             ticks: {
