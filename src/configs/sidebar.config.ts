@@ -77,8 +77,8 @@ export const sidebarConfig: SidebarMenuItem[] = [
     roles: ["admin"],
   },
   {
-    title: "System Logs",
-    path: "/dashboard/logs",
+    title: "System Settings",
+    path: "/dashboard/system-settings",
     icon: ShieldAlert,
     roles: ["admin"],
   },

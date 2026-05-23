@@ -1,139 +1,173 @@
-import React from "react";
-import { WeeklyActivity } from "@/types/dashboard";
+import { useEffect, useRef } from "react";
+import { Chart, registerables } from "chart.js";
 
-interface WeeklyErrandActivityProps {
-  data: WeeklyActivity[];
-  title?: string;
-  subtitle?: string;
-}
+Chart.register(...registerables);
 
-const WeeklyErrandActivity: React.FC<WeeklyErrandActivityProps> = ({
-  data,
+const defaultData = [
+  { day: "Mon", value: 150 },
+  { day: "Tue", value: 210 },
+  { day: "Wed", value: 180 },
+  { day: "Thu", value: 245 },
+  { day: "Fri", value: 330 },
+  { day: "Sat", value: 310 },
+  { day: "Sun", value: 210 },
+];
+
+const WeeklyErrandActivity = ({
+  data = defaultData,
   title = "Weekly Errand Activity",
   subtitle = "This week",
 }) => {
-  const yAxisLabels = [320, 240, 160, 80, 0];
+  const canvasRef = useRef(null);
+  const chartRef = useRef(null);
 
-  const maxValue = Math.max(...data.map((item) => item.value));
-  const minValue = Math.min(...data.map((item) => item.value));
+  useEffect(() => {
+    if (!canvasRef.current) return;
 
-  const generateSmoothPath = (): string => {
-    if (data.length === 0) return "";
+    if (chartRef.current) {
+      chartRef.current.destroy();
+    }
 
-    const width = 100;
-    const height = 100;
-    const padding = 5;
-    const usableHeight = height - 2 * padding;
+    const ctx = canvasRef.current.getContext("2d");
 
-    const points = data.map((item, index) => {
-      const x = (index / (data.length - 1)) * width;
-      const normalizedValue =
-        maxValue === minValue
-          ? 0.5
-          : (item.value - minValue) / (maxValue - minValue);
-      const y = height - padding - (normalizedValue * usableHeight + padding);
-      return `${x},${y}`;
+    const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+    gradient.addColorStop(0, "rgba(244, 134, 26, 0.20)");
+    gradient.addColorStop(1, "rgba(244, 134, 26, 0.00)");
+
+    chartRef.current = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: data.map((d) => d.day),
+        datasets: [
+          {
+            data: data.map((d) => d.value),
+            borderColor: "#F4861A",
+            borderWidth: 2.5,
+            pointBackgroundColor: "#F4861A",
+            pointBorderColor: "#ffffff",
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            fill: true,
+            backgroundColor: gradient,
+            tension: 0.4,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.label}: ${ctx.parsed.y}`,
+            },
+          },
+        },
+        scales: {
+          x: {
+            display: false,
+            grid: { display: false },
+          },
+          y: {
+            display: false,
+            min: 0,
+            max: 400,
+            grid: {
+              display: true,
+              color: "rgba(0,0,0,0.05)",
+              drawBorder: false,
+            },
+          },
+        },
+      },
     });
 
-    return points.join(" ");
-  };
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+      }
+    };
+  }, [data]);
+
+  const yLabels = [320, 240, 160, 80, 0];
 
   return (
-    <div className='bg-white rounded-xl p-6 shadow-sm border border-border'>
-      <div className='flex justify-between items-center mb-6'>
-        <h2 className='text-lg font-semibold text-foreground'>{title}</h2>
-        <span className='text-sm text-muted'>{subtitle}</span>
-      </div>
-
-      <div className='h-48 relative pl-8 pt-2'>
-        {/* Y-axis labels */}
-        <div className='absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-muted py-2'>
-          {yAxisLabels.map((label, index) => (
-            <span key={index}>{label}</span>
-          ))}
+    <div style={{}}>
+      <div
+        style={{
+          backgroundColor: "#ffffff",
+          borderRadius: "20px",
+          padding: "28px 32px 20px 28px",
+          boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
+          width: "100%",
+          boxSizing: "border-box",
+        }}>
+        {/* Header */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "24px",
+          }}>
+          <h2
+            style={{
+              fontSize: "18px",
+              fontWeight: "700",
+              color: "#111111",
+              margin: 0,
+            }}>
+            {title}
+          </h2>
+          <span style={{ fontSize: "14px", color: "#999999" }}>{subtitle}</span>
         </div>
 
-        {/* Line Chart SVG */}
-        <svg
-          className='w-full h-full overflow-visible'
-          preserveAspectRatio='none'
-          viewBox='0 0 100 100'>
-          {/* Grid lines */}
-          {[0, 25, 50, 75, 100].map((y, index) => (
-            <line
-              key={index}
-              x1='0'
-              y1={y}
-              x2='100'
-              y2={y}
-              stroke='#e5e7eb'
-              strokeWidth='0.5'
-              strokeDasharray='2,2'
-            />
-          ))}
+        {/* Chart area */}
+        <div style={{ display: "flex", gap: "0" }}>
+          {/* Y-axis labels */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              paddingBottom: "28px",
+              marginRight: "12px",
+              textAlign: "right",
+              minWidth: "32px",
+            }}>
+            {yLabels.map((label) => (
+              <span
+                key={label}
+                style={{ fontSize: "12px", color: "#aaaaaa", lineHeight: 1 }}>
+                {label}
+              </span>
+            ))}
+          </div>
 
-          {/* Line path */}
-          <polyline
-            fill='none'
-            points={generateSmoothPath()}
-            stroke='var(--color-primary)'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-
-          {/* Area under the line */}
-          <polygon
-            fill='url(#gradient)'
-            points={`${generateSmoothPath()} 100,100 100,0 0,0`}
-            opacity='0.1'
-          />
-
-          {/* Gradient definition */}
-          <defs>
-            <linearGradient id='gradient' x1='0%' y1='0%' x2='0%' y2='100%'>
-              <stop
-                offset='0%'
-                stopColor='var(--color-primary)'
-                stopOpacity='0.3'
-              />
-              <stop
-                offset='100%'
-                stopColor='var(--color-primary)'
-                stopOpacity='0'
-              />
-            </linearGradient>
-          </defs>
-
-          {/* Data points */}
-          {data.map((item, index) => {
-            const x = (index / (data.length - 1)) * 100;
-            const normalizedValue =
-              maxValue === minValue
-                ? 0.5
-                : (item.value - minValue) / (maxValue - minValue);
-            const y = 95 - (normalizedValue * 90 + 5);
-
-            return (
-              <g key={index}>
-                <circle
-                  cx={x}
-                  cy={y}
-                  r='2.5'
-                  fill='var(--color-primary)'
-                  className='hover:r-3 transition-all duration-200'
-                />
-                <title>{`${item.day}: ${item.value}`}</title>
-              </g>
-            );
-          })}
-        </svg>
-      </div>
-
-      <div className='flex justify-between pl-8 pr-2 mt-2 text-xs text-muted'>
-        {data.map((item, index) => (
-          <span key={index}>{item.day}</span>
-        ))}
+          {/* Canvas + X labels */}
+          <div style={{ flex: 1 }}>
+            <div style={{ position: "relative", height: "180px" }}>
+              <canvas ref={canvasRef} />
+            </div>
+            {/* X-axis labels */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: "8px",
+              }}>
+              {data.map((item) => (
+                <span
+                  key={item.day}
+                  style={{ fontSize: "12px", color: "#aaaaaa" }}>
+                  {item.day}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

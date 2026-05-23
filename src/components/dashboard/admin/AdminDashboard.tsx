@@ -180,7 +180,7 @@ const AdminDashboard: React.FC = () => {
     <div className='bg-amber-100 p-6 font-sans text-foreground'>
       <div className=' mx-auto space-y-6'>
         {/* Stats Grid */}
-        <section className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4'>
+        <section className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4'>
           {statsData.map((stat) => (
             <StatCard key={stat.id} data={stat} />
           ))}

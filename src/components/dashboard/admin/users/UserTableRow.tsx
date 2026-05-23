@@ -7,9 +7,15 @@ interface UserTableRowProps {
   onViewUser: (user: User) => void;
 }
 
-const UserTableRow: React.FC<UserTableRowProps> = ({ user, onAction, onViewUser }) => {
+const UserTableRow: React.FC<UserTableRowProps> = ({
+  user,
+  onAction,
+  onViewUser,
+}) => {
   const getStatusStyle = (status: User["status"]) => {
-    return status === "active" ? "text-success bg-green-50" : "text-muted bg-gray-50";
+    return status === "active"
+      ? "text-success bg-green-50"
+      : "text-muted bg-gray-50";
   };
 
   const getStatusDot = (status: User["status"]) => {
@@ -54,17 +60,15 @@ const UserTableRow: React.FC<UserTableRowProps> = ({ user, onAction, onViewUser 
       <td className='px-6 py-4 whitespace-nowrap'>
         <div className='flex items-center'>
           <div
-            className='flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:opacity-80 transition-opacity'
+            className='shrink-0 h-8 w-8 rounded-full flex items-center justify-center text-white text-xs font-bold cursor-pointer hover:opacity-80 transition-opacity'
             style={{ backgroundColor: user.avatarColor }}
-            onClick={() => onViewUser(user)}
-          >
+            onClick={() => onViewUser(user)}>
             {user.initials}
           </div>
           <div className='ml-4'>
-            <button 
+            <button
               onClick={() => onViewUser(user)}
-              className='text-sm font-medium text-foreground hover:text-primary transition-colors focus:outline-none'
-            >
+              className='text-sm font-medium text-foreground hover:text-primary transition-colors focus:outline-none'>
               {user.name}
             </button>
           </div>
@@ -84,8 +88,9 @@ const UserTableRow: React.FC<UserTableRowProps> = ({ user, onAction, onViewUser 
       {/* Status */}
       <td className='px-6 py-4 whitespace-nowrap'>
         <span
-          className={`px-3 py-1 inline-flex items-center text-[10px] leading-4 font-bold rounded-full border border-current ${getStatusStyle(user.status)}`}>
-          <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${getStatusDot(user.status)}`}></span>
+          className={`px-3 py-1 inline-flex items-center text-[10px] leading-4 font-bold rounded-full border border-[#f9fafb] ${getStatusStyle(user.status)}`}>
+          <span
+            className={`w-1.5 h-1.5 rounded-full mr-1.5 ${getStatusDot(user.status)}`}></span>
           {user.status.toUpperCase()}
         </span>
       </td>

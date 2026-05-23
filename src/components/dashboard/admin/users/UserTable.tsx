@@ -56,8 +56,8 @@ const UserTable: React.FC<UserTableProps> = ({
   return (
     <div className='bg-white shadow rounded-lg overflow-hidden'>
       {/* Card Header */}
-      <div className='px-6 py-5 border-b border-border'>
-        <h2 className='text-xl font-bold text-foreground flex items-center gap-2'>
+      <div className='px-6 py-5 border-b border-[#f3f4f6]'>
+        <h2 className='text-[18px] font-bold text-foreground flex items-center gap-2'>
           Clients
           <span className='text-muted font-normal text-lg'>
             ({users.length})
@@ -73,7 +73,7 @@ const UserTable: React.FC<UserTableProps> = ({
         </div>
       ) : (
         <div className='overflow-x-auto'>
-          <table className='min-w-full divide-y divide-border'>
+          <table className='min-w-full '>
             {/* Table Head */}
             <thead className='bg-gray-50/50'>
               <tr>

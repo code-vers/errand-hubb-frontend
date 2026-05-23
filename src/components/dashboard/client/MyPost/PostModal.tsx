@@ -403,7 +403,7 @@ function Label({ children }: { children: React.ReactNode }) {
         fontWeight: 700,
         letterSpacing: "0.08em",
         textTransform: "uppercase",
-        color: "#aaa",
+        color: "#222222",
       }}>
       {children}
     </p>

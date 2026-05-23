@@ -21,9 +21,9 @@ const UserSearchFilter: React.FC<SearchFilterProps> = ({
   return (
     <section className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4'>
       {/* Search Input */}
-      <div className='relative w-full sm:max-w-xs'>
+      <div className='relative w-full sm:max-w-[280px]'>
         <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
-          <Search className='h-5 w-5 text-primary' strokeWidth={2} />
+          <Search className='h-5 w-5 text-[#EC6F27]' strokeWidth={2} />
         </div>
         <input
           id='user-search'
@@ -32,7 +32,7 @@ const UserSearchFilter: React.FC<SearchFilterProps> = ({
           value={searchTerm}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          className='block w-full pl-10 pr-3 py-2 border border-primary/30 rounded-md leading-5 bg-white placeholder-muted focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm transition-colors duration-200'
+          className='block w-full pl-10 pr-3 py-2 border border-[#EC6F27] rounded-md leading-5 focus:outline-none placeholder:text-[#EC6F27] focus:ring-1 focus:ring-primary focus:border-primary sm:text-sm transition-colors duration-200'
           placeholder='Search clients...'
           aria-label='Search clients'
         />
@@ -50,9 +50,12 @@ const UserSearchFilter: React.FC<SearchFilterProps> = ({
       <button
         type='button'
         onClick={onFilterClick}
-        className='inline-flex items-center px-4 py-2 border border-primary/30 rounded-md shadow-sm text-sm font-medium text-primary bg-white hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200'
+        className='inline-flex items-center px-4 py-2 border border-[#EC6F27] rounded-md shadow-sm text-sm font-medium  text-[#EC6F27] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors duration-200'
         aria-label={`Filter users${activeFilters > 0 ? ` (${activeFilters} active)` : ""}`}>
-        <Filter className='-ml-1 mr-2 h-5 w-5 text-orange-400' strokeWidth={2} />
+        <Filter
+          className='-ml-1 mr-2 h-5 w-5 text-orange-400'
+          strokeWidth={2}
+        />
         Filter
         {activeFilters > 0 && (
           <span className='ml-2 bg-primary text-white text-xs rounded-full px-2 py-0.5'>
