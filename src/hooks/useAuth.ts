@@ -2,15 +2,17 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authService } from '@/services/auth.service';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 
 const handleApiError = (error: any) => {
-  if (error.errors && Array.isArray(error.errors)) {
+  const responseData = error.response?.data;
+  if (responseData?.errors && Array.isArray(responseData.errors)) {
     // If we have specific field errors, show them specifically
-    error.errors.forEach((err: any) => {
+    responseData.errors.forEach((err: any) => {
       toast.error(`${err.property}: ${err.message}`);
     });
   } else {
-    toast.error(error.message || 'Action failed');
+    toast.error(responseData?.message || error.message || 'Action failed');
   }
 };
 
@@ -43,13 +45,17 @@ export const useRegisterErrand = () => {
 export const useLogin = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { login } = useAuth();
   
   return useMutation({
     mutationFn: (credentials: any) => authService.login(credentials),
     onSuccess: (response: any) => {
+      const userData = response.data.user;
       toast.success('Login successful!');
-      queryClient.setQueryData(['user'], response.data.user);
-      router.push('/dashboard');
+      
+      // Update both React Query and AuthContext
+      queryClient.setQueryData(['user'], userData);
+      login(userData); // This also handles redirection
     },
     onError: handleApiError,
   });
@@ -58,13 +64,14 @@ export const useLogin = () => {
 export const useLogout = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { logout } = useAuth();
   
   return useMutation({
     mutationFn: () => authService.logout(),
     onSuccess: () => {
       toast.success('Logged out');
       queryClient.setQueryData(['user'], null);
-      router.push('/');
+      logout();
     },
     onError: handleApiError,
   });
