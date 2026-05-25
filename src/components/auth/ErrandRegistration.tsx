@@ -340,7 +340,7 @@ const ErrandRegistrationPage = () => {
                 ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
                   "var(--color-primary)")
               }>
-              Create ErrandR Profile — $10/Mo
+              Create ErrandR Profile — $5/Mo
             </button>
           </div>
         </form>

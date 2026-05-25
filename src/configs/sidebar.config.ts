@@ -77,12 +77,23 @@ export const sidebarConfig: SidebarMenuItem[] = [
     roles: ["admin"],
   },
   {
+    title: "Subscription Management",
+    path: "/dashboard/subscription-management",
+    icon: CreditCard,
+    roles: ["admin"],
+  },
+  {
     title: "System Settings",
     path: "/dashboard/system-settings",
     icon: ShieldAlert,
     roles: ["admin"],
   },
-
+  {
+    title: "Subscription",
+    path: "/dashboard/subscription",
+    icon: CreditCard,
+    roles: ["errand"],
+  },
   {
     title: "Messages",
     path: "/dashboard/messages",
