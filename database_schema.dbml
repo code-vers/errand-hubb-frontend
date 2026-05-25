@@ -1,0 +1,256 @@
+// Errand Hubb - Database Schema (DBML)
+// Copy this content to https://dbdiagram.io/ to visualize
+
+// --- Enums ---
+
+Enum user_role {
+  admin
+  client
+  errand // Service Provider / ErrandR
+}
+
+Enum user_status {
+  active
+  deactivated
+  pending
+  
+
+Enum post_status {
+  "Pending Pickup"
+  ASAP
+  Scheduled
+  "In Progress"
+  Completed
+  Cancelled
+}
+
+Enum service_type {
+  Delivery
+  Pickup
+  Both
+}
+
+Enum subscription_status {
+  active
+  expired
+  pending
+  cancelled
+}
+
+Enum payment_status {
+  succeeded
+  failed
+  pending
+}
+
+Enum application_status {
+  applied
+  rejected
+  withdrawn
+  hired
+}
+
+Enum visibility_status {
+  public
+  private
+}
+
+Enum category_status {
+  active
+  inactive
+}
+
+Enum message_type {
+  text
+  image
+  system
+}
+
+Enum notification_type {
+  info
+  success
+  warning
+  error
+  job_update
+  message
+}
+
+// --- Tables ---
+
+Table users {
+  id uuid [pk]
+  first_name varchar
+  last_name varchar
+  email varchar [unique]
+  password varchar
+  role user_role
+  status user_status
+  profile_image varchar [note: 'Main avatar image']
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table profiles {
+  id uuid [pk]
+  user_id uuid [ref: - users.id]
+  bio text
+  phone varchar
+  city varchar
+  state varchar
+  location varchar
+  time_zone varchar
+  preferred_contact varchar
+  total_earnings decimal(10,2) [default: 0.0]
+  jobs_completed integer [default: 0]
+  visibility visibility_status [default: 'public']
+  rate_per_hour decimal(10,2)
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table profile_images {
+  id uuid [pk]
+  profile_id uuid [ref: > profiles.id]
+  image_url varchar
+  created_at timestamp [default: `now()`]
+}
+
+Table categories {
+  id uuid [pk]
+  name varchar
+  description text
+  emoji varchar
+  status category_status [default: 'active']
+  icon_bg_color varchar
+  created_at timestamp [default: `now()`]
+}
+
+Table posts {
+  id uuid [pk]
+  client_id uuid [ref: > users.id]
+  category_id uuid [ref: > categories.id]
+  title varchar
+  description text
+  budget decimal(10,2)
+  location varchar
+  service_type service_type
+  status post_status
+  date_needed date
+  time_needed varchar
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table post_images {
+  id uuid [pk]
+  post_id uuid [ref: > posts.id]
+  image_url varchar
+  created_at timestamp [default: `now()`]
+}
+
+Table job_applications {
+  id uuid [pk]
+  post_id uuid [ref: > posts.id]
+  errandr_id uuid [ref: > users.id]
+  status application_status
+  bid_amount decimal(10,2)
+  message text
+  created_at timestamp [default: `now()`]
+}
+
+Table ratings {
+  id uuid [pk]
+  reviewer_id uuid [ref: > users.id]
+  reviewee_id uuid [ref: > users.id]
+  post_id uuid [ref: > posts.id]
+  rating_value integer [note: '1 to 5']
+  comment text
+  created_at timestamp [default: `now()`]
+}
+
+Table subscriptions {
+  id uuid [pk]
+  errandr_id uuid [ref: > users.id]
+  plan_name varchar [default: 'Pro Plan']
+  status subscription_status
+  amount decimal(10,2) [default: 5.00]
+  start_date timestamp
+  end_date timestamp
+  stripe_subscription_id varchar
+  stripe_customer_id varchar
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table payments {
+  id uuid [pk]
+  user_id uuid [ref: > users.id]
+  subscription_id uuid [ref: > subscriptions.id]
+  amount decimal(10,2)
+  currency varchar [default: 'USD']
+  payment_method varchar
+  status payment_status
+  stripe_payment_intent_id varchar
+  created_at timestamp [default: `now()`]
+}
+
+Table conversations {
+  id uuid [pk]
+  post_id uuid [ref: > posts.id]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table conversation_participants {
+  id uuid [pk]
+  conversation_id uuid [ref: > conversations.id]
+  user_id uuid [ref: > users.id]
+  joined_at timestamp [default: `now()`]
+  last_read_at timestamp
+}
+
+Table messages {
+  id uuid [pk]
+  conversation_id uuid [ref: > conversations.id]
+  sender_id uuid [ref: > users.id]
+  content text
+  message_type message_type [default: 'text']
+  is_edited boolean [default: false]
+  created_at timestamp [default: `now()`]
+}
+
+Table notifications {
+  id uuid [pk]
+  user_id uuid [ref: > users.id]
+  title varchar
+  message text
+  type notification_type
+  is_read boolean [default: false]
+  link_url varchar [note: 'Optional link to specific page']
+  created_at timestamp [default: `now()`]
+}
+
+Table login_activities {
+  id uuid [pk]
+  user_id uuid [ref: > users.id]
+  ip_address varchar
+  user_agent text
+  status varchar [note: 'success, failed']
+  created_at timestamp [default: `now()`]
+}
+
+Table user_settings {
+  id uuid [pk]
+  user_id uuid [ref: - users.id]
+  email_notifications boolean [default: true]
+  sms_notifications boolean [default: true]
+  push_notifications boolean [default: true]
+  updated_at timestamp [default: `now()`]
+}
+
+Table errandr_services {
+  id uuid [pk]
+  errandr_id uuid [ref: > users.id]
+  service_name varchar
+  created_at timestamp [default: `now()`]
+}

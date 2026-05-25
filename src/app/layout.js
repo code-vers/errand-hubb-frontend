@@ -4,8 +4,8 @@ import { Montserrat } from "next/font/google";
 import Footer from "../components/website/Footer";
 import Header from "../components/website/Header";
 import "./globals.css";
-import { AuthProvider } from "@/context/AuthContext";
 import { usePathname } from "next/navigation";
+import Providers from "@/components/common/Providers";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -29,9 +29,9 @@ function RootLayoutContent({ children }) {
 export default function RootLayout({ children }) {
   return (
     <html lang='en' className="h-full antialiased">
-      <AuthProvider>
+      <Providers>
         <RootLayoutContent>{children}</RootLayoutContent>
-      </AuthProvider>
+      </Providers>
     </html>
   );
 }

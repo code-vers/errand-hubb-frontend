@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import { Upload } from "lucide-react";
+import { useRegisterClient } from "@/hooks/useAuth";
 
 const ClientRegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -13,14 +15,34 @@ const ClientRegistrationPage = () => {
     password: "",
     confirmPassword: "",
   });
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const { mutate: register, isPending } = useRegisterClient();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setProfileImage(e.target.files[0]);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+    
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword, ...dataToSubmit } = formData;
+    
+    // In a real app with Multer, we would use FormData here
+    // For now, sending as JSON as per backend DTO
+    register(dataToSubmit);
   };
 
   const inputClass =
@@ -50,6 +72,37 @@ const ClientRegistrationPage = () => {
         </header>
 
         <form onSubmit={handleSubmit} className='space-y-4'>
+          {/* Profile Photo Upload */}
+          <div className='flex flex-col items-center mb-6'>
+            <div 
+              onClick={() => fileInputRef.current?.click()}
+              className='relative w-24 h-24 rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50 overflow-hidden'
+            >
+              {profileImage ? (
+                <img src={URL.createObjectURL(profileImage)} alt="profile" className='w-full h-full object-cover' />
+              ) : (
+                <Upload className='w-8 h-8 text-gray-400' />
+              )}
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileChange} 
+                className='hidden' 
+                accept="image/*"
+              />
+            </div>
+            <p className='text-[10px] font-bold text-muted uppercase mt-2 tracking-widest'>Profile Photo (Optional)</p>
+            {profileImage && (
+              <button 
+                type="button" 
+                onClick={() => setProfileImage(null)}
+                className='text-[10px] text-red-500 font-bold uppercase mt-1'
+              >
+                Remove
+              </button>
+            )}
+          </div>
+
           {/* Name Row */}
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             {/* First Name */}
@@ -62,6 +115,7 @@ const ClientRegistrationPage = () => {
                 name='firstName'
                 type='text'
                 placeholder='First name'
+                required
                 value={formData.firstName}
                 onChange={handleChange}
                 className={inputClass}
@@ -78,6 +132,7 @@ const ClientRegistrationPage = () => {
                 name='lastName'
                 type='text'
                 placeholder='Last name'
+                required
                 value={formData.lastName}
                 onChange={handleChange}
                 className={inputClass}
@@ -95,6 +150,7 @@ const ClientRegistrationPage = () => {
               name='email'
               type='email'
               placeholder='your@email.com'
+              required
               value={formData.email}
               onChange={handleChange}
               className={inputClass}
@@ -162,6 +218,8 @@ const ClientRegistrationPage = () => {
               name='password'
               type='password'
               placeholder='Create a password'
+              required
+              minLength={6}
               value={formData.password}
               onChange={handleChange}
               className={inputClass}
@@ -178,6 +236,7 @@ const ClientRegistrationPage = () => {
               name='confirmPassword'
               type='password'
               placeholder='Confirm your password'
+              required
               value={formData.confirmPassword}
               onChange={handleChange}
               className={inputClass}
@@ -188,20 +247,20 @@ const ClientRegistrationPage = () => {
           <div className='pt-4'>
             <button
               type='submit'
-              className='w-full text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors text-sm tracking-wide uppercase'
+              disabled={isPending}
+              className='w-full text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors text-sm tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed'
               style={{
                 backgroundColor: "var(--color-primary)",
-                // hover handled via onMouseEnter/Leave or CSS
               }}
               onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                !isPending && ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
                   "var(--color-primary-dark)")
               }
               onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                !isPending && ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
                   "var(--color-primary)")
               }>
-              Create Client Account
+              {isPending ? "Creating Account..." : "Create Client Account"}
             </button>
           </div>
         </form>

@@ -1,69 +1,93 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/context/AuthContext';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { useLogin } from '@/hooks/useAuth';
+import Link from 'next/link';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('client@gmail.com');
-  const { login, user } = useAuth();
-  const router = useRouter();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
 
-  useEffect(() => {
-    if (user) {
-      if (user.role === 'client') {
-        router.push('/dashboard/profile');
-      } else {
-        router.push('/dashboard');
-      }
-    }
-  }, [user, router]);
+  const { mutate: login, isPending } = useLogin();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    login(email);
+    login(formData);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-surface-dim px-4">
-      <div className="w-full max-w-md bg-white p-8 rounded-xl border border-border shadow-lg">
+    <div className="flex items-center justify-center min-h-screen bg-[var(--color-surface-dim)] px-4">
+      <div className="w-full max-w-md bg-[var(--color-background)] p-8 rounded-xl border border-[var(--color-border)] shadow-lg">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-secondary">Login</h1>
-          <p className="text-muted mt-2">Access your role-based dashboard</p>
+          <h1 className="text-3xl font-bold text-[var(--color-secondary)]">Login</h1>
+          <p className="text-[var(--color-muted)] mt-2">Welcome back to Errand Hubb</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Email Address</label>
-            <select
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="block w-full p-3 text-sm border border-border rounded-lg bg-white focus:ring-primary focus:border-primary"
-            >
-              <option value="client@gmail.com">Client (client@gmail.com)</option>
-              <option value="errand@gmail.com">Errand (errand@gmail.com)</option>
-              <option value="admin@gmail.com">Admin (admin@gmail.com)</option>
-            </select>
+            <label className="block text-xs font-bold text-[var(--color-secondary)] uppercase tracking-wide mb-2">
+              Email Address
+            </label>
+            <input
+              type="email"
+              name="email"
+              required
+              placeholder="your@email.com"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)]"
+            />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Password</label>
+            <label className="block text-xs font-bold text-[var(--color-secondary)] uppercase tracking-wide mb-2">
+              Password
+            </label>
             <input
               type="password"
-              value="password"
-              readOnly
-              className="block w-full p-3 text-sm border border-border rounded-lg bg-surface-dim cursor-not-allowed"
+              name="password"
+              required
+              placeholder="Your password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)]"
             />
-            <p className="text-xs text-muted mt-1">Password is not required for this demo.</p>
           </div>
 
           <button
             type="submit"
-            className="w-full py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-dark transition-colors"
+            disabled={isPending}
+            className="w-full py-3 bg-[var(--color-primary)] text-white font-bold rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors uppercase tracking-wide text-sm disabled:opacity-50"
           >
-            Login
+            {isPending ? 'Logging in...' : 'Login'}
           </button>
         </form>
+
+        <div className="mt-6 text-center space-y-2">
+          <p className="text-sm text-[var(--color-muted)]">
+            Don't have an account?
+          </p>
+          <div className="flex flex-col gap-2">
+            <Link 
+              href="/client-registration" 
+              className="text-sm font-bold text-[var(--color-primary)] hover:underline"
+            >
+              Register as Client
+            </Link>
+            <Link 
+              href="/errand-registration" 
+              className="text-sm font-bold text-[var(--color-secondary)] hover:underline"
+            >
+              Become an ErrandR
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

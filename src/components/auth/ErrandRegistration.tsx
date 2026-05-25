@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useRef, useState } from "react";
+import { useRegisterErrand } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 const ErrandRegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +21,8 @@ const ErrandRegistrationPage = () => {
   const [images, setImages] = useState<File[]>([]);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { mutate: register, isPending } = useRegisterErrand();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -40,7 +44,15 @@ const ErrandRegistrationPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ formData, images });
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { confirmPassword, ...dataToSubmit } = formData;
+    
+    register(dataToSubmit);
   };
 
   const inputClass =
@@ -96,6 +108,7 @@ const ErrandRegistrationPage = () => {
                 name='firstName'
                 type='text'
                 placeholder='First name'
+                required
                 value={formData.firstName}
                 onChange={handleChange}
                 className={inputClass}
@@ -110,6 +123,7 @@ const ErrandRegistrationPage = () => {
                 name='lastName'
                 type='text'
                 placeholder='Last name'
+                required
                 value={formData.lastName}
                 onChange={handleChange}
                 className={inputClass}
@@ -127,6 +141,7 @@ const ErrandRegistrationPage = () => {
               name='email'
               type='email'
               placeholder='your@email.com'
+              required
               value={formData.email}
               onChange={handleChange}
               className={inputClass}
@@ -304,6 +319,8 @@ const ErrandRegistrationPage = () => {
               name='password'
               type='password'
               placeholder='Create a password'
+              required
+              minLength={6}
               value={formData.password}
               onChange={handleChange}
               className={inputClass}
@@ -320,6 +337,7 @@ const ErrandRegistrationPage = () => {
               name='confirmPassword'
               type='password'
               placeholder='Confirm your password'
+              required
               value={formData.confirmPassword}
               onChange={handleChange}
               className={inputClass}
@@ -330,17 +348,18 @@ const ErrandRegistrationPage = () => {
           <div className='pt-3'>
             <button
               type='submit'
-              className='w-full text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors text-sm tracking-wide uppercase'
+              disabled={isPending}
+              className='w-full text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors text-sm tracking-wide uppercase disabled:opacity-50'
               style={{ backgroundColor: "var(--color-primary)" }}
               onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                !isPending && ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
                   "var(--color-primary-dark)")
               }
               onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                !isPending && ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
                   "var(--color-primary)")
               }>
-              Create ErrandR Profile — $5/Mo
+              {isPending ? "Creating Profile..." : "Create ErrandR Profile — $5/Mo"}
             </button>
           </div>
         </form>
