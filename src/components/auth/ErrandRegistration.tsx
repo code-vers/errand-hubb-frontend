@@ -52,7 +52,12 @@ const ErrandRegistrationPage = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { confirmPassword, ...dataToSubmit } = formData;
     
-    register(dataToSubmit);
+    // Remove empty strings for optional fields to avoid backend validation errors
+    const cleanedData = Object.fromEntries(
+      Object.entries(dataToSubmit).filter(([_, value]) => value !== "")
+    );
+    
+    register(cleanedData);
   };
 
   const inputClass =
@@ -324,6 +329,7 @@ const ErrandRegistrationPage = () => {
               value={formData.password}
               onChange={handleChange}
               className={inputClass}
+              autoComplete="new-password"
             />
           </div>
 
@@ -341,6 +347,7 @@ const ErrandRegistrationPage = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
               className={inputClass}
+              autoComplete="new-password"
             />
           </div>
 

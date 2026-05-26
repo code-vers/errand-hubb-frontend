@@ -40,9 +40,14 @@ const ClientRegistrationPage = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { confirmPassword, ...dataToSubmit } = formData;
     
+    // Remove empty strings for optional fields to avoid backend validation errors
+    const cleanedData = Object.fromEntries(
+      Object.entries(dataToSubmit).filter(([_, value]) => value !== "")
+    );
+    
     // In a real app with Multer, we would use FormData here
     // For now, sending as JSON as per backend DTO
-    register(dataToSubmit);
+    register(cleanedData);
   };
 
   const inputClass =
@@ -223,6 +228,7 @@ const ClientRegistrationPage = () => {
               value={formData.password}
               onChange={handleChange}
               className={inputClass}
+              autoComplete="new-password"
             />
           </div>
 
@@ -240,6 +246,7 @@ const ClientRegistrationPage = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
               className={inputClass}
+              autoComplete="new-password"
             />
           </div>
 

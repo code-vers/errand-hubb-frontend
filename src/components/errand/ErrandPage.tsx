@@ -127,9 +127,9 @@ const ErrandPage = () => {
                 YOUR HELP WITH AN ERRANDR POST
               </p>
               <Link
-                href='/errand-registration'
-                className='inline-flex min-h-12.5 items-center mt-12 justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'>
-                CREATE ERRAND PROFILE
+                href='/client-registration'
+                className='inline-flex min-h-12.5 items-center justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'>
+                CREATE CLIENT PROFILE
               </Link>
             </div>
 
@@ -144,10 +144,11 @@ const ErrandPage = () => {
               <p className='text-[22px] leading-none font-semibold text-(--color-secondary) md:text-[30px]'>
                 {membershipPlan.billingCycle}
               </p>
+
               <Link
-                href='/client-registration'
-                className='inline-flex min-h-12.5 items-center justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'>
-                CREATE CLIENT PROFILE
+                href='/errand-registration'
+                className='inline-flex min-h-12.5 items-center mt-12 justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'>
+                CREATE ERRAND PROFILE
               </Link>
             </div>
           </div>

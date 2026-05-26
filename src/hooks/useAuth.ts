@@ -5,15 +5,33 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 
 const handleApiError = (error: any) => {
-  const responseData = error.response?.data;
-  if (responseData?.errors && Array.isArray(responseData.errors)) {
-    // If we have specific field errors, show them specifically
-    responseData.errors.forEach((err: any) => {
+  // Our axios interceptor transforms the error into { message, errors, status }
+  // So we check for those properties directly
+
+  // 1. Check for specific field errors array [{property, message}]
+  if (error.errors && Array.isArray(error.errors)) {
+    error.errors.forEach((err: any) => {
       toast.error(`${err.property}: ${err.message}`);
     });
-  } else {
-    toast.error(responseData?.message || error.message || 'Action failed');
+    return;
   }
+
+  // 2. Check for NestJS default array of strings in 'message'
+  if (Array.isArray(error.message)) {
+    error.message.forEach((msg: string) => {
+      toast.error(msg);
+    });
+    return;
+  }
+
+  // 3. Check for single message string
+  if (typeof error.message === 'string') {
+    toast.error(error.message);
+    return;
+  }
+
+  // 4. Fallback to generic error message
+  toast.error('Action failed. Please try again.');
 };
 
 export const useRegisterClient = () => {
