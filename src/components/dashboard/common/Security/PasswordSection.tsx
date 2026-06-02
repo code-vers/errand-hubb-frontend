@@ -9,6 +9,54 @@ interface PasswordSectionProps {
   isLoading?: boolean;
 }
 
+const PasswordInput: FC<{
+  id: string;
+  label: string;
+  value: string;
+  placeholder: string;
+  show: boolean;
+  error?: string;
+  onToggleVisibility: () => void;
+  onChange: (value: string) => void;
+}> = ({
+  id,
+  label,
+  value,
+  placeholder,
+  show,
+  error,
+  onToggleVisibility,
+  onChange,
+}) => (
+  <div className='flex flex-col gap-2'>
+    <label
+      htmlFor={id}
+      className='text-xs font-bold text-(--color-foreground) uppercase tracking-wider opacity-70'>
+      {label}
+    </label>
+    <div className='relative'>
+      <input
+        id={id}
+        type={show ? "text" : "password"}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className={`w-full bg-[#fafaf8] border rounded-lg px-4 py-3 text-sm transition-colors pr-10
+          focus:outline-none focus:border-[var(--color-primary)] focus:bg-white
+          ${error ? "border-[var(--color-error)]" : "border-[var(--color-border)]"}
+        `}
+      />
+      <button
+        type='button'
+        onClick={onToggleVisibility}
+        className='absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--color-muted)] hover:text-[var(--color-foreground)]'>
+        {show ? <EyeOff className='w-4 h-4' /> : <Eye className='w-4 h-4' />}
+      </button>
+    </div>
+    {error && <p className='text-xs text-[var(--color-error)]'>{error}</p>}
+  </div>
+);
+
 const PasswordSection: FC<PasswordSectionProps> = ({
   onSubmit,
   isLoading = false,
@@ -71,54 +119,6 @@ const PasswordSection: FC<PasswordSectionProps> = ({
       console.error("Password update failed:", error);
     }
   };
-
-  const PasswordInput: FC<{
-    id: string;
-    label: string;
-    value: string;
-    placeholder: string;
-    show: boolean;
-    error?: string;
-    onToggleVisibility: () => void;
-    onChange: (value: string) => void;
-  }> = ({
-    id,
-    label,
-    value,
-    placeholder,
-    show,
-    error,
-    onToggleVisibility,
-    onChange,
-  }) => (
-    <div className='flex flex-col gap-2'>
-      <label
-        htmlFor={id}
-        className='text-xs font-bold text-(--color-foreground) uppercase tracking-wider opacity-70'>
-        {label}
-      </label>
-      <div className='relative'>
-        <input
-          id={id}
-          type={show ? "text" : "password"}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          className={`w-full bg-[#fafaf8] border rounded-lg px-4 py-3 text-sm transition-colors pr-10
-            focus:outline-none focus:border-[var(--color-primary)] focus:bg-white
-            ${error ? "border-[var(--color-error)]" : "border-[var(--color-border)]"}
-          `}
-        />
-        <button
-          type='button'
-          onClick={onToggleVisibility}
-          className='absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--color-muted)] hover:text-[var(--color-foreground)]'>
-          {show ? <EyeOff className='w-4 h-4' /> : <Eye className='w-4 h-4' />}
-        </button>
-      </div>
-      {error && <p className='text-xs text-[var(--color-error)]'>{error}</p>}
-    </div>
-  );
 
   return (
     <section className='bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-[#f5ebd8] flex flex-col'>

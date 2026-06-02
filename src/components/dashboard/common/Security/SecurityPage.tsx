@@ -12,6 +12,7 @@ import type {
   LoginActivity,
 } from "@/types/settings";
 import PageHeader from "../PageHeader";
+import { useChangePassword } from "@/hooks/useAuth";
 
 interface SecurityPageProps {
   initialTwoFactorEnabled?: boolean;
@@ -55,19 +56,23 @@ const SecurityPage: FC<SecurityPageProps> = ({
     useState<NotificationPreferences>(initialNotifications);
   const [activities] = useState<LoginActivity[]>(initialActivities);
   const [loading, setLoading] = useState({
-    password: false,
     twoFactor: false,
     notifications: false,
     activity: false,
     delete: false,
   });
 
+  const { mutateAsync: changePassword, isPending: isPasswordUpdating } = useChangePassword();
+
   const handlePasswordSubmit = async (data: PasswordFormData) => {
-    setLoading((prev) => ({ ...prev, password: true }));
     try {
-      console.log("Password update:", data);
-    } finally {
-      setLoading((prev) => ({ ...prev, password: false }));
+      await changePassword({
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword
+      });
+    } catch (error) {
+      // Error is handled in the hook
+      throw error; // Re-throw to allow component to reset/keep state
     }
   };
 
@@ -118,7 +123,7 @@ const SecurityPage: FC<SecurityPageProps> = ({
           <div className='flex flex-col gap-3.5'>
             <PasswordSection
               onSubmit={handlePasswordSubmit}
-              isLoading={loading.password}
+              isLoading={isPasswordUpdating}
             />
             <TwoFactorSection
               enabled={twoFactorEnabled}
