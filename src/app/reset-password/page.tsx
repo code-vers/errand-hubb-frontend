@@ -50,75 +50,75 @@ function ResetPasswordForm() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-xl shadow-lg">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Reset your password
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Enter your new password below.
+    <div className="flex items-center justify-center min-h-screen bg-[var(--color-surface-dim)] px-4">
+      <div className="w-full max-w-md bg-[var(--color-background)] p-8 rounded-xl border border-[var(--color-border)] shadow-lg">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-[var(--color-secondary)]">Reset Password</h1>
+          <p className="text-[var(--color-muted)] mt-2">
+            Enter your new password below to regain access.
           </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="rounded-md shadow-sm space-y-4">
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-4">
             <div>
-              <label htmlFor="new-password" title="New Password" />
+              <label className="block text-xs font-bold text-[var(--color-secondary)] uppercase tracking-wide mb-2">
+                New Password
+              </label>
               <input
-                id="new-password"
-                name="password"
                 type="password"
                 required
+                placeholder="Minimum 6 characters"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="New Password"
+                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)]"
                 minLength={6}
               />
             </div>
             <div>
-              <label htmlFor="confirm-password" title="Confirm Password" />
+              <label className="block text-xs font-bold text-[var(--color-secondary)] uppercase tracking-wide mb-2">
+                Confirm New Password
+              </label>
               <input
-                id="confirm-password"
-                name="confirmPassword"
                 type="password"
                 required
+                placeholder="Confirm your new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Confirm New Password"
+                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)]"
               />
             </div>
           </div>
 
           {message && (
-            <div className="text-green-600 text-sm text-center font-medium bg-green-50 p-2 rounded">
+            <div className="text-green-600 text-sm text-center font-medium bg-green-50 p-3 rounded-md border border-green-100">
               {message}
             </div>
           )}
 
           {error && (
-            <div className="text-red-600 text-sm text-center font-medium bg-red-50 p-2 rounded">
+            <div className="text-red-600 text-sm text-center font-medium bg-red-50 p-3 rounded-md border border-red-100">
               {error}
             </div>
           )}
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading || !!error && !token}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-400"
-            >
-              {loading ? 'Resetting...' : 'Reset Password'}
-            </button>
-          </div>
-
-          <div className="text-sm text-center">
-            <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
-              Back to login
-            </Link>
-          </div>
+          <button
+            type="submit"
+            disabled={loading || (!!error && !token)}
+            className="w-full py-3 bg-[var(--color-primary)] text-white font-bold rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors uppercase tracking-wide text-sm disabled:opacity-50"
+          >
+            {loading ? 'Resetting...' : 'Reset Password'}
+          </button>
         </form>
+
+        <div className="mt-6 text-center">
+          <Link 
+            href="/login" 
+            className="text-sm font-bold text-[var(--color-secondary)] hover:underline"
+          >
+            Back to Login
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -126,7 +126,7 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+    <Suspense fallback={<div className="flex items-center justify-center min-h-screen text-[var(--color-secondary)]">Loading...</div>}>
       <ResetPasswordForm />
     </Suspense>
   );
