@@ -1,63 +1,72 @@
 "use client";
 
-import React, { useState } from "react";
-
-import {
-  UserProfile,
-  PersonalInfo,
-  AccountOverview,
-  NotificationPreferences,
-} from "@/types/profile";
+import React from "react";
+import { useAuth } from "@/context/AuthContext";
+import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import ProfileHeader from "./ProfileHeader";
 import NotificationPreferencesCard from "./Notificationpreferencescard";
 import QuickActionsCard from "./QuickActionsCard";
 import AccountOverviewCard from "./Accountoverviewcard";
 import PersonalInfoCard from "./Personalinfocard";
 import PageHeader from "../PageHeader";
-
-// Mock data (replace with API later)
-const mockProfile: UserProfile = {
-  name: "Alex Johnson",
-  avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-  location: "Austin, Texas, USA",
-  email: "alex.monroe@email.com",
-  phone: "+1 (512) 867-5309",
-  memberSince: "March 2023",
-  isActive: true,
-};
-
-const mockPersonalInfo: PersonalInfo = {
-  fullName: "Alexandra Monroe",
-  location: "Austin, Texas, USA",
-  email: "alex.monroe@email.com",
-  phone: "+1 (512) 867-5309",
-  preferredContact: "alex.monroe@email.com",
-  timeZone: "Central Time (CT) — UTC-6",
-};
-
-const mockAccountOverview: AccountOverview = {
-  totalPosts: 24,
-  activePosts: 6,
-  completedJobs: 18,
-  totalHires: 12,
-  memberSince: "Mar 2026",
-};
-
-const mockNotifications: NotificationPreferences = {
-  emailNotifications: true,
-  smsNotifications: false,
-  pushNotifications: true,
-};
+import { NotificationPreferences } from "@/types/profile";
 
 export default function ProfilePage() {
-  const [profile] = useState(mockProfile);
-  const [personalInfo] = useState(mockPersonalInfo);
-  const [accountOverview] = useState(mockAccountOverview);
-  const [notifications, setNotifications] = useState(mockNotifications);
+  const { user, setUser } = useAuth();
+  const { data: profileData, isLoading } = useProfile();
+  const { mutate: updateProfile, isPending } = useUpdateProfile();
+
+  if (isLoading) {
+    return <div className="p-12 text-center">Loading profile...</div>;
+  }
+
+  const userData = profileData || user;
+
+  const profileHeaderData = {
+    name: `${userData?.firstName} ${userData?.lastName}`,
+    avatar: userData?.profileImage || "",
+    location: userData?.profile?.city ? `${userData.profile.city}, ${userData.profile.state}` : "Not set",
+    email: userData?.email || "",
+    phone: userData?.profile?.phone || "",
+    memberSince: userData?.createdAt ? new Date(userData.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : "Recently",
+    isActive: true,
+  };
+
+  const personalInfoData = {
+    fullName: `${userData?.firstName} ${userData?.lastName}`,
+    location: userData?.profile?.city ? `${userData.profile.city}, ${userData.profile.state}` : "Not set",
+    email: userData?.email || "",
+    phone: userData?.profile?.phone || "",
+    preferredContact: userData?.profile?.preferredContact || userData?.email || "",
+    timeZone: userData?.profile?.timeZone || "Not set",
+  };
+
+  const accountOverviewData = {
+    totalPosts: 0, // Should come from actual stats API
+    activePosts: 0,
+    completedJobs: userData?.profile?.jobsCompleted || 0,
+    totalHires: 0,
+    memberSince: userData?.createdAt ? new Date(userData.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : "New",
+  };
+
+  const handleImageUpload = (file: File) => {
+    const formData = new FormData();
+    formData.append("profileImage", file);
+    updateProfile(formData, {
+      onSuccess: (response: any) => {
+        // Update local auth context too
+        if (user) {
+          const updatedUser = { ...user, profileImage: response.data.profileImage };
+          setUser(updatedUser);
+          localStorage.setItem("errand_user", JSON.stringify(updatedUser));
+        }
+      }
+    });
+  };
 
   const handleToggle = (key: keyof NotificationPreferences, value: boolean) => {
-    setNotifications((prev) => ({ ...prev, [key]: value }));
-    // TODO: PATCH /api/profile/notifications
+    // This would ideally be a separate setting in the DB
+    console.log("Toggle notification", key, value);
   };
 
   return (
@@ -66,15 +75,21 @@ export default function ProfilePage() {
         <PageHeader title='Profile' />
 
         <ProfileHeader
-          profile={profile}
-          onEditProfile={() => alert("Edit Profile")}
+          profile={profileHeaderData}
+          onEditProfile={() => alert("Edit Profile functionality can be implemented with a modal")}
+          onImageUpload={handleImageUpload}
+          isUpdating={isPending}
         />
 
         <div className='grid grid-cols-2 gap-3.5 max-sm:grid-cols-1 items-stretch'>
-          <PersonalInfoCard info={personalInfo} />
-          <AccountOverviewCard overview={accountOverview} />
+          <PersonalInfoCard info={personalInfoData} />
+          <AccountOverviewCard overview={accountOverviewData} />
           <NotificationPreferencesCard
-            preferences={notifications}
+            preferences={{
+              emailNotifications: true,
+              smsNotifications: false,
+              pushNotifications: true,
+            }}
             onToggle={handleToggle}
           />
           <QuickActionsCard

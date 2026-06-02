@@ -8,15 +8,20 @@ import logo from "../../../public/logo2.svg";
 
 const DashboardNavbar = () => {
   const { user } = useAuth();
+  const backendUrl = "http://localhost:5000"; // Should be from config/env
+
+  const profileImageUrl = user?.profileImage 
+    ? (user.profileImage.startsWith('http') ? user.profileImage : `${backendUrl}${user.profileImage}`)
+    : null;
 
   return (
     <header className='sticky top-0 z-45 w-full bg-white '>
       <div className='flex items-center justify-between h-18 px-6 lg:px-10'>
         {/* Left — Logo */}
         <div className='flex flex-col justify-center'>
-          <div className='flex items-baseline gap-0'>
+          <Link href="/dashboard" className='flex items-baseline gap-0'>
             <Image src={logo} alt='logo' />
-          </div>
+          </Link>
         </div>
 
         {/* Right — notification icon + avatar */}
@@ -29,25 +34,23 @@ const DashboardNavbar = () => {
           </button>
 
           {/* User avatar */}
-          <div className='w-9 h-9 rounded-full overflow-hidden border-2 border-border shrink-0'>
-            {user?.avatarUrl ? (
-              <Image
-                src={user.avatarUrl}
-                alt={user.name ?? user.email ?? "User"}
-                width={36}
-                height={36}
+          <Link href="/dashboard/profile" className='w-9 h-9 rounded-full overflow-hidden border-2 border-border shrink-0'>
+            {profileImageUrl ? (
+              <img
+                src={profileImageUrl}
+                alt={user?.firstName ?? user?.email ?? "User"}
                 className='w-full h-full object-cover'
               />
             ) : (
               /* Fallback: initials circle */
               <div className='w-full h-full bg-primary flex items-center justify-center'>
                 <span className='text-white text-xs font-bold'>
-                  {(user?.name ?? user?.email ?? "User")[0]?.toUpperCase() ??
+                  {(user?.firstName ?? user?.email ?? "User")[0]?.toUpperCase() ??
                     "U"}
                 </span>
               </div>
             )}
-          </div>
+          </Link>
 
           {/* Post an Errand Button — Only for Clients */}
           {user?.role === "client" && (

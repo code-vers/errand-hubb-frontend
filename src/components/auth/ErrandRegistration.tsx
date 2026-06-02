@@ -3,6 +3,7 @@
 import React, { useRef, useState } from "react";
 import { useRegisterErrand } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { Upload } from "lucide-react";
 
 const ErrandRegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,8 @@ const ErrandRegistrationPage = () => {
     password: "",
     confirmPassword: "",
   });
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const profileInputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<File[]>([]);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -28,6 +31,12 @@ const ErrandRegistrationPage = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setProfileImage(e.target.files[0]);
+    }
   };
 
   const handleFiles = (files: FileList | null) => {
@@ -49,15 +58,21 @@ const ErrandRegistrationPage = () => {
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { confirmPassword, ...dataToSubmit } = formData;
+    const submitData = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key !== "confirmPassword" && value !== "") {
+        submitData.append(key, value);
+      }
+    });
     
-    // Remove empty strings for optional fields to avoid backend validation errors
-    const cleanedData = Object.fromEntries(
-      Object.entries(dataToSubmit).filter(([_, value]) => value !== "")
-    );
+    if (profileImage) {
+      submitData.append("profileImage", profileImage);
+    }
     
-    register(cleanedData);
+    // In the future, multiple images for errand portfolio could be added here
+    // images.forEach((img, index) => submitData.append(`gallery[${index}]`, img));
+    
+    register(submitData);
   };
 
   const inputClass =
@@ -102,6 +117,37 @@ const ErrandRegistrationPage = () => {
         </h1>
 
         <form onSubmit={handleSubmit} className='space-y-3'>
+          {/* Profile Photo Upload */}
+          <div className='flex flex-col items-center mb-6'>
+            <div 
+              onClick={() => profileInputRef.current?.click()}
+              className='relative w-24 h-24 rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50 overflow-hidden'
+            >
+              {profileImage ? (
+                <img src={URL.createObjectURL(profileImage)} alt="profile" className='w-full h-full object-cover' />
+              ) : (
+                <Upload className='w-8 h-8 text-gray-400' />
+              )}
+              <input 
+                type="file" 
+                ref={profileInputRef} 
+                onChange={handleProfileChange} 
+                className='hidden' 
+                accept="image/*"
+              />
+            </div>
+            <p className='text-[10px] font-bold text-muted uppercase mt-2 tracking-widest'>Profile Photo (Optional)</p>
+            {profileImage && (
+              <button 
+                type="button" 
+                onClick={() => setProfileImage(null)}
+                className='text-[10px] text-red-500 font-bold uppercase mt-1'
+              >
+                Remove
+              </button>
+            )}
+          </div>
+
           {/* Name Row */}
           <div className='grid grid-cols-2 gap-3'>
             <div className='flex flex-col space-y-1'>
@@ -217,9 +263,9 @@ const ErrandRegistrationPage = () => {
             />
           </div>
 
-          {/* Upload Images */}
+          {/* Upload Images (Gallery - Currently not implemented in backend but UI kept) */}
           <div className='flex flex-col space-y-1'>
-            <label className={labelClass}>Upload Images</label>
+            <label className={labelClass}>Portfolio Gallery (Optional)</label>
             <div
               onClick={() => fileInputRef.current?.click()}
               onDrop={handleDrop}
@@ -242,21 +288,7 @@ const ErrandRegistrationPage = () => {
                 className='hidden'
                 onChange={(e) => handleFiles(e.target.files)}
               />
-              {/* Upload Icon */}
-              <svg
-                className='mb-2'
-                width='32'
-                height='32'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='var(--color-muted)'
-                strokeWidth='1.5'
-                strokeLinecap='round'
-                strokeLinejoin='round'>
-                <path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' />
-                <polyline points='17 8 12 3 7 8' />
-                <line x1='12' y1='3' x2='12' y2='15' />
-              </svg>
+              <Upload className='mb-2 text-gray-400 w-8 h-8' />
               <p className='text-sm'>
                 <span
                   className='font-bold'

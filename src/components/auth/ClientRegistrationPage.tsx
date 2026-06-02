@@ -37,17 +37,18 @@ const ClientRegistrationPage = () => {
       return;
     }
     
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { confirmPassword, ...dataToSubmit } = formData;
+    const submitData = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key !== "confirmPassword" && value !== "") {
+        submitData.append(key, value);
+      }
+    });
     
-    // Remove empty strings for optional fields to avoid backend validation errors
-    const cleanedData = Object.fromEntries(
-      Object.entries(dataToSubmit).filter(([_, value]) => value !== "")
-    );
+    if (profileImage) {
+      submitData.append("profileImage", profileImage);
+    }
     
-    // In a real app with Multer, we would use FormData here
-    // For now, sending as JSON as per backend DTO
-    register(cleanedData);
+    register(submitData);
   };
 
   const inputClass =
