@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Upload } from "lucide-react";
 import { useRegisterClient } from "@/hooks/useAuth";
 
@@ -16,9 +16,24 @@ const ClientRegistrationPage = () => {
     confirmPassword: "",
   });
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const { mutate: register, isPending } = useRegisterClient();
+
+  // Clean up preview URL to prevent memory leaks
+  useEffect(() => {
+    let url: string | null = null;
+    if (profileImage) {
+      url = URL.createObjectURL(profileImage);
+      setPreviewUrl(url);
+    } else {
+      setPreviewUrl(null);
+    }
+    return () => {
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [profileImage]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -84,8 +99,8 @@ const ClientRegistrationPage = () => {
               onClick={() => fileInputRef.current?.click()}
               className='relative w-24 h-24 rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50 overflow-hidden'
             >
-              {profileImage ? (
-                <img src={URL.createObjectURL(profileImage)} alt="profile" className='w-full h-full object-cover' />
+              {previewUrl ? (
+                <img src={previewUrl} alt="profile" className='w-full h-full object-cover' />
               ) : (
                 <Upload className='w-8 h-8 text-gray-400' />
               )}

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useRegisterErrand } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Upload } from "lucide-react";
@@ -20,12 +20,27 @@ const ErrandRegistrationPage = () => {
     confirmPassword: "",
   });
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const profileInputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<File[]>([]);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { mutate: register, isPending } = useRegisterErrand();
+
+  // Clean up preview URL
+  useEffect(() => {
+    let url: string | null = null;
+    if (profileImage) {
+      url = URL.createObjectURL(profileImage);
+      setPreviewUrl(url);
+    } else {
+      setPreviewUrl(null);
+    }
+    return () => {
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [profileImage]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -68,9 +83,6 @@ const ErrandRegistrationPage = () => {
     if (profileImage) {
       submitData.append("profileImage", profileImage);
     }
-    
-    // In the future, multiple images for errand portfolio could be added here
-    // images.forEach((img, index) => submitData.append(`gallery[${index}]`, img));
     
     register(submitData);
   };
@@ -123,8 +135,8 @@ const ErrandRegistrationPage = () => {
               onClick={() => profileInputRef.current?.click()}
               className='relative w-24 h-24 rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50 overflow-hidden'
             >
-              {profileImage ? (
-                <img src={URL.createObjectURL(profileImage)} alt="profile" className='w-full h-full object-cover' />
+              {previewUrl ? (
+                <img src={previewUrl} alt="profile" className='w-full h-full object-cover' />
               ) : (
                 <Upload className='w-8 h-8 text-gray-400' />
               )}
