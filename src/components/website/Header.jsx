@@ -109,7 +109,7 @@ export default function Header() {
                     href={link.href}
                     className={`text-[13px] font-semibold transition-colors block ${
                       link.name === "Ads"
-                        ? "bg-blue-900  drop-shadow-blue-500 shadow-2xl text-white  px-5 py-2 "
+                        ? "bg-blue-900 rounded-md drop-shadow-blue-500 shadow-2xl text-white  px-5 py-2 "
                         : "text-white "
                     }`}
                     onClick={() => setIsMenuOpen(false)}>
