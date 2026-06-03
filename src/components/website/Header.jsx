@@ -85,15 +85,15 @@ export default function Header() {
 
           {/* Navigation Menu */}
           <nav
-            className={`bg-primary flex-1 items-center transition-all duration-500 ease-in-out overflow-hidden md:overflow-visible whitespace-nowrap
+            className={`bg-primary flex-1 items-center transition-all duration-500 ease-in-out overflow-hidden md:overflow-x-auto md:overflow-y-hidden whitespace-nowrap
               absolute md:static top-full left-0 w-full md:w-auto z-40
               ${
                 isMenuOpen
-                  ? "max-h-[90vh] opacity-100 translate-y-0 visible shadow-lg"
+                  ? "max-h-[90vh] overflow-y-auto opacity-100 translate-y-0 visible shadow-lg"
                   : "max-h-0 opacity-0 -translate-y-4 invisible md:max-h-none md:opacity-100 md:translate-y-0 md:visible"
               } md:flex`}
             data-purpose='main-navigation'>
-            <ul className='flex flex-col md:flex-row w-full items-start md:items-center px-4 py-3 md:py-0 md:min-h-15'>
+            <ul className='flex flex-col md:flex-row w-full md:w-max md:min-w-max items-start md:items-center px-4 py-3 md:py-0 md:min-h-15'>
               {navLinks.map((link, index) => (
                 <li
                   key={link.name}
