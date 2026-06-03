@@ -65,7 +65,7 @@ const AdsGallery = () => {
             <h1 className='text-3xl font-bold text-gray-900 tracking-tight'>
               Cumpany Posting Board ADS
             </h1>
-            <p className='text-gray-500 mt-1'>Just $20 PER MONTH</p>
+            <p className=' mt-1 text-[#f47a22]'>Just $20 PER MONTH</p>
           </div>
 
           <Link

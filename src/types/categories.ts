@@ -1,13 +1,17 @@
 export type CategoryStatus = "active" | "inactive";
+export type IconType = "emoji" | "url";
 
 export interface Category {
   id: string;
   name: string;
   description: string;
-  emoji: string;
-  postsCount: number;
+  icon?: string;
+  iconType?: IconType;
+  color?: string;
+  emoji?: string;
+  postsCount?: number;
   status: CategoryStatus;
-  iconBgColor: string;
+  iconBgColor?: string;
   cardBgColor?: string;
 }
 
