@@ -71,6 +71,29 @@ const SecurityPage: FC<SecurityPageProps> = ({
 
   const { mutateAsync: changePassword, isPending: isPasswordUpdating } = useChangePassword();
 
+  const handleApiError = (error: any, fallback: string) => {
+    if (error.errors && Array.isArray(error.errors)) {
+      error.errors.forEach((err: any) => {
+        toast.error(`${err.property}: ${err.message}`);
+      });
+      return;
+    }
+
+    if (Array.isArray(error.message)) {
+      error.message.forEach((msg: string) => {
+        toast.error(msg);
+      });
+      return;
+    }
+
+    if (typeof error.message === 'string') {
+      toast.error(error.message);
+      return;
+    }
+
+    toast.error(fallback);
+  };
+
   const handlePasswordSubmit = async (data: PasswordFormData) => {
     try {
       await changePassword({
@@ -86,13 +109,11 @@ const SecurityPage: FC<SecurityPageProps> = ({
     try {
       setLoading((prev) => ({ ...prev, twoFactor: true }));
       if (enabled) {
-        // Start enablement process
         const response = await authService.generate2FA();
         setQrCode(response.data.qrCode);
         setSecret(response.data.secret);
         setShow2FAModal(true);
       } else {
-        // Disable process
         await authService.disable2FA();
         if (user) {
           const updatedUser = { ...user, isTwoFactorEnabled: false };
@@ -102,7 +123,7 @@ const SecurityPage: FC<SecurityPageProps> = ({
         toast.success("Two-Factor Authentication disabled");
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to update 2FA status");
+      handleApiError(error, "Failed to update 2FA status");
     } finally {
       setLoading((prev) => ({ ...prev, twoFactor: false }));
     }
@@ -120,7 +141,7 @@ const SecurityPage: FC<SecurityPageProps> = ({
       setShow2FAModal(false);
       toast.success("Two-Factor Authentication enabled successfully!");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Invalid verification code");
+      handleApiError(error, "Invalid verification code");
     } finally {
       setLoading((prev) => ({ ...prev, twoFactor: false }));
     }
@@ -154,7 +175,7 @@ const SecurityPage: FC<SecurityPageProps> = ({
       logout();
       router.push("/");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to delete account. Please check your password and code.");
+      handleApiError(error, "Failed to delete account");
     } finally {
       setLoading((prev) => ({ ...prev, delete: false }));
     }

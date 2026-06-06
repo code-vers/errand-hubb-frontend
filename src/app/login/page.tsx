@@ -6,7 +6,7 @@ import { authService } from '@/services/auth.service';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { Shield, ArrowLeft } from 'lucide-react';
+import { Shield, ArrowLeft, RefreshCw } from 'lucide-react';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -22,6 +22,29 @@ export default function LoginPage() {
 
   const { login: authLogin } = useAuth();
   const queryClient = useQueryClient();
+
+  const handleApiError = (error: any, fallback: string) => {
+    if (error.errors && Array.isArray(error.errors)) {
+      error.errors.forEach((err: any) => {
+        toast.error(`${err.property}: ${err.message}`);
+      });
+      return;
+    }
+
+    if (Array.isArray(error.message)) {
+      error.message.forEach((msg: string) => {
+        toast.error(msg);
+      });
+      return;
+    }
+
+    if (typeof error.message === 'string') {
+      toast.error(error.message);
+      return;
+    }
+
+    toast.error(fallback);
+  };
 
   // Login Mutation
   const { mutate: login, isPending: isLoginPending } = useMutation({
@@ -41,9 +64,7 @@ export default function LoginPage() {
         authLogin(userData);
       }
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Login failed');
-    },
+    onError: (error: any) => handleApiError(error, 'Login failed'),
   });
 
   // MFA Verify Mutation
@@ -55,9 +76,7 @@ export default function LoginPage() {
       queryClient.setQueryData(['user'], userData);
       authLogin(userData);
     },
-    onError: (error: any) => {
-      toast.error(error.response?.data?.message || 'Invalid verification code');
-    },
+    onError: (error: any) => handleApiError(error, 'Verification failed'),
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

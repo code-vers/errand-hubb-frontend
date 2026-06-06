@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from 'sonner';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1',
@@ -13,13 +14,19 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Standardize error object
+    const status = error.response?.status;
     const errorResponse = error.response?.data;
     
+    // Handle Rate Limiting (429)
+    if (status === 429) {
+      toast.error('Too many requests. Please slow down and try again in 15 minutes.');
+    }
+    
+    // Standardize error object
     const formattedError = {
       message: errorResponse?.message || error.message || 'Something went wrong',
       errors: errorResponse?.errors || null, // [{ property, message }]
-      status: error.response?.status,
+      status: status,
     };
     
     return Promise.reject(formattedError);
