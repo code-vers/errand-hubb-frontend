@@ -132,16 +132,19 @@ const SecurityPage: FC<SecurityPageProps> = ({
   const handleVerify2FA = async (code: string) => {
     try {
       setLoading((prev) => ({ ...prev, twoFactor: true }));
-      await authService.enable2FA(code);
+      const response = await authService.enable2FA(code);
       if (user) {
         const updatedUser = { ...user, isTwoFactorEnabled: true };
         setUser(updatedUser);
         localStorage.setItem("errand_user", JSON.stringify(updatedUser));
       }
-      setShow2FAModal(false);
-      toast.success("Two-Factor Authentication enabled successfully!");
+      // Note: We don't close the modal here anymore. 
+      // The modal will transition to show recovery codes and it will call onClose itself.
+      toast.success("Two-Factor Authentication verified!");
+      return response;
     } catch (error: any) {
       handleApiError(error, "Invalid verification code");
+      return null;
     } finally {
       setLoading((prev) => ({ ...prev, twoFactor: false }));
     }

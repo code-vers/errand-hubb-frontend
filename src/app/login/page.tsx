@@ -84,7 +84,8 @@ export default function LoginPage() {
   };
 
   const handleMfaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMfaData({ ...mfaData, code: e.target.value.replace(/\D/g, '') });
+    // Allow both digits (TOTP) and alphanumeric (Recovery Codes)
+    setMfaData({ ...mfaData, code: e.target.value.toUpperCase() });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -94,7 +95,7 @@ export default function LoginPage() {
 
   const handleMfaSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (mfaData.code.length === 6) {
+    if (mfaData.code.length >= 6) {
       verifyMFA({ userId: mfaData.userId, code: mfaData.code });
     }
   };
@@ -120,7 +121,7 @@ export default function LoginPage() {
 
             <div className="text-center mb-8">
               <p className="text-sm text-[#4B5563] leading-relaxed">
-                A verification code has been sent to your device. Please enter the 6-digit code from your authenticator app to continue.
+                Enter the 6-digit code from your app or use a **Backup Recovery Code**.
               </p>
             </div>
 
@@ -128,18 +129,17 @@ export default function LoginPage() {
               <div className="relative">
                 <input
                   type="text"
-                  maxLength={6}
                   autoFocus
                   placeholder="000 000"
                   value={mfaData.code}
                   onChange={handleMfaChange}
-                  className="w-full px-6 py-5 bg-[#fcf9f4] border border-[#f5ebd8] rounded-xl text-center text-3xl font-bold tracking-[0.4em] focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all text-indigo-600 placeholder-gray-300 shadow-inner"
+                  className="w-full px-6 py-5 bg-[#fcf9f4] border border-[#f5ebd8] rounded-xl text-center text-3xl font-bold tracking-[0.2em] focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all text-indigo-600 placeholder-gray-300 shadow-inner uppercase"
                 />
               </div>
 
               <button
                 type="submit"
-                disabled={isVerifyPending || mfaData.code.length !== 6}
+                disabled={isVerifyPending || mfaData.code.length < 6}
                 className="w-full py-4 bg-primary hover:bg-primary-dark text-white font-extrabold rounded-xl transition-all shadow-md hover:shadow-lg tracking-[0.1em] text-sm disabled:opacity-50 disabled:cursor-not-allowed uppercase flex items-center justify-center gap-3"
               >
                 {isVerifyPending ? (
