@@ -67,18 +67,18 @@ const TwoFactorSetupModal: FC<TwoFactorSetupModalProps> = ({
             )}
           </div>
 
-          <div className='w-full bg-gray-50 p-3 rounded-lg flex items-center justify-between mb-8 border border-gray-100'>
-            <div className='text-left'>
+          <div className='w-full bg-gray-50 p-3 rounded-lg flex items-center justify-between mb-8 border border-gray-100 gap-3'>
+            <div className='text-left min-w-0 flex-1'>
               <span className='text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-0.5'>
                 Secret Key
               </span>
-              <code className='text-xs font-mono text-indigo-600 font-bold tracking-wider'>
+              <code className='text-xs font-mono text-indigo-600 font-bold tracking-wider break-all'>
                 {secret}
               </code>
             </div>
             <button 
               onClick={handleCopySecret}
-              className='p-2 hover:bg-white rounded-md transition-colors text-indigo-500'
+              className='p-2 hover:bg-white rounded-md transition-colors text-indigo-500 shrink-0'
               title="Copy Secret">
               {copied ? <CheckCircle2 className="w-4 h-4 text-green-500" /> : <Copy className='w-4 h-4' />}
             </button>
