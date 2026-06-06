@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import ProfileHeader from "./ProfileHeader";
@@ -10,11 +10,13 @@ import AccountOverviewCard from "./Accountoverviewcard";
 import PersonalInfoCard from "./Personalinfocard";
 import PageHeader from "../PageHeader";
 import { NotificationPreferences } from "@/types/profile";
+import EditProfileModal from "./EditProfileModal";
 
 export default function ProfilePage() {
   const { user, setUser } = useAuth();
   const { data: profileData, isLoading } = useProfile();
   const { mutate: updateProfile, isPending } = useUpdateProfile();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   if (isLoading) {
     return <div className="p-12 text-center">Loading profile...</div>;
@@ -64,6 +66,25 @@ export default function ProfilePage() {
     });
   };
 
+  const handleUpdateProfile = async (data: any) => {
+    updateProfile(data, {
+      onSuccess: (response: any) => {
+        // Update local auth context if needed
+        if (user) {
+          const updatedUser = { 
+            ...user, 
+            firstName: response.data.firstName, 
+            lastName: response.data.lastName,
+            profile: response.data.profile 
+          };
+          setUser(updatedUser);
+          localStorage.setItem("errand_user", JSON.stringify(updatedUser));
+        }
+        setIsEditModalOpen(false);
+      }
+    });
+  };
+
   const handleToggle = (key: keyof NotificationPreferences, value: boolean) => {
     // This would ideally be a separate setting in the DB
     console.log("Toggle notification", key, value);
@@ -76,7 +97,7 @@ export default function ProfilePage() {
 
         <ProfileHeader
           profile={profileHeaderData}
-          onEditProfile={() => alert("Edit Profile functionality can be implemented with a modal")}
+          onEditProfile={() => setIsEditModalOpen(true)}
           onImageUpload={handleImageUpload}
           isUpdating={isPending}
         />
@@ -98,6 +119,15 @@ export default function ProfilePage() {
           />
         </div>
       </div>
+
+      {isEditModalOpen && (
+        <EditProfileModal
+          user={userData}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={handleUpdateProfile}
+          isUpdating={isPending}
+        />
+      )}
     </div>
   );
 }
