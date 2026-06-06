@@ -5,6 +5,7 @@ import PasswordSection from "./PasswordSection";
 import TwoFactorSection from "./TwoFactorSection";
 import NotificationsSection from "./NotificationsSection";
 import LoginActivitySection from "./LoginActivitySection";
+import SecurityLogsSection from "./SecurityLogsSection";
 import DangerZoneSection from "./DangerZoneSection";
 import type {
   PasswordFormData,
@@ -203,6 +204,7 @@ const SecurityPage: FC<SecurityPageProps> = ({
           </div>
 
           <div className='flex flex-col gap-3.5'>
+            <SecurityLogsSection />
             <NotificationsSection
               preferences={notifications}
               onSave={handleNotificationsSave}

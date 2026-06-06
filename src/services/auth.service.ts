@@ -48,4 +48,8 @@ export const authService = {
   getLoginActivity: async () => {
     return api.get('/auth/login-activity');
   },
+
+  getSecurityLogs: async () => {
+    return api.get('/auth/security-logs');
+  },
 };
