@@ -2,9 +2,10 @@
 
 import { Trash2 } from "lucide-react";
 import { FC, useState } from "react";
+import DeleteAccountModal from "./DeleteAccountModal";
 
 interface DangerZoneSectionProps {
-  onDeleteAccount: () => Promise<void>;
+  onDeleteAccount: (password: string, code: string) => Promise<void>;
   isLoading?: boolean;
 }
 
@@ -12,21 +13,7 @@ const DangerZoneSection: FC<DangerZoneSectionProps> = ({
   onDeleteAccount,
   isLoading = false,
 }) => {
-  const [showConfirmation, setShowConfirmation] = useState(false);
-
-  const handleDelete = async () => {
-    if (!showConfirmation) {
-      setShowConfirmation(true);
-      return;
-    }
-
-    try {
-      await onDeleteAccount();
-    } catch (error) {
-      console.error("Account deletion failed:", error);
-      setShowConfirmation(false);
-    }
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <section className='bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-[#f5ebd8] flex flex-col'>
@@ -48,38 +35,30 @@ const DangerZoneSection: FC<DangerZoneSectionProps> = ({
         <h3 className='text-[15px] font-bold text-foreground'>
           Delete Account
         </h3>
-        <p className='text-xs text-[var(--color-text-secondary)] mt-1 mb-4'>
-          {showConfirmation
-            ? "Are you sure? This action cannot be undone. All your data will be permanently removed."
-            : "Permanently remove your account and all associated data. This cannot be undone."}
+        <p className='text-xs text-[var(--color-text-secondary)] mt-1 mb-4 leading-relaxed'>
+          Permanently remove your account and all associated data. This action cannot be reversed, and all your records will be purged from our systems.
         </p>
 
         <div className='flex gap-3'>
           <button
-            onClick={handleDelete}
+            onClick={() => setIsModalOpen(true)}
             disabled={isLoading}
-            className={`font-semibold py-2.5 px-6 rounded-lg text-sm transition-colors w-full sm:w-auto
-              ${
-                showConfirmation
-                  ? "bg-[var(--color-error)] hover:bg-red-700 text-white"
-                  : "bg-[var(--color-error)] hover:bg-red-600 text-white"
-              } disabled:opacity-50 disabled:cursor-not-allowed`}>
-            {isLoading
-              ? "DELETING..."
-              : showConfirmation
-                ? "CONFIRM DELETE"
-                : "DELETE ACCOUNT"}
+            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-lg text-sm transition-all shadow-sm hover:shadow-md uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed">
+            {isLoading ? "PURGING DATA..." : "PERMANENTLY DELETE ACCOUNT"}
           </button>
-
-          {showConfirmation && (
-            <button
-              onClick={() => setShowConfirmation(false)}
-              className='bg-[var(--color-surface-dim)] hover:bg-[var(--color-hover)] text-[var(--color-foreground)] font-semibold py-2.5 px-6 rounded-lg text-sm transition-colors'>
-              CANCEL
-            </button>
-          )}
         </div>
       </div>
+
+      {isModalOpen && (
+        <DeleteAccountModal 
+          onClose={() => setIsModalOpen(false)}
+          onConfirm={async (password, code) => {
+            await onDeleteAccount(password, code);
+            setIsModalOpen(false);
+          }}
+          isDeleting={isLoading}
+        />
+      )}
     </section>
   );
 };

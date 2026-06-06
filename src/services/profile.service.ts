@@ -9,4 +9,12 @@ export const profileService = {
     // If it's not FormData, axios will handle it as JSON
     return api.patch('/users/profile', data);
   },
+
+  requestDeleteAccount: async () => {
+    return api.post('/users/request-delete-account');
+  },
+
+  deleteAccount: async (data: { password?: string; code?: string }) => {
+    return api.post('/users/delete-account-permanently', data);
+  },
 };

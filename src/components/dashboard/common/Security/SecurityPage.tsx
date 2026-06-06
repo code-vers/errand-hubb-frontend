@@ -15,8 +15,10 @@ import PageHeader from "../PageHeader";
 import { useChangePassword } from "@/hooks/useAuth";
 import { useAuth } from "@/context/AuthContext";
 import { authService } from "@/services/auth.service";
+import { profileService } from "@/services/profile.service";
 import { toast } from "sonner";
 import TwoFactorSetupModal from "./TwoFactorSetupModal";
+import { useRouter } from "next/navigation";
 
 interface SecurityPageProps {
   initialNotifications?: NotificationPreferences;
@@ -51,7 +53,8 @@ const SecurityPage: FC<SecurityPageProps> = ({
     },
   ],
 }) => {
-  const { user, setUser } = useAuth();
+  const { user, setUser, logout } = useAuth();
+  const router = useRouter();
   const [notifications, setNotifications] =
     useState<NotificationPreferences>(initialNotifications);
   const [activities] = useState<LoginActivity[]>(initialActivities);
@@ -143,10 +146,15 @@ const SecurityPage: FC<SecurityPageProps> = ({
     }
   };
 
-  const handleDeleteAccount = async () => {
+  const handleDeleteAccount = async (password: string, code: string) => {
     setLoading((prev) => ({ ...prev, delete: true }));
     try {
-      // Delete logic
+      await profileService.deleteAccount({ password, code });
+      toast.success("Account deleted successfully. We're sad to see you go.");
+      logout();
+      router.push("/");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to delete account. Please check your password and code.");
     } finally {
       setLoading((prev) => ({ ...prev, delete: false }));
     }
@@ -176,11 +184,7 @@ const SecurityPage: FC<SecurityPageProps> = ({
               onSave={handleNotificationsSave}
               isLoading={loading.notifications}
             />
-            <LoginActivitySection
-              activities={activities}
-              onRefresh={handleActivityRefresh}
-              isLoading={loading.activity}
-            />
+            <LoginActivitySection />
             <DangerZoneSection
               onDeleteAccount={handleDeleteAccount}
               isLoading={loading.delete}

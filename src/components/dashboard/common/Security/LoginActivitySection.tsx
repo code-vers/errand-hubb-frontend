@@ -1,6 +1,7 @@
 "use client";
 
-import type { LoginActivity } from "@/types/settings";
+import { authService } from "@/services/auth.service";
+import { useQuery } from "@tanstack/react-query";
 import {
   Activity,
   AlertTriangle,
@@ -13,12 +14,7 @@ import {
   Tablet,
 } from "lucide-react";
 import { FC } from "react";
-
-interface LoginActivitySectionProps {
-  activities: LoginActivity[];
-  onRefresh: () => Promise<void>;
-  isLoading?: boolean;
-}
+import { formatDistanceToNow } from "date-fns";
 
 const deviceIcons = {
   laptop: Laptop,
@@ -55,21 +51,34 @@ const statusStyles = {
   },
 };
 
-const LoginActivitySection: FC<LoginActivitySectionProps> = ({
-  activities,
-  onRefresh,
-  isLoading = false,
-}) => {
+const LoginActivitySection: FC = () => {
+  const { data: activities = [], isLoading, refetch } = useQuery({
+    queryKey: ["login-activity"],
+    queryFn: async () => {
+      const response = await authService.getLoginActivity();
+      return response.data;
+    },
+  });
+
   return (
     <section className='bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-[#f5ebd8] flex flex-col gap-0'>
       <header className='flex items-start gap-4 p-6 border-b border-[#f5ebd8]'>
         <div className='bg-green-50 p-3 rounded-lg shrink-0'>
           <Activity className='w-6 h-6 text-green-600' />
         </div>
-        <div>
-          <h2 className='text-[18px] font-bold text-foreground'>
-            Recent Login Activity
-          </h2>
+        <div className="flex-1">
+          <div className="flex items-center justify-between">
+            <h2 className='text-[18px] font-bold text-foreground'>
+              Recent Login Activity
+            </h2>
+            <button
+              onClick={() => refetch()}
+              disabled={isLoading}
+              className='text-xs text-[var(--color-primary)] font-bold flex items-center gap-1.5 hover:bg-orange-50 px-3 py-1.5 rounded-lg transition-all border border-transparent hover:border-orange-100'>
+              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
+              REFRESH
+            </button>
+          </div>
           <p className='text-sm text-[#4B5563] mt-1'>
             Devices and locations that have accessed your account.
           </p>
@@ -77,72 +86,68 @@ const LoginActivitySection: FC<LoginActivitySectionProps> = ({
       </header>
 
       <div className='flex flex-col'>
-        {activities.map((activity) => {
-          const DeviceIcon =
-            deviceIcons[activity.deviceIcon as keyof typeof deviceIcons] ||
-            Globe;
-          const status =
-            statusStyles[activity.status as keyof typeof statusStyles];
+        {isLoading ? (
+          <div className="p-8 text-center text-sm text-gray-500">Loading activity history...</div>
+        ) : activities.length === 0 ? (
+          <div className="p-8 text-center text-sm text-gray-500">No login activity recorded yet.</div>
+        ) : (
+          activities.map((activity: any, index: number) => {
+            const DeviceIcon =
+              deviceIcons[activity.deviceIcon as keyof typeof deviceIcons] ||
+              Globe;
+            
+            // First item is current session for demo purposes, or based on logic
+            const isCurrent = index === 0;
+            const statusStyle = isCurrent ? statusStyles.current : statusStyles.active;
 
-          return (
-            <div
-              key={activity.id}
-              className={`flex items-center justify-between py-4 border-b border-[#f5ebd8]
-                px-6 ${status.rowBg}`}>
-              <div className='flex items-center gap-4'>
-                <div
-                  className={`p-2 rounded-lg ${
-                    activity.status === "suspicious"
-                      ? "bg-red-50"
-                      : "bg-orange-50"
-                  }`}>
-                  <DeviceIcon
-                    className={`w-5 h-5 ${
-                      activity.status === "suspicious"
-                        ? "text-red-600"
-                        : "text-[var(--color-primary)]"
-                    }`}
-                  />
+            return (
+              <div
+                key={activity.id}
+                className={`flex items-center justify-between py-5 border-b border-[#f5ebd8] last:border-0
+                  px-6 ${isCurrent ? "bg-orange-50/20" : "hover:bg-gray-50/50"} transition-colors`}>
+                <div className='flex items-center gap-4'>
+                  <div
+                    className={`p-2.5 rounded-xl ${
+                      isCurrent ? "bg-orange-100/50" : "bg-gray-100/80"
+                    }`}>
+                    <DeviceIcon
+                      className={`w-5 h-5 ${
+                        isCurrent ? "text-primary" : "text-gray-500"
+                      }`}
+                    />
+                  </div>
+                  <div>
+                    <p className='text-sm font-bold text-foreground flex items-center gap-2'>
+                      {activity.device}
+                      <span className='font-medium text-[#6B7280] text-[11px] bg-gray-100 px-2 py-0.5 rounded-full'>
+                        {activity.browser}
+                      </span>
+                    </p>
+                    <p className='text-xs text-[#6B7280] mt-1 flex items-center gap-1.5'>
+                      <span className="font-semibold text-gray-400">{activity.ipAddress}</span>
+                      <span className="text-gray-300">•</span>
+                      <span>{formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}</span>
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p className='text-sm font-semibold text-foreground'>
-                    {activity.device}
-                    <span className='font-normal text-[#6B7280] text-xs ml-1'>
-                      • {activity.browser}
-                    </span>
-                  </p>
-                  <p className='text-xs text-[#4B5563] mt-0.5'>
-                    {activity.location} · {activity.timestamp}
-                  </p>
+
+                <div className='flex items-center gap-3'>
+                  <span
+                    className={`${statusStyle.bg} ${statusStyle.text} text-[10px] font-bold px-2.5 py-1 rounded-md uppercase tracking-wider shadow-sm`}>
+                    {statusStyle.label}
+                  </span>
+                  <ChevronRight className='w-4 h-4 text-gray-300' />
                 </div>
               </div>
-
-              <div className='flex items-center gap-2'>
-                <span
-                  className={`${status.bg} ${status.text} text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider flex items-center gap-1`}>
-                  {activity.status === "suspicious" && (
-                    <AlertTriangle className='w-3 h-3' />
-                  )}
-                  {status.label}
-                </span>
-                <ChevronRight className='w-4 h-4 text-[#f5ebd8]' />
-              </div>
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
 
-      <footer className='flex p-4 justify-between items-center pt-4 border-b border-[#f5ebd8] mt-2'>
-        <p className='text-xs text-[#6B7280]'>
-          Showing {activities.length} recent sessions
+      <footer className='flex p-4 justify-center items-center bg-gray-50/50 rounded-b-lg border-t border-[#f5ebd8]'>
+        <p className='text-[11px] font-bold text-gray-400 uppercase tracking-widest'>
+          Secure session management active
         </p>
-        <button
-          onClick={onRefresh}
-          disabled={isLoading}
-          className='text-xs text-[var(--color-primary)] font-semibold flex items-center gap-1 hover:text-[var(--color-primary-dark)] transition-colors'>
-          <RefreshCw className={`w-3 h-3 ${isLoading ? "animate-spin" : ""}`} />
-          Refresh
-        </button>
       </footer>
     </section>
   );

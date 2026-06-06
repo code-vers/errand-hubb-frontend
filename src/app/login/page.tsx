@@ -82,44 +82,64 @@ export default function LoginPage() {
 
   if (mfaData.required) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[var(--color-surface-dim)] px-4">
-        <div className="w-full max-w-md bg-[var(--color-background)] p-8 rounded-xl border border-[var(--color-border)] shadow-lg">
-          <button 
-            onClick={() => setMfaData({ ...mfaData, required: false })}
-            className="flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-primary transition-colors mb-6 uppercase tracking-wider"
-          >
-            <ArrowLeft size={14} /> Back to Login
-          </button>
-
-          <div className="text-center mb-8">
-            <div className="bg-indigo-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Shield className="w-8 h-8 text-indigo-600" />
+      <div className="flex items-center justify-center min-h-screen bg-[#fcf9f4] px-4">
+        <div className="w-full max-w-md bg-white rounded-2xl border border-[#f5ebd8] shadow-2xl overflow-hidden">
+          <div className="bg-[#f5ebd8] px-8 py-6 flex items-center justify-between border-b border-[#e2d5c3]">
+            <h2 className="text-[#1A1A1A] font-bold text-xl uppercase tracking-tight">Two-Step Verification</h2>
+            <div className="bg-white/50 p-2 rounded-full">
+              <Shield className="w-6 h-6 text-indigo-600" />
             </div>
-            <h1 className="text-2xl font-bold text-[var(--color-secondary)]">Verification Code</h1>
-            <p className="text-[var(--color-muted)] mt-2">Enter the 6-digit code from your authenticator app.</p>
           </div>
 
-          <form onSubmit={handleMfaSubmit} className="space-y-6">
-            <div>
-              <input
-                type="text"
-                maxLength={6}
-                autoFocus
-                placeholder="000000"
-                value={mfaData.code}
-                onChange={handleMfaChange}
-                className="w-full px-4 py-4 border-2 border-[var(--color-border)] rounded-xl text-center text-3xl font-bold tracking-[0.3em] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-[var(--color-background)]"
-              />
+          <div className="p-8">
+            <button 
+              onClick={() => setMfaData({ ...mfaData, required: false })}
+              className="flex items-center gap-2 text-[11px] font-bold text-gray-400 hover:text-primary transition-colors mb-8 uppercase tracking-widest group"
+            >
+              <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> Back to Login
+            </button>
+
+            <div className="text-center mb-8">
+              <p className="text-sm text-[#4B5563] leading-relaxed">
+                A verification code has been sent to your device. Please enter the 6-digit code from your authenticator app to continue.
+              </p>
             </div>
 
-            <button
-              type="submit"
-              disabled={isVerifyPending || mfaData.code.length !== 6}
-              className="w-full py-4 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors uppercase tracking-widest text-sm shadow-lg shadow-indigo-100 disabled:opacity-50"
-            >
-              {isVerifyPending ? 'Verifying...' : 'Authenticate'}
-            </button>
-          </form>
+            <form onSubmit={handleMfaSubmit} className="space-y-8">
+              <div className="relative">
+                <input
+                  type="text"
+                  maxLength={6}
+                  autoFocus
+                  placeholder="000 000"
+                  value={mfaData.code}
+                  onChange={handleMfaChange}
+                  className="w-full px-6 py-5 bg-[#fcf9f4] border border-[#f5ebd8] rounded-xl text-center text-3xl font-bold tracking-[0.4em] focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all text-indigo-600 placeholder-gray-300 shadow-inner"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isVerifyPending || mfaData.code.length !== 6}
+                className="w-full py-4 bg-primary hover:bg-primary-dark text-white font-extrabold rounded-xl transition-all shadow-md hover:shadow-lg tracking-[0.1em] text-sm disabled:opacity-50 disabled:cursor-not-allowed uppercase flex items-center justify-center gap-3"
+              >
+                {isVerifyPending ? (
+                  <>
+                    <RefreshCw size={18} className="animate-spin" />
+                    VERIFYING...
+                  </>
+                ) : (
+                  "AUTHENTICATE & LOGIN"
+                )}
+              </button>
+            </form>
+
+            <div className="mt-8 text-center">
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                Protected by Errand Hubb Security
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     );

@@ -44,4 +44,8 @@ export const authService = {
   disable2FA: async () => {
     return api.post('/auth/disable-2fa');
   },
+
+  getLoginActivity: async () => {
+    return api.get('/auth/login-activity');
+  },
 };
