@@ -13,15 +13,17 @@ import type {
 } from "@/types/settings";
 import PageHeader from "../PageHeader";
 import { useChangePassword } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthContext";
+import { authService } from "@/services/auth.service";
+import { toast } from "sonner";
+import TwoFactorSetupModal from "./TwoFactorSetupModal";
 
 interface SecurityPageProps {
-  initialTwoFactorEnabled?: boolean;
   initialNotifications?: NotificationPreferences;
   initialActivities?: LoginActivity[];
 }
 
 const SecurityPage: FC<SecurityPageProps> = ({
-  initialTwoFactorEnabled = false,
   initialNotifications = {
     email: true,
     sms: false,
@@ -49,9 +51,7 @@ const SecurityPage: FC<SecurityPageProps> = ({
     },
   ],
 }) => {
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(
-    initialTwoFactorEnabled,
-  );
+  const { user, setUser } = useAuth();
   const [notifications, setNotifications] =
     useState<NotificationPreferences>(initialNotifications);
   const [activities] = useState<LoginActivity[]>(initialActivities);
@@ -62,6 +62,10 @@ const SecurityPage: FC<SecurityPageProps> = ({
     delete: false,
   });
 
+  const [show2FAModal, setShow2FAModal] = useState(false);
+  const [qrCode, setQrCode] = useState("");
+  const [secret, setSecret] = useState("");
+
   const { mutateAsync: changePassword, isPending: isPasswordUpdating } = useChangePassword();
 
   const handlePasswordSubmit = async (data: PasswordFormData) => {
@@ -71,15 +75,49 @@ const SecurityPage: FC<SecurityPageProps> = ({
         newPassword: data.newPassword
       });
     } catch (error) {
-      // Error is handled in the hook
-      throw error; // Re-throw to allow component to reset/keep state
+      throw error;
     }
   };
 
   const handleTwoFactorToggle = async (enabled: boolean) => {
-    setLoading((prev) => ({ ...prev, twoFactor: true }));
     try {
-      setTwoFactorEnabled(enabled);
+      setLoading((prev) => ({ ...prev, twoFactor: true }));
+      if (enabled) {
+        // Start enablement process
+        const response = await authService.generate2FA();
+        setQrCode(response.data.qrCode);
+        setSecret(response.data.secret);
+        setShow2FAModal(true);
+      } else {
+        // Disable process
+        await authService.disable2FA();
+        if (user) {
+          const updatedUser = { ...user, isTwoFactorEnabled: false };
+          setUser(updatedUser);
+          localStorage.setItem("errand_user", JSON.stringify(updatedUser));
+        }
+        toast.success("Two-Factor Authentication disabled");
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to update 2FA status");
+    } finally {
+      setLoading((prev) => ({ ...prev, twoFactor: false }));
+    }
+  };
+
+  const handleVerify2FA = async (code: string) => {
+    try {
+      setLoading((prev) => ({ ...prev, twoFactor: true }));
+      await authService.enable2FA(code);
+      if (user) {
+        const updatedUser = { ...user, isTwoFactorEnabled: true };
+        setUser(updatedUser);
+        localStorage.setItem("errand_user", JSON.stringify(updatedUser));
+      }
+      setShow2FAModal(false);
+      toast.success("Two-Factor Authentication enabled successfully!");
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Invalid verification code");
     } finally {
       setLoading((prev) => ({ ...prev, twoFactor: false }));
     }
@@ -126,7 +164,7 @@ const SecurityPage: FC<SecurityPageProps> = ({
               isLoading={isPasswordUpdating}
             />
             <TwoFactorSection
-              enabled={twoFactorEnabled}
+              enabled={user?.isTwoFactorEnabled || false}
               onToggle={handleTwoFactorToggle}
               isLoading={loading.twoFactor}
             />
@@ -150,6 +188,16 @@ const SecurityPage: FC<SecurityPageProps> = ({
           </div>
         </div>
       </div>
+
+      {show2FAModal && (
+        <TwoFactorSetupModal
+          qrCode={qrCode}
+          secret={secret}
+          onClose={() => setShow2FAModal(false)}
+          onVerify={handleVerify2FA}
+          isVerifying={loading.twoFactor}
+        />
+      )}
     </div>
   );
 };

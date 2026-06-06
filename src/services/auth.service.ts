@@ -13,6 +13,10 @@ export const authService = {
     return api.post('/auth/login', credentials);
   },
 
+  verify2FALogin: async (data: { userId: string; code: string }) => {
+    return api.post('/auth/verify-2fa-login', data);
+  },
+
   logout: async () => {
     return api.post('/auth/logout');
   },
@@ -27,5 +31,17 @@ export const authService = {
 
   changePassword: async (data: any) => {
     return api.post('/auth/change-password', data);
+  },
+
+  generate2FA: async () => {
+    return api.post('/auth/generate-2fa');
+  },
+
+  enable2FA: async (code: string) => {
+    return api.post('/auth/enable-2fa', { code });
+  },
+
+  disable2FA: async () => {
+    return api.post('/auth/disable-2fa');
   },
 };
