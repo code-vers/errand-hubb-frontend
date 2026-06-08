@@ -1,13 +1,25 @@
 import { Post } from "@/types/search";
-import { MapPin, FolderX } from "lucide-react";
+import { MapPin, FolderX, X } from "lucide-react";
 import Image from "next/image";
 import icon from "../../../../public/icon.svg";
+import { useState } from "react";
 
 interface SearchResultProps {
   posts: Post[];
 }
 
+const getYoutubeEmbedUrl = (url: string) => {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11)
+    ? `https://www.youtube.com/embed/${match[2]}`
+    : null;
+};
+
 const SearchResult = ({ posts }: SearchResultProps) => {
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
+
   if (posts.length === 0) {
     return (
       <div className='text-center py-20 bg-white rounded-[10px] shadow-sm'>
@@ -24,7 +36,7 @@ const SearchResult = ({ posts }: SearchResultProps) => {
   }
 
   return (
-    <div className='w-full font-sans antialiased text-[#2a3a4a]'>
+    <div className='w-full font-sans antialiased text-[#2a3a4a] relative'>
       {/* Dashed outer border grid */}
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
         {posts.map((post) => (
@@ -63,18 +75,19 @@ const SearchResult = ({ posts }: SearchResultProps) => {
                   </div>
 
                   {/* Play + video thumb */}
-                  <div className='flex items-center gap-2'>
-                    <button className='text-[#1b539c] hover:text-blue-800 transition-colors'>
-                      <Image src={icon} height={50} width={50} alt='icon' />
-                    </button>
-                    {/* <Image
-                      height={60}
-                      width={80}
-                      src={person.videoThumb}
-                      alt='Video preview'
-                      className='w-10 h-10 rounded object-cover border border-gray-200'
-                    /> */}
-                  </div>
+                  {post.youtubeLink && (
+                    <div className='flex items-center gap-2'>
+                      <button 
+                        onClick={() => {
+                          const embedUrl = getYoutubeEmbedUrl(post.youtubeLink!);
+                          if (embedUrl) setActiveVideo(embedUrl);
+                        }}
+                        className='text-[#1b539c] hover:text-blue-800 transition-colors cursor-pointer active:scale-95'
+                      >
+                        <Image src={icon} height={50} width={50} alt='Play Video' />
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Bio */}
@@ -104,6 +117,28 @@ const SearchResult = ({ posts }: SearchResultProps) => {
           </article>
         ))}
       </div>
+
+      {/* Video Modal */}
+      {activeVideo && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="relative w-full max-w-4xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl">
+            <button 
+              onClick={() => setActiveVideo(null)}
+              className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/80 text-white rounded-full transition-colors"
+            >
+              <X size={24} />
+            </button>
+            <iframe
+              className="w-full h-full"
+              src={`${activeVideo}?autoplay=1`}
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { Errand } from "@/types/errand";
 import { useRef, useState } from "react";
-import { Upload, X, Loader2 } from "lucide-react";
+import { Upload, X, Loader2, PlayCircle } from "lucide-react";
 
 interface ErrandDetailsFormProps {
   formData: Errand;
@@ -122,6 +122,19 @@ const ErrandDetailsForm = ({ formData, onChange, onSubmit, isSubmitting }: Erran
             value={formData.contactInfo || ""}
             onChange={(e) => onChange("contactInfo", e.target.value)}
             placeholder='Phone or email'
+            className='h-11 rounded-md border border-gray-200 px-3 text-sm outline-none focus:border-[#1b539c] transition-colors'
+          />
+        </label>
+
+        <label className='flex flex-col gap-1.5'>
+          <span className='text-gray-600 text-xs font-bold uppercase tracking-wide flex items-center gap-1.5'>
+            <PlayCircle size={14} className="text-red-500" /> YouTube Video Link (Optional)
+          </span>
+          <input
+            type='url'
+            value={formData.youtubeLink || ""}
+            onChange={(e) => onChange("youtubeLink", e.target.value)}
+            placeholder='https://www.youtube.com/watch?v=...'
             className='h-11 rounded-md border border-gray-200 px-3 text-sm outline-none focus:border-[#1b539c] transition-colors'
           />
         </label>

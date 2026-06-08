@@ -8,6 +8,7 @@ export interface Errand {
   dateNeeded: string;
   contactInfo: string;
   photoUrl: string;
+  youtubeLink?: string;
   categoryId: string;
   status?: string;
 }

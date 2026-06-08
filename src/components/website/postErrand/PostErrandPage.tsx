@@ -24,6 +24,7 @@ const PostErrandPage = () => {
     dateNeeded: "",
     contactInfo: "",
     photoUrl: "",
+    youtubeLink: "",
     categoryId: "",
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -51,6 +52,7 @@ const PostErrandPage = () => {
             dateNeeded: post.dateNeeded ? new Date(post.dateNeeded).toISOString().split('T')[0] : "",
             contactInfo: post.contactInfo || "",
             photoUrl: post.photoUrl || "",
+            youtubeLink: post.youtubeLink || "",
             categoryId: post.categoryId,
           });
         } else {
@@ -68,6 +70,7 @@ const PostErrandPage = () => {
               dateNeeded: post.dateNeeded ? new Date(post.dateNeeded).toISOString().split('T')[0] : "",
               contactInfo: post.contactInfo || "",
               photoUrl: post.photoUrl || "",
+              youtubeLink: post.youtubeLink || "",
               categoryId: post.categoryId,
             });
           }
@@ -106,7 +109,19 @@ const PostErrandPage = () => {
         toast.success("Errand posted successfully!");
       }
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to save errand");
+      console.error("Post Submission Error:", error.response?.data);
+      
+      // Handle array of validation errors from NestJS
+      const errorMsg = error.response?.data?.message;
+      if (Array.isArray(errorMsg)) {
+        // Map through the array of objects { property: string, message: string }
+        const messages = errorMsg.map((err: any) => err.message).join(", ");
+        toast.error(`Validation Failed: ${messages}`);
+      } else if (typeof errorMsg === 'string') {
+        toast.error(errorMsg);
+      } else {
+        toast.error("Failed to save errand. Please check your inputs.");
+      }
     } finally {
       setIsSubmitting(false);
     }

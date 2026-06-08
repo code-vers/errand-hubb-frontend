@@ -17,6 +17,7 @@ export interface Post {
   dateNeeded: string | null;
   contactInfo: string | null;
   photoUrl: string | null;
+  youtubeLink: string | null;
   status: string;
   createdAt: string;
   category: Category;
