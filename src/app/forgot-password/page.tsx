@@ -20,7 +20,7 @@ export default function ForgotPasswordPage() {
       await authService.forgotPassword(email);
       setMessage('Password reset email sent! Please check your inbox.');
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Something went wrong. Please try again.');
+      setError(err.message || 'Something went wrong. Please try again.');
     } finally {
       setLoading(false);
     }
