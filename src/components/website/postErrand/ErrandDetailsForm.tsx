@@ -1,14 +1,15 @@
 import { Errand } from "@/types/errand";
 import { useRef, useState } from "react";
-import { Upload, X } from "lucide-react";
+import { Upload, X, Loader2 } from "lucide-react";
 
 interface ErrandDetailsFormProps {
   formData: Errand;
   onChange: (field: keyof Errand, value: string) => void;
   onSubmit: () => void;
+  isSubmitting?: boolean;
 }
 
-const ErrandDetailsForm = ({ formData, onChange, onSubmit }: ErrandDetailsFormProps) => {
+const ErrandDetailsForm = ({ formData, onChange, onSubmit, isSubmitting }: ErrandDetailsFormProps) => {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -34,6 +35,7 @@ const ErrandDetailsForm = ({ formData, onChange, onSubmit }: ErrandDetailsFormPr
           </span>
           <input
             type='text'
+            required
             value={formData.title || ""}
             onChange={(e) => onChange("title", e.target.value)}
             placeholder='Enter errand title...'
@@ -46,6 +48,7 @@ const ErrandDetailsForm = ({ formData, onChange, onSubmit }: ErrandDetailsFormPr
             Description
           </span>
           <textarea
+            required
             value={formData.description || ""}
             onChange={(e) => onChange("description", e.target.value)}
             placeholder='Describe your errand in detail...'
@@ -60,6 +63,7 @@ const ErrandDetailsForm = ({ formData, onChange, onSubmit }: ErrandDetailsFormPr
             </span>
             <input
               type='text'
+              required
               value={formData.city || ""}
               onChange={(e) => onChange("city", e.target.value)}
               placeholder='City'
@@ -72,6 +76,7 @@ const ErrandDetailsForm = ({ formData, onChange, onSubmit }: ErrandDetailsFormPr
             </span>
             <input
               type='text'
+              required
               value={formData.state || ""}
               onChange={(e) => onChange("state", e.target.value)}
               placeholder='State'
@@ -85,7 +90,8 @@ const ErrandDetailsForm = ({ formData, onChange, onSubmit }: ErrandDetailsFormPr
             Your Budget ($)
           </span>
           <input
-            type='text'
+            type='number'
+            required
             value={formData.budget || ""}
             onChange={(e) => onChange("budget", e.target.value)}
             placeholder='e.g. 25'
@@ -98,10 +104,10 @@ const ErrandDetailsForm = ({ formData, onChange, onSubmit }: ErrandDetailsFormPr
             Date Needed
           </span>
           <input
-            type='text'
+            type='date'
+            required
             value={formData.dateNeeded || ""}
             onChange={(e) => onChange("dateNeeded", e.target.value)}
-            placeholder='MM/DD/YYYY'
             className='h-11 rounded-md border border-gray-200 px-3 text-sm outline-none focus:border-[#1b539c] transition-colors'
           />
         </label>
@@ -112,6 +118,7 @@ const ErrandDetailsForm = ({ formData, onChange, onSubmit }: ErrandDetailsFormPr
           </span>
           <input
             type='text'
+            required
             value={formData.contactInfo || ""}
             onChange={(e) => onChange("contactInfo", e.target.value)}
             placeholder='Phone or email'
@@ -164,8 +171,16 @@ const ErrandDetailsForm = ({ formData, onChange, onSubmit }: ErrandDetailsFormPr
 
         <button
           type='submit'
-          className='mt-2 h-12 rounded-md bg-[#f27b2a] text-white text-sm font-bold tracking-wide uppercase hover:bg-orange-600 active:scale-95 transition-all shadow-sm'>
-          Post Errand
+          disabled={isSubmitting}
+          className='mt-2 h-12 rounded-md bg-[#f27b2a] text-white text-sm font-bold tracking-wide uppercase hover:bg-orange-600 active:scale-95 transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed'>
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            formData.id ? "Update Errand" : "Post Errand"
+          )}
         </button>
       </form>
     </section>

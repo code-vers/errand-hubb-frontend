@@ -11,12 +11,14 @@ import PersonalInfoCard from "./Personalinfocard";
 import PageHeader from "../PageHeader";
 import { NotificationPreferences } from "@/types/profile";
 import EditProfileModal from "./EditProfileModal";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const { user, setUser } = useAuth();
   const { data: profileData, isLoading } = useProfile();
   const { mutate: updateProfile, isPending } = useUpdateProfile();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const router = useRouter();
 
   if (isLoading) {
     return <div className="p-12 text-center">Loading profile...</div>;
@@ -114,8 +116,8 @@ export default function ProfilePage() {
             onToggle={handleToggle}
           />
           <QuickActionsCard
-            onPostOnBoard={() => alert("Post on Board")}
-            onViewMyPosts={() => alert("View My Posts")}
+            onPostOnBoard={() => router.push('/post-errand')}
+            onViewMyPosts={() => router.push('/dashboard/my-posts')}
           />
         </div>
       </div>

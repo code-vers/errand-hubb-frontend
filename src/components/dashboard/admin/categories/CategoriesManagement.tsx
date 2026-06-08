@@ -2,95 +2,37 @@
 
 import { Category, CategoryStatus } from "@/types/categories";
 import { Plus, Search, X } from "lucide-react";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import PageHeader from "../../common/PageHeader";
 import CategoryGrid from "./CategoryGrid";
+import { categoryService } from "@/services/category.service";
+import { toast } from "sonner";
+import CategoryForm from "./CategoryForm";
 
 const CategoriesManagement: React.FC = () => {
   // State management
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState<"all" | CategoryStatus>(
-    "all",
-  );
+  const [filterStatus, setFilterStatus] = useState<"all" | CategoryStatus>("all");
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<Category | undefined>();
 
-  // Mock data - Replace with API calls
-  const [categories, setCategories] = useState<Category[]>([
-    {
-      id: "1",
-      name: "Errands",
-      description: "General errand running tasks",
-      emoji: "🏃",
-      postsCount: 1240,
-      status: "active",
-      iconBgColor: "bg-orange-50",
-    },
-    {
-      id: "2",
-      name: "Cleaning",
-      description: "House and office cleaning",
-      emoji: "🧹",
-      postsCount: 890,
-      status: "active",
-      iconBgColor: "bg-blue-50",
-    },
-    {
-      id: "3",
-      name: "Repairs",
-      description: "Minor home repairs and fixes",
-      emoji: "🔧",
-      postsCount: 654,
-      status: "active",
-      iconBgColor: "bg-purple-50",
-    },
-    {
-      id: "4",
-      name: "Pet Care",
-      description: "Dog walking, pet sitting",
-      emoji: "🐾",
-      postsCount: 420,
-      status: "active",
-      iconBgColor: "bg-green-50",
-    },
-    {
-      id: "5",
-      name: "Cooking",
-      description: "Meal prep and home cooking",
-      emoji: "🍳",
-      postsCount: 310,
-      status: "active",
-      iconBgColor: "bg-yellow-50",
-    },
-    {
-      id: "6",
-      name: "Moving",
-      description: "Packing and moving assistance",
-      emoji: "📦",
-      postsCount: 178,
-      status: "inactive",
-      iconBgColor: "bg-red-50",
-      cardBgColor: "bg-gray-50",
-    },
-    {
-      id: "7",
-      name: "Tech Support",
-      description: "Computer and gadget help",
-      emoji: "💻",
-      postsCount: 247,
-      status: "active",
-      iconBgColor: "bg-emerald-50",
-    },
-    {
-      id: "8",
-      name: "Admin Tasks",
-      description: "Office and administrative work",
-      emoji: "📋",
-      postsCount: 96,
-      status: "inactive",
-      iconBgColor: "bg-indigo-50",
-      cardBgColor: "bg-gray-50",
-    },
-  ]);
+  const fetchCategories = async () => {
+    setIsLoading(true);
+    try {
+      const data = await categoryService.getAll();
+      setCategories(data);
+    } catch (error) {
+      toast.error("Failed to fetch categories");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   // Filter categories based on search and status
   const filteredCategories = useMemo(() => {
@@ -107,7 +49,7 @@ const CategoriesManagement: React.FC = () => {
       filtered = filtered.filter(
         (cat) =>
           cat.name.toLowerCase().includes(searchLower) ||
-          cat.description.toLowerCase().includes(searchLower),
+          (cat.description && cat.description.toLowerCase().includes(searchLower)),
       );
     }
 
@@ -115,36 +57,46 @@ const CategoriesManagement: React.FC = () => {
   }, [categories, filterStatus, searchTerm]);
 
   // Handle toggle status
-  const handleToggleStatus = useCallback((categoryId: string) => {
-    setCategories((prevCategories) => {
-      const updatedCategories = prevCategories.map((cat) => {
-        if (cat.id === categoryId) {
-          const newStatus: CategoryStatus =
-            cat.status === "active" ? "inactive" : "active";
-          return {
-            ...cat,
-            status: newStatus,
-            cardBgColor: newStatus === "inactive" ? "bg-gray-50" : undefined,
-          };
-        }
-        return cat;
-      });
+  const handleToggleStatus = useCallback(async (categoryId: string) => {
+    const categoryToUpdate = categories.find((c) => c.id === categoryId);
+    if (!categoryToUpdate) return;
 
-      return updatedCategories;
-    });
-  }, []);
+    try {
+      const newStatus = categoryToUpdate.status === "active" ? "inactive" : "active";
+      await categoryService.update(categoryId, { status: newStatus });
+      setCategories((prevCategories) =>
+        prevCategories.map((cat) =>
+          cat.id === categoryId ? { ...cat, status: newStatus } : cat
+        )
+      );
+      toast.success(`Category marked as ${newStatus}`);
+    } catch (error) {
+      toast.error("Failed to update status");
+    }
+  }, [categories]);
 
   // Handle delete
-  const handleDelete = useCallback((categoryId: string) => {
+  const handleDelete = useCallback(async (categoryId: string) => {
     if (
       window.confirm(
         "Are you sure you want to delete this category? This action cannot be undone.",
       )
     ) {
-      setCategories((prevCategories) =>
-        prevCategories.filter((cat) => cat.id !== categoryId),
-      );
+      try {
+        await categoryService.delete(categoryId);
+        setCategories((prevCategories) =>
+          prevCategories.filter((cat) => cat.id !== categoryId),
+        );
+        toast.success("Category deleted successfully");
+      } catch (error) {
+        toast.error("Failed to delete category");
+      }
     }
+  }, []);
+
+  const handleEdit = useCallback((category: Category) => {
+    setSelectedCategory(category);
+    setIsFormOpen(true);
   }, []);
 
   // Calculate stats
@@ -154,7 +106,7 @@ const CategoriesManagement: React.FC = () => {
     const inactive = categories.filter(
       (cat) => cat.status === "inactive",
     ).length;
-    const totalPosts = categories.reduce((sum, cat) => sum + cat.postsCount, 0);
+    const totalPosts = categories.reduce((sum, cat) => sum + (cat.postsCount || 0), 0);
 
     return { total, active, inactive, totalPosts };
   }, [categories]);
@@ -176,7 +128,10 @@ const CategoriesManagement: React.FC = () => {
           <button
             type='button'
             className='inline-flex items-center px-5 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:opacity-90 transition-all active:scale-[0.98] shadow-sm'
-            onClick={() => console.log("Add new category")}>
+            onClick={() => {
+              setSelectedCategory(undefined);
+              setIsFormOpen(true);
+            }}>
             <Plus size={18} className='mr-1.5 stroke-[3]' />
             ADD CATEGORY
           </button>
@@ -259,6 +214,7 @@ const CategoriesManagement: React.FC = () => {
           categories={filteredCategories}
           onToggleStatus={handleToggleStatus}
           onDelete={handleDelete}
+          onEdit={handleEdit}
           isLoading={isLoading}
           emptyStateMessage={
             searchTerm
@@ -267,6 +223,17 @@ const CategoriesManagement: React.FC = () => {
           }
         />
       </main>
+
+      {isFormOpen && (
+        <CategoryForm 
+          category={selectedCategory} 
+          onClose={() => setIsFormOpen(false)} 
+          onSuccess={() => {
+            setIsFormOpen(false);
+            fetchCategories();
+          }} 
+        />
+      )}
     </div>
   );
 };

@@ -1,17 +1,19 @@
 import React from "react";
 import { Category } from "@/types/categories";
-import { Trash2, Power } from "lucide-react";
+import { Trash2, Power, Edit2 } from "lucide-react";
 
 interface CategoryCardProps {
   category: Category;
   onToggleStatus: (categoryId: string) => void;
   onDelete: (categoryId: string) => void;
+  onEdit: (category: Category) => void;
 }
 
 const CategoryCard: React.FC<CategoryCardProps> = ({
   category,
   onToggleStatus,
   onDelete,
+  onEdit,
 }) => {
   const isActive = category.status === "active";
 
@@ -34,16 +36,33 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         {/* Category Icon */}
         <div
           aria-hidden='true'
-          className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl ${category.iconBgColor} ${
+          style={{ backgroundColor: `${category.color}15`, color: category.color }}
+          className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl ${
             !isActive && "grayscale opacity-50"
           }`}>
-          <span role='img' aria-label={category.name}>
-            {category.emoji}
-          </span>
+          {category.iconType === "emoji" ? (
+            <span role='img' aria-label={category.name}>
+              {category.icon}
+            </span>
+          ) : (
+            <img src={category.icon} alt={category.name} className="w-6 h-6 object-contain" />
+          )}
         </div>
 
         {/* Action Buttons */}
-        <div className='flex gap-2'>
+        <div className='flex gap-1.5'>
+          {/* Edit Button */}
+          <button
+            aria-label={`Edit ${category.name} category`}
+            onClick={() => onEdit(category)}
+            className={`
+              w-9 h-9 rounded-xl flex items-center justify-center transition-all active:scale-95
+              bg-blue-50 text-blue-600 hover:bg-blue-100
+              ${!isActive ? "opacity-70 hover:opacity-100" : ""}
+            `}>
+            <Edit2 size={16} />
+          </button>
+          
           {/* Toggle Status Button */}
           <button
             aria-label={`${isActive ? "Deactivate" : "Activate"} ${category.name} category`}
@@ -97,7 +116,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
             className={`font-bold text-[15px] ${
               isActive ? "text-foreground" : "text-gray-600"
             }`}>
-            {formatNumber(category.postsCount)}
+            {formatNumber(category.postsCount || 0)}
           </span>{" "}
           posts
         </div>

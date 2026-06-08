@@ -7,6 +7,7 @@ interface CategoryGridProps {
   categories: Category[];
   onToggleStatus: (categoryId: string) => void;
   onDelete: (categoryId: string) => void;
+  onEdit: (category: Category) => void;
   isLoading?: boolean;
   emptyStateMessage?: string;
 }
@@ -15,6 +16,7 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({
   categories,
   onToggleStatus,
   onDelete,
+  onEdit,
   isLoading = false,
   emptyStateMessage = "No categories found",
 }) => {
@@ -67,6 +69,7 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({
           category={category}
           onToggleStatus={onToggleStatus}
           onDelete={onDelete}
+          onEdit={onEdit}
         />
       ))}
     </div>
