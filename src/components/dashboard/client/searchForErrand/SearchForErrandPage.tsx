@@ -100,7 +100,7 @@ const SearchForErrandPage = () => {
           <div className='mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4'>
             <div className='overflow-x-auto pb-2 scrollbar-hide flex-1 w-full'>
               <CategoryFilters
-                selectedCategory={filters.category}
+                selectedCategory={filters.categoryId}
                 onCategoryChange={setCategory}
               />
             </div>

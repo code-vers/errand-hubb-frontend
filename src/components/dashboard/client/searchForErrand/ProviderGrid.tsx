@@ -1,10 +1,10 @@
 "use client";
 
-import { ServiceProvider } from "@/types/provider";
+import { Post } from "@/types/search";
 import ProviderCard from "./ProviderCard";
 
 interface ProviderGridProps {
-  providers: ServiceProvider[];
+  providers: Post[];
   loading: boolean;
   error: string | null;
 }
@@ -68,7 +68,7 @@ export default function ProviderGrid({
           />
         </svg>
         <h3 className='text-lg font-medium text-gray-900 mb-2'>
-          No providers found
+          No errands found
         </h3>
         <p className='text-gray-500'>Try adjusting your search or filters</p>
       </div>
@@ -79,8 +79,8 @@ export default function ProviderGrid({
     <section
       className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'
       data-purpose='service-provider-grid'>
-      {providers.map((provider) => (
-        <ProviderCard key={provider.id} provider={provider} />
+      {providers.map((post) => (
+        <ProviderCard key={post.id} provider={post} />
       ))}
     </section>
   );

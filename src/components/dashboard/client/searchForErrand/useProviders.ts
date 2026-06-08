@@ -1,89 +1,105 @@
 "use client";
 
-import { ProviderFilters } from "@/types/provider";
-import { useCallback, useMemo, useState } from "react";
-import { mockProviders } from "./provider";
+import { useState, useEffect, useCallback } from "react";
+import { postService } from "@/services/post.service";
+import { Post } from "@/types/search";
 
-const initialFilters: ProviderFilters = {
+export interface SearchFilters {
+  search: string;
+  categoryId: string;
+  sortBy: string;
+  sortOrder: "asc" | "desc";
+  page: number;
+}
+
+const initialFilters: SearchFilters = {
   search: "",
-  category: "All",
-  sortBy: "highest_rated",
+  categoryId: "all",
+  sortBy: "createdAt",
+  sortOrder: "desc",
   page: 1,
 };
 
 export function useProviders() {
-  const [filters, setFilters] = useState<ProviderFilters>(initialFilters);
+  const [filters, setFilters] = useState<SearchFilters>(initialFilters);
+  const [providers, setProviders] = useState<Post[]>([]);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filteredProviders = useMemo(() => {
-    let result = [...mockProviders];
-
-    // Search filter
-    if (filters.search) {
-      const searchLower = filters.search.toLowerCase();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(searchLower) ||
-          p.title.toLowerCase().includes(searchLower) ||
-          p.description.toLowerCase().includes(searchLower) ||
-          p.location.toLowerCase().includes(searchLower) ||
-          p.skills.some((s) => s.toLowerCase().includes(searchLower)),
-      );
+  const fetchPosts = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await postService.findAll({
+        search: filters.search,
+        categoryId: filters.categoryId === "all" ? "" : filters.categoryId,
+        sortBy: filters.sortBy,
+        sortOrder: filters.sortOrder,
+        page: filters.page,
+        limit: 6, // 6 items per page for the dashboard grid
+      });
+      setProviders(response.data.data);
+      setTotal(response.data.meta.total);
+      setTotalPages(response.data.meta.totalPages);
+    } catch (err: any) {
+      console.error("Failed to fetch posts:", err);
+      setError(err.message || "Failed to load providers");
+    } finally {
+      setLoading(false);
     }
-
-    // Category filter
-    if (filters.category && filters.category !== "All") {
-      result = result.filter((p) => p.category === filters.category);
-    }
-
-    // Sorting
-    switch (filters.sortBy) {
-      case "lowest_price":
-        result.sort((a, b) => a.startingPrice - b.startingPrice);
-        break;
-      case "highest_price":
-        result.sort((a, b) => b.startingPrice - a.startingPrice);
-        break;
-      case "most_jobs":
-        result.sort((a, b) => b.jobCount - a.jobCount);
-        break;
-      case "highest_rated":
-      default:
-        result.sort((a, b) => b.rating - a.rating || b.reviewCount - a.reviewCount);
-        break;
-    }
-
-    return result;
   }, [filters]);
 
-  const itemsPerPage = 6;
-  const totalPages = Math.ceil(filteredProviders.length / itemsPerPage);
-  const paginatedProviders = filteredProviders.slice(
-    (filters.page - 1) * itemsPerPage,
-    filters.page * itemsPerPage,
-  );
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
 
-  const updateFilter = useCallback((key: keyof ProviderFilters, value: any) => {
+  const updateFilter = useCallback((key: keyof SearchFilters, value: any) => {
     setFilters((prev) => ({
       ...prev,
       [key]: value,
-      ...(key !== "page" ? { page: 1 } : {}),
+      ...(key !== "page" ? { page: 1 } : {}), // Reset to page 1 on filter change
     }));
   }, []);
 
   const setSearch = (search: string) => updateFilter("search", search);
-  const setCategory = (category: string) => updateFilter("category", category);
-  const setSortBy = (sortBy: ProviderFilters["sortBy"]) => updateFilter("sortBy", sortBy);
+  const setCategory = (categoryId: string) => updateFilter("categoryId", categoryId);
   const setPage = (page: number) => updateFilter("page", page);
   const resetFilters = () => setFilters(initialFilters);
+  
+  const setSortBy = (sortOption: string) => {
+    // Map the old provider sort options to backend parameters
+    let sortBy = "createdAt";
+    let sortOrder: "asc" | "desc" = "desc";
+    
+    if (sortOption === "lowest_price") {
+      sortBy = "budget";
+      sortOrder = "asc";
+    } else if (sortOption === "highest_price") {
+      sortBy = "budget";
+      sortOrder = "desc";
+    } else if (sortOption === "highest_rated") {
+      sortBy = "createdAt";
+      sortOrder = "desc"; // Default fallback
+    }
+
+    setFilters((prev) => ({
+      ...prev,
+      sortBy,
+      sortOrder,
+      page: 1,
+    }));
+  };
 
   return {
-    providers: paginatedProviders,
-    total: filteredProviders.length,
+    providers,
+    total,
     totalPages,
     currentPage: filters.page,
     filters,
-    loading: false,
-    error: null,
+    loading,
+    error,
     setSearch,
     setCategory,
     setSortBy,
