@@ -17,6 +17,7 @@ interface PostModalProps {
   onClose: () => void;
   onSubmit: (data: any) => void;
   initialData?: ErrandPost | null;
+  isLoading?: boolean;
 }
 
 const SERVICE_TYPES: ServiceType[] = ["Pickup", "Delivery", "Both"];
@@ -55,6 +56,7 @@ export default function PostModal({
   onClose,
   onSubmit,
   initialData,
+  isLoading,
 }: PostModalProps) {
   const [formData, setFormData] = useState({
     title: "",
@@ -121,7 +123,6 @@ export default function PostModal({
     }
 
     onSubmit(submitData);
-    onClose();
   };
 
   const selectedCategory = categories?.find(c => c.id === formData.categoryId);
@@ -148,7 +149,8 @@ export default function PostModal({
           </div>
           <button
             onClick={onClose}
-            className='w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#999] hover:text-[#555] transition-colors border-0'>
+            disabled={isLoading}
+            className='w-7 h-7 rounded-full bg-white flex items-center justify-center text-[#999] hover:text-[#555] transition-colors border-0 disabled:opacity-50'>
             <X size={14} />
           </button>
         </div>
@@ -170,7 +172,8 @@ export default function PostModal({
                 </div>
               ) : (
                 <select
-                  className='field'
+                  disabled={isLoading}
+                  className='field disabled:bg-gray-100'
                   style={{ paddingLeft: "46px" }}
                   value={formData.categoryId}
                   onChange={(e) =>
@@ -193,7 +196,8 @@ export default function PostModal({
             <Label>Post Title</Label>
             <input
               required
-              className='field'
+              disabled={isLoading}
+              className='field disabled:bg-gray-100'
               placeholder='e.g. Weekly Grocery Run at H-E-B'
               value={formData.title}
               onChange={(e) =>
@@ -207,8 +211,9 @@ export default function PostModal({
             <Label>Description</Label>
             <textarea
               required
+              disabled={isLoading}
               rows={3}
-              className='field resize-none'
+              className='field resize-none disabled:bg-gray-100'
               placeholder='Describe the errand in detail — what needs to be done, any special instructions...'
               value={formData.description}
               onChange={(e) =>
@@ -229,9 +234,10 @@ export default function PostModal({
                 </span>
                 <input
                   required
+                  disabled={isLoading}
                   type='number'
                   min='1'
-                  className='field'
+                  className='field disabled:bg-gray-100'
                   style={{ paddingLeft: "32px" }}
                   value={formData.reward}
                   onChange={(e) =>
@@ -248,7 +254,8 @@ export default function PostModal({
                   style={{ background: "#FF7A2F" }}
                 />
                 <select
-                  className='field'
+                  disabled={isLoading}
+                  className='field disabled:bg-gray-100'
                   style={{ paddingLeft: "32px" }}
                   value={formData.status}
                   onChange={(e) =>
@@ -279,8 +286,9 @@ export default function PostModal({
                   <Calendar size={16} />
                 </span>
                 <input
+                  disabled={isLoading}
                   type='date'
-                  className='field'
+                  className='field disabled:bg-gray-100'
                   style={{ paddingLeft: "42px" }}
                   value={formData.date}
                   onChange={(e) =>
@@ -298,8 +306,9 @@ export default function PostModal({
                   <Clock size={16} />
                 </span>
                 <input
+                  disabled={isLoading}
                   type='time'
-                  className='field'
+                  className='field disabled:bg-gray-100'
                   style={{ paddingLeft: "42px" }}
                   value={formData.time}
                   onChange={(e) =>
@@ -321,7 +330,8 @@ export default function PostModal({
               </span>
               <input
                 required
-                className='field'
+                disabled={isLoading}
+                className='field disabled:bg-gray-100'
                 style={{ paddingLeft: "42px" }}
                 placeholder='e.g. Austin, TX'
                 value={formData.location}
@@ -340,8 +350,9 @@ export default function PostModal({
                 <button
                   key={t}
                   type='button'
+                  disabled={isLoading}
                   onClick={() => setFormData({ ...formData, serviceType: t })}
-                  className='flex-1 py-[10px] rounded-[10px] text-[13px] font-medium border transition-all'
+                  className='flex-1 py-[10px] rounded-[10px] text-[13px] font-medium border transition-all disabled:opacity-50'
                   style={
                     formData.serviceType === t
                       ? {
@@ -366,9 +377,13 @@ export default function PostModal({
           <div className='pt-1'>
             <button
               type='submit'
-              className='w-full py-[15px] rounded-[12px] text-[15px] font-bold text-white tracking-wide transition-opacity hover:opacity-90 active:scale-[0.98]'
+              disabled={isLoading}
+              className='w-full py-[15px] rounded-[12px] text-[15px] font-bold text-white tracking-wide transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2'
               style={{ background: "#FF7A2F" }}>
-              {initialData ? "UPDATE POST" : "POST ERRAND"}
+              {isLoading && <Loader2 size={18} className="animate-spin" />}
+              {isLoading 
+                ? (initialData ? "UPDATING..." : "POSTING...") 
+                : (initialData ? "UPDATE POST" : "POST ERRAND")}
             </button>
           </div>
         </form>

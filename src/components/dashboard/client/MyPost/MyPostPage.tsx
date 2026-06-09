@@ -27,6 +27,8 @@ const MyPostPage = () => {
     addPost,
     updatePost,
     deletePost,
+    isCreating,
+    isUpdating,
   } = usePosts();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,11 +44,15 @@ const MyPostPage = () => {
     setIsModalOpen(true);
   };
 
-  const handleModalSubmit = (data: any) => {
+  const handleModalSubmit = async (data: any) => {
     if (selectedPost) {
-      updatePost({ id: selectedPost.id, data });
+      updatePost({ id: selectedPost.id, data }, {
+        onSuccess: () => setIsModalOpen(false)
+      });
     } else {
-      addPost(data);
+      addPost(data, {
+        onSuccess: () => setIsModalOpen(false)
+      });
     }
   };
 
@@ -110,6 +116,7 @@ const MyPostPage = () => {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleModalSubmit}
         initialData={selectedPost}
+        isLoading={isCreating || isUpdating}
       />
     </div>
   );
