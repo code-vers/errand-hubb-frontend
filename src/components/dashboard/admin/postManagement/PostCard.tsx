@@ -1,5 +1,7 @@
 import React from "react";
 import { Post, PostAction } from "@/types/post";
+import { ToggleSwitch } from "@/components/ui/ToggleSwitch";
+import { Trash2, Edit2 } from "lucide-react";
 
 interface PostCardProps {
   post: Post;
@@ -38,39 +40,15 @@ const PostCard: React.FC<PostCardProps> = ({ post, onAction }) => {
     }).format(amount);
   };
 
-  const getActionButtons = (post: Post): PostAction[] => {
-    const buttons: PostAction[] = [
-      {
-        type: "edit",
-        label: "Edit",
-        className: "bg-gray-100 text-text-secondary hover:bg-gray-200",
-      },
-    ];
-
-    if (post.isActive) {
-      buttons.push({
-        type: "mark_inactive",
-        label: "Mark Inactive",
-        className: "bg-yellow-50 text-yellow-700 hover:bg-yellow-100",
-      });
-    } else {
-      buttons.push({
-        type: "mark_active",
-        label: "Mark Active",
-        className: "bg-green-50 text-success hover:bg-green-100",
-      });
-    }
-
-    buttons.push({
-      type: "remove",
-      label: "Remove",
-      className: "bg-red-50 text-error hover:bg-red-100",
-    });
-
-    return buttons;
+  const handleToggle = (checked: boolean) => {
+    onAction(post.id, checked ? "mark_active" : "mark_inactive");
   };
 
-  const actions = getActionButtons(post);
+  const handleDelete = () => {
+    if (window.confirm("Warning: Are you sure you want to permanently remove this post? This action cannot be undone.")) {
+      onAction(post.id, "remove");
+    }
+  };
 
   return (
     <article className='bg-white rounded-2xl p-6 shadow-sm border border-border flex flex-col justify-between hover:shadow-md transition-shadow duration-200'>
@@ -91,19 +69,19 @@ const PostCard: React.FC<PostCardProps> = ({ post, onAction }) => {
         {/* Details */}
         <div className='space-y-3 mb-6'>
           <div className='flex justify-between text-sm'>
-            <span className='text-text-secondary'>
+            <span className='text-text-secondary text-[12px]'>
               Client:{" "}
               <span className='font-bold text-foreground'>
                 {post.client.name}
               </span>
             </span>
-            <span className='text-text-secondary font-medium'>
+            <span className='text-text-secondary font-medium text-[12px]'>
               {post.category}
             </span>
           </div>
 
           <div className='flex justify-between text-sm items-end'>
-            <span className='text-text-secondary'>{post.date}</span>
+            <span className='text-text-secondary text-[12px]'>{post.date}</span>
             <span className='text-lg font-bold text-foreground'>
               {formatCurrency(post.budget)}
             </span>
@@ -113,16 +91,35 @@ const PostCard: React.FC<PostCardProps> = ({ post, onAction }) => {
 
       {/* Actions */}
       <div>
-        <div className='border-t border-border pt-4 flex flex-wrap gap-2'>
-          {actions.map((action) => (
+        <div className='border-t border-border pt-4 flex items-center justify-between'>
+          <div className="flex items-center gap-3">
+             <span className={`text-[11px] font-bold uppercase tracking-wider ${post.isActive ? "text-success" : "text-muted"}`}>
+               {post.isActive ? "Active" : "Inactive"}
+             </span>
+             <ToggleSwitch 
+               id={`toggle-${post.id}`}
+               name={`toggle-${post.id}`}
+               checked={post.isActive}
+               onChange={handleToggle}
+             />
+          </div>
+          
+          <div className="flex gap-2">
             <button
-              key={action.type}
-              onClick={() => onAction(post.id, action.type)}
-              className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 ${action.className}`}
-              aria-label={`${action.label} ${post.title}`}>
-              {action.label}
+              onClick={() => onAction(post.id, "edit")}
+              className="p-2 rounded-lg bg-gray-50 text-gray-500 hover:bg-gray-100 transition-colors"
+              aria-label="Edit post"
+            >
+              <Edit2 size={16} />
             </button>
-          ))}
+            <button
+              onClick={handleDelete}
+              className="p-2 rounded-lg bg-red-50 text-error hover:bg-red-100 transition-colors"
+              aria-label="Remove post"
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
         </div>
       </div>
     </article>
