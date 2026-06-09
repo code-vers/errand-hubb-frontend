@@ -41,7 +41,10 @@ const PostCard: React.FC<PostCardProps> = ({ post, onAction }) => {
   };
 
   const handleToggle = (checked: boolean) => {
-    onAction(post.id, checked ? "mark_active" : "mark_inactive");
+    const action = checked ? "activate" : "inactivate";
+    if (window.confirm(`Are you sure you want to ${action} this post? It will ${checked ? "become visible" : "be hidden"} on the public board.`)) {
+      onAction(post.id, checked ? "mark_active" : "mark_inactive");
+    }
   };
 
   const handleDelete = () => {
@@ -105,13 +108,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onAction }) => {
           </div>
           
           <div className="flex gap-2">
-            <button
-              onClick={() => onAction(post.id, "edit")}
-              className="p-2 rounded-lg bg-gray-50 text-gray-500 hover:bg-gray-100 transition-colors"
-              aria-label="Edit post"
-            >
-              <Edit2 size={16} />
-            </button>
             <button
               onClick={handleDelete}
               className="p-2 rounded-lg bg-red-50 text-error hover:bg-red-100 transition-colors"

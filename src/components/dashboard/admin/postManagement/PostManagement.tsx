@@ -24,7 +24,7 @@ const PostManagement: React.FC = () => {
     deletePost
   } = useAdminPosts({
     search: searchTerm,
-    status: activeStatus === "all" ? undefined : activeStatus,
+    status: activeStatus, // Pass activeStatus directly, backend now handles 'all'
   });
 
   // Map backend response to Post type
