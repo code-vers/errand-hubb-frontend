@@ -6,29 +6,19 @@ import {
   Calendar,
   Check,
   Clock,
-  Dog,
   MapPin,
   MoreVertical,
-  Package,
-  Shirt,
-  ShoppingCart,
-  Sparkles,
   User,
-  Utensils,
+  Edit2,
+  Trash2,
 } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 
 interface PostCardProps {
   post: ErrandPost;
+  onEdit: () => void;
+  onDelete: () => void;
 }
-
-const iconComponents: Record<string, React.ReactNode> = {
-  "shopping-cart": <ShoppingCart className='w-6 h-6 text-orange-400' />,
-  package: <Package className='w-6 h-6 text-blue-400' />,
-  cleaning: <Sparkles className='w-6 h-6 text-cyan-400' />,
-  pet: <Dog className='w-6 h-6 text-yellow-400' />,
-  "dry-cleaning": <Shirt className='w-6 h-6 text-purple-400' />,
-  food: <Utensils className='w-6 h-6 text-red-400' />,
-};
 
 const statusConfig: Record<string, { bg: string; text: string; dot: string }> =
   {
@@ -64,58 +54,98 @@ const statusConfig: Record<string, { bg: string; text: string; dot: string }> =
     },
   };
 
-const typeColors: Record<string, string> = {
-  "Grocery Shopping": "text-orange-400",
-  "Package Delivery": "text-blue-400",
-  "Home Cleaning": "text-cyan-400",
-  "Pet Care": "text-yellow-400",
-  "Dry Cleaning": "text-purple-400",
-  "Food Pickup": "text-red-400",
-};
+export default function PostCard({ post, onEdit, onDelete }: PostCardProps) {
+  const [showOptions, setShowOptions] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
-const iconBgColors: Record<string, string> = {
-  "shopping-cart": "bg-orange-50",
-  package: "bg-blue-50",
-  cleaning: "bg-cyan-50",
-  pet: "bg-yellow-50",
-  "dry-cleaning": "bg-purple-50",
-  food: "bg-red-50",
-};
-
-export default function PostCard({ post }: PostCardProps) {
   const statusStyle =
     statusConfig[post.status] || statusConfig["Pending Pickup"];
-  const typeColor = typeColors[post.type] || "text-[#FF8C42]";
-  const iconBg = iconBgColors[post.icon] || "bg-[#FF5A3C]";
+  
+  const category = post.category;
+  const categoryColor = category?.color || "#FF7A2F";
 
   const formatDate = (dateString: string) => {
+    if (!dateString) return "N/A";
     const date = new Date(dateString);
     return format(date, "MMM dd, yyyy");
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowOptions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
-    <article className='bg-white rounded-2xl p-5 shadow-sm flex flex-col justify-between border border-gray-50 hover:shadow-md transition-shadow duration-300'>
+    <article className='bg-white rounded-2xl p-5 shadow-sm flex flex-col justify-between border border-gray-50 hover:shadow-md transition-shadow duration-300 relative'>
       {/* Header */}
       <div className='flex justify-between items-start mb-4'>
         <div className='flex items-center gap-3'>
-          <div className={`p-3 ${iconBg} rounded-lg`}>
-            {iconComponents[post.icon] || iconComponents["shopping-cart"]}
+          {/* Category Icon - Matches CategoryCard logic */}
+          <div
+            aria-hidden='true'
+            style={{ backgroundColor: `${categoryColor}15`, color: categoryColor }}
+            className='w-12 h-12 rounded-xl flex items-center justify-center text-xl'>
+            {category?.iconType === "emoji" ? (
+              <span role='img' aria-label={category.name}>
+                {category.icon}
+              </span>
+            ) : category?.icon ? (
+              <img src={category.icon} alt={category.name} className="w-6 h-6 object-contain" />
+            ) : (
+              <span role='img' aria-label='default'>🛒</span>
+            )}
           </div>
           <div>
             <h3 className='card-title text-sm font-bold  leading-tight'>
               {post.title}
             </h3>
             <p
-              className={`text-[11px] mt-1 font-medium ${typeColor} font-bold uppercase tracking-wide`}>
+              style={{ color: categoryColor }}
+              className={`text-[11px] mt-1 font-bold uppercase tracking-wide`}>
               {post.type}
             </p>
           </div>
         </div>
-        <button
-          className='text-[#6B6B6B]  transition-colors'
-          aria-label='More options'>
-          <MoreVertical className='w-5 ' />
-        </button>
+        <div className="relative" ref={menuRef}>
+          <button
+            onClick={() => setShowOptions(!showOptions)}
+            className='text-[#6B6B6B] transition-colors p-1 hover:bg-gray-100 rounded-full'
+            aria-label='More options'>
+            <MoreVertical className='w-5 ' />
+          </button>
+          
+          {showOptions && (
+            <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-100 rounded-xl shadow-xl z-50 overflow-hidden">
+              <button
+                onClick={() => {
+                  onEdit();
+                  setShowOptions(false);
+                }}
+                className="w-full flex items-center gap-2 px-4 py-2 text-[12px] text-gray-700 hover:bg-gray-50 transition-colors text-left"
+              >
+                <Edit2 className="w-3.5 h-3.5" />
+                Edit Post
+              </button>
+              <button
+                onClick={() => {
+                  if (confirm("Are you sure you want to delete this post?")) {
+                    onDelete();
+                  }
+                  setShowOptions(false);
+                }}
+                className="w-full flex items-center gap-2 px-4 py-2 text-[12px] text-red-500 hover:bg-red-50 transition-colors text-left"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                Delete
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Description */}

@@ -21,7 +21,7 @@ export type ServiceType = "Delivery" | "Pickup" | "Both";
 export interface ErrandPost {
   id: string;
   title: string;
-  type: PostType;
+  type: string;
   description: string;
   reward: number;
   status: ErrandStatus;
@@ -31,6 +31,14 @@ export interface ErrandPost {
   serviceType: ServiceType;
   assignedTo: string | null;
   icon: string;
+  categoryId: string;
+  category?: {
+    id: string;
+    name: string;
+    icon?: string;
+    iconType?: "emoji" | "url";
+    color?: string;
+  };
 }
 
 export interface PostFilters {

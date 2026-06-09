@@ -1,8 +1,10 @@
 "use client";
 
-import { ErrandPost, PostFilters } from "@/types/post";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { postService } from "@/services/post.service";
+import { toast } from "sonner";
 import { useCallback, useMemo, useState } from "react";
-import { mockPosts, statusCounts as initialStatusCounts } from "./post";
+import { ErrandPost, PostFilters } from "@/types/post";
 
 const initialFilters: PostFilters = {
   search: "",
@@ -11,8 +13,37 @@ const initialFilters: PostFilters = {
 };
 
 export function usePosts() {
-  const [allPosts, setAllPosts] = useState<ErrandPost[]>(mockPosts);
+  const queryClient = useQueryClient();
   const [filters, setFilters] = useState<PostFilters>(initialFilters);
+
+  const { data: response, isLoading: loading, error } = useQuery({
+    queryKey: ["my-posts"],
+    queryFn: async () => {
+      const res = await postService.getMyPosts();
+      return res.data;
+    },
+  });
+
+  const allPosts = useMemo(() => {
+    if (!response) return [];
+    // Map backend response to ErrandPost type if needed
+    return response.map((post: any) => ({
+      id: post.id,
+      title: post.title,
+      type: post.category?.name || "Other",
+      description: post.description,
+      reward: Number(post.budget),
+      status: post.status,
+      date: post.dateNeeded ? post.dateNeeded.split("T")[0] : "",
+      time: post.time || "",
+      location: `${post.city}, ${post.state}`,
+      serviceType: post.serviceType || "Delivery",
+      assignedTo: post.assignedTo ? `${post.assignedTo.firstName} ${post.assignedTo.lastName}` : null,
+      icon: post.category?.icon || "shopping-cart",
+      categoryId: post.categoryId,
+      category: post.category,
+    }));
+  }, [response]);
 
   const filteredPosts = useMemo(() => {
     let result = [...allPosts];
@@ -52,6 +83,39 @@ export function usePosts() {
     return counts;
   }, [allPosts]);
 
+  const createPostMutation = useMutation({
+    mutationFn: (data: any) => postService.create(data),
+    onSuccess: () => {
+      toast.success("Post created successfully");
+      queryClient.invalidateQueries({ queryKey: ["my-posts"] });
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || "Failed to create post");
+    },
+  });
+
+  const updatePostMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) => postService.update(id, data),
+    onSuccess: () => {
+      toast.success("Post updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["my-posts"] });
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || "Failed to update post");
+    },
+  });
+
+  const deletePostMutation = useMutation({
+    mutationFn: (id: string) => postService.delete(id),
+    onSuccess: () => {
+      toast.success("Post deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["my-posts"] });
+    },
+    onError: (err: any) => {
+      toast.error(err.response?.data?.message || "Failed to delete post");
+    },
+  });
+
   const updateFilter = useCallback((key: keyof PostFilters, value: any) => {
     setFilters((prev) => ({
       ...prev,
@@ -77,10 +141,6 @@ export function usePosts() {
   
   const resetFilters = useCallback(() => setFilters(initialFilters), []);
 
-  const addPost = useCallback((newPost: ErrandPost) => {
-    setAllPosts((prev) => [newPost, ...prev]);
-  }, []);
-
   return {
     posts: paginatedPosts,
     total: filteredPosts.length,
@@ -88,12 +148,17 @@ export function usePosts() {
     currentPage: filters.page,
     filters,
     statusCounts,
-    loading: false,
-    error: null,
+    loading,
+    error,
     setSearch,
     setStatus,
     setPage,
     resetFilters,
-    addPost,
+    addPost: createPostMutation.mutate,
+    updatePost: updatePostMutation.mutate,
+    deletePost: deletePostMutation.mutate,
+    isCreating: createPostMutation.isPending,
+    isUpdating: updatePostMutation.isPending,
+    isDeleting: deletePostMutation.isPending,
   };
 }

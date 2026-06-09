@@ -25,9 +25,30 @@ const MyPostPage = () => {
     setStatus,
     setPage,
     addPost,
+    updatePost,
+    deletePost,
   } = usePosts();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<any>(null);
+
+  const handleCreateOpen = () => {
+    setSelectedPost(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEditOpen = (post: any) => {
+    setSelectedPost(post);
+    setIsModalOpen(true);
+  };
+
+  const handleModalSubmit = (data: any) => {
+    if (selectedPost) {
+      updatePost({ id: selectedPost.id, data });
+    } else {
+      addPost(data);
+    }
+  };
 
   return (
     <div className='min-h-screen py-5 px-12 font-sans'>
@@ -35,7 +56,7 @@ const MyPostPage = () => {
         <div className='flex justify-between items-center'>
           <PageHeader title='My Posts' />
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleCreateOpen}
             className='flex items-center gap-2 bg-status-orange hover:bg-[#D95F1B] text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-orange-500/20 transition-all active:scale-95'>
             <Plus size={18} />
             Post on board
@@ -67,7 +88,13 @@ const MyPostPage = () => {
           </div>
 
           {/* Post Grid */}
-          <PostGrid posts={posts} loading={loading} error={error} />
+          <PostGrid 
+            posts={posts} 
+            loading={loading} 
+            error={error} 
+            onEdit={handleEditOpen}
+            onDelete={deletePost}
+          />
 
           {/* Pagination */}
           <Pagination
@@ -81,7 +108,8 @@ const MyPostPage = () => {
       <PostModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={addPost}
+        onSubmit={handleModalSubmit}
+        initialData={selectedPost}
       />
     </div>
   );

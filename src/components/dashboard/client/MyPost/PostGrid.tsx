@@ -6,10 +6,12 @@ import PostCard from "./PostCard";
 interface PostGridProps {
   posts: ErrandPost[];
   loading: boolean;
-  error: string | null;
+  error: any;
+  onEdit: (post: ErrandPost) => void;
+  onDelete: (id: string) => void;
 }
 
-export default function PostGrid({ posts, loading, error }: PostGridProps) {
+export default function PostGrid({ posts, loading, error, onEdit, onDelete }: PostGridProps) {
   if (loading) {
     return (
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
@@ -50,7 +52,7 @@ export default function PostGrid({ posts, loading, error }: PostGridProps) {
             strokeWidth='2'
           />
         </svg>
-        <p className='text-red-500 mb-4'>{error}</p>
+        <p className='text-red-500 mb-4'>{error?.message || "An error occurred"}</p>
         <button
           onClick={() => window.location.reload()}
           className='px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors'>
@@ -90,7 +92,7 @@ export default function PostGrid({ posts, loading, error }: PostGridProps) {
       className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
       data-purpose='post-grid'>
       {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
+        <PostCard key={post.id} post={post} onEdit={() => onEdit(post)} onDelete={() => onDelete(post.id)} />
       ))}
     </main>
   );

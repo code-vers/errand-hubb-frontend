@@ -1,82 +1,64 @@
 "use client";
 
-import { ErrandPost, ErrandStatus, PostType, ServiceType } from "@/types/post";
+import { ErrandPost, ErrandStatus, ServiceType } from "@/types/post";
 import {
   Calendar,
   Clock,
   MapPin,
-  ShoppingCart,
   X,
-  Package,
-  Wrench,
-  Dog,
-  Shirt,
-  Utensils,
+  Loader2,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { categoryService } from "@/services/category.service";
 
 interface PostModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (post: ErrandPost) => void;
+  onSubmit: (data: any) => void;
+  initialData?: ErrandPost | null;
 }
-
-const POST_TYPES: PostType[] = [
-  "Grocery Shopping",
-  "Package Delivery",
-  "Home Cleaning",
-  "Pet Care",
-  "Dry Cleaning",
-  "Food Pickup",
-];
 
 const SERVICE_TYPES: ServiceType[] = ["Pickup", "Delivery", "Both"];
 
 const STATUS_OPTIONS: ErrandStatus[] = [
   "Pending Pickup",
+  "ASAP",
+  "Scheduled",
   "In Progress",
   "Completed",
+  "Cancelled",
 ];
 
-const getIconForType = (type: PostType) => {
-  switch (type) {
-    case "Grocery Shopping":
-      return <ShoppingCart size={16} />;
-    case "Package Delivery":
-      return <Package size={16} />;
-    case "Home Cleaning":
-      return <Wrench size={16} />;
-    case "Pet Care":
-      return <Dog size={16} />;
-    case "Dry Cleaning":
-      return <Shirt size={16} />;
-    case "Food Pickup":
-      return <Utensils size={16} />;
-    default:
-      return <ShoppingCart size={16} />;
-  }
-};
-
-const getIconNameForType = (type: PostType): string => {
-  const map: Record<PostType, string> = {
-    "Grocery Shopping": "shopping-cart",
-    "Package Delivery": "package",
-    "Home Cleaning": "wrench",
-    "Pet Care": "dog",
-    "Dry Cleaning": "shirt",
-    "Food Pickup": "utensils",
-  };
-  return map[type] ?? "shopping-cart";
+const CategoryIcon = ({ category, className = "w-10 h-10 rounded-[10px]" }: { category?: any, className?: string }) => {
+  const categoryColor = category?.color || "#FF7A2F";
+  return (
+    <div
+      aria-hidden='true'
+      style={{ backgroundColor: `${categoryColor}15`, color: categoryColor }}
+      className={`${className} flex items-center justify-center text-xl`}>
+      {category?.iconType === "emoji" ? (
+        <span role='img' aria-label={category.name}>
+          {category.icon}
+        </span>
+      ) : category?.icon ? (
+        <img src={category.icon} alt={category.name} className="w-6 h-6 object-contain" />
+      ) : (
+        <span role='img' aria-label='default'>🛒</span>
+      )}
+    </div>
+  );
 };
 
 export default function PostModal({
   isOpen,
   onClose,
   onSubmit,
+  initialData,
 }: PostModalProps) {
   const [formData, setFormData] = useState({
     title: "",
-    type: "Grocery Shopping" as PostType,
+    categoryId: "",
     description: "",
     reward: 15,
     date: "",
@@ -86,38 +68,63 @@ export default function PostModal({
     status: "Pending Pickup" as ErrandStatus,
   });
 
+  const { data: categories, isLoading: loadingCategories } = useQuery({
+    queryKey: ["categories-active"],
+    queryFn: () => categoryService.getActive(),
+  });
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData({
+        title: initialData.title,
+        categoryId: (initialData as any).categoryId || "",
+        description: initialData.description,
+        reward: initialData.reward,
+        date: initialData.date,
+        time: initialData.time,
+        location: initialData.location,
+        serviceType: initialData.serviceType,
+        status: initialData.status,
+      });
+    } else if (categories?.length) {
+      setFormData(prev => ({
+        ...prev,
+        categoryId: prev.categoryId || categories[0].id
+      }));
+    }
+  }, [initialData, categories, isOpen]);
+
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newPost: ErrandPost = {
-      id: `post-${Math.floor(Math.random() * 1000000)}`,
+    
+    // Split location into city and state
+    const locationParts = formData.location.split(",").map(s => s.trim());
+    const city = locationParts[0] || formData.location;
+    const state = locationParts.length > 1 ? locationParts[1] : undefined;
+
+    const submitData: any = {
       title: formData.title,
-      type: formData.type,
       description: formData.description,
-      reward: formData.reward,
-      date: formData.date,
+      city,
+      budget: formData.reward.toString(),
       time: formData.time,
-      location: formData.location,
       serviceType: formData.serviceType,
       status: formData.status,
-      assignedTo: null,
-      icon: getIconNameForType(formData.type),
+      categoryId: formData.categoryId,
     };
-    onSubmit(newPost);
+
+    if (state) submitData.state = state;
+    if (formData.date) {
+      submitData.dateNeeded = new Date(formData.date).toISOString();
+    }
+
+    onSubmit(submitData);
     onClose();
-    setFormData({
-      title: "",
-      type: "Grocery Shopping",
-      description: "",
-      reward: 15,
-      date: "",
-      time: "",
-      location: "",
-      serviceType: "Delivery",
-      status: "Pending Pickup",
-    });
   };
+
+  const selectedCategory = categories?.find(c => c.id === formData.categoryId);
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm'>
@@ -129,17 +136,13 @@ export default function PostModal({
           className='flex items-center justify-between px-5 py-[18px]'
           style={{ background: "#FFF3E8" }}>
           <div className='flex items-center gap-3'>
-            <div
-              className='w-10 h-10 rounded-[10px] flex items-center justify-center'
-              style={{ background: "#FF7A2F" }}>
-              <ShoppingCart size={20} color='#fff' />
-            </div>
+            <CategoryIcon category={selectedCategory} />
             <div>
               <p className='text-[15px] font-semibold text-[#1a1a1a] leading-tight'>
-                Post a New Errand
+                {initialData ? "Edit Your Post" : "Post a New Errand"}
               </p>
               <p className='text-[12px] text-[#888] mt-0.5'>
-                Fill in the details to find your Errandr
+                {initialData ? "Update the details of your errand" : "Fill in the details to find your Errandr"}
               </p>
             </div>
           </div>
@@ -158,24 +161,29 @@ export default function PostModal({
           <div>
             <Label>Job Type</Label>
             <div className='relative'>
-              <span
-                className='absolute left-3.5 top-1/2 -translate-y-1/2'
-                style={{ color: "#FF7A2F" }}>
-                {getIconForType(formData.type)}
+              <span className='absolute left-3 top-1/2 -translate-y-1/2'>
+                <CategoryIcon category={selectedCategory} className="w-8 h-8 rounded-lg" />
               </span>
-              <select
-                className='field'
-                style={{ paddingLeft: "42px" }}
-                value={formData.type}
-                onChange={(e) =>
-                  setFormData({ ...formData, type: e.target.value as PostType })
-                }>
-                {POST_TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
+              {loadingCategories ? (
+                <div className="field flex items-center gap-2" style={{ paddingLeft: "42px" }}>
+                  <Loader2 size={14} className="animate-spin" /> Loading...
+                </div>
+              ) : (
+                <select
+                  className='field'
+                  style={{ paddingLeft: "46px" }}
+                  value={formData.categoryId}
+                  onChange={(e) =>
+                    setFormData({ ...formData, categoryId: e.target.value })
+                  }>
+                  <option value="" disabled>Select a category</option>
+                  {categories?.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
+                  ))}
+                </select>
+              )}
               <ChevronIcon />
             </div>
           </div>
@@ -360,7 +368,7 @@ export default function PostModal({
               type='submit'
               className='w-full py-[15px] rounded-[12px] text-[15px] font-bold text-white tracking-wide transition-opacity hover:opacity-90 active:scale-[0.98]'
               style={{ background: "#FF7A2F" }}>
-              POST ERRAND
+              {initialData ? "UPDATE POST" : "POST ERRAND"}
             </button>
           </div>
         </form>
