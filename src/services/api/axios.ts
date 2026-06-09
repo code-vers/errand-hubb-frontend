@@ -21,6 +21,16 @@ api.interceptors.response.use(
     if (status === 429) {
       toast.error('Too many requests. Please slow down and try again in 15 minutes.');
     }
+
+    if (errorResponse?.message === 'SUBSCRIPTION_REQUIRED') {
+      toast.error('Please subscribe to continue using this feature.');
+      if (typeof window !== 'undefined') {
+        // Use timeout to allow toast to be visible
+        setTimeout(() => {
+          window.location.href = '/dashboard/subscription';
+        }, 1500);
+      }
+    }
     
     // Standardize error object
     const formattedError = {

@@ -8,11 +8,12 @@ import { postService } from "@/services/post.service";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 const PostErrandPage = () => {
   const { user } = useAuth();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const postId = searchParams.get("id");
 
   const [formData, setFormData] = useState<Errand>({
@@ -109,16 +110,20 @@ const PostErrandPage = () => {
         toast.success("Errand posted successfully!");
       }
     } catch (error: any) {
-      console.error("Post Submission Error:", error.response?.data);
+      console.error("Post Submission Error:", error);
       
-      // Handle array of validation errors from NestJS
-      const errorMsg = error.response?.data?.message;
-      if (Array.isArray(errorMsg)) {
-        // Map through the array of objects { property: string, message: string }
-        const messages = errorMsg.map((err: any) => err.message).join(", ");
+      if (error.message === "SUBSCRIPTION_REQUIRED") {
+        // Redirection is handled globally in axios interceptor, 
+        // but we can add an extra safety toast or local logic here if needed.
+        return;
+      }
+
+      // Handle array of validation errors from NestJS (standardized in axios interceptor)
+      if (Array.isArray(error.errors)) {
+        const messages = error.errors.map((err: any) => err.message).join(", ");
         toast.error(`Validation Failed: ${messages}`);
-      } else if (typeof errorMsg === 'string') {
-        toast.error(errorMsg);
+      } else if (typeof error.message === 'string' && error.message !== 'Something went wrong') {
+        toast.error(error.message);
       } else {
         toast.error("Failed to save errand. Please check your inputs.");
       }

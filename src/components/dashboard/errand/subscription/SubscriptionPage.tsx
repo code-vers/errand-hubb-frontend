@@ -1,10 +1,26 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import PageHeader from "../../common/PageHeader";
-import { CreditCard, CheckCircle, Clock, Zap } from "lucide-react";
+import { CreditCard, CheckCircle, Clock, Zap, Loader2, AlertCircle } from "lucide-react";
+import { useSubscription } from "./useSubscription";
+import { format } from "date-fns";
+import { useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 const SubscriptionPage = () => {
+  const { subscription, loading, error, subscribe, manageBilling, isSubscribing, isManaging } = useSubscription();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("success")) {
+      toast.success("Subscription successful! Welcome to Pro.");
+    }
+    if (searchParams.get("canceled")) {
+      toast.error("Subscription checkout was canceled.");
+    }
+  }, [searchParams]);
+
   const benefits = [
     "Unlimited errand applications",
     "Priority listing in search results",
@@ -13,28 +29,65 @@ const SubscriptionPage = () => {
     "Professional ErrandR badge",
   ];
 
+  if (loading) {
+    return (
+      <div className='w-full p-6 space-y-8 flex justify-center items-center h-64'>
+        <Loader2 className="w-8 h-8 animate-spin text-[#EC6F27]" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className='w-full p-6 space-y-8 flex justify-center items-center h-64'>
+        <div className="flex items-center gap-2 text-red-500">
+          <AlertCircle className="w-6 h-6" />
+          <p>Failed to load subscription details.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const isSubscribed = subscription?.isSubscribed;
+  const isCanceled = subscription?.cancelAtPeriodEnd;
+  
   return (
     <div className='w-full p-6 space-y-8'>
       <PageHeader title='Subscription' />
 
       {/* Subscription Status Banner */}
-      <div className='bg-white rounded-2xl p-6 border border-[#EC6F27]/10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm'>
+      <div className={`rounded-2xl p-6 border flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm ${isSubscribed ? 'bg-white border-[#EC6F27]/10' : 'bg-gray-50 border-gray-200'}`}>
         <div className='flex items-center gap-4'>
-          <div className='w-14 h-14 rounded-full bg-[#FFF3CD] flex items-center justify-center'>
-            <CheckCircle className='w-8 h-8 text-[#EC6F27]' />
+          <div className={`w-14 h-14 rounded-full flex items-center justify-center ${isSubscribed ? 'bg-[#FFF3CD]' : 'bg-gray-200'}`}>
+            {isSubscribed ? (
+              <CheckCircle className='w-8 h-8 text-[#EC6F27]' />
+            ) : (
+              <AlertCircle className='w-8 h-8 text-gray-500' />
+            )}
           </div>
           <div>
-            <h3 className='text-lg font-bold text-secondary'>Active Status</h3>
-            <p className='text-sm text-muted'>Your subscription is currently active</p>
+            <h3 className='text-lg font-bold text-secondary'>
+              {isSubscribed ? (isCanceled ? "Canceling Soon" : "Active Status") : "Not Subscribed"}
+            </h3>
+            <p className='text-sm text-muted'>
+              {isSubscribed 
+                ? (isCanceled ? "Your subscription will cancel at the end of the billing period" : "Your subscription is currently active") 
+                : "Upgrade to Pro to access all features"}
+            </p>
           </div>
         </div>
-        <div className='flex flex-col items-end'>
-          <span className='text-xs font-bold text-muted uppercase tracking-wider mb-1'>Next Billing</span>
-          <p className='text-md font-bold text-secondary flex items-center gap-2'>
-            <Clock className='w-4 h-4 text-[#EC6F27]' />
-            June 25, 2026
-          </p>
-        </div>
+        
+        {isSubscribed && subscription?.currentPeriodEnd && (
+          <div className='flex flex-col items-end'>
+            <span className='text-xs font-bold text-muted uppercase tracking-wider mb-1'>
+              {isCanceled ? "Ends On" : "Next Billing"}
+            </span>
+            <p className='text-md font-bold text-secondary flex items-center gap-2'>
+              <Clock className='w-4 h-4 text-[#EC6F27]' />
+              {format(new Date(subscription.currentPeriodEnd), "MMMM dd, yyyy")}
+            </p>
+          </div>
+        )}
       </div>
 
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
@@ -70,10 +123,23 @@ const SubscriptionPage = () => {
               ))}
             </ul>
 
-            <button className='w-full py-4 bg-[#EC6F27] text-white rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[#d85e1b] transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 shadow-lg shadow-[#EC6F27]/20'>
-              <CreditCard className='w-4 h-4' />
-              Manage with Stripe
-            </button>
+            {isSubscribed ? (
+              <button 
+                onClick={() => manageBilling()}
+                disabled={isManaging}
+                className='w-full py-4 bg-gray-800 text-white rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-gray-900 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 shadow-lg shadow-gray-800/20 disabled:opacity-70 disabled:cursor-not-allowed'>
+                {isManaging ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className='w-4 h-4' />}
+                Manage Billing
+              </button>
+            ) : (
+              <button 
+                onClick={() => subscribe()}
+                disabled={isSubscribing}
+                className='w-full py-4 bg-[#EC6F27] text-white rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[#d85e1b] transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 shadow-lg shadow-[#EC6F27]/20 disabled:opacity-70 disabled:cursor-not-allowed'>
+                {isSubscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className='w-4 h-4' />}
+                Subscribe Now
+              </button>
+            )}
           </div>
         </div>
 
@@ -96,23 +162,27 @@ const SubscriptionPage = () => {
             </div>
           </div>
 
-          <div className='bg-white rounded-2xl p-6 border border-[#EC6F27]/10'>
-            <h3 className='text-md font-bold text-secondary uppercase tracking-wider mb-4'>Payment Method</h3>
-            <div className='flex items-center justify-between p-4 border border-dashed border-[#EC6F27]/30 rounded-xl bg-gray-50/50'>
-              <div className='flex items-center gap-3'>
-                <div className='w-12 h-8 bg-secondary rounded flex items-center justify-center'>
-                  <span className='text-[10px] text-white font-bold'>VISA</span>
+          {isSubscribed && subscription?.stripeCustomerId && (
+            <div className='bg-white rounded-2xl p-6 border border-[#EC6F27]/10'>
+              <h3 className='text-md font-bold text-secondary uppercase tracking-wider mb-4'>Payment Method</h3>
+              <div className='flex items-center justify-between p-4 border border-dashed border-[#EC6F27]/30 rounded-xl bg-gray-50/50'>
+                <div className='flex items-center gap-3'>
+                  <div className='w-12 h-8 bg-secondary rounded flex items-center justify-center'>
+                    <span className='text-[10px] text-white font-bold'>STRIPE</span>
+                  </div>
+                  <div>
+                    <p className='text-sm font-bold text-secondary'>Secure Payment</p>
+                    <p className='text-[10px] text-muted font-bold uppercase'>Managed via Billing Portal</p>
+                  </div>
                 </div>
-                <div>
-                  <p className='text-sm font-bold text-secondary'>•••• •••• •••• 4242</p>
-                  <p className='text-[10px] text-muted font-bold uppercase'>Expires 12/28</p>
-                </div>
+                <button 
+                  onClick={() => manageBilling()}
+                  className='text-[#EC6F27] text-xs font-bold uppercase tracking-widest hover:underline'>
+                  Update
+                </button>
               </div>
-              <button className='text-[#EC6F27] text-xs font-bold uppercase tracking-widest hover:underline'>
-                Edit
-              </button>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

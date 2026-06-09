@@ -5,6 +5,7 @@ import { postService } from "@/services/post.service";
 import { toast } from "sonner";
 import { useCallback, useMemo, useState } from "react";
 import { ErrandPost, PostFilters } from "@/types/post";
+import { useRouter } from "next/navigation";
 
 const initialFilters: PostFilters = {
   search: "",
@@ -14,6 +15,7 @@ const initialFilters: PostFilters = {
 
 export function usePosts() {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const [filters, setFilters] = useState<PostFilters>(initialFilters);
 
   const { data: response, isLoading: loading, error } = useQuery({
@@ -90,7 +92,11 @@ export function usePosts() {
       queryClient.invalidateQueries({ queryKey: ["my-posts"] });
     },
     onError: (err: any) => {
-      toast.error(err.response?.data?.message || "Failed to create post");
+      if (err.message === "SUBSCRIPTION_REQUIRED") {
+        // Handled globally, but we can prevent double toast here if we want
+        return;
+      }
+      toast.error(err.message || "Failed to create post");
     },
   });
 
@@ -101,7 +107,10 @@ export function usePosts() {
       queryClient.invalidateQueries({ queryKey: ["my-posts"] });
     },
     onError: (err: any) => {
-      toast.error(err.response?.data?.message || "Failed to update post");
+      if (err.message === "SUBSCRIPTION_REQUIRED") {
+        return;
+      }
+      toast.error(err.message || "Failed to update post");
     },
   });
 

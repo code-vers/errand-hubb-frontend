@@ -16,9 +16,11 @@ const MyPostsPage = () => {
     try {
       const response = await postService.getMyPosts();
       setPosts(response.data);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to fetch posts", error);
-      toast.error("Failed to load your posts");
+      if (error.message !== 'SUBSCRIPTION_REQUIRED') {
+        toast.error(error.message || "Failed to load your posts");
+      }
     } finally {
       setIsLoading(false);
     }
