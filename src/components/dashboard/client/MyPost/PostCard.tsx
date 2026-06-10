@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/configs/api.config";
+import { useConfirm } from "@/context/ConfirmationContext";
 
 interface PostCardProps {
   post: ErrandPost;
@@ -56,6 +57,7 @@ const statusConfig: Record<string, { bg: string; text: string; dot: string }> =
   };
 
 export default function PostCard({ post, onEdit, onDelete }: PostCardProps) {
+  const confirm = useConfirm();
   const [showOptions, setShowOptions] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -133,8 +135,14 @@ export default function PostCard({ post, onEdit, onDelete }: PostCardProps) {
                 Edit Post
               </button>
               <button
-                onClick={() => {
-                  if (confirm("Are you sure you want to delete this post?")) {
+                onClick={async () => {
+                  const isConfirmed = await confirm({
+                    title: "Delete Post",
+                    message: "Are you sure you want to delete this post? This action cannot be undone.",
+                    type: "danger",
+                    confirmLabel: "Delete",
+                  });
+                  if (isConfirmed) {
                     onDelete();
                   }
                   setShowOptions(false);

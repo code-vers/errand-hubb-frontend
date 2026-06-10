@@ -1,7 +1,8 @@
 import React from "react";
 import { Post, PostAction } from "@/types/post";
 import { ToggleSwitch } from "@/components/ui/ToggleSwitch";
-import { Trash2, Edit2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import { useConfirm } from "@/context/ConfirmationContext";
 
 interface PostCardProps {
   post: Post;
@@ -9,6 +10,8 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, onAction }) => {
+  const confirm = useConfirm();
+  
   const getStatusStyle = (status: Post["status"]) => {
     const styles = {
       open: "text-success bg-green-50",
@@ -40,15 +43,29 @@ const PostCard: React.FC<PostCardProps> = ({ post, onAction }) => {
     }).format(amount);
   };
 
-  const handleToggle = (checked: boolean) => {
+  const handleToggle = async (checked: boolean) => {
     const action = checked ? "activate" : "inactivate";
-    if (window.confirm(`Are you sure you want to ${action} this post? It will ${checked ? "become visible" : "be hidden"} on the public board.`)) {
+    const isConfirmed = await confirm({
+      title: `${checked ? "Activate" : "Inactivate"} Post`,
+      message: `Are you sure you want to ${action} this post? It will ${checked ? "become visible" : "be hidden"} on the public board.`,
+      type: checked ? "info" : "warning",
+      confirmLabel: checked ? "Activate" : "Inactivate",
+    });
+
+    if (isConfirmed) {
       onAction(post.id, checked ? "mark_active" : "mark_inactive");
     }
   };
 
-  const handleDelete = () => {
-    if (window.confirm("Warning: Are you sure you want to permanently remove this post? This action cannot be undone.")) {
+  const handleDelete = async () => {
+    const isConfirmed = await confirm({
+      title: "Delete Post",
+      message: "Warning: Are you sure you want to permanently remove this post? This action cannot be undone.",
+      type: "danger",
+      confirmLabel: "Delete",
+    });
+
+    if (isConfirmed) {
       onAction(post.id, "remove");
     }
   };

@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Upload } from "lucide-react";
 import { useRegisterClient } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 const ClientRegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -48,7 +49,7 @@ const ClientRegistrationPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
     

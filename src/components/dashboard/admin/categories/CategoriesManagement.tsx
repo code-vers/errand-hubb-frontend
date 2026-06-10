@@ -8,8 +8,10 @@ import CategoryGrid from "./CategoryGrid";
 import { categoryService } from "@/services/category.service";
 import { toast } from "sonner";
 import CategoryForm from "./CategoryForm";
+import { useConfirm } from "@/context/ConfirmationContext";
 
 const CategoriesManagement: React.FC = () => {
+  const confirm = useConfirm();
   // State management
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -77,11 +79,14 @@ const CategoriesManagement: React.FC = () => {
 
   // Handle delete
   const handleDelete = useCallback(async (categoryId: string) => {
-    if (
-      window.confirm(
-        "Are you sure you want to delete this category? This action cannot be undone.",
-      )
-    ) {
+    const isConfirmed = await confirm({
+      title: "Delete Category",
+      message: "Are you sure you want to delete this category? This action cannot be undone.",
+      type: "danger",
+      confirmLabel: "Delete",
+    });
+
+    if (isConfirmed) {
       try {
         await categoryService.delete(categoryId);
         setCategories((prevCategories) =>
@@ -92,7 +97,7 @@ const CategoriesManagement: React.FC = () => {
         toast.error("Failed to delete category");
       }
     }
-  }, []);
+  }, [confirm]);
 
   const handleEdit = useCallback((category: Category) => {
     setSelectedCategory(category);

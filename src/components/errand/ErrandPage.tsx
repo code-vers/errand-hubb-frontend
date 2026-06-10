@@ -6,6 +6,7 @@ import Link from "next/link";
 import { X } from "lucide-react";
 import icon from "../../../public/icon.svg";
 import logo from "../../../public/logo2.svg";
+import { toast } from "sonner";
 
 interface MembershipPlan {
   priceLabel: string;
@@ -415,7 +416,7 @@ const ErrandPage = () => {
             <div className='px-5 pb-5 pt-1'>
               <button
                 onClick={() => {
-                  alert("Hiring request sent!");
+                  toast.success("Hiring request sent!");
                   setHiringProfile(null);
                 }}
                 className='h-11 px-8 rounded-full bg-[#F47A22] text-white font-extrabold text-[13px] uppercase tracking-wider hover:bg-[#BB4D00] transition-colors shadow-md'>

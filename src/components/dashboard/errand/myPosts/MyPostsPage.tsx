@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { postService } from "@/services/post.service";
-import { Errand } from "@/types/errand";
 import { Loader2, Plus, Edit, Trash2, MapPin, Calendar, DollarSign } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import PageHeader from "../../common/PageHeader";
+import { useConfirm } from "@/context/ConfirmationContext";
 
 const MyPostsPage = () => {
+  const confirm = useConfirm();
   const [posts, setPosts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -31,7 +32,14 @@ const MyPostsPage = () => {
   }, []);
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this post?")) return;
+    const isConfirmed = await confirm({
+      title: "Delete Post",
+      message: "Are you sure you want to delete this post? This action cannot be undone.",
+      type: "danger",
+      confirmLabel: "Delete",
+    });
+
+    if (!isConfirmed) return;
 
     try {
       await postService.delete(id);
