@@ -13,6 +13,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { getImageUrl } from "@/configs/api.config";
 
 interface PostCardProps {
   post: ErrandPost;
@@ -95,7 +96,7 @@ export default function PostCard({ post, onEdit, onDelete }: PostCardProps) {
                 {category.icon}
               </span>
             ) : category?.icon ? (
-              <img src={category.icon} alt={category.name} className="w-6 h-6 object-contain" />
+              <img src={getImageUrl(category.icon) || ""} alt={category.name} className="w-6 h-6 object-contain" />
             ) : (
               <span role='img' aria-label='default'>🛒</span>
             )}

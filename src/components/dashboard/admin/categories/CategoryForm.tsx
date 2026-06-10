@@ -5,6 +5,7 @@ import { X, Upload, Smile, Loader2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { categoryService } from "@/services/category.service";
 import { toast } from "sonner";
+import { getImageUrl } from "@/configs/api.config";
 
 interface CategoryFormProps {
   category?: Category;
@@ -187,7 +188,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ category, onClose, onSucces
                     <Loader2 size={24} className='animate-spin text-primary' />
                   ) : formData.icon ? (
                     <div className='flex flex-col items-center gap-2'>
-                      <img src={formData.icon} alt='Preview' className='w-12 h-12 object-cover rounded-xl' />
+                      <img src={getImageUrl(formData.icon) || ""} alt='Preview' className='w-12 h-12 object-cover rounded-xl' />
                       <span className='text-xs font-bold text-primary'>Change Icon</span>
                     </div>
                   ) : (

@@ -3,6 +3,7 @@
 import { UserProfile } from "@/types/profile";
 import { Mail, MapPin, Pencil, Phone, Camera } from "lucide-react";
 import React, { useRef } from "react";
+import { getImageUrl } from "@/configs/api.config";
 
 interface Props {
   profile: UserProfile;
@@ -13,11 +14,8 @@ interface Props {
 
 const ProfileHeader: React.FC<Props> = ({ profile, onEditProfile, onImageUpload, isUpdating }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const backendUrl = "http://localhost:5000";
 
-  const profileImageUrl = profile.avatar 
-    ? (profile.avatar.startsWith('http') ? profile.avatar : `${backendUrl}${profile.avatar}`)
-    : null;
+  const profileImageUrl = getImageUrl(profile.avatar);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0] && onImageUpload) {

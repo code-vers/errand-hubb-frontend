@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { toast } from 'sonner';
+import { API_CONFIG } from '@/configs/api.config';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1',
+  baseURL: API_CONFIG.API_V1_URL,
   withCredentials: true,
 });
 

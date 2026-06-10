@@ -5,17 +5,16 @@ import { Bell } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "../../../public/logo2.svg";
+import { getImageUrl } from "@/configs/api.config";
 
 const DashboardNavbar = () => {
   const { user } = useAuth();
-  const backendUrl = "http://localhost:5000"; // Should be from config/env
 
-  const profileImageUrl = user?.profileImage 
-    ? (user.profileImage.startsWith('http') ? user.profileImage : `${backendUrl}${user.profileImage}`)
-    : null;
+  const profileImageUrl = getImageUrl(user?.profileImage);
 
   return (
     <header className='sticky top-0 z-45 w-full bg-white '>
+
       <div className='flex items-center justify-between h-18 px-6 lg:px-10'>
         {/* Left — Logo */}
         <div className='flex flex-col justify-center'>

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { categoryService } from "@/services/category.service";
 import { Category } from "@/types/categories";
 import { Loader2 } from "lucide-react";
+import { getImageUrl } from "@/configs/api.config";
 
 interface ErrandTypePickerProps {
   selectedCategoryId: string;
@@ -59,7 +60,7 @@ const ErrandTypePicker = ({ selectedCategoryId, onSelect }: ErrandTypePickerProp
                 style={{ color: item.color || "inherit" }}
               >
                 {item.iconType === "emoji" ? item.icon : (
-                  <img src={item.icon} alt={item.name} className="w-6 h-6 object-contain" />
+                  <img src={getImageUrl(item.icon) || ""} alt={item.name} className="w-6 h-6 object-contain" />
                 )}
               </span>
               <span className={`text-[10px] font-semibold text-center leading-tight ${isSelected ? "text-[#1b539c]" : "text-gray-600"}`}>

@@ -12,6 +12,8 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { categoryService } from "@/services/category.service";
 
+import { getImageUrl } from "@/configs/api.config";
+
 interface PostModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -43,7 +45,7 @@ const CategoryIcon = ({ category, className = "w-10 h-10 rounded-[10px]" }: { ca
           {category.icon}
         </span>
       ) : category?.icon ? (
-        <img src={category.icon} alt={category.name} className="w-6 h-6 object-contain" />
+        <img src={getImageUrl(category.icon) || ""} alt={category.name} className="w-6 h-6 object-contain" />
       ) : (
         <span role='img' aria-label='default'>🛒</span>
       )}

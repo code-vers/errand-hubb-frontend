@@ -1,6 +1,7 @@
 import React from "react";
 import { Category } from "@/types/categories";
 import { Trash2, Power, Edit2 } from "lucide-react";
+import { getImageUrl } from "@/configs/api.config";
 
 interface CategoryCardProps {
   category: Category;
@@ -45,7 +46,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
               {category.icon}
             </span>
           ) : (
-            <img src={category.icon} alt={category.name} className="w-6 h-6 object-contain" />
+            <img src={getImageUrl(category.icon) || ""} alt={category.name} className="w-6 h-6 object-contain" />
           )}
         </div>
 
