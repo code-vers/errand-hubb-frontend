@@ -1,5 +1,5 @@
 export const API_CONFIG = {
-  BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:5000",
+  BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL || (process.env.NEXT_PUBLIC_API_URL ? process.env.NEXT_PUBLIC_API_URL.replace('/api/v1', '') : "http://localhost:5000"),
   API_V1_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/v1",
 };
 
