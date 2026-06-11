@@ -3,6 +3,7 @@ import { MapPin, FolderX, X } from "lucide-react";
 import Image from "next/image";
 import icon from "../../../../public/icon.svg";
 import { useState } from "react";
+import { getImageUrl } from "@/configs/api.config";
 
 interface SearchResultProps {
   posts: Post[];
@@ -50,7 +51,7 @@ const SearchResult = ({ posts }: SearchResultProps) => {
                 <Image
                   width={85}
                   height={85}
-                  src={post.user.profileImage || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop"}
+                  src={getImageUrl(post.user.profileImage) || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop"}
                   alt={`${post.user.firstName} profile`}
                   className='w-20 h-20 rounded object-cover'
                 />
