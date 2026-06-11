@@ -3,6 +3,7 @@
 import { FC } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { getImageUrl } from "@/configs/api.config";
 
 interface UserAvatarProps {
   src?: string;
@@ -25,10 +26,12 @@ const UserAvatar: FC<UserAvatarProps> = ({
   size = "md",
   className,
 }) => {
-  if (src) {
+  const imageUrl = getImageUrl(src);
+
+  if (imageUrl) {
     return (
       <Image
-        src={src}
+        src={imageUrl}
         height={300}
         width={300}
         alt={alt}
