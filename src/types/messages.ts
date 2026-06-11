@@ -48,3 +48,34 @@ export interface ReplyMessage {
   category: string;
   timestamp: string;
 }
+
+// Real models from database
+export interface ChatUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  profileImage: string | null;
+  role?: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  content: string;
+  isRead: boolean;
+  createdAt: string;
+  sender: ChatUser;
+}
+
+export interface ChatConversation {
+  id: string;
+  clientId: string;
+  errandId: string;
+  createdAt: string;
+  updatedAt: string;
+  client: ChatUser;
+  errand: ChatUser;
+  messages: ChatMessage[];
+  unreadCount?: number;
+}

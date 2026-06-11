@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/context/AuthContext';
 import { ConfirmationProvider } from '@/context/ConfirmationContext';
+import { SocketProvider } from '@/context/SocketContext';
 import { useState } from 'react';
 
 export default function Providers({ children }) {
@@ -20,8 +21,10 @@ export default function Providers({ children }) {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ConfirmationProvider>
-          {children}
-          <Toaster position="top-right" richColors />
+          <SocketProvider>
+            {children}
+            <Toaster position="top-right" richColors />
+          </SocketProvider>
         </ConfirmationProvider>
       </AuthProvider>
     </QueryClientProvider>

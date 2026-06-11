@@ -4,6 +4,7 @@ import { Post } from "@/types/search";
 import { CheckCircle2, CircleCheckBig, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
 import StarRating from "./StarRating";
+import Link from "next/link";
 
 interface ProviderCardProps {
   provider: Post;
@@ -100,9 +101,11 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
             {provider.budget && <span className='text-xs text-gray-400'>/hr</span>}
           </p>
         </div>
-        <button className='bg-primary text-white px-8 py-2 rounded-lg text-sm font-bold shadow-md shadow-primary/10 hover:bg-primary-dark transition-colors duration-200'>
+        <Link 
+          href={`/dashboard/messages?errandId=${provider.user.id}`}
+          className='bg-primary text-white px-8 py-2 rounded-lg text-sm font-bold shadow-md shadow-primary/10 hover:bg-primary-dark transition-colors duration-200'>
           CONTACT
-        </button>
+        </Link>
       </div>
     </article>
   );

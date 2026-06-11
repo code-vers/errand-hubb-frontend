@@ -3,31 +3,16 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import icon from "../../../public/icon.svg";
 import logo from "../../../public/logo2.svg";
 import { toast } from "sonner";
+import { useErrandProfiles } from "@/hooks/useErrandProfiles";
+import { getImageUrl } from "@/configs/api.config";
 
 interface MembershipPlan {
   priceLabel: string;
   billingCycle: string;
-}
-
-interface ErrandrProfile {
-  id: number;
-  name: string;
-  location: string;
-  bio: string;
-  tags: string[];
-  availability: string;
-  availabilityNote: string;
-  responseTime: string;
-  services: string[];
-  pricingLabel: string;
-  pricingText: string;
-  imageUrl: string;
-  bioLink: string;
-  videoThumbUrl: string;
 }
 
 const membershipPlan: MembershipPlan = {
@@ -35,85 +20,9 @@ const membershipPlan: MembershipPlan = {
   billingCycle: "MONTHLY",
 };
 
-const errandrProfiles: ErrandrProfile[] = [
-  {
-    id: 1,
-    name: "Jessica M.",
-    location: "New York, NY",
-    bio: "I am a highly organized and reliable professional dedicated to helping busy individuals reclaim their time. Whether it's running daily errands, managing deliveries, or providing dedicated senior assistance.",
-    tags: ["Driver", "Shopping", "Senior Assisting"],
-    availability: "Mon-Fri: 8:00 AM – 6:00 PM",
-    availabilityNote: "Available Weekdays",
-    responseTime: "15 minutes",
-    services: [
-      "Grocery Shopping",
-      "Food Pickup & Delivery",
-      "Pharmacy Pickup",
-      "General Errands",
-      "And more...",
-    ],
-    pricingLabel: "Errands from",
-    pricingText: "$25 to $100 per hour",
-    imageUrl:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800",
-    bioLink: "#",
-    videoThumbUrl:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400",
-  },
-  {
-    id: 2,
-    name: "Marcus T.",
-    location: "Los Angeles, CA",
-    bio: "I am a highly organized and reliable professional dedicated to helping busy individuals reclaim their time. Whether it's running daily errands, managing deliveries, or providing dedicated handyman services.",
-    tags: ["Driver", "Cleaning", "Shopping", "Handyman"],
-    availability: "Mon-Sun: 7:00 AM – 8:00 PM",
-    availabilityNote: "Available 7 days a week",
-    responseTime: "30 minutes",
-    services: [
-      "Moving Help",
-      "Handyman",
-      "Delivery",
-      "Shopping",
-      "And more...",
-    ],
-    pricingLabel: "Errands from",
-    pricingText: "$25 to $100 per hour",
-    imageUrl:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800",
-    bioLink: "#",
-    videoThumbUrl:
-      "https://images.unsplash.com/photo-1520341280432-4749d4d7bcf9?auto=format&fit=crop&q=80&w=400",
-  },
-  {
-    id: 3,
-    name: "Sandra R.",
-    location: "Chicago, IL",
-    bio: "Specializing in administrative support and research. I help manage your schedule and take care of the small details so you can focus on what matters most.",
-    tags: ["Admin", "Research", "Scheduling"],
-    availability: "Mon-Sat: 9:00 AM – 5:00 PM",
-    availabilityNote: "Available Mon-Sat",
-    responseTime: "1 hour",
-    services: [
-      "Scheduling",
-      "Admin Help",
-      "Research",
-      "General Errands",
-      "And more...",
-    ],
-    pricingLabel: "Errands from",
-    pricingText: "$25 to $100 per hour",
-    imageUrl:
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=800",
-    bioLink: "#",
-    videoThumbUrl:
-      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=400",
-  },
-];
-
 const ErrandPage = () => {
-  const [hiringProfile, setHiringProfile] = useState<ErrandrProfile | null>(
-    null,
-  );
+  const [hiringProfile, setHiringProfile] = useState<any | null>(null);
+  const { data: errandrs, isLoading } = useErrandProfiles();
 
   return (
     <section className='w-full bg-(--color-warning-bg)'>
@@ -167,78 +76,82 @@ const ErrandPage = () => {
             </p>
           </header>
 
-          <div className='mt-7.5 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
-            {errandrProfiles.map((profile) => (
-              <article
-                key={profile.id}
-                className='overflow-hidden rounded-[18px] bg-[#f6f6f6] shadow-[0_8px_20px_rgba(0,0,0,0.12)]'>
-                <Image
-                  src={profile.imageUrl}
-                  alt={profile.name}
-                  width={350}
-                  height={245}
-                  className='h-58.75 w-full object-cover md:h-66.5'
-                />
-                <div className='p-4 pb-4.5'>
-                  <div className='flex items-center justify-between gap-2.5'>
-                    <h2 className='text-[27px] font-bold text-(--color-secondary)'>
-                      {profile.name}
-                    </h2>
-                    <button
-                      type='button'
-                      className='h-8.5 rounded-sm border border-[#c4c4c4] bg-[#efefef] px-3.5 text-[12px] font-bold text-[#6b6f75]'>
-                      ABOUT ME
-                    </button>
+          {isLoading ? (
+            <div className='flex justify-center py-20'>
+              <Loader2 className='w-10 h-10 animate-spin text-primary' />
+            </div>
+          ) : (
+            <div className='mt-7.5 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
+              {errandrs?.map((profile: any) => (
+                <article
+                  key={profile.id}
+                  className='overflow-hidden rounded-[18px] bg-[#f6f6f6] shadow-[0_8px_20px_rgba(0,0,0,0.12)]'>
+                  <div className='relative h-58.75 md:h-66.5 w-full'>
+                    <img
+                      src={getImageUrl(profile.profileImage) || "https://images.unsplash.com/photo-1521791136064-7986c2923216?w=800&auto=format&fit=crop"}
+                      alt={profile.firstName}
+                      className='h-full w-full object-cover'
+                    />
                   </div>
-
-                  <div className='mt-3 flex items-center justify-between'>
-                    <a
-                      href={profile.bioLink}
-                      className='text-[18px] text-[#2f66dc] underline'>
-                      Intro
-                    </a>
-                    <div className='flex items-center gap-2'>
-                      <button type='button' aria-label='Play intro video'>
-                        <Image
-                          src={icon}
-                          alt='Play intro'
-                          width={40}
-                          height={40}
-                        />
+                  <div className='p-4 pb-4.5'>
+                    <div className='flex items-center justify-between gap-2.5'>
+                      <h2 className='text-[27px] font-bold text-(--color-secondary)'>
+                        {profile.firstName} {profile.lastName[0]}.
+                      </h2>
+                      <button
+                        type='button'
+                        className='h-8.5 rounded-sm border border-[#c4c4c4] bg-[#efefef] px-3.5 text-[12px] font-bold text-[#6b6f75]'>
+                        ABOUT ME
                       </button>
                     </div>
-                  </div>
 
-                  <p className='mt-3 text-[11px] tracking-[0.8px] text-[#757b84]'>
-                    SERVICES
-                  </p>
-                  <div className='mt-2 flex flex-wrap gap-1.5'>
-                    {profile.services.slice(0, 4).map((service) => (
-                      <span
-                        key={service}
-                        className='rounded-full border border-(--color-primary) bg-[#fff3ea] px-2.5 py-0.75 text-[12px] leading-[1.2] text-[#d96f1f]'>
-                        {service}
+                    <div className='mt-3 flex items-center justify-between'>
+                      <span className='text-[18px] text-[#2f66dc] underline cursor-pointer'>
+                        Intro
                       </span>
-                    ))}
+                      <div className='flex items-center gap-2'>
+                        <button type='button' aria-label='Play intro video'>
+                          <Image
+                            src={icon}
+                            alt='Play intro'
+                            width={40}
+                            height={40}
+                          />
+                        </button>
+                      </div>
+                    </div>
+
+                    <p className='mt-3 text-[11px] tracking-[0.8px] text-[#757b84]'>
+                      SERVICES
+                    </p>
+                    <div className='mt-2 flex flex-wrap gap-1.5'>
+                      {(profile.profile?.services || "General Errands").split(',').slice(0, 4).map((service: string) => (
+                        <span
+                          key={service}
+                          className='rounded-full border border-(--color-primary) bg-[#fff3ea] px-2.5 py-0.75 text-[12px] leading-[1.2] text-[#d96f1f]'>
+                          {service.trim()}
+                        </span>
+                      ))}
+                    </div>
+
+                    <p className='mt-3 text-[11px] tracking-[0.8px] text-[#757b84]'>
+                      PRICES
+                    </p>
+                    <p className='mt-1.25 text-[27px] font-medium text-[#1e2329]'>
+                      ${profile.profile?.ratePerHour || "25"} / hr
+                    </p>
+
+                    <button
+                      type='button'
+                      onClick={() => setHiringProfile(profile)}
+                      className='mt-4 min-h-10 w-full rounded-md bg-(--color-primary) text-[13px] font-extrabold tracking-[1px] text-white hover:bg-(--color-primary-dark)'>
+                      HIRE NOW
+                    </button>
                   </div>
-
-                  <p className='mt-3 text-[11px] tracking-[0.8px] text-[#757b84]'>
-                    PRICES
-                  </p>
-                  <p className='mt-1.25 text-[27px] font-medium text-[#1e2329]'>
-                    {profile.pricingText}
-                  </p>
-
-                  <button
-                    type='button'
-                    onClick={() => setHiringProfile(profile)}
-                    className='mt-4 min-h-10 w-full rounded-md bg-(--color-primary) text-[13px] font-extrabold tracking-[1px] text-white hover:bg-(--color-primary-dark)'>
-                    HIRE NOW
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
+                </article>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -250,35 +163,31 @@ const ErrandPage = () => {
           <div
             className='relative w-full max-w-[560px] bg-white rounded-2xl shadow-2xl overflow-hidden'
             onClick={(e) => e.stopPropagation()}>
-            {/* ── TOP HEADER: avatar + name + close + play ── */}
+            {/* ── TOP HEADER ── */}
             <div className='flex items-center gap-4 px-5 pt-5 pb-4'>
-              {/* Avatar */}
               <div className='w-[72px] h-[72px] rounded-xl overflow-hidden shrink-0 border border-gray-100'>
                 <img
-                  src={hiringProfile.imageUrl}
-                  alt={hiringProfile.name}
+                  src={getImageUrl(hiringProfile.profileImage) || "https://images.unsplash.com/photo-1521791136064-7986c2923216?w=800&auto=format&fit=crop"}
+                  alt={hiringProfile.firstName}
                   className='w-full h-full object-cover'
                 />
               </div>
 
-              {/* Name + location */}
               <div className='flex-1 min-w-0'>
                 <h2 className='text-[22px] font-extrabold text-[#111111] leading-tight'>
-                  {hiringProfile.name}
+                  {hiringProfile.firstName} {hiringProfile.lastName}
                 </h2>
                 <p className='text-sm text-gray-400 mt-0.5'>
-                  {hiringProfile.location}
+                  {hiringProfile.profile?.city}, {hiringProfile.profile?.state}
                 </p>
               </div>
 
-              {/* Play button (teal circle) */}
               <button className='w-10 h-10 rounded-full bg-[#1ABFBF] flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity'>
                 <svg width='14' height='16' viewBox='0 0 14 16' fill='none'>
                   <path d='M1.5 1.5L12.5 8L1.5 14.5V1.5Z' fill='white' />
                 </svg>
               </button>
 
-              {/* Close button */}
               <button
                 onClick={() => setHiringProfile(null)}
                 className='w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400'>
@@ -286,142 +195,73 @@ const ErrandPage = () => {
               </button>
             </div>
 
-            {/* ── DIVIDER ── */}
             <div className='h-px bg-gray-100 mx-5' />
 
-            {/* ── BODY: two-column layout ── */}
             <div className='flex flex-col md:flex-row gap-4 px-5 pt-4 pb-4'>
-              {/* LEFT COLUMN */}
               <div className='flex-1 min-w-0 flex flex-col gap-4'>
-                {/* About section */}
                 <div>
                   <p className='text-[11px] font-extrabold text-[#F47A22] uppercase tracking-widest mb-2'>
-                    ABOUT {hiringProfile.name.split(" ")[0].toUpperCase()}
+                    ABOUT {hiringProfile.firstName.toUpperCase()}
                   </p>
-                  <p className='text-[13px] text-gray-600 leading-relaxed'>
-                    {hiringProfile.bio}
+                  <p className='text-[13px] text-gray-600 leading-relaxed line-clamp-4'>
+                    {hiringProfile.profile?.bio || "No bio available."}
                   </p>
                 </div>
 
-                {/* Tags */}
                 <div className='flex flex-wrap gap-1.5'>
-                  {hiringProfile.tags.map((tag) => (
+                  {(hiringProfile.profile?.services || "General").split(',').map((tag: string) => (
                     <span
                       key={tag}
                       className='px-3 py-1 rounded-full border border-gray-200 text-[12px] font-semibold text-gray-600 bg-white'>
-                      {tag}
+                      {tag.trim()}
                     </span>
                   ))}
                 </div>
 
-                {/* Divider */}
                 <div className='h-px bg-gray-100' />
 
-                {/* Availability */}
                 <div className='flex flex-col gap-2.5'>
-                  {/* Schedule row */}
                   <div className='flex items-start gap-2'>
                     <div className='mt-0.5'>
-                      {/* Calendar icon */}
-                      <svg
-                        width='16'
-                        height='16'
-                        viewBox='0 0 16 16'
-                        fill='none'
-                        className='text-gray-400'>
-                        <rect
-                          x='1'
-                          y='2.5'
-                          width='14'
-                          height='12'
-                          rx='2'
-                          stroke='currentColor'
-                          strokeWidth='1.3'
-                        />
-                        <path
-                          d='M5 1v3M11 1v3M1 6.5h14'
-                          stroke='currentColor'
-                          strokeWidth='1.3'
-                          strokeLinecap='round'
-                        />
+                      <svg width='16' height='16' viewBox='0 0 16 16' fill='none' className='text-gray-400'>
+                        <rect x='1' y='2.5' width='14' height='12' rx='2' stroke='currentColor' strokeWidth='1.3' />
+                        <path d='M5 1v3M11 1v3M1 6.5h14' stroke='currentColor' strokeWidth='1.3' strokeLinecap='round' />
                       </svg>
                     </div>
                     <div>
                       <p className='text-[13px] font-semibold text-gray-700 leading-tight'>
-                        {hiringProfile.availability}
+                        Available Weekdays
                       </p>
                       <p className='text-[12px] font-semibold text-[#F47A22] mt-0.5'>
-                        {hiringProfile.availabilityNote}
+                        Fast Response
                       </p>
                     </div>
-                  </div>
-
-                  {/* Response time row */}
-                  <div className='flex items-center gap-2'>
-                    <svg
-                      width='16'
-                      height='16'
-                      viewBox='0 0 16 16'
-                      fill='none'
-                      className='text-gray-400'>
-                      <circle
-                        cx='8'
-                        cy='8'
-                        r='6.5'
-                        stroke='currentColor'
-                        strokeWidth='1.3'
-                      />
-                      <path
-                        d='M8 4.5V8l2.5 2'
-                        stroke='currentColor'
-                        strokeWidth='1.3'
-                        strokeLinecap='round'
-                      />
-                    </svg>
-                    <p className='text-[13px] text-gray-600'>
-                      Usually responds within{" "}
-                      <span className='font-semibold text-[#F47A22]'>
-                        {hiringProfile.responseTime}
-                      </span>
-                    </p>
                   </div>
                 </div>
               </div>
 
-              {/* RIGHT COLUMN — services card */}
               <div className='w-full md:w-[200px] shrink-0'>
                 <div className='bg-[#FFF5EE] rounded-xl p-3.5 flex flex-col gap-2'>
-                  {hiringProfile.services.map((service, i) => (
-                    <div key={service} className='flex items-center gap-2'>
-                      <span className='text-[12px] text-gray-600 leading-tight'>
-                        {service}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Pricing row */}
-                <div className='flex items-center justify-between mt-3 px-1'>
-                  <span className='text-[12px] text-gray-500'>
-                    {hiringProfile.pricingLabel}
-                  </span>
-                  <span className='text-[13px] font-extrabold text-[#F47A22]'>
-                    {hiringProfile.pricingText}
-                  </span>
+                  <p className='text-[11px] font-bold text-gray-400 uppercase'>Rate</p>
+                  <p className='text-[18px] font-extrabold text-[#F47A22]'>${hiringProfile.profile?.ratePerHour || "25"} / hr</p>
                 </div>
               </div>
             </div>
 
-            {/* ── HIRE BUTTON ── */}
-            <div className='px-5 pb-5 pt-1'>
+            <div className='px-5 pb-5 pt-1 flex gap-3'>
               <button
                 onClick={() => {
-                  toast.success("Hiring request sent!");
+                  toast.success("Connection request sent!");
                   setHiringProfile(null);
                 }}
-                className='h-11 px-8 rounded-full bg-[#F47A22] text-white font-extrabold text-[13px] uppercase tracking-wider hover:bg-[#BB4D00] transition-colors shadow-md'>
-                HIRE {hiringProfile.name.split(" ")[0].toUpperCase()}
+                className='flex-1 h-11 rounded-full bg-white border border-[#F47A22] text-[#F47A22] font-extrabold text-[13px] uppercase tracking-wider hover:bg-[#FFF3E8] transition-colors shadow-sm'>
+                HIRE NOW
               </button>
+              <Link
+                href={`/dashboard/messages?errandId=${hiringProfile.id}`}
+                className='flex-1 h-11 flex items-center justify-center rounded-full bg-[#F47A22] text-white font-extrabold text-[13px] uppercase tracking-wider hover:bg-[#BB4D00] transition-colors shadow-md'>
+                MESSAGE
+              </Link>
             </div>
           </div>
         </div>
