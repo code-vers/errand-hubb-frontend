@@ -46,8 +46,11 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       newSocket.on('message_notification', (data) => {
         toast.info(`New message from ${data.senderName}`, {
           description: data.content.substring(0, 50) + (data.content.length > 50 ? '...' : ''),
-          onClick: () => {
-            window.location.href = `/dashboard/messages?convId=${data.conversationId}`;
+          action: {
+            label: 'View',
+            onClick: () => {
+              window.location.href = `/dashboard/messages?convId=${data.conversationId}`;
+            }
           }
         });
       });
