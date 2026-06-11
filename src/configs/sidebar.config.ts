@@ -95,10 +95,16 @@ export const sidebarConfig: SidebarMenuItem[] = [
     roles: ["errand"],
   },
   {
+    title: "Global Messages",
+    path: "/dashboard/admin-messages",
+    icon: MessageSquareText,
+    roles: ["admin"],
+  },
+  {
     title: "Messages",
     path: "/dashboard/messages",
     icon: MessageSquare,
-    roles: ["errand", "admin"],
+    roles: ["client", "errand", "admin"],
   },
   // {
   //   title: "Payments",
