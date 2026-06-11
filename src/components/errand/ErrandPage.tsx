@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, AlertCircle } from "lucide-react";
 import icon from "../../../public/icon.svg";
 import logo from "../../../public/logo2.svg";
 import { toast } from "sonner";
@@ -22,7 +22,23 @@ const membershipPlan: MembershipPlan = {
 
 const ErrandPage = () => {
   const [hiringProfile, setHiringProfile] = useState<any | null>(null);
-  const { data: errandrs, isLoading } = useErrandProfiles();
+  const { data: errandrs, isLoading, isError } = useErrandProfiles();
+
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 gap-4">
+        <AlertCircle className="w-12 h-12 text-red-500" />
+        <h2 className="text-xl font-bold text-gray-800">Unable to load Errandrs</h2>
+        <p className="text-gray-500">There was an error fetching the profiles. Please try again later.</p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="px-6 py-2 bg-primary text-white rounded-md font-bold"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
 
   return (
     <section className='w-full bg-(--color-warning-bg)'>
@@ -82,21 +98,21 @@ const ErrandPage = () => {
             </div>
           ) : (
             <div className='mt-7.5 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
-              {errandrs?.map((profile: any) => (
+              {Array.isArray(errandrs) && errandrs.map((profile: any) => (
                 <article
                   key={profile.id}
                   className='overflow-hidden rounded-[18px] bg-[#f6f6f6] shadow-[0_8px_20px_rgba(0,0,0,0.12)]'>
                   <div className='relative h-58.75 md:h-66.5 w-full'>
                     <img
                       src={getImageUrl(profile.profileImage) || "https://images.unsplash.com/photo-1521791136064-7986c2923216?w=800&auto=format&fit=crop"}
-                      alt={profile.firstName}
+                      alt={profile.firstName || "Errandr"}
                       className='h-full w-full object-cover'
                     />
                   </div>
                   <div className='p-4 pb-4.5'>
                     <div className='flex items-center justify-between gap-2.5'>
                       <h2 className='text-[27px] font-bold text-(--color-secondary)'>
-                        {profile.firstName} {profile.lastName[0]}.
+                        {profile.firstName} {profile.lastName?.[0] || ""}.
                       </h2>
                       <button
                         type='button'
@@ -125,7 +141,7 @@ const ErrandPage = () => {
                       SERVICES
                     </p>
                     <div className='mt-2 flex flex-wrap gap-1.5'>
-                      {(profile.profile?.services || "General Errands").split(',').slice(0, 4).map((service: string) => (
+                      {(profile.profile?.services || "General Errands").toString().split(',').slice(0, 4).map((service: string) => (
                         <span
                           key={service}
                           className='rounded-full border border-(--color-primary) bg-[#fff3ea] px-2.5 py-0.75 text-[12px] leading-[1.2] text-[#d96f1f]'>
@@ -138,7 +154,7 @@ const ErrandPage = () => {
                       PRICES
                     </p>
                     <p className='mt-1.25 text-[27px] font-medium text-[#1e2329]'>
-                      ${profile.profile?.ratePerHour || "25"} / hr
+                      ${profile.profile?.ratePerHour?.toString() || "25"} / hr
                     </p>
 
                     <button
@@ -209,7 +225,7 @@ const ErrandPage = () => {
                 </div>
 
                 <div className='flex flex-wrap gap-1.5'>
-                  {(hiringProfile.profile?.services || "General").split(',').map((tag: string) => (
+                  {(hiringProfile.profile?.services || "General").toString().split(',').map((tag: string) => (
                     <span
                       key={tag}
                       className='px-3 py-1 rounded-full border border-gray-200 text-[12px] font-semibold text-gray-600 bg-white'>
@@ -243,7 +259,7 @@ const ErrandPage = () => {
               <div className='w-full md:w-[200px] shrink-0'>
                 <div className='bg-[#FFF5EE] rounded-xl p-3.5 flex flex-col gap-2'>
                   <p className='text-[11px] font-bold text-gray-400 uppercase'>Rate</p>
-                  <p className='text-[18px] font-extrabold text-[#F47A22]'>${hiringProfile.profile?.ratePerHour || "25"} / hr</p>
+                  <p className='text-[18px] font-extrabold text-[#F47A22]'>${hiringProfile.profile?.ratePerHour?.toString() || "25"} / hr</p>
                 </div>
               </div>
             </div>
