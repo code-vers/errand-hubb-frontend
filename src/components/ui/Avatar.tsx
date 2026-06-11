@@ -2,6 +2,7 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { FC } from "react";
+import { getImageUrl } from "@/configs/api.config";
 
 interface AvatarProps {
   src: string;
@@ -22,9 +23,11 @@ export const Avatar: FC<AvatarProps> = ({
   size = "md",
   className,
 }) => {
+  const finalSrc = getImageUrl(src) || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop";
+  
   return (
     <Image
-      src={src}
+      src={finalSrc}
       alt={alt}
       height={200}
       width={200}

@@ -5,6 +5,7 @@ import { CheckCircle2, CircleCheckBig, Clock, MapPin } from "lucide-react";
 import Image from "next/image";
 import StarRating from "./StarRating";
 import Link from "next/link";
+import { getImageUrl } from "@/configs/api.config";
 
 interface ProviderCardProps {
   provider: Post;
@@ -22,7 +23,7 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
               className='w-16 h-16 rounded-lg border-[2px] border-[#FDCBA4]  object-cover'
               height={200}
               width={200}
-              src={provider.user.profileImage || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=200&h=200&fit=crop"}
+              src={getImageUrl(provider.user.profileImage) || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=200&h=200&fit=crop"}
             />
             {/* Keeping the verified checkmark for design consistency */}
             <div className='absolute -bottom-1 -right-1 bg-white text-white rounded-full p-0.5'>
