@@ -14,6 +14,9 @@ export interface ChatMessage {
   type: "text" | "image" | "voice" | "location" | "calendar";
   metadata?: any;
   isRead: boolean;
+  isPinned: boolean;
+  isDeleted: boolean;
+  deletedFor?: string[];
   createdAt: string;
   sender: {
     id: string;
@@ -50,6 +53,4 @@ export interface TaskDetails {
   location: string;
   budget: number;
   timestamp: string;
-}
-
 }

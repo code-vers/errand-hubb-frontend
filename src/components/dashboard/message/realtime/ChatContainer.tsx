@@ -145,6 +145,16 @@ const ChatContainer: FC = () => {
       });
     };
 
+    const handleMessageUpdated = (updatedMessage: ChatMessage) => {
+      if (updatedMessage.conversationId === selectedConvId) {
+        setMessages((prev) => prev.map(m => m.id === updatedMessage.id ? updatedMessage : m));
+      }
+    };
+
+    const handleMessageDeleted = (data: { messageId: string }) => {
+      setMessages((prev) => prev.filter(m => m.id !== data.messageId));
+    };
+
     const handleUserTyping = (data: { userId: string; isTyping: boolean }) => {
       setIsTyping(prev => ({
         ...prev,
@@ -153,10 +163,14 @@ const ChatContainer: FC = () => {
     };
 
     on("new_message", handleNewMessage);
+    on("message_updated", handleMessageUpdated);
+    on("message_deleted", handleMessageDeleted);
     on("user_typing", handleUserTyping);
 
     return () => {
       off("new_message", handleNewMessage);
+      off("message_updated", handleMessageUpdated);
+      off("message_deleted", handleMessageDeleted);
       off("user_typing", handleUserTyping);
     };
   }, [selectedConvId, isConnected, on, off, fetchConversations]);
@@ -169,6 +183,14 @@ const ChatContainer: FC = () => {
         type,
         metadata
       });
+    } else {
+      toast.error("Not connected to chat server");
+    }
+  };
+
+  const handleMessageAction = (action: 'pin' | 'unsend' | 'delete_for_me', messageId: string) => {
+    if (isConnected) {
+      emit("message_action", { action, messageId });
     } else {
       toast.error("Not connected to chat server");
     }
@@ -226,6 +248,7 @@ const ChatContainer: FC = () => {
           messages={messages}
           currentUserId={user?.id || ""}
           onSendMessage={handleSendMessage}
+          onMessageAction={handleMessageAction}
           onTyping={handleTyping}
           onUploadFile={handleUploadFile}
           otherUserTyping={activeConversation ? (activeConversation.clientId === user?.id ? isTyping[activeConversation.errandId] : isTyping[activeConversation.clientId]) : false}

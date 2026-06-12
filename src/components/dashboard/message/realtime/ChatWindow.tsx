@@ -3,9 +3,9 @@
 import { FC, useState, useEffect, useRef } from "react";
 import { ChatConversation, ChatMessage } from "@/types/messages";
 import { 
-  Send, MoreVertical, Phone, Video, Loader2, Circle, 
+  Send, MoreVertical, Loader2, Circle, 
   Image as ImageIcon, Mic, Calendar, Paperclip, X,
-  Play, Pause, MapPin, Smile
+  Play, Pause, MapPin, Smile, Pin, Undo, Trash2
 } from "lucide-react";
 import { getImageUrl } from "@/configs/api.config";
 import { format } from "date-fns";
@@ -15,6 +15,7 @@ interface ChatWindowProps {
   messages: ChatMessage[];
   currentUserId: string;
   onSendMessage: (content: string, type?: string, metadata?: any) => void;
+  onMessageAction: (action: 'pin' | 'unsend' | 'delete_for_me', messageId: string) => void;
   onTyping: (isTyping: boolean) => void;
   onUploadFile: (file: File) => Promise<string>;
   otherUserTyping: boolean;
@@ -66,6 +67,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
   messages,
   currentUserId,
   onSendMessage,
+  onMessageAction,
   onTyping,
   onUploadFile,
   otherUserTyping,
@@ -78,6 +80,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
   const [showCalendar, setShowCalendar] = useState(false);
   const [inviteDate, setInviteDate] = useState("");
   const [inviteTime, setInviteTime] = useState("");
+  const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -199,7 +202,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
   const otherUser = conversation.clientId === currentUserId ? conversation.errand : conversation.client;
 
   return (
-    <div className='flex-1 flex flex-col h-full bg-white relative'>
+    <div className='flex-1 flex flex-col h-full bg-white relative' onClick={() => setActiveMenuId(null)}>
       {/* Header */}
       <header className='px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10'>
         <div className='flex items-center gap-4'>
@@ -227,9 +230,6 @@ const ChatWindow: FC<ChatWindowProps> = ({
           </div>
         </div>
         <div className='flex items-center gap-2'>
-          <button className='p-2.5 hover:bg-gray-50 rounded-xl text-gray-400 transition-all active:scale-90'><Phone size={20} /></button>
-          <button className='p-2.5 hover:bg-gray-50 rounded-xl text-gray-400 transition-all active:scale-90'><Video size={20} /></button>
-          <div className="w-px h-6 bg-gray-100 mx-1" />
           <button className='p-2.5 hover:bg-gray-50 rounded-xl text-gray-400 transition-all active:scale-90'><MoreVertical size={20} /></button>
         </div>
       </header>
@@ -244,64 +244,125 @@ const ChatWindow: FC<ChatWindowProps> = ({
           <>
             {messages.map((msg, idx) => {
               const isMe = msg.senderId === currentUserId;
+              const isMenuOpen = activeMenuId === msg.id;
+
               return (
-                <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
+                <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"} group`}>
+                  
+                  {/* Options Menu (Left for Me, Right for Other) */}
+                  {isMe && (
+                    <div className="relative flex items-center opacity-0 group-hover:opacity-100 transition-opacity mr-2">
+                      <button onClick={(e) => { e.stopPropagation(); setActiveMenuId(isMenuOpen ? null : msg.id); }} className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100">
+                        <MoreVertical size={16} />
+                      </button>
+                      {isMenuOpen && (
+                        <div className="absolute top-full right-0 z-20 bg-white border border-gray-100 shadow-xl rounded-xl py-1 mt-1 min-w-[140px]">
+                          <button onClick={() => onMessageAction('pin', msg.id)} className="w-full text-left px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                            <Pin size={14} /> {msg.isPinned ? "Unpin Message" : "Pin Message"}
+                          </button>
+                          {!msg.isDeleted && (
+                            <button onClick={() => onMessageAction('unsend', msg.id)} className="w-full text-left px-4 py-2.5 text-xs font-semibold text-orange-500 hover:bg-gray-50 flex items-center gap-2 border-t border-gray-50">
+                              <Undo size={14} /> Unsend
+                            </button>
+                          )}
+                          <button onClick={() => onMessageAction('delete_for_me', msg.id)} className="w-full text-left px-4 py-2.5 text-xs font-semibold text-red-500 hover:bg-gray-50 flex items-center gap-2 border-t border-gray-50">
+                            <Trash2 size={14} /> Delete for me
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   <div className={`max-w-[75%] flex flex-col ${isMe ? "items-end" : "items-start"}`}>
                     
                     {/* Render based on type */}
-                    <div className={`shadow-sm transition-all hover:shadow-md ${
+                    <div className={`shadow-sm transition-all hover:shadow-md relative ${
                       isMe ? "bg-primary text-white rounded-2xl rounded-tr-none" : "bg-white text-gray-800 rounded-2xl rounded-tl-none border border-gray-100"
-                    }`}>
+                    } ${msg.isDeleted ? 'bg-gray-100 text-gray-500 border-none !rounded-2xl' : ''}`}>
                       
-                      {msg.type === "text" && <div className="px-5 py-3.5 text-[15px] leading-relaxed">{msg.content}</div>}
-                      
-                      {msg.type === "image" && (
-                        <div className="p-1">
-                          <img src={getImageUrl(msg.metadata?.url) || ""} alt="Shared" className="max-w-full rounded-xl max-h-[300px] object-cover cursor-pointer" />
+                      {msg.isPinned && (
+                        <div className={`absolute -top-3 ${isMe ? '-right-2' : '-left-2'} bg-orange-100 text-orange-500 p-1 rounded-full shadow-sm border border-white`}>
+                          <Pin size={12} fill="currentColor" />
                         </div>
                       )}
-                      
-                      {msg.type === "voice" && (
-                        <VoicePlayer url={msg.metadata?.url} isMe={isMe} />
-                      )}
-                      
-                      {msg.type === "calendar" && (
-                        <div className="p-5 min-w-[240px]">
-                           <div className="flex items-center gap-3 mb-4">
-                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isMe ? 'bg-white/20 text-white' : 'bg-orange-50 text-primary'}`}>
-                                 <Calendar size={20} />
+
+                      {msg.isDeleted ? (
+                         <div className="px-5 py-3 text-[14px] italic opacity-80 flex items-center gap-2">
+                           <Undo size={14} /> This message was unsent
+                         </div>
+                      ) : (
+                        <>
+                          {msg.type === "text" && <div className="px-5 py-3.5 text-[15px] leading-relaxed">{msg.content}</div>}
+                          
+                          {msg.type === "image" && (
+                            <div className="p-1">
+                              <img src={getImageUrl(msg.metadata?.url) || ""} alt="Shared" className="max-w-full rounded-xl max-h-[300px] object-cover cursor-pointer" />
+                            </div>
+                          )}
+                          
+                          {msg.type === "voice" && (
+                            <VoicePlayer url={msg.metadata?.url} isMe={isMe} />
+                          )}
+                          
+                          {msg.type === "calendar" && (
+                            <div className="p-5 min-w-[240px]">
+                              <div className="flex items-center gap-3 mb-4">
+                                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isMe ? 'bg-white/20 text-white' : 'bg-orange-50 text-primary'}`}>
+                                    <Calendar size={20} />
+                                  </div>
+                                  <div>
+                                    <p className="text-xs font-bold uppercase tracking-wider opacity-80">Errand Schedule</p>
+                                    <p className="text-sm font-bold opacity-90">{msg.metadata?.status === 'accepted' ? 'Accepted' : 'Proposal Invite'}</p>
+                                  </div>
                               </div>
-                              <div>
-                                 <p className="text-xs font-bold uppercase tracking-wider opacity-80">Errand Schedule</p>
-                                 <p className="text-sm font-bold opacity-90">{msg.metadata?.status === 'accepted' ? 'Accepted' : 'Proposal Invite'}</p>
+                              <div className={`rounded-xl p-3 mb-4 text-xs font-medium ${isMe ? 'bg-black/10' : 'bg-gray-50 text-gray-700'}`}>
+                                  Date & Time:<br/>
+                                  <span className="font-bold text-[13px]">{format(new Date(msg.metadata?.date || new Date()), 'PPP p')}</span>
                               </div>
-                           </div>
-                           <div className={`rounded-xl p-3 mb-4 text-xs font-medium ${isMe ? 'bg-black/10' : 'bg-gray-50 text-gray-700'}`}>
-                              Date & Time:<br/>
-                              <span className="font-bold text-[13px]">{format(new Date(msg.metadata?.date || new Date()), 'PPP p')}</span>
-                           </div>
-                           {!isMe && (
-                             <button 
-                               onClick={() => acceptInvite(msg)}
-                               className="w-full py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all bg-primary text-white hover:bg-primary-dark shadow-md"
-                             >
-                               Accept Invite
-                             </button>
-                           )}
-                           {isMe && (
-                             <div className="text-center text-xs font-bold uppercase tracking-widest opacity-80">
-                               Awaiting Response
-                             </div>
-                           )}
-                        </div>
+                              {!isMe && (
+                                <button 
+                                  onClick={() => acceptInvite(msg)}
+                                  className="w-full py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all bg-primary text-white hover:bg-primary-dark shadow-md"
+                                >
+                                  Accept Invite
+                                </button>
+                              )}
+                              {isMe && (
+                                <div className="text-center text-xs font-bold uppercase tracking-widest opacity-80">
+                                  Awaiting Response
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
                     
                     <span className='text-[10px] text-gray-400 mt-2 font-bold uppercase tracking-widest px-1'>
                       {format(new Date(msg.createdAt), 'HH:mm')}
-                      {isMe && msg.isRead && <span className="text-primary ml-1">· Seen</span>}
+                      {isMe && msg.isRead && !msg.isDeleted && <span className="text-primary ml-1">· Seen</span>}
                     </span>
                   </div>
+
+                  {/* Options Menu for Other */}
+                  {!isMe && (
+                    <div className="relative flex items-center opacity-0 group-hover:opacity-100 transition-opacity ml-2">
+                      <button onClick={(e) => { e.stopPropagation(); setActiveMenuId(isMenuOpen ? null : msg.id); }} className="p-1.5 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100">
+                        <MoreVertical size={16} />
+                      </button>
+                      {isMenuOpen && (
+                        <div className="absolute top-full left-0 z-20 bg-white border border-gray-100 shadow-xl rounded-xl py-1 mt-1 min-w-[140px]">
+                          <button onClick={() => onMessageAction('pin', msg.id)} className="w-full text-left px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                            <Pin size={14} /> {msg.isPinned ? "Unpin Message" : "Pin Message"}
+                          </button>
+                          <button onClick={() => onMessageAction('delete_for_me', msg.id)} className="w-full text-left px-4 py-2.5 text-xs font-semibold text-red-500 hover:bg-gray-50 flex items-center gap-2 border-t border-gray-50">
+                            <Trash2 size={14} /> Delete for me
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                 </div>
               );
             })}
