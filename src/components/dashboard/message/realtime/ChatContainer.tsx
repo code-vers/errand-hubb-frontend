@@ -102,6 +102,8 @@ const ChatContainer: FC = () => {
           if (response && response.success) {
             setMessages(response.data);
             emit("join_conversation", { conversationId: selectedConvId });
+            // Emit mark_read when we open a conversation to notify the sender
+            emit("mark_read", { conversationId: selectedConvId });
           }
         } catch (error: any) {
           console.error("CHAT: Failed to fetch messages:", error);
@@ -127,6 +129,11 @@ const ChatContainer: FC = () => {
           if (prev.find(m => m.id === message.id)) return prev;
           return [...prev, message];
         });
+        
+        // If it's a message from someone else in the current active chat, mark it as read immediately
+        if (message.senderId !== user?.id) {
+          emit("mark_read", { conversationId: selectedConvId });
+        }
       }
       
       setConversations((prev) => {
@@ -136,6 +143,10 @@ const ChatContainer: FC = () => {
           const conv = { ...updated[index] };
           conv.messages = [message];
           conv.updatedAt = message.createdAt;
+          // If we are not currently viewing this conversation, increment unread count
+          if (message.conversationId !== selectedConvId && message.senderId !== user?.id) {
+             conv.unreadCount = (conv.unreadCount || 0) + 1;
+          }
           updated.splice(index, 1);
           return [conv, ...updated];
         } else {
@@ -162,18 +173,33 @@ const ChatContainer: FC = () => {
       }));
     };
 
+    const handleMessagesRead = (data: { conversationId: string; readBy: string }) => {
+      if (data.conversationId === selectedConvId) {
+        setMessages(prev => prev.map(m => (m.senderId !== data.readBy && !m.isRead) ? { ...m, isRead: true } : m));
+      }
+      
+      setConversations(prev => prev.map(c => {
+         if (c.id === data.conversationId) {
+            return { ...c, unreadCount: 0 };
+         }
+         return c;
+      }));
+    };
+
     on("new_message", handleNewMessage);
     on("message_updated", handleMessageUpdated);
     on("message_deleted", handleMessageDeleted);
     on("user_typing", handleUserTyping);
+    on("messages_read", handleMessagesRead);
 
     return () => {
       off("new_message", handleNewMessage);
       off("message_updated", handleMessageUpdated);
       off("message_deleted", handleMessageDeleted);
       off("user_typing", handleUserTyping);
+      off("messages_read", handleMessagesRead);
     };
-  }, [selectedConvId, isConnected, on, off, fetchConversations]);
+  }, [selectedConvId, isConnected, on, off, fetchConversations, emit, user]);
 
   const handleSendMessage = (content: string, type: string = "text", metadata?: any) => {
     if (selectedConvId && isConnected) {
