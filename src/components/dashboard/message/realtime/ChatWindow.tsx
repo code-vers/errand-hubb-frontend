@@ -23,6 +23,17 @@ interface ChatWindowProps {
   isConnected?: boolean;
 }
 
+const COMMON_EMOJIS = [
+  "😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "🥲", "☺️", "😊", "😇",
+  "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛",
+  "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🥸", "🤩", "🥳", "😏", "😒",
+  "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢",
+  "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰",
+  "😥", "😓", "🤫", "🤭", "🥱", "🤗", "👍", "👎", "👏", "🙌", "👐", "🤲",
+  "🤝", "🙏", "✌️", "🔥", "✨", "🌟", "💫", "⭐", "❤️", "🧡", "💛", "💚",
+  "💙", "💜", "🤎", "🖤", "🤍", "💔", "💯", "💢", "💥", "💦", "💨", "🎉"
+];
+
 const VoicePlayer = ({ url, isMe }: { url: string, isMe: boolean }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -79,6 +90,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
   const [uploading, setUploading] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [showLocation, setShowLocation] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [addressInput, setAddressInput] = useState("");
   const [inviteDate, setInviteDate] = useState("");
   const [inviteTime, setInviteTime] = useState("");
@@ -109,6 +121,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
     if (input.trim() && isConnected) {
       onSendMessage(input.trim(), "text");
       setInput("");
+      setShowEmojiPicker(false);
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
       onTyping(false);
     }
@@ -231,7 +244,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
   const otherUser = conversation.clientId === currentUserId ? conversation.errand : conversation.client;
 
   return (
-    <div className='flex-1 flex flex-col h-full bg-white relative' onClick={() => { setActiveMenuId(null); setShowHeaderMenu(false); }}>
+    <div className='flex-1 flex flex-col h-full bg-white relative' onClick={() => { setActiveMenuId(null); setShowHeaderMenu(false); setShowEmojiPicker(false); }}>
       
       {/* Pinned Messages Sidebar */}
       {showPinnedSidebar && (
@@ -484,14 +497,14 @@ const ChatWindow: FC<ChatWindowProps> = ({
       <footer className='p-6 border-t border-gray-100 bg-white relative'>
         <div className="flex items-center gap-2 mb-4">
            <button onClick={handleFileClick} className="p-2.5 hover:bg-orange-50 text-gray-400 hover:text-primary rounded-xl transition-all"><ImageIcon size={20} /></button>
-           <button onClick={() => { setShowCalendar(!showCalendar); setShowLocation(false); }} className="p-2.5 hover:bg-orange-50 text-gray-400 hover:text-primary rounded-xl transition-all"><Calendar size={20} /></button>
-           <button onClick={() => { setShowLocation(!showLocation); setShowCalendar(false); }} className="p-2.5 hover:bg-orange-50 text-gray-400 hover:text-primary rounded-xl transition-all"><MapPin size={20} /></button>
+           <button onClick={() => { setShowCalendar(!showCalendar); setShowLocation(false); setShowEmojiPicker(false); }} className="p-2.5 hover:bg-orange-50 text-gray-400 hover:text-primary rounded-xl transition-all"><Calendar size={20} /></button>
+           <button onClick={() => { setShowLocation(!showLocation); setShowCalendar(false); setShowEmojiPicker(false); }} className="p-2.5 hover:bg-orange-50 text-gray-400 hover:text-primary rounded-xl transition-all"><MapPin size={20} /></button>
            <div className="w-px h-6 bg-gray-100 mx-1" />
            {uploading && <div className="text-[10px] font-bold text-primary animate-pulse uppercase tracking-widest">Uploading Media...</div>}
         </div>
 
         {showCalendar && (
-           <div className="absolute bottom-full left-6 mb-2 bg-white border border-gray-100 shadow-2xl rounded-2xl p-5 z-20 animate-in fade-in slide-in-from-bottom-4 w-72">
+           <div className="absolute bottom-32 left-6 bg-white border border-gray-100 shadow-2xl rounded-2xl p-5 z-20 animate-in fade-in slide-in-from-bottom-4 w-72">
               <div className="flex justify-between items-center mb-4">
                 <h4 className="font-bold text-sm">Schedule Errand</h4>
                 <button onClick={() => setShowCalendar(false)} className="text-gray-400 hover:text-gray-600"><X size={16}/></button>
@@ -555,10 +568,34 @@ const ChatWindow: FC<ChatWindowProps> = ({
            </div>
         )}
 
-        <form onSubmit={handleSubmit} className='flex items-center gap-4'>
+        <form onSubmit={handleSubmit} className='flex items-center gap-4 relative'>
           <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*,audio/*" />
           
           <div className='flex-1 relative group'>
+            {showEmojiPicker && (
+               <div className="absolute bottom-full right-0 mb-4 bg-white border border-gray-100 shadow-2xl rounded-2xl p-3 z-30 animate-in fade-in slide-in-from-bottom-2 w-72">
+                  <div className="flex justify-between items-center mb-2 px-1">
+                     <h4 className="text-xs font-bold text-gray-500 uppercase tracking-wider">Emojis</h4>
+                     <button type="button" onClick={(e) => { e.stopPropagation(); setShowEmojiPicker(false); }} className="text-gray-400 hover:text-gray-600"><X size={14}/></button>
+                  </div>
+                  <div className="grid grid-cols-8 gap-1 h-48 overflow-y-auto custom-scrollbar p-1">
+                     {COMMON_EMOJIS.map(emoji => (
+                        <button 
+                          key={emoji} 
+                          type="button" 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setInput(prev => prev + emoji);
+                          }}
+                          className="w-7 h-7 flex items-center justify-center hover:bg-orange-50 rounded-lg transition-colors text-lg"
+                        >
+                          {emoji}
+                        </button>
+                     ))}
+                  </div>
+               </div>
+            )}
+
             <input
               type='text'
               value={input}
@@ -567,7 +604,13 @@ const ChatWindow: FC<ChatWindowProps> = ({
               placeholder={isRecording ? 'Recording audio...' : (isConnected ? 'Write a message...' : 'Connecting...')}
               className='w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all pr-14 placeholder:text-gray-400'
             />
-            <button type="button" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-primary transition-colors"><Smile size={22} /></button>
+            <button 
+              type="button" 
+              onClick={(e) => { e.stopPropagation(); setShowEmojiPicker(!showEmojiPicker); setShowCalendar(false); setShowLocation(false); }}
+              className={`absolute right-4 top-1/2 -translate-y-1/2 transition-colors ${showEmojiPicker ? 'text-primary' : 'text-gray-300 hover:text-primary'}`}
+            >
+              <Smile size={22} />
+            </button>
           </div>
 
           <div className="flex items-center gap-2">
