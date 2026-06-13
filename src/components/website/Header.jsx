@@ -16,6 +16,7 @@ export default function Header() {
     { name: "Errand Gallery", href: "/gallery" },
     { name: "Client Registration", href: "/client-registration" },
     { name: "ErrandR Registration", href: "/errand-registration" },
+    { name: "Investor Relations", href: "/investor-relations" },
     { name: "Contact", href: "/contact" },
     { name: "Errand", href: "/errand" },
     { name: "Errand's", href: "/errand's" },
@@ -107,10 +108,10 @@ export default function Header() {
                   }`}>
                   <Link
                     href={link.href}
-                    className={`text-[13px] font-semibold transition-colors block ${
+                    className={`text-[13px] font-semibold  transition-colors block ${
                       link.name === "Ads"
-                        ? "bg-blue-900 rounded-md drop-shadow-blue-500 shadow-2xl text-white  px-5 py-2 "
-                        : "text-white "
+                        ? "inline-block bg-[#1a3a7a] uppercase text-white font-extrabold  italic tracking-wide px-4 py-[5px]   rounded-sm text-[22px]"
+                        : "text-white"
                     }`}
                     onClick={() => setIsMenuOpen(false)}>
                     {link.name}
