@@ -15,6 +15,7 @@ export interface Post {
   state: string;
   budget: string | null;
   dateNeeded: string | null;
+  time: string | null;
   contactInfo: string | null;
   photoUrl: string | null;
   youtubeLink: string | null;
