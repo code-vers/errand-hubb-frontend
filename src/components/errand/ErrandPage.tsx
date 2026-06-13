@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -14,7 +14,8 @@ import {
 import icon from "../../../public/icon.svg";
 import logo from "../../../public/logo2.svg";
 import { toast } from "sonner";
-import { usePosts } from "@/hooks/usePosts";
+import { postService } from "@/services/post.service";
+import { Post } from "@/types/search";
 import { getImageUrl } from "@/configs/api.config";
 
 interface MembershipPlan {
@@ -28,14 +29,33 @@ const membershipPlan: MembershipPlan = {
 };
 
 const ErrandPage = () => {
-  const [selectedErrand, setSelectedErrand] = useState<any | null>(null);
-  const {
-    data: errandsData,
-    isLoading,
-    isError,
-  } = usePosts({ status: "active" });
+  const [selectedErrand, setSelectedErrand] = useState<Post | null>(null);
+  const [errands, setErrands] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
-  const errands = errandsData?.data || [];
+  const fetchErrands = async () => {
+    setIsLoading(true);
+    setIsError(false);
+    try {
+      const response = await postService.findAll({
+        limit: 50,
+        status: "active",
+      });
+      if (response && response.success) {
+        setErrands(response.data.data || []);
+      }
+    } catch (error) {
+      console.error("Failed to fetch errands:", error);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchErrands();
+  }, []);
 
   if (isError) {
     return (
@@ -48,7 +68,7 @@ const ErrandPage = () => {
           There was an error fetching the errands. Please try again later.
         </p>
         <button
-          onClick={() => window.location.reload()}
+          onClick={() => fetchErrands()}
           className='px-6 py-2 bg-primary text-white rounded-md font-bold'>
           Retry
         </button>
@@ -124,13 +144,13 @@ const ErrandPage = () => {
             </div>
           ) : (
             <div className='mt-7.5 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
-              {errands.map((errand: any) => (
+              {errands.map((errand) => (
                 <article
                   key={errand.id}
                   className='overflow-hidden rounded-[18px] bg-[#f6f6f6] shadow-[0_8px_20px_rgba(0,0,0,0.12)] transition-transform'>
                   <div className='relative h-58.75 md:h-66.5 w-full'>
-                    <Image
-                      src={getImageUrl(errand.photoUrl)}
+                    <img
+                      src={getImageUrl(errand.user?.profileImage) || getImageUrl(errand.photoUrl) || "/errand/bg.png"}
                       alt={errand.title}
                       className='h-full w-full object-cover'
                     />
@@ -201,7 +221,7 @@ const ErrandPage = () => {
             {/* Modal Header */}
             <div className='relative h-48 w-full'>
               <img
-                src={getImageUrl(selectedErrand.photoUrl) || "/errand/bg.png"}
+                src={getImageUrl(selectedErrand.user?.profileImage) || getImageUrl(selectedErrand.photoUrl) || "/errand/bg.png"}
                 alt={selectedErrand.title}
                 className='w-full h-full object-cover'
               />
