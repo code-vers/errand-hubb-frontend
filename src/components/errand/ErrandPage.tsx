@@ -310,7 +310,7 @@ const ErrandPage = () => {
                   Apply Now
                 </button>
                 <Link
-                  href={`/dashboard/messages?clientId=${selectedErrand.userId}`}
+                  href={`/dashboard/messages?clientId=${selectedErrand.user}`}
                   className='flex-1 h-12 flex items-center justify-center rounded-xl border-2 border-primary text-primary font-extrabold text-[14px] uppercase tracking-widest hover:bg-primary/5 transition-all'>
                   Message Client
                 </Link>
