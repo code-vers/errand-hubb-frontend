@@ -4,18 +4,17 @@ import { FC, useState, useEffect } from "react";
 import PriorityMessageCard from "./PriorityMessageCard";
 import RecentMessageItem from "./RecentMessageItem";
 import ViewDetailsModal from "./ViewDetailsModal";
-import ReplyModal from "./ReplyModal";
+import { useRouter } from "next/navigation";
 import type {
   PriorityMessage,
   RecentMessage,
   TaskDetails,
-  ReplyMessage,
 } from "@/types/messages";
 
 interface MessagesDashboardProps {
   priorityMessages?: PriorityMessage[];
   recentMessages?: RecentMessage[];
-  onReplyToMessage?: (messageId: string, content: string) => Promise<void>;
+  onReplyToMessage?: (userId: string) => void;
   onViewTaskDetails?: (taskId: string) => Promise<TaskDetails>;
   isLoading?: boolean;
 }
@@ -25,7 +24,7 @@ const defaultPriorityMessages: PriorityMessage[] = [
   {
     id: "priority-1",
     user: {
-      id: "user-1",
+      id: "97ab9ebb-7686-4355-8c6e-143207f27149",
       name: "Michael Chen",
       avatar:
         "https://lh3.googleusercontent.com/aida-public/AB6AXuAywMc-is1vjq0cdJCYIttxau91tQe4kueAzZJGWpFgVcbTCUeQ22qxIYKU1iQsbrG53_73-T6ZzVuhkkYVU2yYjlvZKVrrRNza6lRepcJMHLxoXxrs5SBs0uIWzDt1ZuFDi7aQjLZiDL63VW-IS9G1dGVVf6gwnyAP-fTsuD0MEiJ2TpLUoDWta7uefLS7APkFh3LxPnQTfBHtcepnqoSBZU80wBK-QFPnpc4uGtxnT4F4xCOtg5NdxJG_0XlyUVGlCH9sOLlLbGE",
@@ -57,20 +56,6 @@ const defaultRecentMessages: RecentMessage[] = [
     timeAgo: "2 hours ago",
     timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
   },
-  {
-    id: "recent-2",
-    user: {
-      id: "user-3",
-      name: "David Thompson",
-      initials: "DT",
-      onlineStatus: "offline",
-    },
-    regarding: "Yard Cleanup",
-    message:
-      "Thanks for the great work yesterday! Everything looks perfect. I've processed the payment through",
-    timeAgo: "Yesterday",
-    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-  },
 ];
 
 const MessagesDashboard: FC<MessagesDashboardProps> = ({
@@ -80,13 +65,9 @@ const MessagesDashboard: FC<MessagesDashboardProps> = ({
   onViewTaskDetails,
   isLoading = false,
 }) => {
-  const [selectedMessage, setSelectedMessage] = useState<string | null>(null);
+  const router = useRouter();
   const [showViewDetails, setShowViewDetails] = useState(false);
-  const [showReplyModal, setShowReplyModal] = useState(false);
   const [taskDetails, setTaskDetails] = useState<TaskDetails | null>(null);
-  const [replyRecipient, setReplyRecipient] = useState<ReplyMessage | null>(
-    null,
-  );
 
   const handleViewDetails = async (messageId: string) => {
     try {
@@ -94,24 +75,25 @@ const MessagesDashboard: FC<MessagesDashboardProps> = ({
         const details = await onViewTaskDetails(messageId);
         setTaskDetails(details);
       } else {
+        // Find message
+        const msg = [...priorityMessages, ...recentMessages].find(m => m.id === messageId);
+        
         // Mock data for demo
         setTaskDetails({
           id: messageId,
           client: {
-            id: "user-2",
-            name: "Sarah Jenkins",
-            avatar:
-              "https://lh3.googleusercontent.com/aida-public/AB6AXuBGkoKpgbJawnTMJ-alYKJXPTgWXYhvdwRL_5MLJTm-hi4xf9NN89HU_K0QjZAXaxpfxYeHtuln0WZKbpmhsf-J4M-tjDh6ciLfpXZqVaySItMPBZ6K9kcDAHLCZn5WcAk-Zb81z3R9k7maXquT6bRlj3WpPZneeiYIdAzJ8SDqVoDPxm3uMpUonDa40-4afF3r2VSsyrJxKoGXpZxARQ0XQpjl5Gv-PsyDe4EmsZckMXPCjKzokRFGMWIRO30E46F1HjWD2_CAZss",
+            id: msg?.user.id || "user-2",
+            name: msg?.user.name || "Sarah Jenkins",
+            avatar: msg?.user.avatar || "",
             onlineStatus: "online",
           },
-          category: "Plumbing",
+          category: msg?.regarding || "Plumbing",
           status: "ASAP",
-          title: "Emergency Plumbing Fix",
-          description:
-            "Pipe burst in the kitchen, need immediate assistance to stop the leak and prevent water damage to the cabinets.",
+          title: msg?.regarding || "Task Update",
+          description: msg?.message || "Details about the errand update will appear here.",
           location: "123 Errand Way, Suite 100",
           budget: 150.0,
-          timestamp: "Oct 24, 2023 - 09:15 AM",
+          timestamp: msg?.timeAgo || "Just now",
         });
       }
       setShowViewDetails(true);
@@ -121,30 +103,18 @@ const MessagesDashboard: FC<MessagesDashboardProps> = ({
   };
 
   const handleReply = (messageId: string) => {
-    setSelectedMessage(messageId);
-
     // Find the message to get recipient info
     const priorityMsg = priorityMessages.find((m) => m.id === messageId);
     const recentMsg = recentMessages.find((m) => m.id === messageId);
     const msg = priorityMsg || recentMsg;
 
     if (msg) {
-      setReplyRecipient({
-        id: msg.id,
-        recipient: msg.user,
-        category: msg.regarding,
-        timestamp: msg.timestamp,
-      });
+      if (onReplyToMessage) {
+        onReplyToMessage(msg.user.id);
+      } else {
+        router.push(`/dashboard/messages?errandId=${msg.user.id}`);
+      }
     }
-
-    setShowReplyModal(true);
-  };
-
-  const handleSendReply = async (content: string) => {
-    if (selectedMessage && onReplyToMessage) {
-      await onReplyToMessage(selectedMessage, content);
-    }
-    setShowReplyModal(false);
   };
 
   if (isLoading) {
@@ -202,15 +172,6 @@ const MessagesDashboard: FC<MessagesDashboardProps> = ({
             setShowViewDetails(false);
             handleReply(taskDetails.id);
           }}
-        />
-      )}
-
-      {/* Reply Modal */}
-      {showReplyModal && replyRecipient && (
-        <ReplyModal
-          recipient={replyRecipient}
-          onClose={() => setShowReplyModal(false)}
-          onSend={handleSendReply}
         />
       )}
     </>

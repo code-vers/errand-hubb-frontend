@@ -3,16 +3,16 @@
 import { FC, useMemo } from "react";
 import HiredBanner from "./HiredBanner";
 import TaskCard from "./TaskCard";
-import type { DashboardData } from "@/types/dashboard";
 import { useQuery } from "@tanstack/react-query";
-import { postService } from "@/services/post.service";
+import { messageService } from "@/services/message.service";
 import { formatDistanceToNow } from "date-fns";
-import { Loader2 } from "lucide-react";
+import { Loader2, Users } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 interface TaskDashboardProps {
-  onReplyToClient?: () => void;
-  onTaskReply?: (taskId: string) => void;
-  onTaskViewDetails?: (taskId: string) => void;
+  onReplyToClient?: (clientId: string) => void;
+  onTaskReply?: (task: any) => void;
+  onTaskViewDetails?: (task: any) => void;
 }
 
 const TaskDashboard: FC<TaskDashboardProps> = ({
@@ -20,48 +20,63 @@ const TaskDashboard: FC<TaskDashboardProps> = ({
   onTaskReply,
   onTaskViewDetails,
 }) => {
-  const { data: postsResponse, isLoading } = useQuery({
-    queryKey: ["all-posts"],
-    queryFn: () => postService.findAll({ limit: 6 }),
+  const { user } = useAuth();
+  
+  const { data: convResponse, isLoading } = useQuery({
+    queryKey: ["recent-connections"],
+    queryFn: () => messageService.getConversations(),
   });
 
   const dashboardData = useMemo(() => {
-    if (!postsResponse?.data) {
+    if (!convResponse?.data || !Array.isArray(convResponse.data)) {
       return {
         hiredBanner: {
           clientName: "System",
           hiredDate: "N/A",
-          message: "Welcome to Errand Hub. Browse recent task updates below.",
+          message: "Welcome to Errand Hub. Your recent connections will appear here.",
+          clientId: "",
         },
-        tasks: [],
-        totalPosts: 0,
+        connections: [],
+        totalConnections: 0,
       };
     }
 
-    const tasks = postsResponse.data.data.map((post: any) => ({
-      id: post.id,
-      client: {
-        id: post.userId,
-        name: `${post.user.firstName} ${post.user.lastName}`,
-        avatar: post.user.profileImage || "",
-      },
-      status: post.status === "active" ? "Pending" : post.status,
-      title: post.title,
-      description: post.description,
-      createdAt: post.createdAt,
-      timeAgo: formatDistanceToNow(new Date(post.createdAt), { addSuffix: true }),
-    }));
+    // Get latest 6 conversations
+    const latestConvs = convResponse.data.slice(0, 6);
+    
+    const connections = latestConvs.map((conv: any) => {
+      const otherUser = conv.clientId === user?.id ? conv.errand : conv.client;
+      const lastMessage = conv.messages && conv.messages[0] ? conv.messages[0].content : "No messages yet";
+      
+      return {
+        id: conv.id,
+        client: {
+          id: otherUser.id,
+          name: `${otherUser.firstName} ${otherUser.lastName}`,
+          avatar: otherUser.profileImage || "",
+        },
+        status: conv.unreadCount > 0 ? "Pending" : "Completed",
+        title: `Connection with ${otherUser.firstName}`,
+        description: lastMessage,
+        createdAt: conv.updatedAt,
+        budget: 0,
+        location: "Direct Message",
+        category: otherUser.role === "client" ? "Client" : "Errand Professional",
+        timeAgo: formatDistanceToNow(new Date(conv.updatedAt), { addSuffix: true }),
+      };
+    });
 
     return {
       hiredBanner: {
-        clientName: tasks[0]?.client.name || "System",
-        hiredDate: tasks[0] ? new Date(tasks[0].createdAt).toLocaleString() : "N/A",
-        message: "Check out the latest errands posted by clients. Reply to start earning!",
+        clientName: connections[0]?.client.name || "System",
+        hiredDate: connections[0] ? new Date(connections[0].createdAt).toLocaleString() : "N/A",
+        message: "You have new activity in your connections. Reply to keep the conversation going!",
+        clientId: connections[0]?.client.id || "",
       },
-      tasks,
-      totalPosts: postsResponse.data.meta.total,
+      connections,
+      totalConnections: convResponse.data.length,
     };
-  }, [postsResponse]);
+  }, [convResponse, user]);
 
   if (isLoading) {
     return (
@@ -72,34 +87,50 @@ const TaskDashboard: FC<TaskDashboardProps> = ({
   }
 
   return (
-    <div className='min-h-screen py-5  font-sans'>
+    <div className='min-h-screen py-5 font-sans'>
       <div className=' mx-auto'>
         {/* Hired Banner */}
-        <HiredBanner data={dashboardData.hiredBanner} onReplyClick={onReplyToClient} />
+        <HiredBanner 
+          data={dashboardData.hiredBanner} 
+          onReplyClick={() => onReplyToClient?.(dashboardData.hiredBanner.clientId)} 
+        />
 
-        {/* Task Updates Section */}
+        {/* Recent Connections Section */}
         <main>
           {/* Section Header */}
           <div className='flex justify-between items-end mb-6 px-2'>
-            <h2 className='text-[18px] font-semibold text-foreground'>
-              Recent task updates
-            </h2>
+            <div className="flex items-center gap-2">
+              <Users className="w-5 h-5 text-primary" />
+              <h2 className='text-[18px] font-semibold text-foreground'>
+                Recent connections
+              </h2>
+            </div>
             <span className='text-[#6B7280] font-medium text-sm'>
-              {dashboardData.totalPosts} posts
+              {dashboardData.totalConnections} connections
             </span>
           </div>
 
-          {/* Task Cards Grid */}
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-            {dashboardData.tasks.map((task: any) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onReply={onTaskReply}
-                onViewDetails={onTaskViewDetails}
-              />
-            ))}
-          </div>
+          {/* Connections Grid */}
+          {dashboardData.connections.length > 0 ? (
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+              {dashboardData.connections.map((conn: any) => (
+                <TaskCard
+                  key={conn.id}
+                  task={conn}
+                  onReply={() => onTaskReply?.(conn)}
+                  onViewDetails={() => onTaskViewDetails?.(conn)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl border border-dashed border-gray-200 p-12 text-center">
+              <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-bold text-gray-800">No connections yet</h3>
+              <p className="text-gray-500 max-w-xs mx-auto mt-2">
+                When you start chatting with others, they will appear here as recent connections.
+              </p>
+            </div>
+          )}
         </main>
       </div>
     </div>
