@@ -54,3 +54,47 @@ export interface TaskDetails {
   budget: number;
   timestamp: string;
 }
+
+export interface PriorityMessage {
+  id: string;
+  user: {
+    id: string;
+    name: string;
+    avatar: string;
+    onlineStatus: "online" | "offline";
+    initials?: string;
+  };
+  status: string;
+  regarding: string;
+  message: string;
+  timeAgo: string;
+  timestamp: string;
+  isHired?: boolean;
+}
+
+export interface RecentMessage {
+  id: string;
+  user: {
+    id: string;
+    name: string;
+    avatar: string;
+    onlineStatus: "online" | "offline";
+    initials?: string;
+  };
+  regarding: string;
+  message: string;
+  timeAgo: string;
+  timestamp: string;
+}
+
+export interface ReplyMessage {
+  id: string;
+  recipient: {
+    id: string;
+    name: string;
+    avatar: string;
+    initials?: string;
+  };
+  timestamp: string;
+  category: string;
+}

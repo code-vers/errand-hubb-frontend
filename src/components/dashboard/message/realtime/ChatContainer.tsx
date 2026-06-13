@@ -35,7 +35,7 @@ const ChatContainer: FC = () => {
     setIsRefreshing(true);
     
     try {
-      const response = await messageService.getConversations();
+      const response: any = await messageService.getConversations();
       
       if (response && response.success) {
         const fetchedConversations = response.data || [];
@@ -53,7 +53,7 @@ const ChatContainer: FC = () => {
               setSelectedId(existing.id);
             } else {
               try {
-                const startResp = await messageService.startConversation(errandIdFromUrl);
+                const startResp: any = await messageService.startConversation(errandIdFromUrl);
                 if (startResp && startResp.success) {
                   const newConv = startResp.data;
                   setConversations(prev => {
@@ -98,7 +98,7 @@ const ChatContainer: FC = () => {
       const fetchMessages = async () => {
         setIsLoadingMessages(true);
         try {
-          const response = await messageService.getMessages(selectedConvId);
+          const response: any = await messageService.getMessages(selectedConvId);
           if (response && response.success) {
             setMessages(response.data);
             emit("join_conversation", { conversationId: selectedConvId });
