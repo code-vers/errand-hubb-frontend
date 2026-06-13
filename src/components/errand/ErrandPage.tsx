@@ -1,22 +1,20 @@
 "use client";
-
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import {
-  X,
-  Loader2,
-  AlertCircle,
-  MapPin,
-  Calendar,
-  DollarSign,
-} from "lucide-react";
-import icon from "../../../public/icon.svg";
-import logo from "../../../public/logo2.svg";
-import { toast } from "sonner";
+import { getImageUrl } from "@/configs/api.config";
 import { postService } from "@/services/post.service";
 import { Post } from "@/types/search";
-import { getImageUrl } from "@/configs/api.config";
+import {
+  AlertCircle,
+  Calendar,
+  DollarSign,
+  Loader2,
+  MapPin,
+  X,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import logo from "../../../public/logo2.svg";
 
 interface MembershipPlan {
   priceLabel: string;
@@ -38,7 +36,7 @@ const ErrandPage = () => {
     setIsLoading(true);
     setIsError(false);
     try {
-      const response = await postService.findAll({
+      const response: any = await postService.findAll({
         limit: 50,
         status: "active",
       });
@@ -150,7 +148,11 @@ const ErrandPage = () => {
                   className='overflow-hidden rounded-[18px] bg-[#f6f6f6] shadow-[0_8px_20px_rgba(0,0,0,0.12)] transition-transform'>
                   <div className='relative h-58.75 md:h-66.5 w-full'>
                     <img
-                      src={getImageUrl(errand.user?.profileImage) || getImageUrl(errand.photoUrl) || "/errand/bg.png"}
+                      src={
+                        getImageUrl(errand.user?.profileImage) ||
+                        getImageUrl(errand.photoUrl) ||
+                        "/errand/bg.png"
+                      }
                       alt={errand.title}
                       className='h-full w-full object-cover'
                     />
@@ -221,7 +223,11 @@ const ErrandPage = () => {
             {/* Modal Header */}
             <div className='relative h-48 w-full'>
               <img
-                src={getImageUrl(selectedErrand.user?.profileImage) || getImageUrl(selectedErrand.photoUrl) || "/errand/bg.png"}
+                src={
+                  getImageUrl(selectedErrand.user?.profileImage) ||
+                  getImageUrl(selectedErrand.photoUrl) ||
+                  "/errand/bg.png"
+                }
                 alt={selectedErrand.title}
                 className='w-full h-full object-cover'
               />
