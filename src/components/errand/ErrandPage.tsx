@@ -146,12 +146,11 @@ const ErrandPage = () => {
                 <article
                   key={profile.id}
                   className='overflow-hidden rounded-[18px] bg-[#f6f6f6] shadow-[0_8px_20px_rgba(0,0,0,0.12)]'>
-                  <div className='relative h-58.75 w-full md:h-66.5'>
-                    <Image
+                  <div className='relative h-58.75 w-full md:h-66.5 bg-gray-100 flex items-center justify-center'>
+                    <img
                       src={profile.imageUrl}
                       alt={profile.name}
-                      fill
-                      className='object-cover'
+                      className='w-full h-full object-cover'
                     />
                   </div>
                   <div className='p-4 pb-4.5'>
