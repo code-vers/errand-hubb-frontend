@@ -58,35 +58,42 @@ const PostErrandPage = () => {
             categoryId: post.categoryId,
           });
         } else {
-          // For a new post, try to pre-fill from profile and most recent post
-          let profileYoutubeLink = "";
+          // Try to get user profile data first for auto-filling
+          let profileData: any = null;
           try {
             const profileResponse = await profileService.getMe();
-            profileYoutubeLink = profileResponse.data?.profile?.youtubeLink || "";
+            profileData = profileResponse.data;
           } catch (e) {
             console.error("Failed to fetch profile", e);
           }
 
+          // Check if user already has any posts
           const response = await postService.getMyPosts();
           if (response.data && response.data.length > 0) {
+            // Pre-fill with the latest post and use its ID for updates
             const post = response.data[0];
             setFormData({
-              id: undefined, // It's a new post based on the template
+              id: post.id, // Set ID to existing post to allow updating instead of duplicate
               title: post.title,
               description: post.description,
-              city: post.city,
-              state: post.state,
-              budget: post.budget?.toString() || "",
+              city: post.city || profileData?.profile?.city || "",
+              state: post.state || profileData?.profile?.state || "",
+              budget: post.budget?.toString() || profileData?.profile?.ratePerHour?.toString() || "",
               dateNeeded: post.dateNeeded ? new Date(post.dateNeeded).toISOString().split('T')[0] : "",
-              contactInfo: post.contactInfo || "",
+              contactInfo: post.contactInfo || profileData?.phone || profileData?.email || "",
               photoUrl: post.photoUrl || "",
-              youtubeLink: post.youtubeLink || profileYoutubeLink || "",
+              youtubeLink: post.youtubeLink || profileData?.profile?.youtubeLink || "",
               categoryId: post.categoryId,
             });
-          } else if (profileYoutubeLink) {
+          } else if (profileData) {
+            // New post, but auto-fill from profile
             setFormData(prev => ({
               ...prev,
-              youtubeLink: profileYoutubeLink
+              city: profileData.profile?.city || "",
+              state: profileData.profile?.state || "",
+              budget: profileData.profile?.ratePerHour?.toString() || "",
+              youtubeLink: profileData.profile?.youtubeLink || "",
+              contactInfo: profileData.phone || profileData.email || "",
             }));
           }
         }

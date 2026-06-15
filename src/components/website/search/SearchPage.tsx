@@ -31,23 +31,24 @@ const SearchPage = () => {
 
     let result = [...allErrands];
 
-    // 1. Search filter (Name, Bio, Services)
+    // 1. Search filter (Title, Description, Name, Services)
     if (filters.search) {
       const q = filters.search.toLowerCase();
-      result = result.filter((user: any) => {
-        const name = `${user.firstName} ${user.lastName}`.toLowerCase();
-        const bio = (user.profile?.bio || "").toLowerCase();
-        const services = (user.profile?.services || "").toLowerCase();
-        return name.includes(q) || bio.includes(q) || services.includes(q);
+      result = result.filter((post: any) => {
+        const title = (post.title || "").toLowerCase();
+        const description = (post.description || "").toLowerCase();
+        const userName = `${post.user?.firstName} ${post.user?.lastName}`.toLowerCase();
+        const services = (post.user?.profile?.services || "").toLowerCase();
+        return title.includes(q) || description.includes(q) || userName.includes(q) || services.includes(q);
       });
     }
 
     // 2. Location filter
     if (filters.location) {
       const loc = filters.location.toLowerCase();
-      result = result.filter((user: any) => {
-        const city = (user.profile?.city || "").toLowerCase();
-        const state = (user.profile?.state || "").toLowerCase();
+      result = result.filter((post: any) => {
+        const city = (post.city || post.user?.profile?.city || "").toLowerCase();
+        const state = (post.state || post.user?.profile?.state || "").toLowerCase();
         return city.includes(loc) || state.includes(loc);
       });
     }
@@ -55,40 +56,40 @@ const SearchPage = () => {
     // 3. Budget filter
     if (filters.minBudget) {
       const min = parseFloat(filters.minBudget);
-      result = result.filter((user: any) => {
-        const rate = parseFloat(user.profile?.ratePerHour || "0");
+      result = result.filter((post: any) => {
+        const rate = parseFloat(post.budget || post.user?.profile?.ratePerHour || "0");
         return rate >= min;
       });
     }
     if (filters.maxBudget) {
       const max = parseFloat(filters.maxBudget);
-      result = result.filter((user: any) => {
-        const rate = parseFloat(user.profile?.ratePerHour || "99999");
+      result = result.filter((post: any) => {
+        const rate = parseFloat(post.budget || post.user?.profile?.ratePerHour || "99999");
         return rate <= max;
       });
     }
 
-    // Convert User data into the shape SearchResult expects (a mock "Post")
-    const mappedToPosts = result.map((user: any) => {
-      const latestPostLink = user.posts?.[0]?.youtubeLink || user.posts?.[0]?.youtube_link;
-      const profileLink = user.profile?.youtubeLink || user.profile?.youtube_link;
-      const youtubeLink = latestPostLink || profileLink || "";
+    // Convert Post data into the shape SearchResult expects
+    const mappedToPosts = result.map((post: any) => {
+      const user = post.user;
+      const profile = user?.profile;
+      const youtubeLink = post.youtubeLink || post.youtube_link || profile?.youtubeLink || profile?.youtube_link || "";
 
       return {
-        id: user.id, // Using user ID as post ID for unique keys
-        title: user.posts?.[0]?.title || "Available for Errands",
-        description: user.profile?.bio || user.posts?.[0]?.description || "No description provided.",
-        city: user.profile?.city || "Unknown City",
-        state: user.profile?.state || "",
-        budget: user.profile?.ratePerHour || null,
+        id: post.id,
+        title: post.title || "Available for Errands",
+        description: post.description || profile?.bio || "No description provided.",
+        city: post.city || profile?.city || "Unknown City",
+        state: post.state || profile?.state || "",
+        budget: post.budget || profile?.ratePerHour || null,
         youtubeLink: typeof youtubeLink === 'string' ? youtubeLink.trim() : "",
         user: {
-          firstName: user.firstName,
-          lastName: user.lastName,
-          profileImage: user.profileImage,
+          firstName: user?.firstName,
+          lastName: user?.lastName,
+          profileImage: user?.profileImage,
         },
         category: {
-          name: user.profile?.services ? user.profile.services.split(',')[0].trim() : "General Errands"
+          name: post.category?.name || (profile?.services ? profile.services.split(',')[0].trim() : "General Errands")
         }
       };
     });
