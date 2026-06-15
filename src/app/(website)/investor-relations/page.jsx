@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import image from "../../../../public/investor/investro.jpg";
 
 export default function InvestorRelationsPage() {
   return (
@@ -82,10 +83,16 @@ export default function InvestorRelationsPage() {
             {/* Revenue Projections */}
             <div className='mb-8 space-y-3'>
               <p className='text-base md:text-lg text-[#111111] leading-snug font-semibold'>
-                2030 Estimated Annual Revenue: <span className="text-[#063b5c] text-xl md:text-2xl ml-1">$6.2M</span>
+                2030 Estimated Annual Revenue:{" "}
+                <span className='text-[#063b5c] text-xl md:text-2xl ml-1'>
+                  $6.2M
+                </span>
               </p>
               <p className='text-base md:text-lg text-[#111111] leading-snug font-semibold'>
-                Long-Term Revenue Projection 2033: <span className="text-[#063b5c] text-xl md:text-2xl ml-1">$60M+ Annually</span>
+                Long-Term Revenue Projection 2033:{" "}
+                <span className='text-[#063b5c] text-xl md:text-2xl ml-1'>
+                  $60M+ Annually
+                </span>
               </p>
             </div>
 
@@ -100,10 +107,14 @@ export default function InvestorRelationsPage() {
             {/* Person Info */}
             <div className='mb-10'>
               <div className='text-base md:text-lg text-[#111111] leading-7'>
-                <p className="font-bold text-xl md:text-2xl mb-1">Graeme X Barrington</p>
-                <p className="uppercase tracking-widest text-sm md:text-base font-semibold text-gray-500 mb-2">President &amp; Founder</p>
-                <p className="font-semibold">ErrandHubb</p>
-                <p className="text-[#063b5c] font-bold">1-844-377-2632</p>
+                <p className='font-bold text-xl md:text-2xl mb-1'>
+                  Graeme X Barrington
+                </p>
+                <p className='uppercase tracking-widest text-sm md:text-base font-semibold text-gray-500 mb-2'>
+                  President &amp; Founder
+                </p>
+                <p className='font-semibold'>ErrandHubb</p>
+                <p className='text-[#063b5c] font-bold'>1-844-377-2632</p>
               </div>
             </div>
 
@@ -122,16 +133,16 @@ export default function InvestorRelationsPage() {
 
           {/* Right — Person Image */}
           <div className='w-full md:w-[420px] flex-shrink-0 relative mt-8 md:mt-0'>
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+            <div className='relative rounded-2xl overflow-hidden shadow-2xl'>
               <Image
                 height={640}
                 width={420}
-                src='https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=90'
+                src={image}
                 alt='ErrandHubb President'
                 className='w-full h-[540px] md:h-[640px] object-cover object-top'
                 style={{ objectPosition: "top center" }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+              <div className='absolute inset-0 bg-gradient-to-t from-black/20 to-transparent'></div>
             </div>
           </div>
         </div>

@@ -5,6 +5,7 @@ import SectionHeroBanner from "../SectionHeroBanner";
 import ErrandDetailsForm from "./ErrandDetailsForm";
 import ErrandTypePicker from "./ErrandTypePicker";
 import { postService } from "@/services/post.service";
+import { profileService } from "@/services/profile.service";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -57,12 +58,20 @@ const PostErrandPage = () => {
             categoryId: post.categoryId,
           });
         } else {
-          // Optionally fetch user's most recent post as default
+          // For a new post, try to pre-fill from profile and most recent post
+          let profileYoutubeLink = "";
+          try {
+            const profileResponse = await profileService.getMe();
+            profileYoutubeLink = profileResponse.data?.profile?.youtubeLink || "";
+          } catch (e) {
+            console.error("Failed to fetch profile", e);
+          }
+
           const response = await postService.getMyPosts();
           if (response.data && response.data.length > 0) {
             const post = response.data[0];
             setFormData({
-              id: post.id,
+              id: undefined, // It's a new post based on the template
               title: post.title,
               description: post.description,
               city: post.city,
@@ -71,9 +80,14 @@ const PostErrandPage = () => {
               dateNeeded: post.dateNeeded ? new Date(post.dateNeeded).toISOString().split('T')[0] : "",
               contactInfo: post.contactInfo || "",
               photoUrl: post.photoUrl || "",
-              youtubeLink: post.youtubeLink || "",
+              youtubeLink: post.youtubeLink || profileYoutubeLink || "",
               categoryId: post.categoryId,
             });
+          } else if (profileYoutubeLink) {
+            setFormData(prev => ({
+              ...prev,
+              youtubeLink: profileYoutubeLink
+            }));
           }
         }
       } catch (error) {
@@ -113,12 +127,9 @@ const PostErrandPage = () => {
       console.error("Post Submission Error:", error);
       
       if (error.message === "SUBSCRIPTION_REQUIRED") {
-        // Redirection is handled globally in axios interceptor, 
-        // but we can add an extra safety toast or local logic here if needed.
         return;
       }
 
-      // Handle array of validation errors from NestJS (standardized in axios interceptor)
       if (Array.isArray(error.errors)) {
         const messages = error.errors.map((err: any) => err.message).join(", ");
         toast.error(`Validation Failed: ${messages}`);

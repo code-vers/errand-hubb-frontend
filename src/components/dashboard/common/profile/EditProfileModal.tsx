@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, useState, useEffect } from "react";
-import { X, User, Phone, MapPin, Globe, MessageSquare, AlignLeft } from "lucide-react";
+import { X, User, Phone, MapPin, Globe, MessageSquare, AlignLeft, PlayCircle } from "lucide-react";
 
 interface EditProfileModalProps {
   user: any;
@@ -27,6 +27,7 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
     preferredContact: user?.profile?.preferredContact || "",
     services: user?.profile?.services || "",
     ratePerHour: user?.profile?.ratePerHour || "",
+    youtubeLink: user?.profile?.youtubeLink || "",
   });
 
   // Close on escape key
@@ -232,6 +233,23 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
                   value={formData.services}
                   onChange={handleChange}
                   placeholder='e.g. Cleaning, Delivery, Moving'
+                  className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all'
+                />
+              </div>
+            )}
+
+            {/* YouTube Link (For Errand role) */}
+            {user?.role === 'errand' && (
+              <div className='flex flex-col gap-1.5 md:col-span-2'>
+                <label className='text-xs font-bold text-text-secondary uppercase tracking-wider flex items-center gap-2'>
+                  <PlayCircle size={14} className="text-red-500" /> YouTube Video Link (Optional)
+                </label>
+                <input
+                  type='url'
+                  name='youtubeLink'
+                  value={formData.youtubeLink}
+                  onChange={handleChange}
+                  placeholder='https://www.youtube.com/watch?v=...'
                   className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all'
                 />
               </div>

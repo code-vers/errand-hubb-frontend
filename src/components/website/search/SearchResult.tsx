@@ -13,12 +13,13 @@ const getYoutubeEmbedUrl = (url: string) => {
   if (!url) return null;
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
   const match = url.match(regExp);
-  return (match && match[2].length === 11)
+  return match && match[2].length === 11
     ? `https://www.youtube.com/embed/${match[2]}`
     : null;
 };
 
 const SearchResult = ({ posts }: SearchResultProps) => {
+  console.log(posts, "this is posts");
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
   if (posts.length === 0) {
@@ -51,7 +52,7 @@ const SearchResult = ({ posts }: SearchResultProps) => {
                 <Image
                   width={85}
                   height={85}
-                  src={getImageUrl(post.user.profileImage) || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop"}
+                  src={getImageUrl(post.user.profileImage)}
                   alt={`${post.user.firstName} profile`}
                   className='w-20 h-20 rounded object-cover'
                 />
@@ -78,14 +79,20 @@ const SearchResult = ({ posts }: SearchResultProps) => {
                   {/* Play + video thumb */}
                   {post.youtubeLink && (
                     <div className='flex items-center gap-2'>
-                      <button 
+                      <button
                         onClick={() => {
-                          const embedUrl = getYoutubeEmbedUrl(post.youtubeLink!);
+                          const embedUrl = getYoutubeEmbedUrl(
+                            post.youtubeLink!,
+                          );
                           if (embedUrl) setActiveVideo(embedUrl);
                         }}
-                        className='text-[#1b539c] hover:text-blue-800 transition-colors cursor-pointer active:scale-95'
-                      >
-                        <Image src={icon} height={50} width={50} alt='Play Video' />
+                        className='text-[#1b539c] hover:text-blue-800 transition-colors cursor-pointer active:scale-95'>
+                        <Image
+                          src={icon}
+                          height={50}
+                          width={50}
+                          alt='Play Video'
+                        />
                       </button>
                     </div>
                   )}
@@ -98,7 +105,10 @@ const SearchResult = ({ posts }: SearchResultProps) => {
 
                 {/* Tags */}
                 <div className='flex flex-wrap gap-2 mb-5'>
-                  {[post.category.name, post.budget ? `$${post.budget}` : 'Flexible'].map((tag) => (
+                  {[
+                    post.category.name,
+                    post.budget ? `$${post.budget}` : "Flexible",
+                  ].map((tag) => (
                     <span
                       key={tag}
                       className='bg-surface-dim text-secondary text-[11px] font-semibold px-2.5 py-1 rounded-full border border-[#E5E5E5]'>
@@ -121,22 +131,20 @@ const SearchResult = ({ posts }: SearchResultProps) => {
 
       {/* Video Modal */}
       {activeVideo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-          <div className="relative w-full max-w-4xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl">
-            <button 
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4'>
+          <div className='relative w-full max-w-4xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl'>
+            <button
               onClick={() => setActiveVideo(null)}
-              className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/80 text-white rounded-full transition-colors"
-            >
+              className='absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/80 text-white rounded-full transition-colors'>
               <X size={24} />
             </button>
             <iframe
-              className="w-full h-full"
+              className='w-full h-full'
               src={`${activeVideo}?autoplay=1`}
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
+              title='YouTube video player'
+              frameBorder='0'
+              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+              allowFullScreen></iframe>
           </div>
         </div>
       )}

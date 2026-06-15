@@ -4,25 +4,58 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import logo from "../../../public/logo2.svg";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, logout } = useAuth();
 
-  const navLinks = [
+  const publicLinks = [
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
-    { name: "Search For ErrandR", href: "/search" },
-    { name: "Post An Errand", href: "/post-errand" },
+    { name: "Errand", href: "/errand" },
     { name: "Errand Gallery", href: "/gallery" },
     { name: "Client Registration", href: "/client-registration" },
     { name: "ErrandR Registration", href: "/errand-registration" },
     { name: "Investor Relations", href: "/investor-relations" },
     { name: "Contact", href: "/contact" },
-    { name: "Errand", href: "/errand" },
-    { name: "Errand's", href: "/errand's" },
     { name: "Legal", href: "/legal" },
     { name: "Ads", href: "/ads" },
   ];
+
+  const getNavLinks = () => {
+    let links = [...publicLinks];
+
+    // Role-based links
+    if (user?.role === "errand") {
+      // Errand professionals see "Post An Errand"
+      links.splice(2, 0, { name: "Post An Errand", href: "/post-errand" });
+    } else {
+      // Clients and Logged-out users see "Search For ErrandR"
+      links.splice(2, 0, { name: "Search For ErrandR", href: "/search" });
+      
+      // ONLY Clients see "Errand's Board"
+      if (user?.role === "client") {
+        links.splice(3, 0, { name: "Errand's Board", href: "/errand-board" });
+      }
+    }
+
+    // Add Dashboard and Logout if user is logged in
+    if (user) {
+      // Find index of "Ads" to place Dashboard before it
+      const adsIndex = links.findIndex(l => l.name === "Ads");
+      if (adsIndex !== -1) {
+        links.splice(adsIndex, 0, { name: "Dashboard", href: "/dashboard" });
+      } else {
+        links.push({ name: "Dashboard", href: "/dashboard" });
+      }
+      links.push({ name: "Logout", href: "#", onClick: logout, isLogout: true });
+    }
+
+    return links;
+  };
+
+  const navLinks = getNavLinks();
 
   return (
     <header
@@ -88,6 +121,7 @@ export default function Header() {
           <nav
             className={`bg-primary flex-1 items-center transition-all duration-500 ease-in-out overflow-hidden md:overflow-x-auto md:overflow-y-hidden whitespace-nowrap
               absolute md:static top-full left-0 w-full md:w-auto z-40
+              [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-white/30 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-white/50
               ${
                 isMenuOpen
                   ? "max-h-[90vh] overflow-y-auto opacity-100 translate-y-0 visible shadow-lg"
@@ -106,16 +140,31 @@ export default function Header() {
                       ? "opacity-100 translate-x-0"
                       : "opacity-0 -translate-x-4 md:opacity-100 md:translate-x-0"
                   }`}>
-                  <Link
-                    href={link.href}
-                    className={`text-[13px] font-semibold  transition-colors block ${
-                      link.name === "Ads"
-                        ? "inline-block bg-[#1a3a7a] uppercase text-white font-extrabold  italic tracking-wide px-4 py-[5px]   rounded-sm text-[22px]"
-                        : "text-white"
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}>
-                    {link.name}
-                  </Link>
+                  {link.onClick ? (
+                    <button
+                      onClick={() => {
+                        link.onClick();
+                        setIsMenuOpen(false);
+                      }}
+                      className={`text-[13px] font-bold transition-all px-4 py-1.5 rounded-md uppercase tracking-wider ${
+                        link.isLogout 
+                          ? "bg-red-500 hover:bg-red-600 text-white shadow-sm active:scale-95" 
+                          : "text-white hover:text-white/80"
+                      }`}>
+                      {link.name}
+                    </button>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className={`text-[13px] font-semibold transition-colors block ${
+                        link.name === "Ads"
+                          ? "inline-block bg-[#1a3a7a] uppercase text-white font-extrabold italic tracking-wide px-4 py-[5px] rounded-sm text-[22px]"
+                          : "text-white hover:text-white/80"
+                      }`}
+                      onClick={() => setIsMenuOpen(false)}>
+                      {link.name}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>

@@ -10,3 +10,13 @@ export const usePosts = (params?: any) => {
     },
   });
 };
+
+export const useMyPosts = () => {
+  return useQuery({
+    queryKey: ["my-posts"],
+    queryFn: async () => {
+      const response = await postService.getMyPosts();
+      return response.data;
+    },
+  });
+};
