@@ -7,19 +7,23 @@ import { useSubscription } from "./useSubscription";
 import { format } from "date-fns";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const SubscriptionPage = () => {
   const { subscription, loading, error, subscribe, manageBilling, isSubscribing, isManaging } = useSubscription();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (searchParams.get("success")) {
       toast.success("Subscription successful! Welcome to Pro.");
+      // Invalidate and refetch to get the latest status from webhook
+      queryClient.invalidateQueries({ queryKey: ["my-subscription"] });
     }
     if (searchParams.get("canceled")) {
       toast.error("Subscription checkout was canceled.");
     }
-  }, [searchParams]);
+  }, [searchParams, queryClient]);
 
   const benefits = [
     "Unlimited errand applications",
