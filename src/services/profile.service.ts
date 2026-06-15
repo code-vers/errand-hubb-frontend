@@ -5,6 +5,10 @@ export const profileService = {
     return api.get('/users/me');
   },
 
+  getAllErrands: async () => {
+    return api.get('/errand-profiles');
+  },
+
   updateProfile: async (data: FormData | any) => {
     // If it's not FormData, axios will handle it as JSON
     return api.patch('/users/profile', data);

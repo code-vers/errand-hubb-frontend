@@ -12,6 +12,16 @@ export const useProfile = () => {
   });
 };
 
+export const useAllErrands = () => {
+  return useQuery({
+    queryKey: ['errands'],
+    queryFn: async () => {
+      const response = await profileService.getAllErrands();
+      return response.data;
+    },
+  });
+};
+
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
   

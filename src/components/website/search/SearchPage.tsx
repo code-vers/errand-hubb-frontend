@@ -19,11 +19,14 @@ const SearchPage = () => {
   });
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
-  
+
   const [data, setData] = useState<PaginatedResponse<Post> | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchPosts = async (currentFilters: SearchFilters, currentPage: number) => {
+  const fetchPosts = async (
+    currentFilters: SearchFilters,
+    currentPage: number,
+  ) => {
     setIsLoading(true);
     try {
       const response = await postService.findAll({
@@ -55,23 +58,23 @@ const SearchPage = () => {
     <div className='bg-[#f4f5f7] min-h-screen pt-12 pb-8'>
       <div className='max-w-7xl mx-auto px-4 flex flex-col gap-8'>
         <FilterSearching onSearch={handleSearch} initialFilters={filters} />
-        
+
         {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="w-10 h-10 animate-spin text-primary" />
+          <div className='flex justify-center items-center py-20'>
+            <Loader2 className='w-10 h-10 animate-spin text-primary' />
           </div>
         ) : (
           <>
-            <div className="flex justify-between items-center px-2">
-              <h2 className="text-xl font-bold text-gray-800">
+            <div className='flex justify-between items-center px-2'>
+              <h2 className='text-xl font-bold text-gray-800'>
                 {data?.meta.total || 0} Errands Found
               </h2>
             </div>
-            
+
             <SearchResult posts={data?.data || []} />
-            
+
             {data?.meta && data.meta.totalPages > 1 && (
-              <div className="mt-8">
+              <div className='mt-8'>
                 <Pagination
                   currentPage={data.meta.page}
                   totalPages={data.meta.totalPages}

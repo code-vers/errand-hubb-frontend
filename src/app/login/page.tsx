@@ -59,9 +59,10 @@ export default function LoginPage() {
         toast.info('Two-Factor Authentication required');
       } else {
         const userData = response.data.user;
+        const accessToken = response.data.accessToken;
         toast.success('Login successful!');
         queryClient.setQueryData(['user'], userData);
-        authLogin(userData);
+        authLogin(userData, accessToken);
       }
     },
     onError: (error: any) => handleApiError(error, 'Login failed'),
@@ -72,9 +73,10 @@ export default function LoginPage() {
     mutationFn: (data: { userId: string; code: string }) => authService.verify2FALogin(data),
     onSuccess: (response: any) => {
       const userData = response.data.user;
+      const accessToken = response.data.accessToken;
       toast.success('Authentication successful!');
       queryClient.setQueryData(['user'], userData);
-      authLogin(userData);
+      authLogin(userData, accessToken);
     },
     onError: (error: any) => handleApiError(error, 'Verification failed'),
   });

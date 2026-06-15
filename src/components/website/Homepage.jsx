@@ -21,7 +21,7 @@ const Homepage = () => {
         {/* Top row */}
         <div className='flex flex-col sm:flex-row gap-4 w-full justify-center'>
           <Link
-            href='/errand-registration'
+            href='/errand'
             className='bg-primary  active:scale-95 whitespace-nowrap text-white font-extrabold py-3 px-6 rounded-md uppercase tracking-widest text-sm transition-all duration-200 shadow-sm w-full sm:w-auto'>
             Become an Errandr
           </Link>

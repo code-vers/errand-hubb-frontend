@@ -3,7 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useRegisterErrand } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { Upload } from "lucide-react";
+import { Upload, PlayCircle } from "lucide-react";
 
 const ErrandRegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -15,6 +15,7 @@ const ErrandRegistrationPage = () => {
     state: "",
     bio: "",
     services: "",
+    youtubeLink: "",
     rate: "",
     password: "",
     confirmPassword: "",
@@ -337,6 +338,22 @@ const ErrandRegistrationPage = () => {
               type='text'
               placeholder='e.g. Grocery, Delivery, Pharmacy...'
               value={formData.services}
+              onChange={handleChange}
+              className={inputClass}
+            />
+          </div>
+
+          {/* YouTube Link */}
+          <div className='flex flex-col space-y-1'>
+            <label htmlFor='youtubeLink' className={labelClass + " flex items-center gap-1.5"}>
+              <PlayCircle size={12} className="text-red-500" /> YouTube Video Link (Optional)
+            </label>
+            <input
+              id='youtubeLink'
+              name='youtubeLink'
+              type='url'
+              placeholder='https://www.youtube.com/watch?v=...'
+              value={formData.youtubeLink}
               onChange={handleChange}
               className={inputClass}
             />

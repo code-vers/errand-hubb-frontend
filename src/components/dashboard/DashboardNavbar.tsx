@@ -14,11 +14,10 @@ const DashboardNavbar = () => {
 
   return (
     <header className='sticky top-0 z-45 w-full bg-white '>
-
       <div className='flex items-center justify-between h-18 px-6 lg:px-10'>
         {/* Left — Logo */}
         <div className='flex flex-col justify-center'>
-          <Link href="/dashboard" className='flex items-baseline gap-0'>
+          <Link href='/' className='flex items-baseline gap-0'>
             <Image src={logo} alt='logo' />
           </Link>
         </div>
@@ -33,7 +32,9 @@ const DashboardNavbar = () => {
           </button>
 
           {/* User avatar */}
-          <Link href="/dashboard/profile" className='w-9 h-9 rounded-full overflow-hidden border-2 border-border shrink-0'>
+          <Link
+            href='/dashboard/profile'
+            className='w-9 h-9 rounded-full overflow-hidden border-2 border-border shrink-0'>
             {profileImageUrl ? (
               <img
                 src={profileImageUrl}
@@ -44,8 +45,9 @@ const DashboardNavbar = () => {
               /* Fallback: initials circle */
               <div className='w-full h-full bg-primary flex items-center justify-center'>
                 <span className='text-white text-xs font-bold'>
-                  {(user?.firstName ?? user?.email ?? "User")[0]?.toUpperCase() ??
-                    "U"}
+                  {(user?.firstName ??
+                    user?.email ??
+                    "User")[0]?.toUpperCase() ?? "U"}
                 </span>
               </div>
             )}
