@@ -1,33 +1,28 @@
 "use client";
 
 import React from "react";
-import { useMyPosts } from "@/hooks/usePosts";
 import { Loader2, AlertCircle, MapPin, Clock } from "lucide-react";
 import Link from "next/link";
 import { getImageUrl } from "@/configs/api.config";
-import { usePosts } from "../dashboard/client/MyPost/usePosts";
 import { useAllErrands } from "@/hooks/useProfile";
-import Image from "next/image";
 
 const ErrandCard: React.FC<{ errand: any }> = ({ errand }) => {
-  const isAssigned = !!errand.assignedTo;
-
-  // Prefer the assigned Errand's profile picture, fallback to the post's photo, then default bg
-  const displayImage =
-    isAssigned && errand.assignedTo.profileImage
-      ? getImageUrl(errand.assignedTo.profileImage)
-      : getImageUrl(errand.photoUrl);
-  console.log(errand, "ekhane hocce errand");
+  // Map User object to Card UI
+  const title = errand.posts?.[0]?.title || `${errand.firstName} ${errand.lastName}`;
+  const description = errand.profile?.bio || errand.posts?.[0]?.description || "Available for errands.";
+  const budget = errand.profile?.ratePerHour || "Flexible";
+  const city = errand.profile?.city || "Location not set";
+  const time = errand.profile?.timeZone || "Anytime";
+  
+  const displayImage = getImageUrl(errand.profileImage) || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop";
 
   return (
     <div className='bg-[#FDF5EC] rounded-lg p-5 flex gap-3.5 items-start relative border border-primary/10 hover:border-primary/30 transition-all'>
       {/* Errand Image */}
       <div className='w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-primary/10 bg-white flex items-center justify-center'>
-        <Image
-          src={errand.profileImage}
-          width={80}
-          height={80}
-          alt={errand.title}
+        <img
+          src={displayImage}
+          alt={title}
           className='w-full h-full object-cover'
         />
       </div>
@@ -35,33 +30,30 @@ const ErrandCard: React.FC<{ errand: any }> = ({ errand }) => {
       {/* Content */}
       <div className='flex-1'>
         <h3 className='text-[16px] font-bold text-foreground mb-1.5 pr-18 leading-snug'>
-          {errand.title}
+          {title}
         </h3>
         <p className='text-[12px] text-[#555555] leading-relaxed mb-2.5 line-clamp-2'>
-          {errand.description}
+          {description}
         </p>
         <div className='flex items-center justify-between'>
           <p className='text-[14px] font-bold text-primary'>
-            Reward: ${errand.budget || "Flexible"}
+            Reward: ${budget}
           </p>
           <div className='flex items-center text-[11px] text-gray-500'>
             <MapPin size={10} className='mr-1' />
-            {errand.city}
+            {city}
           </div>
         </div>
         <p className='text-[11px] font-semibold text-[#555555] mt-2 tracking-wide flex items-center uppercase'>
-          <span
-            className={`w-2 h-2 rounded-full mr-2 ${isAssigned ? "bg-blue-500" : "bg-green-500"}`}></span>
-          {isAssigned
-            ? `STATUS: ASSIGNED TO ${errand.assignedTo.firstName}`
-            : `STATUS: ${errand.status} – AWAITING ERRANDR`}
+          <span className="w-2 h-2 rounded-full mr-2 bg-green-500"></span>
+          STATUS: AVAILABLE - AWAITING HIRE
         </p>
       </div>
 
       {/* Time Badge */}
       <div className='absolute top-3.5 right-3.5 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full tracking-wide whitespace-nowrap flex items-center'>
         <Clock size={10} className='mr-1' />
-        {errand.time || "Anytime"}
+        {time}
       </div>
     </div>
   );
@@ -79,17 +71,12 @@ const ErrandsPage: React.FC = () => {
         <div className='mb-7 flex justify-between items-end'>
           <div>
             <h1 className='text-[28px] font-extrabold text-white mb-1'>
-              My Errands Board
+              Errand's Board
             </h1>
             <p className='text-[13px] text-white/90 font-normal'>
-              Manage your posted tasks and see who is assigned to them.
+              Browse available errand professionals ready to help.
             </p>
           </div>
-          <Link
-            href='/post-errand'
-            className='bg-white text-primary px-6 py-2 rounded-md font-bold text-sm hover:bg-white/90 transition-colors'>
-            Post An Errand
-          </Link>
         </div>
 
         {/* State Handling */}
@@ -111,11 +98,8 @@ const ErrandsPage: React.FC = () => {
           <div className='flex flex-col items-center justify-center py-20 gap-4 bg-white/10 rounded-2xl'>
             <AlertCircle className='w-12 h-12 text-white/50' />
             <h2 className='text-xl font-bold text-white'>
-              You haven't posted any errands yet
+              No errands found at the moment
             </h2>
-            <p className='text-white/70'>
-              Click the button above to post your first errand!
-            </p>
           </div>
         ) : (
           <>
@@ -125,20 +109,6 @@ const ErrandsPage: React.FC = () => {
                 <ErrandCard key={errand.id} errand={errand} />
               ))}
             </div>
-
-            {/* Footer */}
-            {/* <div className='text-center mt-8 text-[16px] text-white font-semibold'>
-              Total Estimated Rewards:
-              <span className='inline-block bg-background text-foreground rounded-full px-5 py-1.5 ml-2 font-bold text-[16px]'>
-                $
-                {errandsList
-                  .reduce(
-                    (sum: number, e: any) => sum + (parseFloat(e.budget) || 0),
-                    0,
-                  )
-                  .toFixed(2)}
-              </span>
-            </div> */}
           </>
         )}
       </div>
