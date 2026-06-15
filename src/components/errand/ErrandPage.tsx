@@ -7,6 +7,7 @@ import { X, Loader2 } from "lucide-react";
 import icon from "../../../public/icon.svg";
 import logo from "../../../public/logo2.svg";
 import { useAllErrands } from "@/hooks/useProfile";
+import { getImageUrl } from "@/configs/api.config";
 
 interface MembershipPlan {
   priceLabel: string;
@@ -51,29 +52,27 @@ const ErrandPage = () => {
 
   const getErrandProfiles = (): ErrandrProfile[] => {
     if (!errands) return [];
-    
-    return errands.map((errand: any) => {
-      // Prioritize the link from the latest post, then fall back to profile link
-      const latestPostLink = errand.posts?.[0]?.youtubeLink || errand.posts?.[0]?.youtube_link;
-      const profileLink = errand.profile?.youtubeLink || errand.profile?.youtube_link;
-      
-      const rawLink = latestPostLink || profileLink || "";
-      const youtubeLink = typeof rawLink === 'string' ? rawLink.trim() : "";
+
+    return errands.map((post: any) => {
+      const user = post.user;
+      const profile = user?.profile;
+
+      const youtubeLink = (post.youtubeLink || post.youtube_link || profile?.youtubeLink || profile?.youtube_link || "").trim();
       const hasYoutubeLink = youtubeLink.length > 0;
-      
+
       return {
-        id: errand.id,
-        name: `${errand.firstName} ${errand.lastName.charAt(0)}.`,
-        location: errand.profile?.city ? `${errand.profile.city}, ${errand.profile.state}` : "Location not set",
-        bio: errand.profile?.bio || "No bio available.",
-        tags: errand.profile?.services ? errand.profile.services.split(',').map((s: string) => s.trim()) : [],
-        availability: errand.profile?.timeZone ? `Timezone: ${errand.profile.timeZone}` : "Availability not set",
-        availabilityNote: errand.profile?.preferredContact ? `Prefers ${errand.profile.preferredContact}` : "7 days a week",
+        id: post.id,
+        name: `${user?.firstName || 'User'} ${(user?.lastName || '').charAt(0)}.`,
+        location: post.city ? `${post.city}, ${post.state}` : (profile?.city ? `${profile.city}, ${profile.state}` : "Location not set"),
+        bio: post.description || profile?.bio || "No bio available.",
+        tags: profile?.services ? profile.services.split(',').map((s: string) => s.trim()) : [],
+        availability: profile?.timeZone ? `Timezone: ${profile.timeZone}` : "Availability not set",
+        availabilityNote: profile?.preferredContact ? `Prefers ${profile.preferredContact}` : "7 days a week",
         responseTime: "15 minutes",
-        services: errand.profile?.services ? errand.profile.services.split(',').map((s: string) => s.trim()) : [],
+        services: profile?.services ? profile.services.split(',').map((s: string) => s.trim()) : [],
         pricingLabel: "Errands from",
-        pricingText: errand.profile?.ratePerHour ? `$${errand.profile.ratePerHour} per hour` : "$25 to $100 per hour",
-        imageUrl: errand.profileImage || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800",
+        pricingText: post.budget ? `$${post.budget} per hour` : (profile?.ratePerHour ? `$${profile.ratePerHour} per hour` : "$25 to $100 per hour"),
+        imageUrl: getImageUrl(user?.profileImage) || getImageUrl(post.photoUrl) || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800",
         bioLink: "#",
         videoThumbUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400",
         youtubeLink: youtubeLink,
@@ -81,6 +80,7 @@ const ErrandPage = () => {
       };
     });
   };
+
 
   const errandProfiles = getErrandProfiles();
 
@@ -239,7 +239,7 @@ const ErrandPage = () => {
             {/* ── TOP HEADER: avatar + name + close + play ── */}
             <div className='flex items-center gap-4 px-5 pt-5 pb-4'>
               {/* Avatar */}
-              <div className='w-[72px] h-[72px] rounded-xl overflow-hidden shrink-0 border border-gray-100'>
+              <div className='w-[72px] h-[72px] rounded-xl overflow-hidden shrink-0 border border-gray-100 bg-gray-50 flex items-center justify-center'>
                 <img
                   src={hiringProfile.imageUrl}
                   alt={hiringProfile.name}
