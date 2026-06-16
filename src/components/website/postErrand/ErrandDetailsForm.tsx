@@ -1,15 +1,17 @@
 import { Errand } from "@/types/errand";
 import { useRef, useState } from "react";
-import { Upload, X, Loader2, PlayCircle } from "lucide-react";
+import { Upload, X, Loader2, PlayCircle, ChevronDown } from "lucide-react";
+import { Category } from "@/types/categories";
 
 interface ErrandDetailsFormProps {
   formData: Errand;
+  categories: Category[];
   onChange: (field: keyof Errand, value: string) => void;
   onSubmit: () => void;
   isSubmitting?: boolean;
 }
 
-const ErrandDetailsForm = ({ formData, onChange, onSubmit, isSubmitting }: ErrandDetailsFormProps) => {
+const ErrandDetailsForm = ({ formData, categories, onChange, onSubmit, isSubmitting }: ErrandDetailsFormProps) => {
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -41,6 +43,31 @@ const ErrandDetailsForm = ({ formData, onChange, onSubmit, isSubmitting }: Erran
             placeholder='Enter errand title...'
             className='h-11 rounded-md border border-gray-200 px-3 text-sm outline-none focus:border-[#1b539c] transition-colors'
           />
+        </label>
+
+        {/* Category Dropdown (Synchronized with Sidebar) */}
+        <label className='flex flex-col gap-1.5 relative'>
+          <span className='text-gray-600 text-xs font-bold uppercase tracking-wide'>
+            Select Errand Category
+          </span>
+          <div className="relative">
+            <select
+              required
+              value={formData.categoryId || ""}
+              onChange={(e) => onChange("categoryId", e.target.value)}
+              className='w-full h-11 appearance-none rounded-md border border-gray-200 pl-3 pr-10 text-sm outline-none focus:border-[#1b539c] transition-colors bg-white'
+            >
+              <option value="" disabled>Choose a category...</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.iconType === "emoji" ? `${cat.icon} ` : ""}{cat.name}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+              <ChevronDown size={16} />
+            </div>
+          </div>
         </label>
 
         <label className='flex flex-col gap-1.5'>
