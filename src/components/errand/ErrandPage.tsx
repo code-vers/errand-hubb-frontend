@@ -3,11 +3,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, AlertCircle } from "lucide-react";
 import icon from "../../../public/icon.svg";
 import logo from "../../../public/logo2.svg";
-import { useAllErrands } from "@/hooks/useProfile";
+import { useProviders } from "@/hooks/useProviders";
 import { getImageUrl } from "@/configs/api.config";
+import Pagination from "@/components/common/Pagination";
 
 interface MembershipPlan {
   priceLabel: string;
@@ -41,7 +42,14 @@ const membershipPlan: MembershipPlan = {
 const ErrandPage = () => {
   const [hiringProfile, setHiringProfile] = useState<ErrandrProfile | null>(null);
   const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
-  const { data: errands, isLoading } = useAllErrands();
+  const { 
+    providers: posts, 
+    loading: isLoading, 
+    totalPages, 
+    currentPage, 
+    setPage,
+    error: isError 
+  } = useProviders(9); // Show 9 per page for this layout
 
   const getYoutubeEmbedUrl = (url: string) => {
     if (!url) return "";
@@ -51,27 +59,27 @@ const ErrandPage = () => {
   };
 
   const getErrandProfiles = (): ErrandrProfile[] => {
-    if (!errands) return [];
+    if (!posts) return [];
 
-    return errands.map((user: any) => {
-      const profile = user?.profile;
-      const latestPost = user?.posts?.[0];
+    return posts.map((post: any) => {
+      const user = post.user;
+      const category = post.category;
 
-      const youtubeLink = (latestPost?.youtubeLink || latestPost?.youtube_link || profile?.youtubeLink || profile?.youtube_link || "").trim();
+      const youtubeLink = (post.youtubeLink || "").trim();
       const hasYoutubeLink = youtubeLink.length > 0;
 
       return {
-        id: user.id,
+        id: post.id,
         name: `${user?.firstName || 'User'} ${(user?.lastName || '').charAt(0)}.`,
-        location: profile?.city ? `${profile.city}, ${profile.state}` : "Location not set",
-        bio: profile?.bio || latestPost?.description || "No bio available.",
-        tags: profile?.services ? profile.services.split(',').map((s: string) => s.trim()) : [],
-        availability: profile?.timeZone ? `Timezone: ${profile.timeZone}` : "Availability not set",
-        availabilityNote: profile?.preferredContact ? `Prefers ${profile.preferredContact}` : "7 days a week",
+        location: post.city ? `${post.city}, ${post.state}` : "Location not set",
+        bio: post.description || "No description available.",
+        tags: category?.name ? [category.name] : [],
+        availability: "Availability not set",
+        availabilityNote: "7 days a week",
         responseTime: "15 minutes",
-        services: profile?.services ? profile.services.split(',').map((s: string) => s.trim()) : [],
+        services: category?.name ? [category.name] : [],
         pricingLabel: "Errands from",
-        pricingText: profile?.ratePerHour ? `$${profile.ratePerHour} per hour` : (latestPost?.budget ? `$${latestPost.budget} per hour` : "$25 to $100 per hour"),
+        pricingText: post.budget ? `$${post.budget} per hour` : "$25 to $100 per hour",
         imageUrl: getImageUrl(user?.profileImage) || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800",
         bioLink: "#",
         videoThumbUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400",
@@ -140,86 +148,107 @@ const ErrandPage = () => {
               <Loader2 className='w-10 h-10 animate-spin text-primary' />
               <p className='mt-4 text-gray-500 font-medium'>Finding errand professionals...</p>
             </div>
+          ) : isError ? (
+            <div className='mt-20 flex flex-col items-center justify-center text-center'>
+              <AlertCircle className='w-12 h-12 text-red-500 mb-4' />
+              <p className='text-red-500 font-medium'>{isError}</p>
+              <button 
+                onClick={() => window.location.reload()}
+                className='mt-4 px-6 py-2 bg-primary text-white rounded-md font-bold'
+              >
+                Retry
+              </button>
+            </div>
           ) : errandProfiles.length > 0 ? (
-            <div className='mt-7.5 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
-              {errandProfiles.map((profile) => (
-                <article
-                  key={profile.id}
-                  className='overflow-hidden rounded-[18px] bg-[#f6f6f6] shadow-[0_8px_20px_rgba(0,0,0,0.12)]'>
-                  <div className='relative h-58.75 w-full md:h-66.5 bg-gray-100 flex items-center justify-center'>
-                    <img
-                      src={profile.imageUrl}
-                      alt={profile.name}
-                      className='w-full h-full object-cover'
-                    />
-                  </div>
-                  <div className='p-4 pb-4.5'>
-                    <div className='flex items-center justify-between gap-2.5'>
-                      <h2 className='text-[27px] font-bold text-(--color-secondary)'>
-                        {profile.name}
-                      </h2>
+            <>
+              <div className='mt-7.5 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3'>
+                {errandProfiles.map((profile) => (
+                  <article
+                    key={profile.id}
+                    className='overflow-hidden rounded-[18px] bg-[#f6f6f6] shadow-[0_8px_20px_rgba(0,0,0,0.12)]'>
+                    <div className='relative h-58.75 w-full md:h-66.5 bg-gray-100 flex items-center justify-center'>
+                      <img
+                        src={profile.imageUrl}
+                        alt={profile.name}
+                        className='w-full h-full object-cover'
+                      />
+                    </div>
+                    <div className='p-4 pb-4.5'>
+                      <div className='flex items-center justify-between gap-2.5'>
+                        <h2 className='text-[27px] font-bold text-(--color-secondary)'>
+                          {profile.name}
+                        </h2>
+                        <button
+                          type='button'
+                          onClick={() => setHiringProfile(profile)}
+                          className='h-8.5 rounded-sm border border-[#c4c4c4] bg-[#efefef] px-3.5 text-[12px] font-bold text-[#6b6f75] hover:bg-gray-200 transition-colors'>
+                          ABOUT ME
+                        </button>
+                      </div>
+
+                      <div className='mt-3 flex items-center justify-between'>
+                        <button
+                          type="button"
+                          onClick={() => profile.hasYoutubeLink && setActiveVideoUrl(profile.youtubeLink!)}
+                          className={`text-[18px] underline ${profile.hasYoutubeLink ? 'text-[#2f66dc]' : 'text-gray-400'}`}>
+                          Intro
+                        </button>
+                        <div className='flex items-center gap-2'>
+                          <button 
+                            type='button' 
+                            aria-label='Play intro video'
+                            onClick={() => profile.hasYoutubeLink && setActiveVideoUrl(profile.youtubeLink!)}
+                          >
+                            <Image
+                              src={icon}
+                              alt='Play intro'
+                              width={40}
+                              height={40}
+                              className={profile.hasYoutubeLink ? 'opacity-100 grayscale-0' : 'opacity-40 grayscale'}
+                            />
+                          </button>
+                        </div>
+                      </div>
+
+                      <p className='mt-3 text-[11px] tracking-[0.8px] text-[#757b84]'>
+                        SERVICES
+                      </p>
+                      <div className='mt-2 flex flex-wrap gap-1.5'>
+                        {profile.services.slice(0, 4).map((service) => (
+                          <span
+                            key={service}
+                            className='rounded-full border border-(--color-primary) bg-[#fff3ea] px-2.5 py-0.75 text-[12px] leading-[1.2] text-[#d96f1f]'>
+                            {service}
+                          </span>
+                        ))}
+                      </div>
+
+                      <p className='mt-3 text-[11px] tracking-[0.8px] text-[#757b84]'>
+                        PRICES
+                      </p>
+                      <p className='mt-1.25 text-[27px] font-medium text-[#1e2329]'>
+                        {profile.pricingText}
+                      </p>
+
                       <button
                         type='button'
                         onClick={() => setHiringProfile(profile)}
-                        className='h-8.5 rounded-sm border border-[#c4c4c4] bg-[#efefef] px-3.5 text-[12px] font-bold text-[#6b6f75] hover:bg-gray-200 transition-colors'>
-                        ABOUT ME
+                        className='mt-4 min-h-10 w-full rounded-md bg-(--color-primary) text-[13px] font-extrabold tracking-[1px] text-white hover:bg-(--color-primary-dark)'>
+                        HIRE NOW
                       </button>
                     </div>
-
-                    <div className='mt-3 flex items-center justify-between'>
-                      <button
-                        type="button"
-                        onClick={() => profile.hasYoutubeLink && setActiveVideoUrl(profile.youtubeLink!)}
-                        className={`text-[18px] underline ${profile.hasYoutubeLink ? 'text-[#2f66dc]' : 'text-gray-400'}`}>
-                        Intro
-                      </button>
-                      <div className='flex items-center gap-2'>
-                        <button 
-                          type='button' 
-                          aria-label='Play intro video'
-                          onClick={() => profile.hasYoutubeLink && setActiveVideoUrl(profile.youtubeLink!)}
-                        >
-                          <Image
-                            src={icon}
-                            alt='Play intro'
-                            width={40}
-                            height={40}
-                            className={profile.hasYoutubeLink ? 'opacity-100 grayscale-0' : 'opacity-40 grayscale'}
-                          />
-                        </button>
-                      </div>
-                    </div>
-
-                    <p className='mt-3 text-[11px] tracking-[0.8px] text-[#757b84]'>
-                      SERVICES
-                    </p>
-                    <div className='mt-2 flex flex-wrap gap-1.5'>
-                      {profile.services.slice(0, 4).map((service) => (
-                        <span
-                          key={service}
-                          className='rounded-full border border-(--color-primary) bg-[#fff3ea] px-2.5 py-0.75 text-[12px] leading-[1.2] text-[#d96f1f]'>
-                          {service}
-                        </span>
-                      ))}
-                    </div>
-
-                    <p className='mt-3 text-[11px] tracking-[0.8px] text-[#757b84]'>
-                      PRICES
-                    </p>
-                    <p className='mt-1.25 text-[27px] font-medium text-[#1e2329]'>
-                      {profile.pricingText}
-                    </p>
-
-                    <button
-                      type='button'
-                      onClick={() => setHiringProfile(profile)}
-                      className='mt-4 min-h-10 w-full rounded-md bg-(--color-primary) text-[13px] font-extrabold tracking-[1px] text-white hover:bg-(--color-primary-dark)'>
-                      HIRE NOW
-                    </button>
-                  </div>
-                </article>
-              ))}
-            </div>
+                  </article>
+                ))}
+              </div>
+              {/* Pagination */}
+              <div className="mt-12">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={setPage}
+                />
+              </div>
+            </>
           ) : (
             <div className='mt-20 text-center'>
               <p className='text-gray-500 text-lg'>No errand professionals found at the moment.</p>
