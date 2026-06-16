@@ -6,6 +6,8 @@ import ErrandDetailsForm from "./ErrandDetailsForm";
 import ErrandTypePicker from "./ErrandTypePicker";
 import { postService } from "@/services/post.service";
 import { profileService } from "@/services/profile.service";
+import { categoryService } from "@/services/category.service";
+import { Category } from "@/types/categories";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
@@ -29,17 +31,22 @@ const PostErrandPage = () => {
     youtubeLink: "",
     categoryId: "",
   });
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const fetchPostData = async () => {
+    const initPage = async () => {
       if (!user) {
         setIsLoading(false);
         return;
       }
 
       try {
+        // Fetch categories first
+        const cats = await categoryService.getActive();
+        setCategories(cats);
+
         if (postId) {
           // Fetch specific post by ID
           const response = await postService.findOne(postId);
@@ -73,7 +80,7 @@ const PostErrandPage = () => {
             // Pre-fill with the latest post and use its ID for updates
             const post = response.data[0];
             setFormData({
-              id: post.id, // Set ID to existing post to allow updating instead of duplicate
+              id: post.id,
               title: post.title,
               description: post.description,
               city: post.city || profileData?.profile?.city || "",
@@ -98,12 +105,12 @@ const PostErrandPage = () => {
           }
         }
       } catch (error) {
-        console.error("Failed to fetch post data", error);
+        console.error("Failed to initialize page data", error);
       } finally {
         setIsLoading(false);
       }
     };
-    fetchPostData();
+    initPage();
   }, [user, postId]);
 
   const handleUpdateField = (field: keyof Errand, value: string) => {
@@ -170,11 +177,13 @@ const PostErrandPage = () => {
         <div className='grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-10 items-start'>
           <ErrandDetailsForm
             formData={formData}
+            categories={categories}
             onChange={handleUpdateField}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
           />
           <ErrandTypePicker
+            categories={categories}
             selectedCategoryId={formData.categoryId}
             onSelect={(id) => handleUpdateField("categoryId", id)}
           />

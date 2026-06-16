@@ -53,26 +53,26 @@ const ErrandPage = () => {
   const getErrandProfiles = (): ErrandrProfile[] => {
     if (!errands) return [];
 
-    return errands.map((post: any) => {
-      const user = post.user;
+    return errands.map((user: any) => {
       const profile = user?.profile;
+      const latestPost = user?.posts?.[0];
 
-      const youtubeLink = (post.youtubeLink || post.youtube_link || profile?.youtubeLink || profile?.youtube_link || "").trim();
+      const youtubeLink = (latestPost?.youtubeLink || latestPost?.youtube_link || profile?.youtubeLink || profile?.youtube_link || "").trim();
       const hasYoutubeLink = youtubeLink.length > 0;
 
       return {
-        id: post.id,
+        id: user.id,
         name: `${user?.firstName || 'User'} ${(user?.lastName || '').charAt(0)}.`,
-        location: post.city ? `${post.city}, ${post.state}` : (profile?.city ? `${profile.city}, ${profile.state}` : "Location not set"),
-        bio: post.description || profile?.bio || "No bio available.",
+        location: profile?.city ? `${profile.city}, ${profile.state}` : "Location not set",
+        bio: profile?.bio || latestPost?.description || "No bio available.",
         tags: profile?.services ? profile.services.split(',').map((s: string) => s.trim()) : [],
         availability: profile?.timeZone ? `Timezone: ${profile.timeZone}` : "Availability not set",
         availabilityNote: profile?.preferredContact ? `Prefers ${profile.preferredContact}` : "7 days a week",
         responseTime: "15 minutes",
         services: profile?.services ? profile.services.split(',').map((s: string) => s.trim()) : [],
         pricingLabel: "Errands from",
-        pricingText: post.budget ? `$${post.budget} per hour` : (profile?.ratePerHour ? `$${profile.ratePerHour} per hour` : "$25 to $100 per hour"),
-        imageUrl: getImageUrl(user?.profileImage) || getImageUrl(post.photoUrl) || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800",
+        pricingText: profile?.ratePerHour ? `$${profile.ratePerHour} per hour` : (latestPost?.budget ? `$${latestPost.budget} per hour` : "$25 to $100 per hour"),
+        imageUrl: getImageUrl(user?.profileImage) || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800",
         bioLink: "#",
         videoThumbUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400",
         youtubeLink: youtubeLink,

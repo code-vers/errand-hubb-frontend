@@ -18,11 +18,9 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
       <div className='flex justify-between items-start mb-4 px-6 pt-6'>
         <div className='flex items-center gap-3 '>
           <div className='relative'>
-            <Image
+            <img
               alt={provider.user.firstName}
               className='w-16 h-16 rounded-lg border-[2px] border-[#FDCBA4]  object-cover'
-              height={200}
-              width={200}
               src={getImageUrl(provider.user.profileImage) || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=200&h=200&fit=crop"}
             />
             {/* Keeping the verified checkmark for design consistency */}

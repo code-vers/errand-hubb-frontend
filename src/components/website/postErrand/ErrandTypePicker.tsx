@@ -1,41 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
-import { categoryService } from "@/services/category.service";
 import { Category } from "@/types/categories";
-import { Loader2 } from "lucide-react";
 import { getImageUrl } from "@/configs/api.config";
 
 interface ErrandTypePickerProps {
+  categories: Category[];
   selectedCategoryId: string;
   onSelect: (categoryId: string) => void;
 }
 
-const ErrandTypePicker = ({ selectedCategoryId, onSelect }: ErrandTypePickerProps) => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const data = await categoryService.getActive();
-        setCategories(data);
-      } catch (error) {
-        console.error("Failed to fetch categories", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchCategories();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <aside className='w-full bg-white p-4 rounded-md shadow-sm flex items-center justify-center min-h-[300px]'>
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </aside>
-    );
-  }
-
+const ErrandTypePicker = ({ categories, selectedCategoryId, onSelect }: ErrandTypePickerProps) => {
   return (
     <aside className='w-full bg-white p-4 rounded-md shadow-sm'>
       <h3 className='text-[#2a3a4a] text-xs font-extrabold uppercase tracking-wide'>

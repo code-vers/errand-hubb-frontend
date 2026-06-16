@@ -7,16 +7,17 @@ import { getImageUrl } from "@/configs/api.config";
 import { useAllErrands } from "@/hooks/useProfile";
 
 const ErrandCard: React.FC<{ errand: any }> = ({ errand }) => {
-  // Map Post object to Card UI
-  const user = errand.user;
-  const profile = user?.profile;
-  const title = errand.title || `${user?.firstName} ${user?.lastName}`;
-  const description = errand.description || profile?.bio || "Available for errands.";
-  const budget = errand.budget || profile?.ratePerHour || "Flexible";
-  const city = errand.city || profile?.city || "Location not set";
+  // Map User object to Card UI
+  const profile = errand.profile;
+  const latestPost = errand.posts?.[0];
+  
+  const title = latestPost?.title || `${errand.firstName} ${errand.lastName}`;
+  const description = profile?.bio || latestPost?.description || "Available for errands.";
+  const budget = profile?.ratePerHour || latestPost?.budget || "Flexible";
+  const city = profile?.city || "Location not set";
   const time = profile?.timeZone || "Anytime";
   
-  const displayImage = getImageUrl(user?.profileImage) || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop";
+  const displayImage = getImageUrl(errand.profileImage) || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop";
 
   return (
     <div className='bg-[#FDF5EC] rounded-lg p-5 flex gap-3.5 items-start relative border border-primary/10 hover:border-primary/30 transition-all'>
