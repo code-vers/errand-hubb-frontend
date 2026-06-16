@@ -4,20 +4,20 @@ import React from "react";
 import { Loader2, AlertCircle, MapPin, Clock } from "lucide-react";
 import Link from "next/link";
 import { getImageUrl } from "@/configs/api.config";
-import { useAllErrands } from "@/hooks/useProfile";
+import { useProviders } from "@/hooks/useProviders";
+import Pagination from "@/components/common/Pagination";
 
-const ErrandCard: React.FC<{ errand: any }> = ({ errand }) => {
-  // Map User object to Card UI
-  const profile = errand.profile;
-  const latestPost = errand.posts?.[0];
+const ErrandCard: React.FC<{ errand: any }> = ({ errand: post }) => {
+  // Map Post object to Card UI
+  const user = post.user;
   
-  const title = latestPost?.title || `${errand.firstName} ${errand.lastName}`;
-  const description = profile?.bio || latestPost?.description || "Available for errands.";
-  const budget = profile?.ratePerHour || latestPost?.budget || "Flexible";
-  const city = profile?.city || "Location not set";
-  const time = profile?.timeZone || "Anytime";
+  const title = post.title || `${user.firstName} ${user.lastName}`;
+  const description = post.description || "Available for errands.";
+  const budget = post.budget || "Flexible";
+  const city = post.city || "Location not set";
+  const time = post.dateNeeded ? new Date(post.dateNeeded).toLocaleDateString() : "Flexible";
   
-  const displayImage = getImageUrl(errand.profileImage) || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop";
+  const displayImage = getImageUrl(user.profileImage) || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop";
 
   return (
     <div className='bg-[#FDF5EC] rounded-lg p-5 flex gap-3.5 items-start relative border border-primary/10 hover:border-primary/30 transition-all'>
@@ -63,9 +63,16 @@ const ErrandCard: React.FC<{ errand: any }> = ({ errand }) => {
 };
 
 const ErrandsPage: React.FC = () => {
-  const { data: errands, isLoading, isError } = useAllErrands();
+  const { 
+    providers: posts, 
+    loading: isLoading, 
+    error: isError,
+    totalPages,
+    currentPage,
+    setPage
+  } = useProviders(10);
 
-  const errandsList = errands || [];
+  const errandsList = posts || [];
 
   return (
     <div className='bg-primary min-h-screen font-sans'>
@@ -91,6 +98,7 @@ const ErrandsPage: React.FC = () => {
           <div className='flex flex-col items-center justify-center py-20 gap-4 text-white'>
             <AlertCircle className='w-12 h-12' />
             <h2 className='text-xl font-bold'>Unable to load errands</h2>
+            <p className='text-white/80'>{isError}</p>
             <button
               onClick={() => window.location.reload()}
               className='px-6 py-2 bg-white text-primary rounded-md font-bold'>
@@ -111,6 +119,15 @@ const ErrandsPage: React.FC = () => {
               {errandsList.map((errand: any) => (
                 <ErrandCard key={errand.id} errand={errand} />
               ))}
+            </div>
+
+            {/* Pagination */}
+            <div className='mt-10 flex justify-center'>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setPage}
+              />
             </div>
           </>
         )}

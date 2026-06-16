@@ -1,121 +1,50 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import FilterSearching from "./FilterSearching";
 import SearchResult from "./SearchResult";
 import { SearchFilters } from "@/types/search";
 import Pagination from "@/components/common/Pagination";
-import { Loader2 } from "lucide-react";
-import { useAllErrands } from "@/hooks/useProfile";
+import { Loader2, AlertCircle } from "lucide-react";
+import { useProviders } from "@/hooks/useProviders";
 
 const SearchPage = () => {
-  const [filters, setFilters] = useState<SearchFilters>({
-    search: "",
-    categoryId: "all",
-    location: "",
-    minBudget: "",
-    maxBudget: "",
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
-  const [page, setPage] = useState(1);
-  const [limit] = useState(10);
-
-  const { data: allErrands, isLoading } = useAllErrands();
-  const [filteredData, setFilteredData] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (!allErrands) {
-      setFilteredData([]);
-      return;
-    }
-
-    let result = [...allErrands];
-
-    // 1. Search filter (Name, Bio, Services)
-    if (filters.search) {
-      const q = filters.search.toLowerCase();
-      result = result.filter((user: any) => {
-        const name = `${user.firstName} ${user.lastName}`.toLowerCase();
-        const bio = (user.profile?.bio || "").toLowerCase();
-        const services = (user.profile?.services || "").toLowerCase();
-        const postTitle = (user.posts?.[0]?.title || "").toLowerCase();
-        return name.includes(q) || bio.includes(q) || services.includes(q) || postTitle.includes(q);
-      });
-    }
-
-    // 2. Location filter
-    if (filters.location) {
-      const loc = filters.location.toLowerCase();
-      result = result.filter((user: any) => {
-        const city = (user.profile?.city || "").toLowerCase();
-        const state = (user.profile?.state || "").toLowerCase();
-        return city.includes(loc) || state.includes(loc);
-      });
-    }
-
-    // 3. Budget filter
-    if (filters.minBudget) {
-      const min = parseFloat(filters.minBudget);
-      result = result.filter((user: any) => {
-        const rate = parseFloat(user.profile?.ratePerHour || "0");
-        return rate >= min;
-      });
-    }
-    if (filters.maxBudget) {
-      const max = parseFloat(filters.maxBudget);
-      result = result.filter((user: any) => {
-        const rate = parseFloat(user.profile?.ratePerHour || "99999");
-        return rate <= max;
-      });
-    }
-
-    // Convert User data into the shape SearchResult expects (a mock "Post")
-    const mappedToPosts = result.map((user: any) => {
-      const latestPost = user.posts?.[0];
-      const profile = user.profile;
-      
-      const youtubeLink = (latestPost?.youtubeLink || latestPost?.youtube_link || profile?.youtubeLink || profile?.youtube_link || "").trim();
-
-      return {
-        id: user.id,
-        title: latestPost?.title || `${user.firstName} ${user.lastName}`,
-        description: profile?.bio || latestPost?.description || "Available for Errands",
-        city: profile?.city || "Unknown City",
-        state: profile?.state || "",
-        budget: profile?.ratePerHour || latestPost?.budget || null,
-        youtubeLink: typeof youtubeLink === 'string' ? youtubeLink.trim() : "",
-        user: {
-          firstName: user.firstName,
-          lastName: user.lastName,
-          profileImage: user.profileImage,
-        },
-        category: {
-          name: profile?.services ? profile.services.split(',')[0].trim() : "General Errands"
-        }
-      };
-    });
-
-    setFilteredData(mappedToPosts);
-  }, [allErrands, filters]);
+  const {
+    providers: posts,
+    loading: isLoading,
+    error: isError,
+    total: totalItems,
+    totalPages,
+    currentPage: page,
+    filters,
+    setPage,
+    setFilters
+  } = useProviders(10);
 
   const handleSearch = (newFilters: SearchFilters) => {
+    // Transform SearchFilters (frontend) to SearchFilters (hook)
+    // Actually they are almost same now
     setFilters(newFilters);
-    setPage(1);
   };
-
-  // Frontend Pagination
-  const totalItems = filteredData.length;
-  const totalPages = Math.ceil(totalItems / limit) || 1;
-  const paginatedData = filteredData.slice((page - 1) * limit, page * limit);
 
   return (
     <div className='bg-[#f4f5f7] min-h-screen pt-12 pb-8'>
       <div className='max-w-7xl mx-auto px-4 flex flex-col gap-8'>
-        <FilterSearching onSearch={handleSearch} initialFilters={filters} />
+        <FilterSearching onSearch={handleSearch} initialFilters={filters as any} />
 
         {isLoading ? (
           <div className='flex justify-center items-center py-20'>
             <Loader2 className='w-10 h-10 animate-spin text-primary' />
+          </div>
+        ) : isError ? (
+          <div className='flex flex-col items-center justify-center py-20 gap-4 text-center'>
+            <AlertCircle className='w-12 h-12 text-red-500' />
+            <h2 className='text-xl font-bold'>Error searching errands</h2>
+            <p className='text-gray-500'>{isError}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className='px-6 py-2 bg-primary text-white rounded-md font-bold'>
+              Retry
+            </button>
           </div>
         ) : (
           <>
@@ -125,7 +54,7 @@ const SearchPage = () => {
               </h2>
             </div>
 
-            <SearchResult posts={paginatedData} />
+            <SearchResult posts={posts} />
 
             {totalPages > 1 && (
               <div className='mt-8'>
