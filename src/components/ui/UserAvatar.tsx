@@ -2,7 +2,6 @@
 
 import { FC } from "react";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import { getImageUrl } from "@/configs/api.config";
 
 interface UserAvatarProps {
@@ -30,17 +29,14 @@ const UserAvatar: FC<UserAvatarProps> = ({
 
   if (imageUrl) {
     return (
-      <Image
+      <img
         src={imageUrl}
-        height={300}
-        width={300}
         alt={alt}
         className={cn(
           "rounded-xl border-white border-4 object-cover",
           sizeClasses[size],
           className,
         )}
-        loading='lazy'
       />
     );
   }

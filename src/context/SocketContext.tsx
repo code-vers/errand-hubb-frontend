@@ -23,47 +23,40 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
 
   useEffect(() => {
     if (user) {
-      // MASTER SIMPLICITY: Connect to server root + namespace
-      const serverRoot = API_CONFIG.BACKEND_URL.replace("/api/v1", "").replace(/\/+$/, "");
-      const namespaceUrl = `\${serverRoot}/messages`;
+      // Connect to the server root (not the prefixed API path)
+      const serverUrl = API_CONFIG.BACKEND_URL.replace("/api/v1", "").replace(/\/+$/, "");
+      const namespaceUrl = `${serverUrl}/messages`;
       
-      console.log('CHAT: Expert connecting to namespace:', namespaceUrl);
+      console.log('CHAT: Connecting to root socket server at:', namespaceUrl);
       
       const token = typeof window !== 'undefined' 
         ? (localStorage.getItem('errand_token') || localStorage.getItem('token') || localStorage.getItem('accessToken')) 
         : null;
 
-      console.log('CHAT: Debug - Handshake token present:', !!token);
-      if (token) {
-        console.log('CHAT: Debug - Token start:', token.substring(0, 10));
-      }
-
       const newSocket = io(namespaceUrl, {
         withCredentials: true,
-        transports: ['polling', 'websocket'], // Start with polling, upgrade to WS
-        path: '/api/v1/socket.io', // MASTER FIX: Explicitly match the backend path to bypass 404
+        transports: ['polling', 'websocket'],
         autoConnect: true,
         reconnection: true,
-        reconnectionAttempts: Infinity,
-        reconnectionDelay: 1000,
-        timeout: 20000,
+        reconnectionAttempts: 10,
+        timeout: 10000,
         auth: {
           token: token
         }
       });
 
       newSocket.on('connect', () => {
-        console.log('CHAT: Connection established! ID:', newSocket.id);
+        console.log('CHAT: CONNECTION SUCCESS! ID:', newSocket.id);
         setIsConnected(true);
       });
 
       newSocket.on('connect_error', (error) => {
-        console.error('CHAT: Handshake failed:', error.message);
+        console.error('CHAT: Handshake error:', error.message);
         setIsConnected(false);
       });
 
       newSocket.on('disconnect', (reason) => {
-        console.log('CHAT: Disconnected:', reason);
+        console.log('CHAT: DISCONNECTED:', reason);
         setIsConnected(false);
       });
 
@@ -72,12 +65,12 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
         const currentConvId = urlParams.get('convId');
         
         if (window.location.pathname !== '/dashboard/messages' || currentConvId !== data.conversationId) {
-          toast.info(`New message from \${data.senderName}`, {
+          toast.info(`New message from ${data.senderName}`, {
             description: data.content.substring(0, 50) + (data.content.length > 50 ? '...' : ''),
             action: {
               label: 'View',
               onClick: () => {
-                window.location.href = `/dashboard/messages?convId=\${data.conversationId}`;
+                window.location.href = `/dashboard/messages?convId=${data.conversationId}`;
               }
             }
           });
@@ -87,7 +80,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       setSocket(newSocket);
 
       return () => {
-        console.log('CHAT: Tearing down connection');
+        console.log('CHAT: Connection shutdown');
         newSocket.disconnect();
       };
     } else {
@@ -100,12 +93,12 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   }, [user]);
 
   const emit = useCallback((event: string, data: any) => {
-    if (socket && socket.connected) {
+    if (socket && isConnected) {
       socket.emit(event, data);
     } else {
-      console.warn('CHAT: Attempted emit while disconnected:', event);
+      console.warn('CHAT: Attempted emit while not connected:', event);
     }
-  }, [socket]);
+  }, [socket, isConnected]);
 
   const on = useCallback((event: string, callback: (data: any) => void) => {
     if (socket) {

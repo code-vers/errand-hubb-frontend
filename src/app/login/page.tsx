@@ -60,6 +60,10 @@ export default function LoginPage() {
       } else {
         const userData = response.data.user;
         const accessToken = response.data.accessToken;
+        
+        // SAVE TOKEN FOR CHAT
+        localStorage.setItem('errand_token', accessToken);
+        
         toast.success('Login successful!');
         queryClient.setQueryData(['user'], userData);
         authLogin(userData);
