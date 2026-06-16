@@ -65,7 +65,7 @@ const ErrandCard: React.FC<{ errand: any }> = ({ errand: post }) => {
 const ErrandsPage: React.FC = () => {
   const { 
     providers: posts, 
-    isLoading, 
+    loading: isLoading, 
     error: isError,
     totalPages,
     currentPage,
@@ -127,7 +127,6 @@ const ErrandsPage: React.FC = () => {
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={setPage}
-                variant="white"
               />
             </div>
           </>
