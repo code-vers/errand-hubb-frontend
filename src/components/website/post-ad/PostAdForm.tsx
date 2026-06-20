@@ -1,24 +1,41 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import { Upload, Video, Building2, MapPin, Phone, Mail, Tag, Send } from "lucide-react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
+import { Upload, Video, Building2, MapPin, Phone, Mail, Tag, Send, AlertCircle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useAdsSubscription } from "@/hooks/useAdsSubscription";
+import { useAdsCategories } from "@/hooks/useAdsCategories";
+import { adsService } from "@/services/ads.service";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const PostAdPage = () => {
+  const router = useRouter();
+  const { subscription, loading: subLoading } = useAdsSubscription();
+  const { categories, loading: catLoading } = useAdsCategories();
+
   const [formData, setFormData] = useState({
+    title: "",
     companyName: "",
     address: "",
     telephone: "",
     email: "",
-    businessCategory: "",
+    categoryId: "",
+    subcategoryId: "",
     youtubeLink: "",
+    description: "",
   });
+  
   const [adImage, setAdImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const selectedCategory = useMemo(() => {
+    return categories.find(c => c.id === formData.categoryId);
+  }, [categories, formData.categoryId]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -31,26 +48,44 @@ const PostAdPage = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!adImage) {
+      toast.error("Please upload an ad image.");
+      return;
+    }
+
     setIsSubmitting(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      toast.success("Ad submitted successfully! It will be reviewed by our team.");
+    try {
+      // 1. Upload image
+      const imageFormData = new FormData();
+      imageFormData.append("file", adImage);
+      const uploadRes = await adsService.uploadImage(imageFormData);
+      const imageUrl = uploadRes.data.url;
+
+      // 2. Submit Ad
+      const adData = {
+        title: formData.title,
+        companyName: formData.companyName,
+        description: formData.description,
+        categoryId: formData.categoryId,
+        subcategoryId: formData.subcategoryId || undefined,
+        location: formData.address,
+        contactInfo: `${formData.telephone} | ${formData.email}`,
+        youtubeLink: formData.youtubeLink || undefined,
+        imageUrl: imageUrl,
+      };
+
+      await adsService.create(adData);
+      
+      toast.success("Ad submitted successfully!");
+      router.push('/ads');
+    } catch (error: any) {
+      toast.error(error.message || "Failed to submit ad. Please try again.");
+    } finally {
       setIsSubmitting(false);
-      // Reset form
-      setFormData({
-        companyName: "",
-        address: "",
-        telephone: "",
-        email: "",
-        businessCategory: "",
-        youtubeLink: "",
-      });
-      setAdImage(null);
-      setPreviewUrl(null);
-    }, 1500);
+    }
   };
 
   const inputClass =
@@ -59,18 +94,36 @@ const PostAdPage = () => {
   const labelClass =
     "text-xs font-bold text-[var(--color-secondary)] uppercase tracking-widest mb-2 flex items-center gap-2";
 
-  const categories = [
-    "Grocery",
-    "IT Services",
-    "Pet Services",
-    "Logistics",
-    "Cleaning",
-    "Landscaping",
-    "Plumbing",
-    "Electrical",
-    "Events",
-    "Health & Beauty",
-  ];
+  if (subLoading || catLoading) {
+    return (
+      <div className="min-h-screen bg-[var(--color-surface-dim)] flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-[var(--color-primary)]" />
+      </div>
+    );
+  }
+
+  if (!subscription?.isSubscribed) {
+    return (
+      <div className="min-h-screen bg-[var(--color-surface-dim)] py-20 px-6">
+        <div className="max-w-2xl mx-auto bg-white rounded-3xl p-10 text-center shadow-xl border border-[var(--color-border)]">
+          <div className="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <AlertCircle className="w-10 h-10 text-[var(--color-primary)]" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Subscription Required</h1>
+          <p className="text-gray-600 mb-8 leading-relaxed">
+            To post your business in our Ads Gallery, you need an active Ads Subscription. 
+            This is a separate $20/month plan designed specifically for promoting your business.
+          </p>
+          <Link
+            href="/dashboard/ads-subscription"
+            className="inline-block bg-[var(--color-primary)] text-white font-bold py-4 px-8 rounded-xl hover:bg-[var(--color-primary-dark)] transition-colors shadow-lg"
+          >
+            Subscribe to Post Ads
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[var(--color-surface-dim)] py-12 px-6 lg:px-12">
@@ -94,15 +147,15 @@ const PostAdPage = () => {
               </label>
               <div 
                 onClick={() => fileInputRef.current?.click()}
-                className="relative w-full md:w-2/3 aspect-[16/9] rounded-2xl border-2 border-dashed border-[var(--color-border)] flex flex-col items-center justify-center cursor-pointer hover:border-[var(--color-primary)] hover:bg-[var(--color-surface-dim)] transition-all overflow-hidden group"
+                className="relative w-full md:w-2/3 aspect-[4/5] md:aspect-[16/9] rounded-2xl border-2 border-dashed border-[var(--color-border)] flex flex-col items-center justify-center cursor-pointer hover:border-[var(--color-primary)] hover:bg-[var(--color-surface-dim)] transition-all overflow-hidden group bg-gray-50"
               >
                 {previewUrl ? (
                   <img src={previewUrl} alt="Ad Preview" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="flex flex-col items-center text-[var(--color-muted)] group-hover:text-[var(--color-primary)]">
+                  <div className="flex flex-col items-center text-[var(--color-muted)] group-hover:text-[var(--color-primary)] p-6 text-center">
                     <Upload size={48} strokeWidth={1.5} className="mb-4" />
-                    <p className="font-bold">Click to upload your ad image</p>
-                    <p className="text-xs mt-1">Recommended size: 1280x720 (16:9)</p>
+                    <p className="font-bold">Click to upload your ad poster</p>
+                    <p className="text-xs mt-2">Recommended: Vertical aspect ratio for best display in gallery</p>
                   </div>
                 )}
                 <input 
@@ -117,6 +170,23 @@ const PostAdPage = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Ad Title */}
+              <div className="flex flex-col md:col-span-2">
+                <label className={labelClass}>
+                  <Tag size={14} className="text-[var(--color-primary)]" />
+                  Ad Headline / Title
+                </label>
+                <input
+                  name="title"
+                  type="text"
+                  placeholder="e.g. Expert Plumbing Services 24/7"
+                  required
+                  value={formData.title}
+                  onChange={handleChange}
+                  className={inputClass}
+                />
+              </div>
+
               {/* Company Name */}
               <div className="flex flex-col">
                 <label className={labelClass}>
@@ -134,36 +204,57 @@ const PostAdPage = () => {
                 />
               </div>
 
-              {/* Business Category */}
+              {/* Main Category */}
               <div className="flex flex-col">
                 <label className={labelClass}>
                   <Tag size={14} className="text-[var(--color-primary)]" />
-                  Business Category
+                  Category
                 </label>
                 <select
-                  name="businessCategory"
+                  name="categoryId"
                   required
-                  value={formData.businessCategory}
+                  value={formData.categoryId}
                   onChange={handleChange}
                   className={inputClass}
                 >
                   <option value="">Select a category</option>
                   {categories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                 </select>
               </div>
+
+              {/* Subcategory */}
+              {selectedCategory && selectedCategory.subcategories?.length > 0 && (
+                <div className="flex flex-col md:col-span-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <label className={labelClass}>
+                    <Tag size={14} className="text-[var(--color-primary)]" />
+                    Subcategory
+                  </label>
+                  <select
+                    name="subcategoryId"
+                    value={formData.subcategoryId}
+                    onChange={handleChange}
+                    className={inputClass}
+                  >
+                    <option value="">Select a specific service</option>
+                    {selectedCategory.subcategories.map((sub: any) => (
+                      <option key={sub.id} value={sub.id}>{sub.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               {/* Address */}
               <div className="flex flex-col md:col-span-2">
                 <label className={labelClass}>
                   <MapPin size={14} className="text-[var(--color-primary)]" />
-                  Full Business Address
+                  Business Location / Service Area
                 </label>
                 <input
                   name="address"
                   type="text"
-                  placeholder="Street, City, State, ZIP"
+                  placeholder="e.g. New York City, NY"
                   required
                   value={formData.address}
                   onChange={handleChange}
@@ -175,7 +266,7 @@ const PostAdPage = () => {
               <div className="flex flex-col">
                 <label className={labelClass}>
                   <Phone size={14} className="text-[var(--color-primary)]" />
-                  Telephone / Contact No.
+                  Contact Number
                 </label>
                 <input
                   name="telephone"
@@ -202,6 +293,23 @@ const PostAdPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className={inputClass}
+                />
+              </div>
+
+              {/* Description */}
+              <div className="flex flex-col md:col-span-2">
+                <label className={labelClass}>
+                  <Tag size={14} className="text-[var(--color-primary)]" />
+                  Short Description
+                </label>
+                <textarea
+                  name="description"
+                  placeholder="Briefly describe your services..."
+                  required
+                  value={formData.description}
+                  onChange={handleChange}
+                  className={inputClass}
+                  rows={3}
                 />
               </div>
 

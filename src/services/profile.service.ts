@@ -1,24 +1,24 @@
-import api from './api/axios';
+import api from "./api/axios";
 
 export const profileService = {
   getMe: async () => {
-    return api.get('/users/me');
+    return api.get("/users/me");
   },
 
   getAllErrands: async () => {
-    return api.get('/errand-profiles');
+    return api.get("/errand-profiles");
   },
 
   updateProfile: async (data: FormData | any) => {
     // If it's not FormData, axios will handle it as JSON
-    return api.patch('/users/profile', data);
+    return api.patch("/users/profile", data);
   },
 
   requestDeleteAccount: async () => {
-    return api.post('/users/request-delete-account');
+    return api.post("/users/request-delete-account");
   },
 
   deleteAccount: async (data: { password?: string; code?: string }) => {
-    return api.post('/users/delete-account-permanently', data);
+    return api.post("/users/delete-account-permanently", data);
   },
 };

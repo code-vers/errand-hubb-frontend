@@ -11,6 +11,8 @@ import {
   ShieldAlert,
   User,
   Users,
+  Megaphone,
+  MonitorPlay
 } from "lucide-react";
 
 export const sidebarConfig: SidebarMenuItem[] = [
@@ -39,6 +41,24 @@ export const sidebarConfig: SidebarMenuItem[] = [
     roles: ["client"],
   },
   {
+    title: "Available Jobs",
+    path: "/dashboard/available-jobs",
+    icon: Briefcase,
+    roles: ["errand"],
+  },
+  {
+    title: "Service Requests",
+    path: "/dashboard/service-requests",
+    icon: Briefcase,
+    roles: ["client"],
+  },
+  {
+    title: "Client Requests",
+    path: "/dashboard/client-requests",
+    icon: Search,
+    roles: ["errand"],
+  },
+  {
     title: "Security",
     path: "/dashboard/security",
     icon: Briefcase,
@@ -49,25 +69,17 @@ export const sidebarConfig: SidebarMenuItem[] = [
     path: "/dashboard/users",
     icon: Users,
     roles: ["admin"],
-    // children: [
-    //   {
-    //     title: "Clients",
-    //     path: "/dashboard/users/clients",
-    //     icon: User,
-    //     roles: ["admin"],
-    //   },
-    //   {
-    //     title: "Errands",
-    //     path: "/dashboard/users/errands",
-    //     icon: User,
-    //     roles: ["admin"],
-    //   },
-    // ],
   },
   {
     title: "Post Management",
     path: "/dashboard/post-management",
     icon: MessageSquareText,
+    roles: ["admin"],
+  },
+  {
+    title: "Service Request Management",
+    path: "/dashboard/service-request-management",
+    icon: ShieldAlert,
     roles: ["admin"],
   },
   {
@@ -95,6 +107,18 @@ export const sidebarConfig: SidebarMenuItem[] = [
     roles: ["errand"],
   },
   {
+    title: "Ads Subscription",
+    path: "/dashboard/ads-subscription",
+    icon: Megaphone,
+    roles: ["client", "errand"],
+  },
+  {
+    title: "My Ads",
+    path: "/dashboard/my-ads",
+    icon: MonitorPlay,
+    roles: ["client", "errand"],
+  },
+  {
     title: "Global Messages",
     path: "/dashboard/admin-messages",
     icon: MessageSquareText,
@@ -106,24 +130,12 @@ export const sidebarConfig: SidebarMenuItem[] = [
     icon: MessageSquare,
     roles: ["client", "errand", "admin"],
   },
-  // {
-  //   title: "Payments",
-  //   path: "/dashboard/payments",
-  //   icon: CreditCard,
-  //   roles: ["errand", "admin"],
-  // },
   {
     title: "Profile",
     path: "/dashboard/profile",
     icon: User,
     roles: ["errand", "admin"],
   },
-  // {
-  //   title: "Settings",
-  //   path: "/dashboard/settings",
-  //   icon: Settings,
-  //   roles: ["errand", "admin"],
-  // },
 ];
 
 export const getSidebarItemsByRole = (role: UserRole): SidebarMenuItem[] => {
