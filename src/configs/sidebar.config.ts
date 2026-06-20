@@ -41,8 +41,8 @@ export const sidebarConfig: SidebarMenuItem[] = [
     roles: ["client"],
   },
   {
-    title: "Available Errands",
-    path: "/dashboard/available-errands",
+    title: "Available Jobs",
+    path: "/dashboard/available-jobs",
     icon: Briefcase,
     roles: ["errand"],
   },

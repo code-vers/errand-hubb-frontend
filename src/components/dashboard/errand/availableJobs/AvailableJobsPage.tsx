@@ -6,12 +6,11 @@ import Pagination from "@/components/common/Pagination";
 import { useQuery } from "@tanstack/react-query";
 import { postService } from "@/services/post.service";
 import { categoryService } from "@/services/category.service";
-import { Search, Loader2, Calendar, MapPin, MessageSquare, DollarSign } from "lucide-react";
+import { Search, Loader2, Calendar, MapPin, MessageSquare } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 import { getImageUrl } from "@/configs/api.config";
 
-export default function AvailableErrandsPage() {
+export default function AvailableJobsPage() {
   const router = useRouter();
   const [filters, setFilters] = useState({
     search: "",
@@ -38,7 +37,7 @@ export default function AvailableErrandsPage() {
 
   // Query general posts posted by clients
   const { data: response, isLoading: loading } = useQuery({
-    queryKey: ["available-errand-posts", filters],
+    queryKey: ["available-job-posts", filters],
     queryFn: async () => {
       const res = await postService.findAll({
         ...filters,
@@ -73,7 +72,7 @@ export default function AvailableErrandsPage() {
     <div className="min-h-screen py-5 px-12 font-sans bg-surface-dim">
       <div className="mx-auto flex flex-col gap-5">
         <div className="flex justify-between items-center">
-          <PageHeader title="Available Errands (Client Posts)" />
+          <PageHeader title="Available Jobs" />
         </div>
 
         {/* Filter and Search Section */}
@@ -87,7 +86,7 @@ export default function AvailableErrandsPage() {
                 type="text"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="Search errands by title or keywords..."
+                placeholder="Search jobs by title or keywords..."
                 className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 outline-none transition-all text-sm placeholder:text-gray-400"
               />
             </div>
@@ -104,7 +103,7 @@ export default function AvailableErrandsPage() {
 
             <button
               type="submit"
-              className="px-6 py-3 rounded-xl font-bold text-sm text-white bg-primary hover:bg-primary/95 transition-all shadow-sm active:scale-95 animate-fade-in"
+              className="px-6 py-3 rounded-xl font-bold text-sm text-white bg-primary hover:bg-primary/95 transition-all shadow-sm active:scale-95"
             >
               Search
             </button>
@@ -148,13 +147,13 @@ export default function AvailableErrandsPage() {
         {loading ? (
           <div className="py-16 text-center">
             <Loader2 className="w-10 h-10 animate-spin mx-auto text-primary" />
-            <p className="mt-4 text-muted">Finding available errands...</p>
+            <p className="mt-4 text-muted">Finding available jobs...</p>
           </div>
         ) : posts.length === 0 ? (
           <div className="bg-white rounded-2xl p-16 text-center shadow-sm border border-gray-100">
-            <h3 className="text-xl font-bold text-gray-800">No errands found</h3>
+            <h3 className="text-xl font-bold text-gray-800">No jobs found</h3>
             <p className="text-gray-500 mt-2 max-w-xs mx-auto">
-              No client errand posts match the current filters or search criteria.
+              No client job posts match the current filters or search criteria.
             </p>
           </div>
         ) : (
