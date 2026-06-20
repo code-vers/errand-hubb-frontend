@@ -41,6 +41,24 @@ export const sidebarConfig: SidebarMenuItem[] = [
     roles: ["client"],
   },
   {
+    title: "Available Errands",
+    path: "/dashboard/available-errands",
+    icon: Briefcase,
+    roles: ["errand"],
+  },
+  {
+    title: "Service Requests",
+    path: "/dashboard/service-requests",
+    icon: Briefcase,
+    roles: ["client"],
+  },
+  {
+    title: "Client Requests",
+    path: "/dashboard/client-requests",
+    icon: Search,
+    roles: ["errand"],
+  },
+  {
     title: "Security",
     path: "/dashboard/security",
     icon: Briefcase,
@@ -56,6 +74,12 @@ export const sidebarConfig: SidebarMenuItem[] = [
     title: "Post Management",
     path: "/dashboard/post-management",
     icon: MessageSquareText,
+    roles: ["admin"],
+  },
+  {
+    title: "Service Request Management",
+    path: "/dashboard/service-request-management",
+    icon: ShieldAlert,
     roles: ["admin"],
   },
   {
