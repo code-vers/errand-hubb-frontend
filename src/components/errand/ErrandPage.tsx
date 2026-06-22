@@ -1,14 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import Pagination from "@/components/common/Pagination";
+import { getImageUrl } from "@/configs/api.config";
+import { useProviders } from "@/hooks/useProviders";
+import { AlertCircle, Loader2, X, Image as ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, Loader2, AlertCircle } from "lucide-react";
+import { useState } from "react";
 import icon from "../../../public/icon.svg";
 import logo from "../../../public/logo2.svg";
-import { useProviders } from "@/hooks/useProviders";
-import { getImageUrl } from "@/configs/api.config";
-import Pagination from "@/components/common/Pagination";
 
 interface MembershipPlan {
   priceLabel: string;
@@ -32,6 +32,7 @@ interface ErrandrProfile {
   videoThumbUrl: string;
   youtubeLink?: string;
   hasYoutubeLink: boolean;
+  gallery?: string[];
 }
 
 const membershipPlan: MembershipPlan = {
@@ -40,22 +41,29 @@ const membershipPlan: MembershipPlan = {
 };
 
 const ErrandPage = () => {
-  const [hiringProfile, setHiringProfile] = useState<ErrandrProfile | null>(null);
+  const [hiringProfile, setHiringProfile] = useState<ErrandrProfile | null>(
+    null,
+  );
   const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
-  const { 
-    providers: posts, 
-    loading: isLoading, 
-    totalPages, 
-    currentPage, 
+  const [activeGallery, setActiveGallery] = useState<string[] | null>(null);
+  const [galleryIndex, setGalleryIndex] = useState<number>(0);
+  const {
+    providers: posts,
+    loading: isLoading,
+    totalPages,
+    currentPage,
     setPage,
-    error: isError 
+    error: isError,
   } = useProviders(9); // Show 9 per page for this layout
 
   const getYoutubeEmbedUrl = (url: string) => {
     if (!url) return "";
-    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const regExp =
+      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const match = url.match(regExp);
-    return (match && match[2].length === 11) ? `https://www.youtube.com/embed/${match[2]}?autoplay=1` : url;
+    return match && match[2].length === 11
+      ? `https://www.youtube.com/embed/${match[2]}?autoplay=1`
+      : url;
   };
 
   const getErrandProfiles = (): ErrandrProfile[] => {
@@ -70,8 +78,10 @@ const ErrandPage = () => {
 
       return {
         id: post.id,
-        name: `${user?.firstName || 'User'} ${(user?.lastName || '').charAt(0)}.`,
-        location: post.city ? `${post.city}, ${post.state}` : "Location not set",
+        name: `${user?.firstName || "User"} ${(user?.lastName || "").charAt(0)}.`,
+        location: post.city
+          ? `${post.city}, ${post.state}`
+          : "Location not set",
         bio: post.description || "No description available.",
         tags: category?.name ? [category.name] : [],
         availability: "Availability not set",
@@ -79,16 +89,21 @@ const ErrandPage = () => {
         responseTime: "15 minutes",
         services: category?.name ? [category.name] : [],
         pricingLabel: "Errands from",
-        pricingText: post.budget ? `$${post.budget} per hour` : "$25 to $100 per hour",
-        imageUrl: getImageUrl(user?.profileImage) || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800",
+        pricingText: post.budget
+          ? `$${post.budget} per hour`
+          : "$25 to $100 per hour",
+        imageUrl:
+          getImageUrl(user?.profileImage) ||
+          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800",
         bioLink: "#",
-        videoThumbUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400",
+        videoThumbUrl:
+          "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400",
         youtubeLink: youtubeLink,
-        hasYoutubeLink: hasYoutubeLink
+        hasYoutubeLink: hasYoutubeLink,
+        gallery: user?.profile?.gallery || [],
       };
     });
   };
-
 
   const errandProfiles = getErrandProfiles();
 
@@ -105,9 +120,9 @@ const ErrandPage = () => {
                 YOUR HELP WITH AN ERRANDR POST
               </p>
               <Link
-                href='/errand-registration'
-                className='inline-flex min-h-12.5 items-center mt-12 justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'>
-                CREATE ERRAND PROFILE
+                href='/client-registration'
+                className='inline-flex min-h-12.5 items-center justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'>
+                CREATE CLIENT PROFILE
               </Link>
             </div>
 
@@ -122,10 +137,11 @@ const ErrandPage = () => {
               <p className='text-[22px] leading-none font-semibold text-(--color-secondary) md:text-[30px]'>
                 {membershipPlan.billingCycle}
               </p>
+
               <Link
-                href='/client-registration'
-                className='inline-flex min-h-12.5 items-center justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'>
-                CREATE CLIENT PROFILE
+                href='/errand-registration'
+                className='inline-flex min-h-12.5 items-center mt-12 justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'>
+                CREATE ERRAND PROFILE
               </Link>
             </div>
           </div>
@@ -146,16 +162,17 @@ const ErrandPage = () => {
           {isLoading ? (
             <div className='mt-20 flex flex-col items-center justify-center'>
               <Loader2 className='w-10 h-10 animate-spin text-primary' />
-              <p className='mt-4 text-gray-500 font-medium'>Finding errand professionals...</p>
+              <p className='mt-4 text-gray-500 font-medium'>
+                Finding errand professionals...
+              </p>
             </div>
           ) : isError ? (
             <div className='mt-20 flex flex-col items-center justify-center text-center'>
               <AlertCircle className='w-12 h-12 text-red-500 mb-4' />
               <p className='text-red-500 font-medium'>{isError}</p>
-              <button 
+              <button
                 onClick={() => window.location.reload()}
-                className='mt-4 px-6 py-2 bg-primary text-white rounded-md font-bold'
-              >
+                className='mt-4 px-6 py-2 bg-primary text-white rounded-md font-bold'>
                 Retry
               </button>
             </div>
@@ -188,23 +205,54 @@ const ErrandPage = () => {
 
                       <div className='mt-3 flex items-center justify-between'>
                         <button
-                          type="button"
-                          onClick={() => profile.hasYoutubeLink && setActiveVideoUrl(profile.youtubeLink!)}
-                          className={`text-[18px] underline ${profile.hasYoutubeLink ? 'text-[#2f66dc]' : 'text-gray-400'}`}>
+                          type='button'
+                          onClick={() =>
+                            profile.hasYoutubeLink &&
+                            setActiveVideoUrl(profile.youtubeLink!)
+                          }
+                          className={`text-[18px] underline ${profile.hasYoutubeLink ? "text-[#2f66dc]" : "text-gray-400"}`}>
                           Intro
                         </button>
                         <div className='flex items-center gap-2'>
-                          <button 
-                            type='button' 
-                            aria-label='Play intro video'
-                            onClick={() => profile.hasYoutubeLink && setActiveVideoUrl(profile.youtubeLink!)}
+                          <button
+                            type='button'
+                            aria-label='View photo gallery'
+                            disabled={!profile.gallery || profile.gallery.length === 0}
+                            onClick={() =>
+                              profile.gallery &&
+                              profile.gallery.length > 0 &&
+                              setActiveGallery(profile.gallery)
+                            }
+                            className="transition-transform hover:scale-105 active:scale-95"
                           >
+                            <span className="w-10 h-10 rounded-md border border-gray-200 bg-gray-50 flex items-center justify-center hover:bg-gray-100 transition-colors shadow-sm">
+                              <ImageIcon
+                                className={`w-5 h-5 ${
+                                  profile.gallery && profile.gallery.length > 0
+                                    ? "text-primary opacity-100"
+                                    : "text-gray-400 opacity-40 cursor-not-allowed"
+                                }`}
+                              />
+                            </span>
+                          </button>
+
+                          <button
+                            type='button'
+                            aria-label='Play intro video'
+                            onClick={() =>
+                              profile.hasYoutubeLink &&
+                              setActiveVideoUrl(profile.youtubeLink!)
+                            }>
                             <Image
                               src={icon}
                               alt='Play intro'
                               width={40}
                               height={40}
-                              className={profile.hasYoutubeLink ? 'opacity-100 grayscale-0' : 'opacity-40 grayscale'}
+                              className={
+                                profile.hasYoutubeLink
+                                  ? "opacity-100 grayscale-0"
+                                  : "opacity-40 grayscale"
+                              }
                             />
                           </button>
                         </div>
@@ -241,7 +289,7 @@ const ErrandPage = () => {
                 ))}
               </div>
               {/* Pagination */}
-              <div className="mt-12">
+              <div className='mt-12'>
                 <Pagination
                   currentPage={currentPage}
                   totalPages={totalPages}
@@ -251,7 +299,9 @@ const ErrandPage = () => {
             </>
           ) : (
             <div className='mt-20 text-center'>
-              <p className='text-gray-500 text-lg'>No errand professionals found at the moment.</p>
+              <p className='text-gray-500 text-lg'>
+                No errand professionals found at the moment.
+              </p>
             </div>
           )}
         </div>
@@ -286,10 +336,26 @@ const ErrandPage = () => {
                 </p>
               </div>
 
+              {/* Gallery button */}
+              <button
+                onClick={() =>
+                  hiringProfile.gallery &&
+                  hiringProfile.gallery.length > 0 &&
+                  setActiveGallery(hiringProfile.gallery)
+                }
+                className={`w-10 h-10 rounded-full bg-primary flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity ${(!hiringProfile.gallery || hiringProfile.gallery.length === 0) && "opacity-40 grayscale cursor-not-allowed"}`}
+                disabled={!hiringProfile.gallery || hiringProfile.gallery.length === 0}
+              >
+                <ImageIcon className="w-5 h-5 text-white" />
+              </button>
+
               {/* Play button (teal circle) */}
-              <button 
-                onClick={() => hiringProfile.hasYoutubeLink && setActiveVideoUrl(hiringProfile.youtubeLink!)}
-                className={`w-10 h-10 rounded-full bg-[#1ABFBF] flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity ${!hiringProfile.hasYoutubeLink && 'opacity-40 grayscale cursor-not-allowed'}`}>
+              <button
+                onClick={() =>
+                  hiringProfile.hasYoutubeLink &&
+                  setActiveVideoUrl(hiringProfile.youtubeLink!)
+                }
+                className={`w-10 h-10 rounded-full bg-[#1ABFBF] flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity ${!hiringProfile.hasYoutubeLink && "opacity-40 grayscale cursor-not-allowed"}`}>
                 <svg width='14' height='16' viewBox='0 0 14 16' fill='none'>
                   <path d='M1.5 1.5L12.5 8L1.5 14.5V1.5Z' fill='white' />
                 </svg>
@@ -446,23 +512,115 @@ const ErrandPage = () => {
 
       {/* ── Video Modal ── */}
       {activeVideoUrl && (
-        <div 
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4"
-          onClick={() => setActiveVideoUrl(null)}
-        >
-          <div className="relative w-full max-w-4xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl">
-            <button 
-              className="absolute top-4 right-4 z-10 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors"
-              onClick={(e) => { e.stopPropagation(); setActiveVideoUrl(null); }}
-            >
+        <div
+          className='fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4'
+          onClick={() => setActiveVideoUrl(null)}>
+          <div className='relative w-full max-w-4xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl'>
+            <button
+              className='absolute top-4 right-4 z-10 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors'
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveVideoUrl(null);
+              }}>
               <X size={24} />
             </button>
             <iframe
               src={getYoutubeEmbedUrl(activeVideoUrl)}
-              className="w-full h-full"
-              allow="autoplay; encrypted-media"
+              className='w-full h-full'
+              allow='autoplay; encrypted-media'
               allowFullScreen
             />
+          </div>
+        </div>
+      )}
+
+      {/* ── Gallery Modal ── */}
+      {activeGallery && activeGallery.length > 0 && (
+        <div
+          className='fixed inset-0 z-[60] flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm p-4 sm:p-6'
+          onClick={() => {
+            setActiveGallery(null);
+            setGalleryIndex(0);
+          }}>
+          <div 
+            className='relative w-full max-w-4xl flex flex-col items-center justify-center'
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close Button */}
+            <button
+              className='absolute -top-12 right-0 p-2 bg-white/15 hover:bg-white/25 rounded-full text-white transition-colors'
+              onClick={() => {
+                setActiveGallery(null);
+                setGalleryIndex(0);
+              }}>
+              <X size={24} />
+            </button>
+
+            {/* Main Carousel Area */}
+            <div className="relative w-full aspect-[4/3] max-h-[70vh] bg-black/60 rounded-xl overflow-hidden shadow-2xl flex items-center justify-center border border-white/10">
+              <img
+                src={getImageUrl(activeGallery[galleryIndex])}
+                alt={`Gallery image ${galleryIndex + 1}`}
+                className='w-full h-full object-contain select-none transition-all duration-300'
+              />
+
+              {/* Prev Button */}
+              {activeGallery.length > 1 && (
+                <button
+                  onClick={() => setGalleryIndex((prev) => (prev === 0 ? activeGallery.length - 1 : prev - 1))}
+                  className="absolute left-4 p-3 rounded-full bg-black/60 hover:bg-black/90 text-white transition-colors border border-white/15 flex items-center justify-center hover:scale-105 active:scale-95 duration-200"
+                >
+                  <ChevronLeft size={24} />
+                </button>
+              )}
+
+              {/* Next Button */}
+              {activeGallery.length > 1 && (
+                <button
+                  onClick={() => setGalleryIndex((prev) => (prev === activeGallery.length - 1 ? 0 : prev + 1))}
+                  className="absolute right-4 p-3 rounded-full bg-black/60 hover:bg-black/90 text-white transition-colors border border-white/15 flex items-center justify-center hover:scale-105 active:scale-95 duration-200"
+                >
+                  <ChevronRight size={24} />
+                </button>
+              )}
+            </div>
+
+            {/* Pagination Indicators & Thumbnails */}
+            {activeGallery.length > 1 && (
+              <div className="mt-4 flex flex-col items-center gap-3 w-full">
+                {/* Dots */}
+                <div className="flex gap-2">
+                  {activeGallery.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setGalleryIndex(idx)}
+                      className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
+                        idx === galleryIndex ? "bg-[#F47A22] scale-125" : "bg-white/40 hover:bg-white/60"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                {/* Thumbnail Strip */}
+                <div className="flex gap-2 justify-center max-w-full overflow-x-auto py-1">
+                  {activeGallery.map((imgUrl, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setGalleryIndex(idx)}
+                      className={`relative w-16 h-12 rounded overflow-hidden border-2 transition-all duration-200 ${
+                        idx === galleryIndex ? "border-[#F47A22] opacity-100 scale-105" : "border-transparent opacity-60 hover:opacity-100"
+                      }`}
+                    >
+                      <img
+                        src={getImageUrl(imgUrl)}
+                        alt={`thumb-${idx}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

@@ -34,6 +34,8 @@ const PostErrandPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [existingGallery, setExistingGallery] = useState<string[]>([]);
+  const [newGalleryFiles, setNewGalleryFiles] = useState<File[]>([]);
 
   useEffect(() => {
     const initPage = async () => {
@@ -46,6 +48,18 @@ const PostErrandPage = () => {
         // Fetch categories first
         const cats = await categoryService.getActive();
         setCategories(cats);
+
+        // Always fetch user profile data first for auto-filling and gallery
+        let profileData: any = null;
+        try {
+          const profileResponse = await profileService.getMe();
+          profileData = profileResponse.data;
+          if (profileData?.profile?.gallery) {
+            setExistingGallery(profileData.profile.gallery);
+          }
+        } catch (e) {
+          console.error("Failed to fetch profile", e);
+        }
 
         if (postId) {
           // Fetch specific post by ID
@@ -65,15 +79,6 @@ const PostErrandPage = () => {
             categoryId: post.categoryId,
           });
         } else {
-          // Try to get user profile data first for auto-filling
-          let profileData: any = null;
-          try {
-            const profileResponse = await profileService.getMe();
-            profileData = profileResponse.data;
-          } catch (e) {
-            console.error("Failed to fetch profile", e);
-          }
-
           // Check if user already has any posts
           const response = await postService.getMyPosts();
           if (response.data && response.data.length > 0) {
@@ -132,11 +137,20 @@ const PostErrandPage = () => {
     try {
       if (formData.id) {
         await postService.update(formData.id, formData);
-        toast.success("Errand post updated successfully!");
       } else {
         await postService.create(formData);
-        toast.success("Errand posted successfully!");
       }
+
+      // Save/update gallery to profile
+      const profileFormData = new FormData();
+      profileFormData.append("retainedGallery", JSON.stringify(existingGallery));
+      newGalleryFiles.forEach((file) => {
+        profileFormData.append("gallery", file);
+      });
+      await profileService.updateProfile(profileFormData);
+
+      toast.success("Errand post and gallery updated successfully!");
+      router.push("/errand");
     } catch (error: any) {
       console.error("Post Submission Error:", error);
       
@@ -181,6 +195,10 @@ const PostErrandPage = () => {
             onChange={handleUpdateField}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
+            existingGallery={existingGallery}
+            setExistingGallery={setExistingGallery}
+            newGalleryFiles={newGalleryFiles}
+            setNewGalleryFiles={setNewGalleryFiles}
           />
           <ErrandTypePicker
             categories={categories}
