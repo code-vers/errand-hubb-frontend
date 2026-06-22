@@ -1,7 +1,9 @@
 import { Errand } from "@/types/errand";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Upload, X, Loader2, PlayCircle, ChevronDown } from "lucide-react";
 import { Category } from "@/types/categories";
+import { toast } from "sonner";
+import { getImageUrl } from "@/configs/api.config";
 
 interface ErrandDetailsFormProps {
   formData: Errand;
@@ -9,21 +11,45 @@ interface ErrandDetailsFormProps {
   onChange: (field: keyof Errand, value: string) => void;
   onSubmit: () => void;
   isSubmitting?: boolean;
+  existingGallery: string[];
+  setExistingGallery: React.Dispatch<React.SetStateAction<string[]>>;
+  newGalleryFiles: File[];
+  setNewGalleryFiles: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
-const ErrandDetailsForm = ({ formData, categories, onChange, onSubmit, isSubmitting }: ErrandDetailsFormProps) => {
-  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+const ErrandDetailsForm = ({
+  formData,
+  categories,
+  onChange,
+  onSubmit,
+  isSubmitting,
+  existingGallery,
+  setExistingGallery,
+  newGalleryFiles,
+  setNewGalleryFiles,
+}: ErrandDetailsFormProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const files = Array.from(e.target.files);
-      setSelectedImages((prev) => [...prev, ...files]);
+      setNewGalleryFiles((prev) => {
+        const combined = [...prev, ...files];
+        if (existingGallery.length + combined.length > 5) {
+          toast.error("You can upload up to 5 gallery images in total.");
+          return combined.slice(0, 5 - existingGallery.length);
+        }
+        return combined;
+      });
     }
   };
 
-  const removeImage = (index: number) => {
-    setSelectedImages((prev) => prev.filter((_, i) => i !== index));
+  const removeNewImage = (index: number) => {
+    setNewGalleryFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const removeExistingImage = (index: number) => {
+    setExistingGallery((prev) => prev.filter((_, i) => i !== index));
   };
 
   return (
@@ -168,7 +194,7 @@ const ErrandDetailsForm = ({ formData, categories, onChange, onSubmit, isSubmitt
 
         <div className='flex flex-col gap-1.5'>
           <span className='text-gray-600 text-xs font-bold uppercase tracking-wide'>
-            Upload Photos
+            Portfolio Gallery (Max 5 images)
           </span>
           <div 
             onClick={() => fileInputRef.current?.click()}
@@ -184,22 +210,40 @@ const ErrandDetailsForm = ({ formData, categories, onChange, onSubmit, isSubmitt
             />
             <Upload className='w-8 h-8 text-gray-400 mb-2' />
             <p className='text-sm text-gray-500 font-medium'>Click to upload images</p>
-            <p className='text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-wider'>Max 5 files</p>
+            <p className='text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-wider'>Max 5 files total</p>
           </div>
 
-          {selectedImages.length > 0 && (
+          {(existingGallery.length > 0 || newGalleryFiles.length > 0) && (
             <div className='flex flex-wrap gap-2 mt-2'>
-              {selectedImages.map((file, index) => (
-                <div key={index} className='relative w-16 h-16 rounded-md overflow-hidden border border-gray-200'>
+              {/* Existing Images */}
+              {existingGallery.map((url, index) => (
+                <div key={`existing-${index}`} className='relative w-16 h-16 rounded-md overflow-hidden border border-gray-200'>
                   <img 
-                    src={URL.createObjectURL(file)} 
-                    alt="preview" 
+                    src={getImageUrl(url)} 
+                    alt="existing preview" 
                     className='w-full h-full object-cover'
                   />
                   <button 
                     type="button"
-                    onClick={(e) => { e.stopPropagation(); removeImage(index); }}
-                    className='absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded-bl-md'
+                    onClick={(e) => { e.stopPropagation(); removeExistingImage(index); }}
+                    className='absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded-bl-md flex items-center justify-center'
+                  >
+                    <X className='w-3 h-3' />
+                  </button>
+                </div>
+              ))}
+              {/* New Images */}
+              {newGalleryFiles.map((file, index) => (
+                <div key={`new-${index}`} className='relative w-16 h-16 rounded-md overflow-hidden border border-gray-200'>
+                  <img 
+                    src={URL.createObjectURL(file)} 
+                    alt="new preview" 
+                    className='w-full h-full object-cover'
+                  />
+                  <button 
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); removeNewImage(index); }}
+                    className='absolute top-0 right-0 bg-red-500 text-white p-0.5 rounded-bl-md flex items-center justify-center'
                   >
                     <X className='w-3 h-3' />
                   </button>
