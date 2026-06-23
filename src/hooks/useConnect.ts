@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { messageService } from "@/services/message.service";
 import { useAuth } from "@/context/AuthContext";
@@ -22,6 +22,7 @@ interface UseConnectReturn {
  */
 export function useConnect(): UseConnectReturn {
   const [isConnecting, setIsConnecting] = useState(false);
+  const isConnectingRef = useRef(false);
   const router = useRouter();
   const { user } = useAuth();
 
@@ -40,9 +41,10 @@ export function useConnect(): UseConnectReturn {
         return;
       }
 
-      // Guard: prevent double-click
-      if (isConnecting) return;
+      // Guard: prevent double-click (using ref for synchronous safety)
+      if (isConnecting || isConnectingRef.current) return;
 
+      isConnectingRef.current = true;
       setIsConnecting(true);
       try {
         const response: any = await messageService.startConversation(participantId);
@@ -60,6 +62,7 @@ export function useConnect(): UseConnectReturn {
           toast.error(error?.message || "Failed to start conversation. Please try again.");
         }
       } finally {
+        isConnectingRef.current = false;
         setIsConnecting(false);
       }
     },

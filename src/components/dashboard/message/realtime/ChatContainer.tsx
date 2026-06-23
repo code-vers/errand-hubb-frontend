@@ -11,6 +11,8 @@ import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
+const pendingCreations = new Set<string>();
+
 const ChatContainer: FC = () => {
   const { user } = useAuth();
   const { on, off, emit, isConnected } = useSocket();
@@ -52,6 +54,8 @@ const ChatContainer: FC = () => {
             if (existing) {
               setSelectedId(existing.id);
             } else {
+              if (pendingCreations.has(errandIdFromUrl)) return;
+              pendingCreations.add(errandIdFromUrl);
               try {
                 const startResp: any = await messageService.startConversation(errandIdFromUrl);
                 if (startResp && startResp.success) {
@@ -65,6 +69,8 @@ const ChatContainer: FC = () => {
                 }
               } catch (startErr: any) {
                 console.error("CHAT: Failed to start conversation:", startErr);
+              } finally {
+                pendingCreations.delete(errandIdFromUrl);
               }
             }
           }
