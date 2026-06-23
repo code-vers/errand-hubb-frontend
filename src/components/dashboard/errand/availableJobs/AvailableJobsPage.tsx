@@ -9,6 +9,7 @@ import { categoryService } from "@/services/category.service";
 import { Search, Loader2, Calendar, MapPin, MessageSquare } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getImageUrl } from "@/configs/api.config";
+import { useConnect } from "@/hooks/useConnect";
 
 export default function AvailableJobsPage() {
   const router = useRouter();
@@ -58,12 +59,17 @@ export default function AvailableJobsPage() {
     updateFilter("search", searchInput);
   };
 
-  const handleContactClient = (clientUserId: string) => {
-    // Redirect to messages page with query param errandId.
-    // The ChatContainer frontend will automatically start the conversation.
-    // If the provider doesn't have a subscription, the backend startConversation endpoint
-    // will throw SUBSCRIPTION_REQUIRED, which will automatically redirect the provider to /dashboard/subscription.
-    router.push(`/dashboard/messages?errandId=${clientUserId}`);
+  const { connect, isConnecting } = useConnect();
+  const [connectingPostId, setConnectingPostId] = useState<string | null>(null);
+
+  const handleContactClient = async (clientUserId: string, postId: string) => {
+    if (!clientUserId) return;
+    setConnectingPostId(postId);
+    try {
+      await connect(clientUserId);
+    } finally {
+      setConnectingPostId(null);
+    }
   };
 
   const activeCategory = filters.categoryId;
@@ -231,11 +237,21 @@ export default function AvailableJobsPage() {
                   </div>
 
                   <button
-                    onClick={() => handleContactClient(post.userId)}
-                    className="w-full py-3 rounded-xl text-xs font-bold text-white bg-primary hover:bg-primary/95 transition-all text-center flex items-center justify-center gap-1 shadow-md shadow-orange-500/10 active:scale-[0.98]"
+                    onClick={() => handleContactClient(post.user?.id || post.userId, post.id)}
+                    disabled={isConnecting && connectingPostId === post.id}
+                    className="w-full py-3 rounded-xl text-xs font-bold text-white bg-primary hover:bg-primary/95 transition-all text-center flex items-center justify-center gap-1 shadow-md shadow-orange-500/10 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    <MessageSquare size={14} />
-                    Connect
+                    {isConnecting && connectingPostId === post.id ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        Connecting...
+                      </>
+                    ) : (
+                      <>
+                        <MessageSquare size={14} />
+                        Connect
+                      </>
+                    )}
                   </button>
                 </article>
               );

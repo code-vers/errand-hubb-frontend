@@ -91,6 +91,23 @@ const ChatContainer: FC = () => {
   }, [user, fetchConversations]);
 
   useEffect(() => {
+    if (convIdFromUrl) {
+      setSelectedId(convIdFromUrl);
+    }
+  }, [convIdFromUrl]);
+
+  useEffect(() => {
+    if (errandIdFromUrl && conversations.length > 0) {
+      const existing = conversations.find(
+        (c: any) => c.errandId === errandIdFromUrl || c.clientId === errandIdFromUrl
+      );
+      if (existing) {
+        setSelectedId(existing.id);
+      }
+    }
+  }, [errandIdFromUrl, conversations]);
+
+  useEffect(() => {
     if (selectedConvId) {
       const found = conversations.find(c => c.id === selectedConvId);
       if (found) {
