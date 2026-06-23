@@ -236,7 +236,7 @@ const ErrandRegistrationPage = () => {
               />
             </div>
             <p className='text-[10px] font-bold text-muted uppercase mt-2 tracking-widest'>
-              Profile Photo (Optional)
+              Profile Photo
             </p>
             {profileImage && (
               <button
