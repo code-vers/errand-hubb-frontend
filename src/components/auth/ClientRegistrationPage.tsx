@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
-import { Upload } from "lucide-react";
 import { useRegisterClient } from "@/hooks/useAuth";
+import { Upload } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 const ClientRegistrationPage = () => {
@@ -19,7 +19,7 @@ const ClientRegistrationPage = () => {
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  
+
   const { mutate: register, isPending } = useRegisterClient();
 
   // Clean up preview URL to prevent memory leaks
@@ -52,18 +52,18 @@ const ClientRegistrationPage = () => {
       toast.error("Passwords do not match");
       return;
     }
-    
+
     const submitData = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (key !== "confirmPassword" && value !== "") {
         submitData.append(key, value);
       }
     });
-    
+
     if (profileImage) {
       submitData.append("profileImage", profileImage);
     }
-    
+
     register(submitData);
   };
 
@@ -96,30 +96,34 @@ const ClientRegistrationPage = () => {
         <form onSubmit={handleSubmit} className='space-y-4'>
           {/* Profile Photo Upload */}
           <div className='flex flex-col items-center mb-6'>
-            <div 
+            <div
               onClick={() => fileInputRef.current?.click()}
-              className='relative w-24 h-24 rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50 overflow-hidden'
-            >
+              className='relative w-24 h-24 rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50 overflow-hidden'>
               {previewUrl ? (
-                <img src={previewUrl} alt="profile" className='w-full h-full object-cover' />
+                <img
+                  src={previewUrl}
+                  alt='profile'
+                  className='w-full h-full object-cover'
+                />
               ) : (
                 <Upload className='w-8 h-8 text-gray-400' />
               )}
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={handleFileChange} 
-                className='hidden' 
-                accept="image/*"
+              <input
+                type='file'
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className='hidden'
+                accept='image/*'
               />
             </div>
-            <p className='text-[10px] font-bold text-muted uppercase mt-2 tracking-widest'>Profile Photo (Optional)</p>
+            <p className='text-[10px] font-bold text-muted uppercase mt-2 tracking-widest'>
+              Profile Photo
+            </p>
             {profileImage && (
-              <button 
-                type="button" 
+              <button
+                type='button'
                 onClick={() => setProfileImage(null)}
-                className='text-[10px] text-red-500 font-bold uppercase mt-1'
-              >
+                className='text-[10px] text-red-500 font-bold uppercase mt-1'>
                 Remove
               </button>
             )}
@@ -245,7 +249,7 @@ const ClientRegistrationPage = () => {
               value={formData.password}
               onChange={handleChange}
               className={inputClass}
-              autoComplete="new-password"
+              autoComplete='new-password'
             />
           </div>
 
@@ -263,7 +267,7 @@ const ClientRegistrationPage = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
               className={inputClass}
-              autoComplete="new-password"
+              autoComplete='new-password'
             />
           </div>
 
@@ -277,11 +281,13 @@ const ClientRegistrationPage = () => {
                 backgroundColor: "var(--color-primary)",
               }}
               onMouseEnter={(e) =>
-                !isPending && ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                !isPending &&
+                ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
                   "var(--color-primary-dark)")
               }
               onMouseLeave={(e) =>
-                !isPending && ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
+                !isPending &&
+                ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
                   "var(--color-primary)")
               }>
               {isPending ? "Creating Account..." : "Create Client Account"}

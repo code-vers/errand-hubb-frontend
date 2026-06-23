@@ -3,12 +3,21 @@
 import Pagination from "@/components/common/Pagination";
 import { getImageUrl } from "@/configs/api.config";
 import { useProviders } from "@/hooks/useProviders";
-import { AlertCircle, Loader2, X, Image as ImageIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  AlertCircle,
+  ChevronLeft,
+  ChevronRight,
+  Image as ImageIcon,
+  Loader2,
+  X,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import icon from "../../../public/icon.svg";
 import logo from "../../../public/logo2.svg";
+import icon2 from "../../../public/errand/icon.jpg";
+import { useConnect } from "@/hooks/useConnect";
 
 interface MembershipPlan {
   priceLabel: string;
@@ -17,6 +26,7 @@ interface MembershipPlan {
 
 interface ErrandrProfile {
   id: string;
+  userId: string;
   name: string;
   location: string;
   bio: string;
@@ -47,6 +57,8 @@ const ErrandPage = () => {
   const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
   const [activeGallery, setActiveGallery] = useState<string[] | null>(null);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
+  const { connect, isConnecting } = useConnect();
+  const [connectingProfileId, setConnectingProfileId] = useState<string | null>(null);
   const {
     providers: posts,
     loading: isLoading,
@@ -78,6 +90,7 @@ const ErrandPage = () => {
 
       return {
         id: post.id,
+        userId: user?.id || "",
         name: `${user?.firstName || "User"} ${(user?.lastName || "").charAt(0)}.`,
         location: post.city
           ? `${post.city}, ${post.state}`
@@ -217,21 +230,26 @@ const ErrandPage = () => {
                           <button
                             type='button'
                             aria-label='View photo gallery'
-                            disabled={!profile.gallery || profile.gallery.length === 0}
+                            disabled={
+                              !profile.gallery || profile.gallery.length === 0
+                            }
                             onClick={() =>
                               profile.gallery &&
                               profile.gallery.length > 0 &&
                               setActiveGallery(profile.gallery)
                             }
-                            className="transition-transform hover:scale-105 active:scale-95"
-                          >
-                            <span className="w-10 h-10 rounded-md border border-gray-200 bg-gray-50 flex items-center justify-center hover:bg-gray-100 transition-colors shadow-sm">
-                              <ImageIcon
-                                className={`w-5 h-5 ${
-                                  profile.gallery && profile.gallery.length > 0
-                                    ? "text-primary opacity-100"
-                                    : "text-gray-400 opacity-40 cursor-not-allowed"
-                                }`}
+                            className='transition-transform hover:scale-105 active:scale-95'>
+                            <span className=''>
+                              <Image
+                                src={icon2}
+                                alt='Play intro'
+                                width={40}
+                                height={40}
+                                className={
+                                  profile.hasYoutubeLink
+                                    ? "opacity-100 grayscale-0"
+                                    : "opacity-40 grayscale"
+                                }
                               />
                             </span>
                           </button>
@@ -344,9 +362,10 @@ const ErrandPage = () => {
                   setActiveGallery(hiringProfile.gallery)
                 }
                 className={`w-10 h-10 rounded-full bg-primary flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity ${(!hiringProfile.gallery || hiringProfile.gallery.length === 0) && "opacity-40 grayscale cursor-not-allowed"}`}
-                disabled={!hiringProfile.gallery || hiringProfile.gallery.length === 0}
-              >
-                <ImageIcon className="w-5 h-5 text-white" />
+                disabled={
+                  !hiringProfile.gallery || hiringProfile.gallery.length === 0
+                }>
+                <ImageIcon className='w-5 h-5 text-white' />
               </button>
 
               {/* Play button (teal circle) */}
@@ -498,12 +517,23 @@ const ErrandPage = () => {
             {/* ── HIRE BUTTON ── */}
             <div className='px-5 pb-5 pt-1'>
               <button
-                onClick={() => {
-                  alert("Hiring request sent!");
+                onClick={async () => {
+                  if (!hiringProfile.userId) return;
+                  setConnectingProfileId(hiringProfile.id);
+                  await connect(hiringProfile.userId);
+                  setConnectingProfileId(null);
                   setHiringProfile(null);
                 }}
-                className='h-11 px-8 rounded-full bg-[#F47A22] text-white font-extrabold text-[13px] uppercase tracking-wider hover:bg-[#BB4D00] transition-colors shadow-md'>
-                HIRE {hiringProfile.name.split(" ")[0].toUpperCase()}
+                disabled={isConnecting && connectingProfileId === hiringProfile.id}
+                className='h-11 px-8 rounded-full bg-[#F47A22] text-white font-extrabold text-[13px] uppercase tracking-wider hover:bg-[#BB4D00] transition-colors shadow-md disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2'>
+                {isConnecting && connectingProfileId === hiringProfile.id ? (
+                  <>
+                    <Loader2 className='w-4 h-4 animate-spin' />
+                    CONNECTING...
+                  </>
+                ) : (
+                  <>HIRE {hiringProfile.name.split(" ")[0].toUpperCase()}</>
+                )}
               </button>
             </div>
           </div>
@@ -542,10 +572,9 @@ const ErrandPage = () => {
             setActiveGallery(null);
             setGalleryIndex(0);
           }}>
-          <div 
+          <div
             className='relative w-full max-w-4xl flex flex-col items-center justify-center'
-            onClick={(e) => e.stopPropagation()}
-          >
+            onClick={(e) => e.stopPropagation()}>
             {/* Close Button */}
             <button
               className='absolute -top-12 right-0 p-2 bg-white/15 hover:bg-white/25 rounded-full text-white transition-colors'
@@ -557,7 +586,7 @@ const ErrandPage = () => {
             </button>
 
             {/* Main Carousel Area */}
-            <div className="relative w-full aspect-[4/3] max-h-[70vh] bg-black/60 rounded-xl overflow-hidden shadow-2xl flex items-center justify-center border border-white/10">
+            <div className='relative w-full aspect-[4/3] max-h-[70vh] bg-black/60 rounded-xl overflow-hidden shadow-2xl flex items-center justify-center border border-white/10'>
               <img
                 src={getImageUrl(activeGallery[galleryIndex])}
                 alt={`Gallery image ${galleryIndex + 1}`}
@@ -567,9 +596,12 @@ const ErrandPage = () => {
               {/* Prev Button */}
               {activeGallery.length > 1 && (
                 <button
-                  onClick={() => setGalleryIndex((prev) => (prev === 0 ? activeGallery.length - 1 : prev - 1))}
-                  className="absolute left-4 p-3 rounded-full bg-black/60 hover:bg-black/90 text-white transition-colors border border-white/15 flex items-center justify-center hover:scale-105 active:scale-95 duration-200"
-                >
+                  onClick={() =>
+                    setGalleryIndex((prev) =>
+                      prev === 0 ? activeGallery.length - 1 : prev - 1,
+                    )
+                  }
+                  className='absolute left-4 p-3 rounded-full bg-black/60 hover:bg-black/90 text-white transition-colors border border-white/15 flex items-center justify-center hover:scale-105 active:scale-95 duration-200'>
                   <ChevronLeft size={24} />
                 </button>
               )}
@@ -577,9 +609,12 @@ const ErrandPage = () => {
               {/* Next Button */}
               {activeGallery.length > 1 && (
                 <button
-                  onClick={() => setGalleryIndex((prev) => (prev === activeGallery.length - 1 ? 0 : prev + 1))}
-                  className="absolute right-4 p-3 rounded-full bg-black/60 hover:bg-black/90 text-white transition-colors border border-white/15 flex items-center justify-center hover:scale-105 active:scale-95 duration-200"
-                >
+                  onClick={() =>
+                    setGalleryIndex((prev) =>
+                      prev === activeGallery.length - 1 ? 0 : prev + 1,
+                    )
+                  }
+                  className='absolute right-4 p-3 rounded-full bg-black/60 hover:bg-black/90 text-white transition-colors border border-white/15 flex items-center justify-center hover:scale-105 active:scale-95 duration-200'>
                   <ChevronRight size={24} />
                 </button>
               )}
@@ -587,34 +622,37 @@ const ErrandPage = () => {
 
             {/* Pagination Indicators & Thumbnails */}
             {activeGallery.length > 1 && (
-              <div className="mt-4 flex flex-col items-center gap-3 w-full">
+              <div className='mt-4 flex flex-col items-center gap-3 w-full'>
                 {/* Dots */}
-                <div className="flex gap-2">
+                <div className='flex gap-2'>
                   {activeGallery.map((_, idx) => (
                     <button
                       key={idx}
                       onClick={() => setGalleryIndex(idx)}
                       className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
-                        idx === galleryIndex ? "bg-[#F47A22] scale-125" : "bg-white/40 hover:bg-white/60"
+                        idx === galleryIndex
+                          ? "bg-[#F47A22] scale-125"
+                          : "bg-white/40 hover:bg-white/60"
                       }`}
                     />
                   ))}
                 </div>
 
                 {/* Thumbnail Strip */}
-                <div className="flex gap-2 justify-center max-w-full overflow-x-auto py-1">
+                <div className='flex gap-2 justify-center max-w-full overflow-x-auto py-1'>
                   {activeGallery.map((imgUrl, idx) => (
                     <button
                       key={idx}
                       onClick={() => setGalleryIndex(idx)}
                       className={`relative w-16 h-12 rounded overflow-hidden border-2 transition-all duration-200 ${
-                        idx === galleryIndex ? "border-[#F47A22] opacity-100 scale-105" : "border-transparent opacity-60 hover:opacity-100"
-                      }`}
-                    >
+                        idx === galleryIndex
+                          ? "border-[#F47A22] opacity-100 scale-105"
+                          : "border-transparent opacity-60 hover:opacity-100"
+                      }`}>
                       <img
                         src={getImageUrl(imgUrl)}
                         alt={`thumb-${idx}`}
-                        className="w-full h-full object-cover"
+                        className='w-full h-full object-cover'
                       />
                     </button>
                   ))}

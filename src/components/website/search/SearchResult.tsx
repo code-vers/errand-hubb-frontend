@@ -1,9 +1,12 @@
+"use client";
+
 import { Post } from "@/types/search";
-import { MapPin, FolderX, X } from "lucide-react";
+import { MapPin, FolderX, X, Loader2 } from "lucide-react";
 import Image from "next/image";
 import icon from "../../../../public/icon.svg";
 import { useState } from "react";
 import { getImageUrl } from "@/configs/api.config";
+import { useConnect } from "@/hooks/useConnect";
 
 interface SearchResultProps {
   posts: Post[];
@@ -20,6 +23,14 @@ const getYoutubeEmbedUrl = (url: string) => {
 
 const SearchResult = ({ posts }: SearchResultProps) => {
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
+  const { connect, isConnecting } = useConnect();
+  const [connectingUserId, setConnectingUserId] = useState<string | null>(null);
+
+  const handleContact = async (userId: string) => {
+    setConnectingUserId(userId);
+    await connect(userId);
+    setConnectingUserId(null);
+  };
 
   if (posts.length === 0) {
     return (
@@ -43,6 +54,7 @@ const SearchResult = ({ posts }: SearchResultProps) => {
         {posts.map((post) => {
           const displayImage = getImageUrl(post.user.profileImage) || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop";
           const hasYoutubeLink = post.youtubeLink && post.youtubeLink.length > 0;
+          const isThisConnecting = isConnecting && connectingUserId === post.user.id;
 
           return (
             <article
@@ -119,8 +131,18 @@ const SearchResult = ({ posts }: SearchResultProps) => {
 
                   {/* Contact button */}
                   <div>
-                    <button className='bg-[#f27b2a] hover:bg-orange-600 active:scale-95 text-white text-[12px] font-bold py-2 px-6 rounded shadow-sm transition-all uppercase tracking-wide'>
-                      Contact
+                    <button
+                      onClick={() => handleContact(post.user.id)}
+                      disabled={isThisConnecting}
+                      className='bg-[#f27b2a] hover:bg-orange-600 active:scale-95 text-white text-[12px] font-bold py-2 px-6 rounded shadow-sm transition-all uppercase tracking-wide disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2'>
+                      {isThisConnecting ? (
+                        <>
+                          <Loader2 className='w-3.5 h-3.5 animate-spin' />
+                          Connecting...
+                        </>
+                      ) : (
+                        'Contact'
+                      )}
                     </button>
                   </div>
                 </div>
@@ -157,3 +179,4 @@ const SearchResult = ({ posts }: SearchResultProps) => {
 };
 
 export default SearchResult;
+

@@ -1,11 +1,11 @@
 "use client";
 
 import { useAuth } from "@/context/AuthContext";
-import { Bell } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "../../../public/logo2.svg";
 import { getImageUrl } from "@/configs/api.config";
+import NotificationDropdown from "./common/NotificationDropdown";
 
 const DashboardNavbar = () => {
   const { user } = useAuth();
@@ -24,12 +24,8 @@ const DashboardNavbar = () => {
 
         {/* Right — notification icon + avatar */}
         <div className='flex items-center gap-4'>
-          {/* Green action icon */}
-          <button
-            className='w-12 h-12 flex bg-warning-bg items-center justify-center rounded-lg hover:bg-hover transition-colors'
-            aria-label='Notifications'>
-            <Bell className='text-[#EC6F27]' />
-          </button>
+          {/* Notifications Dropdown */}
+          <NotificationDropdown />
 
           {/* User avatar */}
           <Link
