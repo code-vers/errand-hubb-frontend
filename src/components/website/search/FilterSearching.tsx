@@ -45,6 +45,8 @@ const FilterSearching = ({
       maxBudget: "",
       sortBy: "createdAt",
       sortOrder: "desc",
+      workerName: "",
+      workerEmail: "",
     };
     setFilters(defaultFilters);
     onSearch(defaultFilters);
@@ -107,6 +109,41 @@ const FilterSearching = ({
               placeholder='City or State...'
               value={filters.location}
               onChange={(e) => handleInputChange("location", e.target.value)}
+              className='h-10 w-full border border-gray-200 rounded-md px-3 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors'
+            />
+          </div>
+        </div>
+
+        {/* Worker Search Row: Name and Email */}
+        <div className='flex flex-col md:flex-row items-end gap-4 w-full mt-2 border-t border-gray-100 pt-4'>
+          <div className='flex flex-col gap-1.5 flex-1 w-full'>
+            <label
+              htmlFor='workerName'
+              className='text-[12px] font-bold text-[#555555] uppercase tracking-wider'>
+              Worker Name
+            </label>
+            <input
+              id='workerName'
+              type='text'
+              placeholder='e.g. John Smith'
+              value={filters.workerName || ""}
+              onChange={(e) => handleInputChange("workerName", e.target.value)}
+              className='h-10 w-full border border-gray-200 rounded-md px-3 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors'
+            />
+          </div>
+
+          <div className='flex flex-col gap-1.5 flex-1 w-full'>
+            <label
+              htmlFor='workerEmail'
+              className='text-[12px] font-bold text-[#555555] uppercase tracking-wider'>
+              Worker Email
+            </label>
+            <input
+              id='workerEmail'
+              type='email'
+              placeholder='e.g. john@example.com'
+              value={filters.workerEmail || ""}
+              onChange={(e) => handleInputChange("workerEmail", e.target.value)}
               className='h-10 w-full border border-gray-200 rounded-md px-3 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors'
             />
           </div>

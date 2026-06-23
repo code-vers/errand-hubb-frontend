@@ -13,6 +13,8 @@ export interface SearchFilters {
   sortBy: string;
   sortOrder: "asc" | "desc";
   page: number;
+  workerName: string;
+  workerEmail: string;
 }
 
 const initialFilters: SearchFilters = {
@@ -24,6 +26,8 @@ const initialFilters: SearchFilters = {
   sortBy: "createdAt",
   sortOrder: "desc",
   page: 1,
+  workerName: "",
+  workerEmail: "",
 };
 
 export function useProviders(initialLimit: number = 6) {
@@ -48,6 +52,8 @@ export function useProviders(initialLimit: number = 6) {
         sortOrder: filters.sortOrder,
         page: filters.page,
         limit: initialLimit,
+        workerName: filters.workerName || undefined,
+        workerEmail: filters.workerEmail || undefined,
       });
       setProviders(response.data.data);
       setTotal(response.data.meta.total);
@@ -76,6 +82,8 @@ export function useProviders(initialLimit: number = 6) {
   const setLocation = (location: string) => updateFilter("location", location);
   const setCategory = (categoryId: string) => updateFilter("categoryId", categoryId);
   const setPage = (page: number) => updateFilter("page", page);
+  const setWorkerName = (workerName: string) => updateFilter("workerName", workerName);
+  const setWorkerEmail = (workerEmail: string) => updateFilter("workerEmail", workerEmail);
   const resetFilters = () => setFilters(initialFilters);
   
   const setSortBy = (sortOption: string) => {
@@ -123,6 +131,8 @@ export function useProviders(initialLimit: number = 6) {
     setCategory,
     setSortBy,
     setPage,
+    setWorkerName,
+    setWorkerEmail,
     resetFilters,
     setFilters: setFiltersDirectly,
     refresh: fetchPosts

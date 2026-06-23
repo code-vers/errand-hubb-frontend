@@ -83,6 +83,8 @@ const SearchForErrandPage = () => {
     setCategory,
     setSortBy,
     setPage,
+    setWorkerName,
+    setWorkerEmail,
   } = useProviders();
 
   return (
@@ -93,7 +95,11 @@ const SearchForErrandPage = () => {
         <div className=' mx-auto w-full mt-4'>
           {/* Search Section */}
           <div className='mb-6'>
-            <SearchBar onSearch={setSearch} />
+            <SearchBar
+              onSearch={setSearch}
+              onWorkerNameSearch={setWorkerName}
+              onWorkerEmailSearch={setWorkerEmail}
+            />
           </div>
 
           {/* Category Filter Pills & Sort Dropdown */}

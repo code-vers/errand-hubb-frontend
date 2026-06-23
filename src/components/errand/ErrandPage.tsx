@@ -17,6 +17,7 @@ import { useState } from "react";
 import icon from "../../../public/icon.svg";
 import logo from "../../../public/logo2.svg";
 import icon2 from "../../../public/errand/icon.jpg";
+import { useConnect } from "@/hooks/useConnect";
 
 interface MembershipPlan {
   priceLabel: string;
@@ -25,6 +26,7 @@ interface MembershipPlan {
 
 interface ErrandrProfile {
   id: string;
+  userId: string;
   name: string;
   location: string;
   bio: string;
@@ -55,6 +57,8 @@ const ErrandPage = () => {
   const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
   const [activeGallery, setActiveGallery] = useState<string[] | null>(null);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
+  const { connect, isConnecting } = useConnect();
+  const [connectingProfileId, setConnectingProfileId] = useState<string | null>(null);
   const {
     providers: posts,
     loading: isLoading,
@@ -86,6 +90,7 @@ const ErrandPage = () => {
 
       return {
         id: post.id,
+        userId: user?.id || "",
         name: `${user?.firstName || "User"} ${(user?.lastName || "").charAt(0)}.`,
         location: post.city
           ? `${post.city}, ${post.state}`
@@ -512,12 +517,23 @@ const ErrandPage = () => {
             {/* ── HIRE BUTTON ── */}
             <div className='px-5 pb-5 pt-1'>
               <button
-                onClick={() => {
-                  alert("Hiring request sent!");
+                onClick={async () => {
+                  if (!hiringProfile.userId) return;
+                  setConnectingProfileId(hiringProfile.id);
+                  await connect(hiringProfile.userId);
+                  setConnectingProfileId(null);
                   setHiringProfile(null);
                 }}
-                className='h-11 px-8 rounded-full bg-[#F47A22] text-white font-extrabold text-[13px] uppercase tracking-wider hover:bg-[#BB4D00] transition-colors shadow-md'>
-                HIRE {hiringProfile.name.split(" ")[0].toUpperCase()}
+                disabled={isConnecting && connectingProfileId === hiringProfile.id}
+                className='h-11 px-8 rounded-full bg-[#F47A22] text-white font-extrabold text-[13px] uppercase tracking-wider hover:bg-[#BB4D00] transition-colors shadow-md disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2'>
+                {isConnecting && connectingProfileId === hiringProfile.id ? (
+                  <>
+                    <Loader2 className='w-4 h-4 animate-spin' />
+                    CONNECTING...
+                  </>
+                ) : (
+                  <>HIRE {hiringProfile.name.split(" ")[0].toUpperCase()}</>
+                )}
               </button>
             </div>
           </div>
