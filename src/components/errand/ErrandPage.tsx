@@ -2,7 +2,6 @@
 
 import Pagination from "@/components/common/Pagination";
 import { getImageUrl } from "@/configs/api.config";
-import { useProviders } from "@/hooks/useProviders";
 import {
   AlertCircle,
   ChevronLeft,
@@ -50,6 +49,187 @@ const membershipPlan: MembershipPlan = {
   billingCycle: "MONTHLY",
 };
 
+const STATIC_POSTS = [
+  {
+    "id": "4fded1f3-13a2-4d21-ad04-a9718138d523",
+    "userId": "4aa467ed-7f87-4c9e-9df9-b07f13f3ba24",
+    "title": "Sandra R.",
+    "description": "I am new Post Errand.",
+    "city": "USA",
+    "state": "New York",
+    "budget": "14",
+    "dateNeeded": "2026-06-20T00:00:00.000Z",
+    "contactInfo": "sandra@gmail.com",
+    "photoUrl": "",
+    "categoryId": "7973dcf1-5c54-4552-bafa-3b40c7a4206e",
+    "status": "active",
+    "createdAt": "2026-06-16T06:47:30.083Z",
+    "updatedAt": "2026-06-16T06:47:30.083Z",
+    "youtubeLink": "https://www.youtube.com/watch?v=4b96HkmtbY8",
+    "assignedToId": null,
+    "serviceType": null,
+    "time": null,
+    "category": {
+      "id": "7973dcf1-5c54-4552-bafa-3b40c7a4206e",
+      "name": "Personal Transport",
+      "description": "Safe and reliable transport for you or your important items.",
+      "icon": "🚗",
+      "iconType": "emoji",
+      "color": "#10b981",
+      "status": "active",
+      "createdAt": "2026-06-08T06:45:54.778Z",
+      "updatedAt": "2026-06-08T06:45:54.778Z"
+    },
+    "user": {
+      "id": "4aa467ed-7f87-4c9e-9df9-b07f13f3ba24",
+      "firstName": "Sandra ",
+      "lastName": "International",
+      "profileImage": "/media/profiles/profileImage-1781592364967-715941532.png",
+      "profile": {
+        "id": "3c4f4200-8272-4fef-b81a-c78ad8bca60c",
+        "userId": "4aa467ed-7f87-4c9e-9df9-b07f13f3ba24",
+        "bio": "This is My second Errand Post.",
+        "phone": "01783200274",
+        "city": "USA",
+        "state": "New York",
+        "location": null,
+        "timeZone": null,
+        "preferredContact": null,
+        "totalEarnings": "0",
+        "jobsCompleted": 0,
+        "visibility": "public",
+        "ratePerHour": "14",
+        "services": "Grocery",
+        "createdAt": "2026-06-16T06:46:05.035Z",
+        "updatedAt": "2026-06-16T06:46:05.035Z",
+        "youtubeLink": "https://www.youtube.com/watch?v=4b96HkmtbY8",
+        "gallery": []
+      }
+    },
+    "assignedTo": null
+  },
+  {
+    "id": "41e986b6-4c29-47ad-bf25-c4923542b621",
+    "userId": "90f5307d-56ad-4ee1-ade9-cf7996423ba8",
+    "title": "Marcus T.",
+    "description": "This is Post Errand Post.",
+    "city": "USA",
+    "state": "New York",
+    "budget": "12",
+    "dateNeeded": "2026-06-20T00:00:00.000Z",
+    "contactInfo": "marcus@gmail.com",
+    "photoUrl": "",
+    "categoryId": "ee522b07-c43e-4136-bcac-bba637a47928",
+    "status": "active",
+    "createdAt": "2026-06-16T06:45:00.223Z",
+    "updatedAt": "2026-06-16T06:45:00.223Z",
+    "youtubeLink": "https://www.youtube.com/watch?v=4b96HkmtbY8",
+    "assignedToId": null,
+    "serviceType": null,
+    "time": null,
+    "category": {
+      "id": "ee522b07-c43e-4136-bcac-bba637a47928",
+      "name": "Grocery Shopping",
+      "description": "Get your groceries delivered to your doorstep without any hassle.",
+      "icon": "🛒",
+      "iconType": "emoji",
+      "color": "#ec6f27",
+      "status": "active",
+      "createdAt": "2026-06-08T06:45:53.751Z",
+      "updatedAt": "2026-06-08T06:45:53.751Z"
+    },
+    "user": {
+      "id": "90f5307d-56ad-4ee1-ade9-cf7996423ba8",
+      "firstName": "Marcus ",
+      "lastName": "T.",
+      "profileImage": "/media/profiles/profileImage-1781592196817-653585337.png",
+      "profile": {
+        "id": "613e19a9-8d51-4f49-95a3-ace39af8358c",
+        "userId": "90f5307d-56ad-4ee1-ade9-cf7996423ba8",
+        "bio": "This is My first Errand Post.",
+        "phone": "01783200274",
+        "city": "USA",
+        "state": "New York",
+        "location": null,
+        "timeZone": null,
+        "preferredContact": null,
+        "totalEarnings": "0",
+        "jobsCompleted": 0,
+        "visibility": "public",
+        "ratePerHour": "12",
+        "services": "Pharmacy",
+        "createdAt": "2026-06-16T06:43:16.904Z",
+        "updatedAt": "2026-06-16T06:43:16.904Z",
+        "youtubeLink": "https://www.youtube.com/watch?v=4b96HkmtbY8",
+        "gallery": []
+      }
+    },
+    "assignedTo": null
+  },
+  {
+    "id": "8dd6b938-a796-4c78-b0e6-cc3355b92e06",
+    "userId": "229b5139-650f-4b66-b353-1ae7ef69783f",
+    "title": "Jasica M.",
+    "description": "This is First Errand Post.",
+    "city": "Dhaka",
+    "state": "USA",
+    "budget": "55",
+    "dateNeeded": "2026-06-20T00:00:00.000Z",
+    "contactInfo": "jasica@gmail.com",
+    "photoUrl": "",
+    "categoryId": "eb85c380-73a9-463e-b8f4-708c3140fac9",
+    "status": "active",
+    "createdAt": "2026-06-16T05:54:34.642Z",
+    "updatedAt": "2026-06-22T06:56:21.345Z",
+    "youtubeLink": "https://www.youtube.com/watch?v=4b96HkmtbY8",
+    "assignedToId": null,
+    "serviceType": null,
+    "time": null,
+    "category": {
+      "id": "eb85c380-73a9-463e-b8f4-708c3140fac9",
+      "name": "Food Pickup",
+      "description": "Your favorite meals from any restaurant delivered hot.",
+      "icon": "🍔",
+      "iconType": "emoji",
+      "color": "#f59e0b",
+      "status": "active",
+      "createdAt": "2026-06-08T06:45:55.139Z",
+      "updatedAt": "2026-06-08T06:45:55.139Z"
+    },
+    "user": {
+      "id": "229b5139-650f-4b66-b353-1ae7ef69783f",
+      "firstName": "Jessica M.",
+      "lastName": "Marla",
+      "profileImage": "/media/profiles/profileImage-1781589150443-158812124.png",
+      "profile": {
+        "id": "4b7fc3a1-f773-4f6b-a8b5-cf3e83c9b911",
+        "userId": "229b5139-650f-4b66-b353-1ae7ef69783f",
+        "bio": "This is first test",
+        "phone": "01783200274",
+        "city": "Dhaka",
+        "state": "USA",
+        "location": null,
+        "timeZone": null,
+        "preferredContact": null,
+        "totalEarnings": "0",
+        "jobsCompleted": 0,
+        "visibility": "public",
+        "ratePerHour": "55",
+        "services": "Pharmacy",
+        "createdAt": "2026-06-16T05:52:30.531Z",
+        "updatedAt": "2026-06-22T06:56:23.948Z",
+        "youtubeLink": "https://www.youtube.com/watch?v=4b96HkmtbY8",
+        "gallery": [
+          "/media/profiles/gallery-1782111383937-276082902.png",
+          "/media/profiles/gallery-1782111383938-668943295.png",
+          "/media/profiles/gallery-1782111383938-507978134.png"
+        ]
+      }
+    },
+    "assignedTo": null
+  }
+];
+
 const ErrandPage = () => {
   const [hiringProfile, setHiringProfile] = useState<ErrandrProfile | null>(
     null,
@@ -59,14 +239,13 @@ const ErrandPage = () => {
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
   const { connect, isConnecting } = useConnect();
   const [connectingProfileId, setConnectingProfileId] = useState<string | null>(null);
-  const {
-    providers: posts,
-    loading: isLoading,
-    totalPages,
-    currentPage,
-    setPage,
-    error: isError,
-  } = useProviders(9); // Show 9 per page for this layout
+  
+  const posts = STATIC_POSTS;
+  const isLoading = false;
+  const totalPages = 1;
+  const currentPage = 1;
+  const setPage = () => {};
+  const isError = null;
 
   const getYoutubeEmbedUrl = (url: string) => {
     if (!url) return "";

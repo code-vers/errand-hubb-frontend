@@ -5,6 +5,9 @@ export interface PostUser {
   firstName: string;
   lastName: string;
   profileImage: string | null;
+  profile?: {
+    gallery?: string[];
+  } | null;
 }
 
 export interface Post {

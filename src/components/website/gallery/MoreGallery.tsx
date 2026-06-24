@@ -17,12 +17,6 @@ const MORE_GALLERY_ITEMS = [
   { src: "/gallary/gallery9.png", alt: "Moving and kitchen utensils box" },
   { src: "/gallary/Container (7).png", alt: "Handyman repairing sink" },
   { src: "/gallary/Container (8).png", alt: "Errand helper reviewing paperwork" },
-  { src: "/gallary/gallary.png", alt: "Errand helper serving a senior" },
-  { src: "/gallary/gallary2.png", alt: "Errand helper greeting a client" },
-  { src: "/gallary/gallery3.png", alt: "Errand helper walking on the street" },
-  { src: "/gallary/gallery4.png", alt: "Errand helper at customer doorway" },
-  { src: "/gallary/gallery5.png", alt: "Errand helper handing documents" },
-  { src: "/gallary/gallery6.png", alt: "Errand helper installing a device" },
 ];
 
 const MoreGallery = () => {
@@ -53,6 +47,7 @@ const MoreGallery = () => {
                 src={item.src}
                 alt={item.alt}
                 fill
+                unoptimized
                 className='object-cover'
                 sizes='(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw'
               />
@@ -78,6 +73,7 @@ const MoreGallery = () => {
                 src={selectedImage.src}
                 alt={selectedImage.alt}
                 fill
+                unoptimized
                 className='object-contain'
                 priority
               />

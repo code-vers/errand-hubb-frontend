@@ -53,7 +53,7 @@ const Gallery = () => {
           <div
             className='relative overflow-hidden rounded-xl bg-gray-100 cursor-pointer transition-transform hover:scale-[1.02]'
             onClick={() => setSelectedImage(GALLERY_ITEMS[0])}>
-            <Image
+            <Image unoptimized
               src={GALLERY_ITEMS[0].src}
               alt={GALLERY_ITEMS[0].alt}
               fill
@@ -67,7 +67,7 @@ const Gallery = () => {
             className='relative overflow-hidden rounded-xl bg-gray-100 cursor-pointer transition-transform hover:scale-[1.02]'
             style={{ gridRow: "span 2" }}
             onClick={() => setSelectedImage(GALLERY_ITEMS[1])}>
-            <Image
+            <Image unoptimized
               src={GALLERY_ITEMS[1].src}
               alt={GALLERY_ITEMS[1].alt}
               fill
@@ -80,7 +80,7 @@ const Gallery = () => {
           <div
             className='relative overflow-hidden rounded-xl bg-gray-100 cursor-pointer transition-transform hover:scale-[1.02]'
             onClick={() => setSelectedImage(GALLERY_ITEMS[2])}>
-            <Image
+            <Image unoptimized
               src={GALLERY_ITEMS[2].src}
               alt={GALLERY_ITEMS[2].alt}
               fill
@@ -93,7 +93,7 @@ const Gallery = () => {
           <div
             className='relative overflow-hidden rounded-xl bg-gray-100 cursor-pointer transition-transform hover:scale-[1.02]'
             onClick={() => setSelectedImage(GALLERY_ITEMS[3])}>
-            <Image
+            <Image unoptimized
               src={GALLERY_ITEMS[3].src}
               alt={GALLERY_ITEMS[3].alt}
               fill
@@ -106,7 +106,7 @@ const Gallery = () => {
           <div
             className='relative overflow-hidden rounded-xl bg-gray-100 cursor-pointer transition-transform hover:scale-[1.02]'
             onClick={() => setSelectedImage(GALLERY_ITEMS[4])}>
-            <Image
+            <Image unoptimized
               src={GALLERY_ITEMS[4].src}
               alt={GALLERY_ITEMS[4].alt}
               fill
@@ -121,7 +121,7 @@ const Gallery = () => {
           <div
             className='relative overflow-hidden rounded-xl bg-gray-100 cursor-pointer transition-transform hover:scale-[1.02]'
             onClick={() => setSelectedImage(GALLERY_ITEMS[5])}>
-            <Image
+            <Image unoptimized
               src={GALLERY_ITEMS[5].src}
               alt={GALLERY_ITEMS[5].alt}
               fill
@@ -134,7 +134,7 @@ const Gallery = () => {
           <div
             className='relative overflow-hidden rounded-xl bg-gray-100 cursor-pointer transition-transform hover:scale-[1.02]'
             onClick={() => setSelectedImage(GALLERY_ITEMS[6])}>
-            <Image
+            <Image unoptimized
               src={GALLERY_ITEMS[6].src}
               alt={GALLERY_ITEMS[6].alt}
               fill
@@ -147,7 +147,7 @@ const Gallery = () => {
           <div
             className='relative overflow-hidden rounded-xl bg-gray-100 cursor-pointer transition-transform hover:scale-[1.02]'
             onClick={() => setSelectedImage(GALLERY_ITEMS[7])}>
-            <Image
+            <Image unoptimized
               src={GALLERY_ITEMS[7].src}
               alt={GALLERY_ITEMS[7].alt}
               fill
@@ -161,7 +161,7 @@ const Gallery = () => {
             className='relative overflow-hidden rounded-xl bg-gray-100 cursor-pointer transition-transform hover:scale-[1.02]'
             style={{ gridRow: "span 2" }}
             onClick={() => setSelectedImage(GALLERY_ITEMS[8])}>
-            <Image
+            <Image unoptimized
               src={GALLERY_ITEMS[8].src}
               alt={GALLERY_ITEMS[8].alt}
               fill
@@ -174,7 +174,7 @@ const Gallery = () => {
           <div
             className='relative overflow-hidden rounded-xl bg-gray-100 cursor-pointer transition-transform hover:scale-[1.02]'
             onClick={() => setSelectedImage(GALLERY_ITEMS[9])}>
-            <Image
+            <Image unoptimized
               src={GALLERY_ITEMS[9].src}
               alt={GALLERY_ITEMS[9].alt}
               fill
@@ -188,7 +188,7 @@ const Gallery = () => {
             className='relative overflow-hidden rounded-xl bg-gray-100 cursor-pointer transition-transform hover:scale-[1.02]'
             style={{ gridRow: "span 2" }}
             onClick={() => setSelectedImage(GALLERY_ITEMS[10])}>
-            <Image
+            <Image unoptimized
               src={GALLERY_ITEMS[10].src}
               alt={GALLERY_ITEMS[10].alt}
               fill
@@ -201,7 +201,7 @@ const Gallery = () => {
           <div
             className='relative overflow-hidden rounded-xl bg-gray-100 cursor-pointer transition-transform hover:scale-[1.02]'
             onClick={() => setSelectedImage(GALLERY_ITEMS[0])}>
-            <Image
+            <Image unoptimized
               src={GALLERY_ITEMS[0].src}
               alt={GALLERY_ITEMS[0].alt}
               fill
@@ -238,7 +238,7 @@ const Gallery = () => {
               <X size={32} />
             </button>
             <div className='relative w-full h-full overflow-hidden rounded-lg'>
-              <Image
+              <Image unoptimized
                 src={selectedImage.src}
                 alt={selectedImage.alt}
                 fill

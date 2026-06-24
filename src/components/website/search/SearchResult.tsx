@@ -1,9 +1,10 @@
 "use client";
 
 import { Post } from "@/types/search";
-import { MapPin, FolderX, X, Loader2 } from "lucide-react";
+import { MapPin, FolderX, X, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import icon from "../../../../public/icon.svg";
+import icon2 from "../../../../public/errand/icon.jpg";
 import { useState } from "react";
 import { getImageUrl } from "@/configs/api.config";
 import { useConnect } from "@/hooks/useConnect";
@@ -23,6 +24,8 @@ const getYoutubeEmbedUrl = (url: string) => {
 
 const SearchResult = ({ posts }: SearchResultProps) => {
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
+  const [activeGallery, setActiveGallery] = useState<string[] | null>(null);
+  const [galleryIndex, setGalleryIndex] = useState<number>(0);
   const { connect, isConnecting } = useConnect();
   const [connectingUserId, setConnectingUserId] = useState<string | null>(null);
 
@@ -55,6 +58,8 @@ const SearchResult = ({ posts }: SearchResultProps) => {
           const displayImage = getImageUrl(post.user.profileImage) || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&h=100&fit=crop";
           const hasYoutubeLink = post.youtubeLink && post.youtubeLink.length > 0;
           const isThisConnecting = isConnecting && connectingUserId === post.user.id;
+          const gallery = post.user.profile?.gallery || [];
+          const hasGallery = gallery.length > 0;
 
           return (
             <article
@@ -82,15 +87,45 @@ const SearchResult = ({ posts }: SearchResultProps) => {
                         <MapPin className='w-3 h-3 text-red-500 mr-1 shrink-0' />
                         {post.city}, {post.state}
                       </div>
-                      <a
-                        href='#'
-                        className='text-primary text-[11px] font-semibold hover:underline inline-block mt-0.5'>
+                      <button
+                        type='button'
+                        onClick={(e) => {
+                          e.preventDefault();
+                          if (hasGallery) {
+                            setActiveGallery(gallery);
+                          }
+                        }}
+                        disabled={!hasGallery}
+                        className={`text-primary text-[11px] font-semibold hover:underline text-left inline-block mt-0.5 ${!hasGallery ? 'opacity-40 cursor-not-allowed no-underline' : ''}`}>
                         More Images
-                      </a>
+                      </button>
                     </div>
 
                     {/* Play + video thumb */}
                     <div className='flex items-center gap-2'>
+                      <button
+                        type='button'
+                        onClick={() => {
+                          if (hasGallery) {
+                            setActiveGallery(gallery);
+                          }
+                        }}
+                        disabled={!hasGallery}
+                        className={`transition-transform hover:scale-105 active:scale-95 duration-200 cursor-pointer ${hasGallery ? 'opacity-100' : 'opacity-40 grayscale cursor-not-allowed'}`}
+                      >
+                         <Image
+                                src={icon2}
+                                alt='Play intro'
+                                width={60}
+                                height={60}
+                                className={
+
+                                    "opacity-100 grayscale-0"
+
+                                }
+                              />
+                      </button>
+
                       <button
                         onClick={() => {
                           if (hasYoutubeLink) {
@@ -154,7 +189,7 @@ const SearchResult = ({ posts }: SearchResultProps) => {
 
       {/* Video Modal */}
       {activeVideo && (
-        <div 
+        <div
           className='fixed inset-0 z-[60] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4'
           onClick={() => setActiveVideo(null)}
         >
@@ -174,9 +209,107 @@ const SearchResult = ({ posts }: SearchResultProps) => {
           </div>
         </div>
       )}
+
+      {/* Gallery Modal */}
+      {activeGallery && activeGallery.length > 0 && (
+        <div
+          className='fixed inset-0 z-[60] flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm p-4 sm:p-6'
+          onClick={() => {
+            setActiveGallery(null);
+            setGalleryIndex(0);
+          }}>
+          <div
+            className='relative w-full max-w-4xl flex flex-col items-center justify-center'
+            onClick={(e) => e.stopPropagation()}>
+            {/* Close Button */}
+            <button
+              className='absolute -top-12 right-0 p-2 bg-white/15 hover:bg-white/25 rounded-full text-white transition-colors'
+              onClick={() => {
+                setActiveGallery(null);
+                setGalleryIndex(0);
+              }}>
+              <X size={24} />
+            </button>
+
+            {/* Main Carousel Area */}
+            <div className='relative w-full aspect-[4/3] max-h-[70vh] bg-black/60 rounded-xl overflow-hidden shadow-2xl flex items-center justify-center border border-white/10'>
+              <img
+                src={getImageUrl(activeGallery[galleryIndex])}
+                alt={`Gallery image ${galleryIndex + 1}`}
+                className='w-full h-full object-contain select-none transition-all duration-300'
+              />
+
+              {/* Prev Button */}
+              {activeGallery.length > 1 && (
+                <button
+                  onClick={() =>
+                    setGalleryIndex((prev) =>
+                      prev === 0 ? activeGallery.length - 1 : prev - 1,
+                    )
+                  }
+                  className='absolute left-4 p-3 rounded-full bg-black/60 hover:bg-black/90 text-white transition-colors border border-white/15 flex items-center justify-center hover:scale-105 active:scale-95 duration-200'>
+                  <ChevronLeft size={24} />
+                </button>
+              )}
+
+              {/* Next Button */}
+              {activeGallery.length > 1 && (
+                <button
+                  onClick={() =>
+                    setGalleryIndex((prev) =>
+                      prev === activeGallery.length - 1 ? 0 : prev + 1,
+                    )
+                  }
+                  className='absolute right-4 p-3 rounded-full bg-black/60 hover:bg-black/90 text-white transition-colors border border-white/15 flex items-center justify-center hover:scale-105 active:scale-95 duration-200'>
+                  <ChevronRight size={24} />
+                </button>
+              )}
+            </div>
+
+            {/* Pagination Indicators & Thumbnails */}
+            {activeGallery.length > 1 && (
+              <div className='mt-4 flex flex-col items-center gap-3 w-full'>
+                {/* Dots */}
+                <div className='flex gap-2'>
+                  {activeGallery.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setGalleryIndex(idx)}
+                      className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
+                        idx === galleryIndex
+                          ? "bg-[#F47A22] scale-125"
+                          : "bg-white/40 hover:bg-white/60"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                {/* Thumbnail Strip */}
+                <div className='flex gap-2 justify-center max-w-full overflow-x-auto py-1'>
+                  {activeGallery.map((imgUrl, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setGalleryIndex(idx)}
+                      className={`relative w-16 h-12 rounded overflow-hidden border-2 transition-all duration-200 ${
+                        idx === galleryIndex
+                          ? "border-[#F47A22] opacity-100 scale-105"
+                          : "border-transparent opacity-60 hover:opacity-100"
+                      }`}>
+                      <img
+                        src={getImageUrl(imgUrl)}
+                        alt={`thumb-${idx}`}
+                        className='w-full h-full object-cover'
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default SearchResult;
-
