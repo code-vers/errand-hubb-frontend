@@ -2,6 +2,7 @@
 
 import { FC, useState, useEffect } from "react";
 import { X, User, Phone, MapPin, Globe, MessageSquare, AlignLeft, PlayCircle } from "lucide-react";
+import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
 
 interface EditProfileModalProps {
   user: any;
@@ -118,13 +119,10 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
               <label className='text-xs font-bold text-text-secondary uppercase tracking-wider flex items-center gap-2'>
                 <Phone size={14} className="text-primary" /> Phone Number
               </label>
-              <input
-                type='text'
+              <InternationalPhoneInput
                 name='phone'
                 value={formData.phone}
-                onChange={handleChange}
-                placeholder='e.g. +1 234 567 890'
-                className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all'
+                onChange={(value) => setFormData({ ...formData, phone: value })}
               />
             </div>
 

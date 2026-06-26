@@ -8,6 +8,7 @@ import { useAdsCategories } from "@/hooks/useAdsCategories";
 import { adsService } from "@/services/ads.service";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
 
 const PostAdPage = () => {
   const router = useRouter();
@@ -268,14 +269,11 @@ const PostAdPage = () => {
                   <Phone size={14} className="text-[var(--color-primary)]" />
                   Contact Number
                 </label>
-                <input
+                <InternationalPhoneInput
                   name="telephone"
-                  type="tel"
-                  placeholder="+1 (555) 000-0000"
                   required
                   value={formData.telephone}
-                  onChange={handleChange}
-                  className={inputClass}
+                  onChange={(value) => setFormData({ ...formData, telephone: value })}
                 />
               </div>
 

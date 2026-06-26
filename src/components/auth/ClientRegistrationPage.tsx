@@ -4,6 +4,7 @@ import { useRegisterClient } from "@/hooks/useAuth";
 import { Upload, Eye, EyeOff } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
 
 const ClientRegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -237,14 +238,10 @@ const ClientRegistrationPage = () => {
             <label htmlFor='phone' className={labelClass}>
               Phone Number
             </label>
-            <input
-              id='phone'
+            <InternationalPhoneInput
               name='phone'
-              type='tel'
-              placeholder='(555) 000-0000'
               value={formData.phone}
-              onChange={handleChange}
-              className={inputClass}
+              onChange={(value) => setFormData({ ...formData, phone: value })}
             />
           </div>
 

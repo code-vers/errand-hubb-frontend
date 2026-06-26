@@ -9,6 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import PageHeader from "../../common/PageHeader";
 import { getImageUrl } from "@/configs/api.config";
+import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
 
 export default function EditAdPage({ id }: { id: string }) {
   const router = useRouter();
@@ -304,14 +305,11 @@ export default function EditAdPage({ id }: { id: string }) {
                 <Phone size={14} className="text-[var(--color-primary)]" />
                 Contact Number
               </label>
-              <input
+              <InternationalPhoneInput
                 name="telephone"
-                type="tel"
-                placeholder="+1 (555) 000-0000"
                 required
                 value={formData.telephone}
-                onChange={handleChange}
-                className={inputClass}
+                onChange={(value) => setFormData({ ...formData, telephone: value })}
               />
             </div>
 

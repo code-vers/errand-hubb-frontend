@@ -7,6 +7,7 @@ import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import { getImageUrl } from "@/configs/api.config";
 import { toast } from "sonner";
 import { Upload, PlayCircle, X, Eye, EyeOff } from "lucide-react";
+import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
 
 const ErrandRegistrationPage = () => {
   const { user, setUser } = useAuth();
@@ -357,14 +358,10 @@ const ErrandRegistrationPage = () => {
             <label htmlFor='phone' className={labelClass}>
               Phone Number
             </label>
-            <input
-              id='phone'
+            <InternationalPhoneInput
               name='phone'
-              type='tel'
-              placeholder='(555) 000-0000'
               value={formData.phone}
-              onChange={handleChange}
-              className={inputClass}
+              onChange={(value) => setFormData({ ...formData, phone: value })}
             />
           </div>
 
