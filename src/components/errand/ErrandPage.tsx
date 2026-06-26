@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Pagination from "@/components/common/Pagination";
-import { getImageUrl } from "@/configs/api.config";
+import Pagination from '@/components/common/Pagination';
+import { getImageUrl } from '@/configs/api.config';
 import {
   AlertCircle,
   ChevronLeft,
@@ -9,14 +9,14 @@ import {
   Image as ImageIcon,
   Loader2,
   X,
-} from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import icon from "../../../public/icon.svg";
-import logo from "../../../public/logo2.svg";
-import icon2 from "../../../public/errand/icon.jpg";
-import { useConnect } from "@/hooks/useConnect";
+} from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
+import icon from '../../../public/icon.svg';
+import logo from '../../../public/logo2.svg';
+import icon2 from '../../../public/errand/icon.jpg';
+import { useConnect } from '@/hooks/useConnect';
 
 interface MembershipPlan {
   priceLabel: string;
@@ -45,201 +45,199 @@ interface ErrandrProfile {
 }
 
 const membershipPlan: MembershipPlan = {
-  priceLabel: "JUST $5",
-  billingCycle: "MONTHLY",
+  priceLabel: 'JUST $5',
+  billingCycle: 'MONTHLY',
 };
 
 const STATIC_POSTS = [
   {
-    "id": "4fded1f3-13a2-4d21-ad04-a9718138d523",
-    "userId": "4aa467ed-7f87-4c9e-9df9-b07f13f3ba24",
-    "title": "Sandra R.",
-    "description": "I am new Post Errand.",
-    "city": "USA",
-    "state": "New York",
-    "budget": "14",
-    "dateNeeded": "2026-06-20T00:00:00.000Z",
-    "contactInfo": "sandra@gmail.com",
-    "photoUrl": "",
-    "categoryId": "7973dcf1-5c54-4552-bafa-3b40c7a4206e",
-    "status": "active",
-    "createdAt": "2026-06-16T06:47:30.083Z",
-    "updatedAt": "2026-06-16T06:47:30.083Z",
-    "youtubeLink": "https://www.youtube.com/watch?v=4b96HkmtbY8",
-    "assignedToId": null,
-    "serviceType": null,
-    "time": null,
-    "category": {
-      "id": "7973dcf1-5c54-4552-bafa-3b40c7a4206e",
-      "name": "Personal Transport",
-      "description": "Safe and reliable transport for you or your important items.",
-      "icon": "🚗",
-      "iconType": "emoji",
-      "color": "#10b981",
-      "status": "active",
-      "createdAt": "2026-06-08T06:45:54.778Z",
-      "updatedAt": "2026-06-08T06:45:54.778Z"
+    id: '4fded1f3-13a2-4d21-ad04-a9718138d523',
+    userId: '4aa467ed-7f87-4c9e-9df9-b07f13f3ba24',
+    title: 'Sandra R.',
+    description: 'I am new Post Errand.',
+    city: 'USA',
+    state: 'New York',
+    budget: '14',
+    dateNeeded: '2026-06-20T00:00:00.000Z',
+    contactInfo: 'sandra@gmail.com',
+    photoUrl: '',
+    categoryId: '7973dcf1-5c54-4552-bafa-3b40c7a4206e',
+    status: 'active',
+    createdAt: '2026-06-16T06:47:30.083Z',
+    updatedAt: '2026-06-16T06:47:30.083Z',
+    youtubeLink: 'https://www.youtube.com/watch?v=4b96HkmtbY8',
+    assignedToId: null,
+    serviceType: null,
+    time: null,
+    category: {
+      id: '7973dcf1-5c54-4552-bafa-3b40c7a4206e',
+      name: 'Personal Transport',
+      description: 'Safe and reliable transport for you or your important items.',
+      icon: '🚗',
+      iconType: 'emoji',
+      color: '#10b981',
+      status: 'active',
+      createdAt: '2026-06-08T06:45:54.778Z',
+      updatedAt: '2026-06-08T06:45:54.778Z',
     },
-    "user": {
-      "id": "4aa467ed-7f87-4c9e-9df9-b07f13f3ba24",
-      "firstName": "Sandra ",
-      "lastName": "International",
-      "profileImage": "/media/profiles/profileImage-1781592364967-715941532.png",
-      "profile": {
-        "id": "3c4f4200-8272-4fef-b81a-c78ad8bca60c",
-        "userId": "4aa467ed-7f87-4c9e-9df9-b07f13f3ba24",
-        "bio": "This is My second Errand Post.",
-        "phone": "01783200274",
-        "city": "USA",
-        "state": "New York",
-        "location": null,
-        "timeZone": null,
-        "preferredContact": null,
-        "totalEarnings": "0",
-        "jobsCompleted": 0,
-        "visibility": "public",
-        "ratePerHour": "14",
-        "services": "Grocery",
-        "createdAt": "2026-06-16T06:46:05.035Z",
-        "updatedAt": "2026-06-16T06:46:05.035Z",
-        "youtubeLink": "https://www.youtube.com/watch?v=4b96HkmtbY8",
-        "gallery": []
-      }
+    user: {
+      id: '4aa467ed-7f87-4c9e-9df9-b07f13f3ba24',
+      firstName: 'Sandra ',
+      lastName: 'International',
+      profileImage: '/media/profiles/profileImage-1781592364967-715941532.png',
+      profile: {
+        id: '3c4f4200-8272-4fef-b81a-c78ad8bca60c',
+        userId: '4aa467ed-7f87-4c9e-9df9-b07f13f3ba24',
+        bio: 'This is My second Errand Post.',
+        phone: '01783200274',
+        city: 'USA',
+        state: 'New York',
+        location: null,
+        timeZone: null,
+        preferredContact: null,
+        totalEarnings: '0',
+        jobsCompleted: 0,
+        visibility: 'public',
+        ratePerHour: '14',
+        services: 'Grocery',
+        createdAt: '2026-06-16T06:46:05.035Z',
+        updatedAt: '2026-06-16T06:46:05.035Z',
+        youtubeLink: 'https://www.youtube.com/watch?v=4b96HkmtbY8',
+        gallery: [],
+      },
     },
-    "assignedTo": null
+    assignedTo: null,
   },
   {
-    "id": "41e986b6-4c29-47ad-bf25-c4923542b621",
-    "userId": "90f5307d-56ad-4ee1-ade9-cf7996423ba8",
-    "title": "Marcus T.",
-    "description": "This is Post Errand Post.",
-    "city": "USA",
-    "state": "New York",
-    "budget": "12",
-    "dateNeeded": "2026-06-20T00:00:00.000Z",
-    "contactInfo": "marcus@gmail.com",
-    "photoUrl": "",
-    "categoryId": "ee522b07-c43e-4136-bcac-bba637a47928",
-    "status": "active",
-    "createdAt": "2026-06-16T06:45:00.223Z",
-    "updatedAt": "2026-06-16T06:45:00.223Z",
-    "youtubeLink": "https://www.youtube.com/watch?v=4b96HkmtbY8",
-    "assignedToId": null,
-    "serviceType": null,
-    "time": null,
-    "category": {
-      "id": "ee522b07-c43e-4136-bcac-bba637a47928",
-      "name": "Grocery Shopping",
-      "description": "Get your groceries delivered to your doorstep without any hassle.",
-      "icon": "🛒",
-      "iconType": "emoji",
-      "color": "#ec6f27",
-      "status": "active",
-      "createdAt": "2026-06-08T06:45:53.751Z",
-      "updatedAt": "2026-06-08T06:45:53.751Z"
+    id: '41e986b6-4c29-47ad-bf25-c4923542b621',
+    userId: '90f5307d-56ad-4ee1-ade9-cf7996423ba8',
+    title: 'Marcus T.',
+    description: 'This is Post Errand Post.',
+    city: 'USA',
+    state: 'New York',
+    budget: '12',
+    dateNeeded: '2026-06-20T00:00:00.000Z',
+    contactInfo: 'marcus@gmail.com',
+    photoUrl: '',
+    categoryId: 'ee522b07-c43e-4136-bcac-bba637a47928',
+    status: 'active',
+    createdAt: '2026-06-16T06:45:00.223Z',
+    updatedAt: '2026-06-16T06:45:00.223Z',
+    youtubeLink: 'https://www.youtube.com/watch?v=4b96HkmtbY8',
+    assignedToId: null,
+    serviceType: null,
+    time: null,
+    category: {
+      id: 'ee522b07-c43e-4136-bcac-bba637a47928',
+      name: 'Grocery Shopping',
+      description: 'Get your groceries delivered to your doorstep without any hassle.',
+      icon: '🛒',
+      iconType: 'emoji',
+      color: '#ec6f27',
+      status: 'active',
+      createdAt: '2026-06-08T06:45:53.751Z',
+      updatedAt: '2026-06-08T06:45:53.751Z',
     },
-    "user": {
-      "id": "90f5307d-56ad-4ee1-ade9-cf7996423ba8",
-      "firstName": "Marcus ",
-      "lastName": "T.",
-      "profileImage": "/media/profiles/profileImage-1781592196817-653585337.png",
-      "profile": {
-        "id": "613e19a9-8d51-4f49-95a3-ace39af8358c",
-        "userId": "90f5307d-56ad-4ee1-ade9-cf7996423ba8",
-        "bio": "This is My first Errand Post.",
-        "phone": "01783200274",
-        "city": "USA",
-        "state": "New York",
-        "location": null,
-        "timeZone": null,
-        "preferredContact": null,
-        "totalEarnings": "0",
-        "jobsCompleted": 0,
-        "visibility": "public",
-        "ratePerHour": "12",
-        "services": "Pharmacy",
-        "createdAt": "2026-06-16T06:43:16.904Z",
-        "updatedAt": "2026-06-16T06:43:16.904Z",
-        "youtubeLink": "https://www.youtube.com/watch?v=4b96HkmtbY8",
-        "gallery": []
-      }
+    user: {
+      id: '90f5307d-56ad-4ee1-ade9-cf7996423ba8',
+      firstName: 'Marcus ',
+      lastName: 'T.',
+      profileImage: '/media/profiles/profileImage-1781592196817-653585337.png',
+      profile: {
+        id: '613e19a9-8d51-4f49-95a3-ace39af8358c',
+        userId: '90f5307d-56ad-4ee1-ade9-cf7996423ba8',
+        bio: 'This is My first Errand Post.',
+        phone: '01783200274',
+        city: 'USA',
+        state: 'New York',
+        location: null,
+        timeZone: null,
+        preferredContact: null,
+        totalEarnings: '0',
+        jobsCompleted: 0,
+        visibility: 'public',
+        ratePerHour: '12',
+        services: 'Pharmacy',
+        createdAt: '2026-06-16T06:43:16.904Z',
+        updatedAt: '2026-06-16T06:43:16.904Z',
+        youtubeLink: 'https://www.youtube.com/watch?v=4b96HkmtbY8',
+        gallery: [],
+      },
     },
-    "assignedTo": null
+    assignedTo: null,
   },
   {
-    "id": "8dd6b938-a796-4c78-b0e6-cc3355b92e06",
-    "userId": "229b5139-650f-4b66-b353-1ae7ef69783f",
-    "title": "Jasica M.",
-    "description": "This is First Errand Post.",
-    "city": "Dhaka",
-    "state": "USA",
-    "budget": "55",
-    "dateNeeded": "2026-06-20T00:00:00.000Z",
-    "contactInfo": "jasica@gmail.com",
-    "photoUrl": "",
-    "categoryId": "eb85c380-73a9-463e-b8f4-708c3140fac9",
-    "status": "active",
-    "createdAt": "2026-06-16T05:54:34.642Z",
-    "updatedAt": "2026-06-22T06:56:21.345Z",
-    "youtubeLink": "https://www.youtube.com/watch?v=4b96HkmtbY8",
-    "assignedToId": null,
-    "serviceType": null,
-    "time": null,
-    "category": {
-      "id": "eb85c380-73a9-463e-b8f4-708c3140fac9",
-      "name": "Food Pickup",
-      "description": "Your favorite meals from any restaurant delivered hot.",
-      "icon": "🍔",
-      "iconType": "emoji",
-      "color": "#f59e0b",
-      "status": "active",
-      "createdAt": "2026-06-08T06:45:55.139Z",
-      "updatedAt": "2026-06-08T06:45:55.139Z"
+    id: '8dd6b938-a796-4c78-b0e6-cc3355b92e06',
+    userId: '229b5139-650f-4b66-b353-1ae7ef69783f',
+    title: 'Jasica M.',
+    description: 'This is First Errand Post.',
+    city: 'Dhaka',
+    state: 'USA',
+    budget: '55',
+    dateNeeded: '2026-06-20T00:00:00.000Z',
+    contactInfo: 'jasica@gmail.com',
+    photoUrl: '',
+    categoryId: 'eb85c380-73a9-463e-b8f4-708c3140fac9',
+    status: 'active',
+    createdAt: '2026-06-16T05:54:34.642Z',
+    updatedAt: '2026-06-22T06:56:21.345Z',
+    youtubeLink: 'https://www.youtube.com/watch?v=4b96HkmtbY8',
+    assignedToId: null,
+    serviceType: null,
+    time: null,
+    category: {
+      id: 'eb85c380-73a9-463e-b8f4-708c3140fac9',
+      name: 'Food Pickup',
+      description: 'Your favorite meals from any restaurant delivered hot.',
+      icon: '🍔',
+      iconType: 'emoji',
+      color: '#f59e0b',
+      status: 'active',
+      createdAt: '2026-06-08T06:45:55.139Z',
+      updatedAt: '2026-06-08T06:45:55.139Z',
     },
-    "user": {
-      "id": "229b5139-650f-4b66-b353-1ae7ef69783f",
-      "firstName": "Jessica M.",
-      "lastName": "Marla",
-      "profileImage": "/media/profiles/profileImage-1781589150443-158812124.png",
-      "profile": {
-        "id": "4b7fc3a1-f773-4f6b-a8b5-cf3e83c9b911",
-        "userId": "229b5139-650f-4b66-b353-1ae7ef69783f",
-        "bio": "This is first test",
-        "phone": "01783200274",
-        "city": "Dhaka",
-        "state": "USA",
-        "location": null,
-        "timeZone": null,
-        "preferredContact": null,
-        "totalEarnings": "0",
-        "jobsCompleted": 0,
-        "visibility": "public",
-        "ratePerHour": "55",
-        "services": "Pharmacy",
-        "createdAt": "2026-06-16T05:52:30.531Z",
-        "updatedAt": "2026-06-22T06:56:23.948Z",
-        "youtubeLink": "https://www.youtube.com/watch?v=4b96HkmtbY8",
-        "gallery": [
-          "/media/profiles/gallery-1782111383937-276082902.png",
-          "/media/profiles/gallery-1782111383938-668943295.png",
-          "/media/profiles/gallery-1782111383938-507978134.png"
-        ]
-      }
+    user: {
+      id: '229b5139-650f-4b66-b353-1ae7ef69783f',
+      firstName: 'Jessica M.',
+      lastName: 'Marla',
+      profileImage: '/media/profiles/profileImage-1781589150443-158812124.png',
+      profile: {
+        id: '4b7fc3a1-f773-4f6b-a8b5-cf3e83c9b911',
+        userId: '229b5139-650f-4b66-b353-1ae7ef69783f',
+        bio: 'This is first test',
+        phone: '01783200274',
+        city: 'Dhaka',
+        state: 'USA',
+        location: null,
+        timeZone: null,
+        preferredContact: null,
+        totalEarnings: '0',
+        jobsCompleted: 0,
+        visibility: 'public',
+        ratePerHour: '55',
+        services: 'Pharmacy',
+        createdAt: '2026-06-16T05:52:30.531Z',
+        updatedAt: '2026-06-22T06:56:23.948Z',
+        youtubeLink: 'https://www.youtube.com/watch?v=4b96HkmtbY8',
+        gallery: [
+          '/media/profiles/gallery-1782111383937-276082902.png',
+          '/media/profiles/gallery-1782111383938-668943295.png',
+          '/media/profiles/gallery-1782111383938-507978134.png',
+        ],
+      },
     },
-    "assignedTo": null
-  }
+    assignedTo: null,
+  },
 ];
 
 const ErrandPage = () => {
-  const [hiringProfile, setHiringProfile] = useState<ErrandrProfile | null>(
-    null,
-  );
+  const [hiringProfile, setHiringProfile] = useState<ErrandrProfile | null>(null);
   const [activeVideoUrl, setActiveVideoUrl] = useState<string | null>(null);
   const [activeGallery, setActiveGallery] = useState<string[] | null>(null);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
   const { connect, isConnecting } = useConnect();
   const [connectingProfileId, setConnectingProfileId] = useState<string | null>(null);
-  
+
   const posts = STATIC_POSTS;
   const isLoading = false;
   const totalPages = 1;
@@ -248,9 +246,8 @@ const ErrandPage = () => {
   const isError = null;
 
   const getYoutubeEmbedUrl = (url: string) => {
-    if (!url) return "";
-    const regExp =
-      /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    if (!url) return '';
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
     const match = url.match(regExp);
     return match && match[2].length === 11
       ? `https://www.youtube.com/embed/${match[2]}?autoplay=1`
@@ -264,32 +261,28 @@ const ErrandPage = () => {
       const user = post.user;
       const category = post.category;
 
-      const youtubeLink = (post.youtubeLink || "").trim();
+      const youtubeLink = (post.youtubeLink || '').trim();
       const hasYoutubeLink = youtubeLink.length > 0;
 
       return {
         id: post.id,
-        userId: user?.id || "",
-        name: `${user?.firstName || "User"} ${(user?.lastName || "").charAt(0)}.`,
-        location: post.city
-          ? `${post.city}, ${post.state}`
-          : "Location not set",
-        bio: post.description || "No description available.",
+        userId: user?.id || '',
+        name: `${user?.firstName || 'User'} ${(user?.lastName || '').charAt(0)}.`,
+        location: post.city ? `${post.city}, ${post.state}` : 'Location not set',
+        bio: post.description || 'No description available.',
         tags: category?.name ? [category.name] : [],
-        availability: "Availability not set",
-        availabilityNote: "7 days a week",
-        responseTime: "15 minutes",
+        availability: 'Availability not set',
+        availabilityNote: '7 days a week',
+        responseTime: '15 minutes',
         services: category?.name ? [category.name] : [],
-        pricingLabel: "Errands from",
-        pricingText: post.budget
-          ? `$${post.budget} per hour`
-          : "$25 to $100 per hour",
+        pricingLabel: 'Errands from',
+        pricingText: post.budget ? `$${post.budget} per hour` : '$25 to $100 per hour',
         imageUrl:
           getImageUrl(user?.profileImage) ||
-          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800",
-        bioLink: "#",
+          'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800',
+        bioLink: '#',
         videoThumbUrl:
-          "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400",
+          'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=400',
         youtubeLink: youtubeLink,
         hasYoutubeLink: hasYoutubeLink,
         gallery: user?.profile?.gallery || [],
@@ -313,7 +306,8 @@ const ErrandPage = () => {
               </p>
               <Link
                 href='/client-registration'
-                className='inline-flex min-h-12.5 items-center justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'>
+                className='inline-flex min-h-12.5 items-center justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'
+              >
                 CREATE CLIENT PROFILE
               </Link>
             </div>
@@ -332,7 +326,8 @@ const ErrandPage = () => {
 
               <Link
                 href='/errand-registration'
-                className='inline-flex min-h-12.5 items-center mt-12 justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'>
+                className='inline-flex min-h-12.5 items-center mt-12 justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'
+              >
                 CREATE ERRAND PROFILE
               </Link>
             </div>
@@ -354,9 +349,7 @@ const ErrandPage = () => {
           {isLoading ? (
             <div className='mt-20 flex flex-col items-center justify-center'>
               <Loader2 className='w-10 h-10 animate-spin text-primary' />
-              <p className='mt-4 text-gray-500 font-medium'>
-                Finding errand professionals...
-              </p>
+              <p className='mt-4 text-gray-500 font-medium'>Finding errand professionals...</p>
             </div>
           ) : isError ? (
             <div className='mt-20 flex flex-col items-center justify-center text-center'>
@@ -364,7 +357,8 @@ const ErrandPage = () => {
               <p className='text-red-500 font-medium'>{isError}</p>
               <button
                 onClick={() => window.location.reload()}
-                className='mt-4 px-6 py-2 bg-primary text-white rounded-md font-bold'>
+                className='mt-4 px-6 py-2 bg-primary text-white rounded-md font-bold'
+              >
                 Retry
               </button>
             </div>
@@ -374,7 +368,8 @@ const ErrandPage = () => {
                 {errandProfiles.map((profile) => (
                   <article
                     key={profile.id}
-                    className='overflow-hidden rounded-[18px] bg-[#f6f6f6] shadow-[0_8px_20px_rgba(0,0,0,0.12)]'>
+                    className='overflow-hidden rounded-[18px] bg-[#f6f6f6] shadow-[0_8px_20px_rgba(0,0,0,0.12)]'
+                  >
                     <div className='relative h-58.75 w-full md:h-66.5 bg-gray-100 flex items-center justify-center'>
                       <img
                         src={profile.imageUrl}
@@ -390,7 +385,8 @@ const ErrandPage = () => {
                         <button
                           type='button'
                           onClick={() => setHiringProfile(profile)}
-                          className='h-8.5 rounded-sm border border-[#c4c4c4] bg-[#efefef] px-3.5 text-[12px] font-bold text-[#6b6f75] hover:bg-gray-200 transition-colors'>
+                          className='h-8.5 rounded-sm border border-[#c4c4c4] bg-[#efefef] px-3.5 text-[12px] font-bold text-[#6b6f75] hover:bg-gray-200 transition-colors'
+                        >
                           ABOUT ME
                         </button>
                       </div>
@@ -399,25 +395,24 @@ const ErrandPage = () => {
                         <button
                           type='button'
                           onClick={() =>
-                            profile.hasYoutubeLink &&
-                            setActiveVideoUrl(profile.youtubeLink!)
+                            profile.hasYoutubeLink && setActiveVideoUrl(profile.youtubeLink!)
                           }
-                          className={`text-[18px] underline ${profile.hasYoutubeLink ? "text-[#2f66dc]" : "text-gray-400"}`}>
+                          className={`text-[18px] underline ${profile.hasYoutubeLink ? 'text-[#2f66dc]' : 'text-gray-400'}`}
+                        >
                           Intro
                         </button>
                         <div className='flex items-center gap-2'>
                           <button
                             type='button'
                             aria-label='View photo gallery'
-                            disabled={
-                              !profile.gallery || profile.gallery.length === 0
-                            }
+                            disabled={!profile.gallery || profile.gallery.length === 0}
                             onClick={() =>
                               profile.gallery &&
                               profile.gallery.length > 0 &&
                               setActiveGallery(profile.gallery)
                             }
-                            className='transition-transform hover:scale-105 active:scale-95'>
+                            className='transition-transform hover:scale-105 active:scale-95'
+                          >
                             <span className=''>
                               <Image
                                 src={icon2}
@@ -426,8 +421,8 @@ const ErrandPage = () => {
                                 height={40}
                                 className={
                                   profile.hasYoutubeLink
-                                    ? "opacity-100 grayscale-0"
-                                    : "opacity-40 grayscale"
+                                    ? 'opacity-100 grayscale-0'
+                                    : 'opacity-40 grayscale'
                                 }
                               />
                             </span>
@@ -437,9 +432,9 @@ const ErrandPage = () => {
                             type='button'
                             aria-label='Play intro video'
                             onClick={() =>
-                              profile.hasYoutubeLink &&
-                              setActiveVideoUrl(profile.youtubeLink!)
-                            }>
+                              profile.hasYoutubeLink && setActiveVideoUrl(profile.youtubeLink!)
+                            }
+                          >
                             <Image
                               src={icon}
                               alt='Play intro'
@@ -447,30 +442,27 @@ const ErrandPage = () => {
                               height={40}
                               className={
                                 profile.hasYoutubeLink
-                                  ? "opacity-100 grayscale-0"
-                                  : "opacity-40 grayscale"
+                                  ? 'opacity-100 grayscale-0'
+                                  : 'opacity-40 grayscale'
                               }
                             />
                           </button>
                         </div>
                       </div>
 
-                      <p className='mt-3 text-[11px] tracking-[0.8px] text-[#757b84]'>
-                        SERVICES
-                      </p>
+                      <p className='mt-3 text-[11px] tracking-[0.8px] text-[#757b84]'>SERVICES</p>
                       <div className='mt-2 flex flex-wrap gap-1.5'>
                         {profile.services.slice(0, 4).map((service) => (
                           <span
                             key={service}
-                            className='rounded-full border border-(--color-primary) bg-[#fff3ea] px-2.5 py-0.75 text-[12px] leading-[1.2] text-[#d96f1f]'>
+                            className='rounded-full border border-(--color-primary) bg-[#fff3ea] px-2.5 py-0.75 text-[12px] leading-[1.2] text-[#d96f1f]'
+                          >
                             {service}
                           </span>
                         ))}
                       </div>
 
-                      <p className='mt-3 text-[11px] tracking-[0.8px] text-[#757b84]'>
-                        PRICES
-                      </p>
+                      <p className='mt-3 text-[11px] tracking-[0.8px] text-[#757b84]'>PRICES</p>
                       <p className='mt-1.25 text-[27px] font-medium text-[#1e2329]'>
                         {profile.pricingText}
                       </p>
@@ -478,7 +470,8 @@ const ErrandPage = () => {
                       <button
                         type='button'
                         onClick={() => setHiringProfile(profile)}
-                        className='mt-4 min-h-10 w-full rounded-md bg-(--color-primary) text-[13px] font-extrabold tracking-[1px] text-white hover:bg-(--color-primary-dark)'>
+                        className='mt-4 min-h-10 w-full rounded-md bg-(--color-primary) text-[13px] font-extrabold tracking-[1px] text-white hover:bg-(--color-primary-dark)'
+                      >
                         HIRE NOW
                       </button>
                     </div>
@@ -496,351 +489,17 @@ const ErrandPage = () => {
             </>
           ) : (
             <div className='mt-20 text-center'>
-              <p className='text-gray-500 text-lg'>
-                No errand professionals found at the moment.
-              </p>
+              <p className='text-gray-500 text-lg'>No errand professionals found at the moment.</p>
             </div>
           )}
         </div>
       </div>
 
       {/* ── Hiring Modal ── */}
-      {hiringProfile && (
-        <div
-          className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4'
-          onClick={() => setHiringProfile(null)}>
-          <div
-            className='relative w-full max-w-[560px] bg-white rounded-2xl shadow-2xl overflow-hidden'
-            onClick={(e) => e.stopPropagation()}>
-            {/* ── TOP HEADER: avatar + name + close + play ── */}
-            <div className='flex items-center gap-4 px-5 pt-5 pb-4'>
-              {/* Avatar */}
-              <div className='w-[72px] h-[72px] rounded-xl overflow-hidden shrink-0 border border-gray-100 bg-gray-50 flex items-center justify-center'>
-                <img
-                  src={hiringProfile.imageUrl}
-                  alt={hiringProfile.name}
-                  className='w-full h-full object-cover'
-                />
-              </div>
-
-              {/* Name + location */}
-              <div className='flex-1 min-w-0'>
-                <h2 className='text-[22px] font-extrabold text-[#111111] leading-tight'>
-                  {hiringProfile.name}
-                </h2>
-                <p className='text-sm text-gray-400 mt-0.5'>
-                  {hiringProfile.location}
-                </p>
-              </div>
-
-              {/* Gallery button */}
-              <button
-                onClick={() =>
-                  hiringProfile.gallery &&
-                  hiringProfile.gallery.length > 0 &&
-                  setActiveGallery(hiringProfile.gallery)
-                }
-                className={`w-10 h-10 rounded-full bg-primary flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity ${(!hiringProfile.gallery || hiringProfile.gallery.length === 0) && "opacity-40 grayscale cursor-not-allowed"}`}
-                disabled={
-                  !hiringProfile.gallery || hiringProfile.gallery.length === 0
-                }>
-                <ImageIcon className='w-5 h-5 text-white' />
-              </button>
-
-              {/* Play button (teal circle) */}
-              <button
-                onClick={() =>
-                  hiringProfile.hasYoutubeLink &&
-                  setActiveVideoUrl(hiringProfile.youtubeLink!)
-                }
-                className={`w-10 h-10 rounded-full bg-[#1ABFBF] flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity ${!hiringProfile.hasYoutubeLink && "opacity-40 grayscale cursor-not-allowed"}`}>
-                <svg width='14' height='16' viewBox='0 0 14 16' fill='none'>
-                  <path d='M1.5 1.5L12.5 8L1.5 14.5V1.5Z' fill='white' />
-                </svg>
-              </button>
-
-              {/* Close button */}
-              <button
-                onClick={() => setHiringProfile(null)}
-                className='w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors text-gray-400'>
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* ── DIVIDER ── */}
-            <div className='h-px bg-gray-100 mx-5' />
-
-            {/* ── BODY: two-column layout ── */}
-            <div className='flex flex-col md:flex-row gap-4 px-5 pt-4 pb-4'>
-              {/* LEFT COLUMN */}
-              <div className='flex-1 min-w-0 flex flex-col gap-4'>
-                {/* About section */}
-                <div>
-                  <p className='text-[11px] font-extrabold text-[#F47A22] uppercase tracking-widest mb-2'>
-                    ABOUT {hiringProfile.name.split(" ")[0].toUpperCase()}
-                  </p>
-                  <p className='text-[13px] text-gray-600 leading-relaxed'>
-                    {hiringProfile.bio}
-                  </p>
-                </div>
-
-                {/* Tags */}
-                <div className='flex flex-wrap gap-1.5'>
-                  {hiringProfile.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className='px-3 py-1 rounded-full border border-gray-200 text-[12px] font-semibold text-gray-600 bg-white'>
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Divider */}
-                <div className='h-px bg-gray-100' />
-
-                {/* Availability */}
-                <div className='flex flex-col gap-2.5'>
-                  {/* Schedule row */}
-                  <div className='flex items-start gap-2'>
-                    <div className='mt-0.5'>
-                      {/* Calendar icon */}
-                      <svg
-                        width='16'
-                        height='16'
-                        viewBox='0 0 16 16'
-                        fill='none'
-                        className='text-gray-400'>
-                        <rect
-                          x='1'
-                          y='2.5'
-                          width='14'
-                          height='12'
-                          rx='2'
-                          stroke='currentColor'
-                          strokeWidth='1.3'
-                        />
-                        <path
-                          d='M5 1v3M11 1v3M1 6.5h14'
-                          stroke='currentColor'
-                          strokeWidth='1.3'
-                          strokeLinecap='round'
-                        />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className='text-[13px] font-semibold text-gray-700 leading-tight'>
-                        {hiringProfile.availability}
-                      </p>
-                      <p className='text-[12px] font-semibold text-[#F47A22] mt-0.5'>
-                        {hiringProfile.availabilityNote}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Response time row */}
-                  <div className='flex items-center gap-2'>
-                    <svg
-                      width='16'
-                      height='16'
-                      viewBox='0 0 16 16'
-                      fill='none'
-                      className='text-gray-400'>
-                      <circle
-                        cx='8'
-                        cy='8'
-                        r='6.5'
-                        stroke='currentColor'
-                        strokeWidth='1.3'
-                      />
-                      <path
-                        d='M8 4.5V8l2.5 2'
-                        stroke='currentColor'
-                        strokeWidth='1.3'
-                        strokeLinecap='round'
-                      />
-                    </svg>
-                    <p className='text-[13px] text-gray-600'>
-                      Usually responds within{" "}
-                      <span className='font-semibold text-[#F47A22]'>
-                        {hiringProfile.responseTime}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* RIGHT COLUMN — services card */}
-              <div className='w-full md:w-[200px] shrink-0'>
-                <div className='bg-[#FFF5EE] rounded-xl p-3.5 flex flex-col gap-2'>
-                  {hiringProfile.services.map((service, i) => (
-                    <div key={service} className='flex items-center gap-2'>
-                      <span className='text-[12px] text-gray-600 leading-tight'>
-                        {service}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Pricing row */}
-                <div className='flex items-center justify-between mt-3 px-1'>
-                  <span className='text-[12px] text-gray-500'>
-                    {hiringProfile.pricingLabel}
-                  </span>
-                  <span className='text-[13px] font-extrabold text-[#F47A22]'>
-                    {hiringProfile.pricingText}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* ── HIRE BUTTON ── */}
-            <div className='px-5 pb-5 pt-1'>
-              <button
-                onClick={async () => {
-                  if (!hiringProfile.userId) return;
-                  setConnectingProfileId(hiringProfile.id);
-                  await connect(hiringProfile.userId);
-                  setConnectingProfileId(null);
-                  setHiringProfile(null);
-                }}
-                disabled={isConnecting && connectingProfileId === hiringProfile.id}
-                className='h-11 px-8 rounded-full bg-[#F47A22] text-white font-extrabold text-[13px] uppercase tracking-wider hover:bg-[#BB4D00] transition-colors shadow-md disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2'>
-                {isConnecting && connectingProfileId === hiringProfile.id ? (
-                  <>
-                    <Loader2 className='w-4 h-4 animate-spin' />
-                    CONNECTING...
-                  </>
-                ) : (
-                  <>HIRE {hiringProfile.name.split(" ")[0].toUpperCase()}</>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ── Video Modal ── */}
-      {activeVideoUrl && (
-        <div
-          className='fixed inset-0 z-[60] flex items-center justify-center bg-black/80 p-4'
-          onClick={() => setActiveVideoUrl(null)}>
-          <div className='relative w-full max-w-4xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl'>
-            <button
-              className='absolute top-4 right-4 z-10 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors'
-              onClick={(e) => {
-                e.stopPropagation();
-                setActiveVideoUrl(null);
-              }}>
-              <X size={24} />
-            </button>
-            <iframe
-              src={getYoutubeEmbedUrl(activeVideoUrl)}
-              className='w-full h-full'
-              allow='autoplay; encrypted-media'
-              allowFullScreen
-            />
-          </div>
-        </div>
-      )}
 
       {/* ── Gallery Modal ── */}
-      {activeGallery && activeGallery.length > 0 && (
-        <div
-          className='fixed inset-0 z-[60] flex flex-col items-center justify-center bg-black/95 backdrop-blur-sm p-4 sm:p-6'
-          onClick={() => {
-            setActiveGallery(null);
-            setGalleryIndex(0);
-          }}>
-          <div
-            className='relative w-full max-w-4xl flex flex-col items-center justify-center'
-            onClick={(e) => e.stopPropagation()}>
-            {/* Close Button */}
-            <button
-              className='absolute -top-12 right-0 p-2 bg-white/15 hover:bg-white/25 rounded-full text-white transition-colors'
-              onClick={() => {
-                setActiveGallery(null);
-                setGalleryIndex(0);
-              }}>
-              <X size={24} />
-            </button>
-
-            {/* Main Carousel Area */}
-            <div className='relative w-full aspect-[4/3] max-h-[70vh] bg-black/60 rounded-xl overflow-hidden shadow-2xl flex items-center justify-center border border-white/10'>
-              <img
-                src={getImageUrl(activeGallery[galleryIndex])}
-                alt={`Gallery image ${galleryIndex + 1}`}
-                className='w-full h-full object-contain select-none transition-all duration-300'
-              />
-
-              {/* Prev Button */}
-              {activeGallery.length > 1 && (
-                <button
-                  onClick={() =>
-                    setGalleryIndex((prev) =>
-                      prev === 0 ? activeGallery.length - 1 : prev - 1,
-                    )
-                  }
-                  className='absolute left-4 p-3 rounded-full bg-black/60 hover:bg-black/90 text-white transition-colors border border-white/15 flex items-center justify-center hover:scale-105 active:scale-95 duration-200'>
-                  <ChevronLeft size={24} />
-                </button>
-              )}
-
-              {/* Next Button */}
-              {activeGallery.length > 1 && (
-                <button
-                  onClick={() =>
-                    setGalleryIndex((prev) =>
-                      prev === activeGallery.length - 1 ? 0 : prev + 1,
-                    )
-                  }
-                  className='absolute right-4 p-3 rounded-full bg-black/60 hover:bg-black/90 text-white transition-colors border border-white/15 flex items-center justify-center hover:scale-105 active:scale-95 duration-200'>
-                  <ChevronRight size={24} />
-                </button>
-              )}
-            </div>
-
-            {/* Pagination Indicators & Thumbnails */}
-            {activeGallery.length > 1 && (
-              <div className='mt-4 flex flex-col items-center gap-3 w-full'>
-                {/* Dots */}
-                <div className='flex gap-2'>
-                  {activeGallery.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setGalleryIndex(idx)}
-                      className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
-                        idx === galleryIndex
-                          ? "bg-[#F47A22] scale-125"
-                          : "bg-white/40 hover:bg-white/60"
-                      }`}
-                    />
-                  ))}
-                </div>
-
-                {/* Thumbnail Strip */}
-                <div className='flex gap-2 justify-center max-w-full overflow-x-auto py-1'>
-                  {activeGallery.map((imgUrl, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setGalleryIndex(idx)}
-                      className={`relative w-16 h-12 rounded overflow-hidden border-2 transition-all duration-200 ${
-                        idx === galleryIndex
-                          ? "border-[#F47A22] opacity-100 scale-105"
-                          : "border-transparent opacity-60 hover:opacity-100"
-                      }`}>
-                      <img
-                        src={getImageUrl(imgUrl)}
-                        alt={`thumb-${idx}`}
-                        className='w-full h-full object-cover'
-                      />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
     </section>
   );
 };

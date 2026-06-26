@@ -4,6 +4,21 @@ import { useState, useEffect } from "react";
 import { categoryService } from "@/services/category.service";
 import { Category } from "@/types/categories";
 
+const STATIC_CATEGORIES: Category[] = [
+  { id: "ee522b07-c43e-4136-bcac-bba637a47928", name: "Grocery Shopping", icon: "🛒", iconType: "emoji", color: "#ec6f27", description: "Get your groceries delivered to your doorstep without any hassle.", status: "active" },
+  { id: "fast-delivery-id", name: "Fast Delivery", icon: "📦", iconType: "emoji", color: "#3b82f6", description: "Swift and secure delivery of your packages anywhere in the city.", status: "active" },
+  { id: "pharmacy-pickup-id", name: "Pharmacy Pickup", icon: "💊", iconType: "emoji", color: "#ef4444", description: "We'll pick up your prescriptions and health essentials for you.", status: "active" },
+  { id: "laundry-services-id", name: "Laundry Services", icon: "🧺", iconType: "emoji", color: "#8b5cf6", description: "Professional laundry pickup and delivery at your convenience.", status: "active" },
+  { id: "7973dcf1-5c54-4552-bafa-3b40c7a4206e", name: "Personal Transport", icon: "🚗", iconType: "emoji", color: "#10b981", description: "Safe and reliable transport for you or your important items.", status: "active" },
+  { id: "pet-care-id", name: "Pet Care", icon: "🐾", iconType: "emoji", color: "#ec4899", description: "Walking, feeding, and caring for your furry friends.", status: "active" },
+  { id: "document-handling-id", name: "Document Handling", icon: "📄", iconType: "emoji", color: "#6b7280", description: "Safe transport and filing of your important documents.", status: "active" },
+  { id: "eb85c380-73a9-463e-b8f4-708c3140fac9", name: "Food Pickup", icon: "🍔", iconType: "emoji", color: "#f59e0b", description: "Your favorite meals from any restaurant delivered hot.", status: "active" },
+  { id: "handyman-help-id", name: "Handyman Help", icon: "🧰", iconType: "emoji", color: "#063b5c", description: "Expert help for small repairs and home maintenance tasks.", status: "active" },
+  { id: "personal-shopping-id", name: "Personal Shopping", icon: "🛍️", iconType: "emoji", color: "#ec6f27", description: "Someone to do your shopping and finding the best deals.", status: "active" },
+  { id: "wait-in-line-id", name: "Wait in Line", icon: "🧍", iconType: "emoji", color: "#3b82f6", description: "We'll wait in line for you at the DMV, concerts, or any event.", status: "active" },
+  { id: "mail-post-id", name: "Mail & Post", icon: "📮", iconType: "emoji", color: "#22c55e", description: "Handling your mail, stamps, and post office errands.", status: "active" }
+];
+
 interface FilterSearchingProps {
   onSearch: (filters: SearchFilters) => void;
   initialFilters: SearchFilters;
@@ -20,9 +35,14 @@ const FilterSearching = ({
     const fetchCategories = async () => {
       try {
         const data = await categoryService.getActive();
-        setCategories(data);
+        if (data && data.length > 0) {
+          setCategories(data);
+        } else {
+          setCategories(STATIC_CATEGORIES);
+        }
       } catch (error) {
-        console.error("Failed to load categories", error);
+        console.error("Failed to load categories, using fallback static categories", error);
+        setCategories(STATIC_CATEGORIES);
       }
     };
     fetchCategories();
