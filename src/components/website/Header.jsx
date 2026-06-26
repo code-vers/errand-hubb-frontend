@@ -40,7 +40,7 @@ export default function Header() {
       }
     }
 
-    // Add Dashboard and Logout if user is logged in
+    // Add Dashboard if user is logged in
     if (user) {
       // Find index of "Ads" to place Dashboard before it
       const adsIndex = links.findIndex(l => l.name === "Ads");
@@ -49,7 +49,34 @@ export default function Header() {
       } else {
         links.push({ name: "Dashboard", href: "/dashboard" });
       }
-      links.push({ name: "Logout", href: "#", onClick: logout, isLogout: true });
+    }
+
+    // Now insert Login / Logout right AFTER Ads
+    const adsIndexAfterDashboard = links.findIndex(l => l.name === "Ads");
+    if (adsIndexAfterDashboard !== -1) {
+      if (user) {
+        // Logged in: Add Logout after Ads
+        links.splice(adsIndexAfterDashboard + 1, 0, {
+          name: "Logout",
+          href: "#",
+          onClick: logout,
+          isLogout: true,
+        });
+      } else {
+        // Logged out: Add Login after Ads
+        links.splice(adsIndexAfterDashboard + 1, 0, {
+          name: "Login",
+          href: "/login",
+          isLogin: true,
+        });
+      }
+    } else {
+      // Fallback
+      if (user) {
+        links.push({ name: "Logout", href: "#", onClick: logout, isLogout: true });
+      } else {
+        links.push({ name: "Login", href: "/login", isLogin: true });
+      }
     }
 
     return links;
@@ -146,7 +173,7 @@ export default function Header() {
                         link.onClick();
                         setIsMenuOpen(false);
                       }}
-                      className={`text-[13px] font-bold transition-all px-4 py-1.5 rounded-md uppercase tracking-wider ${
+                      className={`text-[13px] font-bold transition-all px-4 py-1.5 rounded-md uppercase tracking-wider cursor-pointer ${
                         link.isLogout 
                           ? "bg-red-500 hover:bg-red-600 text-white shadow-sm active:scale-95" 
                           : "text-white hover:text-white/80"
@@ -159,7 +186,9 @@ export default function Header() {
                       className={`text-[13px] font-semibold transition-colors block ${
                         link.name === "Ads"
                           ? "inline-block bg-[#1a3a7a] uppercase text-white font-extrabold italic tracking-wide px-4 py-[5px] rounded-sm text-[22px]"
-                          : "text-white hover:text-white/80"
+                          : link.isLogin
+                            ? "inline-block bg-[#1a3a7a] hover:bg-[#122856] text-white font-bold px-4 py-1.5 rounded-md uppercase tracking-wider active:scale-95 transition-all text-center"
+                            : "text-white hover:text-white/80"
                       }`}
                       onClick={() => setIsMenuOpen(false)}>
                       {link.name}

@@ -6,13 +6,15 @@ import { authService } from "@/services/auth.service";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import Link from "next/link";
-import { Shield, ArrowLeft, RefreshCw } from "lucide-react";
+import { Shield, ArrowLeft, RefreshCw, Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const [mfaData, setMfaData] = useState({
     required: false,
@@ -215,15 +217,24 @@ export default function LoginPage() {
                 Forgot Password?
               </Link>
             </div>
-            <input
-              type='password'
-              name='password'
-              required
-              placeholder='Your password'
-              value={formData.password}
-              onChange={handleChange}
-              className='w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)]'
-            />
+            <div className='relative'>
+              <input
+                type={showPassword ? "text" : "password"}
+                name='password'
+                required
+                placeholder='Your password'
+                value={formData.password}
+                onChange={handleChange}
+                className='w-full pl-3 pr-10 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)]'
+              />
+              <button
+                type='button'
+                onClick={() => setShowPassword(!showPassword)}
+                className='absolute inset-y-0 right-0 flex items-center pr-3 text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           <button

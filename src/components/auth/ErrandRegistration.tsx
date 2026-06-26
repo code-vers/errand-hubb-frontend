@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
 import { getImageUrl } from "@/configs/api.config";
 import { toast } from "sonner";
-import { Upload, PlayCircle, X } from "lucide-react";
+import { Upload, PlayCircle, X, Eye, EyeOff } from "lucide-react";
 
 const ErrandRegistrationPage = () => {
   const { user, setUser } = useAuth();
@@ -35,6 +35,37 @@ const ErrandRegistrationPage = () => {
   const [existingGallery, setExistingGallery] = useState<string[]>([]);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState({
+    score: 0,
+    hasMinLength: false,
+    hasUpper: false,
+    hasLower: false,
+    hasNumber: false,
+  });
+
+  const evaluatePassword = (pass: string) => {
+    const hasMinLength = pass.length >= 8;
+    const hasUpper = /[A-Z]/.test(pass);
+    const hasLower = /[a-z]/.test(pass);
+    const hasNumber = /[0-9]/.test(pass);
+
+    let score = 0;
+    if (hasMinLength) score++;
+    if (hasUpper) score++;
+    if (hasLower) score++;
+    if (hasNumber) score++;
+
+    return {
+      score,
+      hasMinLength,
+      hasUpper,
+      hasLower,
+      hasNumber,
+    };
+  };
 
   // Clean up preview URL
   useEffect(() => {
@@ -79,7 +110,11 @@ const ErrandRegistrationPage = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (name === "password") {
+      setPasswordStrength(evaluatePassword(value));
+    }
   };
 
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -109,6 +144,24 @@ const ErrandRegistrationPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check strength if it's new registration, or if the user is changing their password
+    const shouldCheckStrength = !user || formData.password;
+    if (shouldCheckStrength) {
+      const strength = evaluatePassword(formData.password);
+      if (!strength.hasMinLength) {
+        toast.error("Password must be at least 8 characters long");
+        return;
+      }
+      if (!strength.hasUpper || !strength.hasLower) {
+        toast.error("Password must contain both uppercase and lowercase letters");
+        return;
+      }
+      if (!strength.hasNumber) {
+        toast.error("Password must contain at least one number");
+        return;
+      }
+    }
 
     if (!user && formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
@@ -529,18 +582,95 @@ const ErrandRegistrationPage = () => {
                 </span>
               )}
             </label>
-            <input
-              id='password'
-              name='password'
-              type='password'
-              placeholder='Create a password'
-              required={!user}
-              minLength={6}
-              value={formData.password}
-              onChange={handleChange}
-              className={inputClass}
-              autoComplete='new-password'
-            />
+            <div className='relative'>
+              <input
+                id='password'
+                name='password'
+                type={showPassword ? "text" : "password"}
+                placeholder='Create a password'
+                required={!user}
+                value={formData.password}
+                onChange={handleChange}
+                className={`${inputClass} pr-10`}
+                autoComplete='new-password'
+              />
+              <button
+                type='button'
+                onClick={() => setShowPassword(!showPassword)}
+                className='absolute inset-y-0 right-0 flex items-center pr-3 text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+            {/* Password Strength Indicator */}
+            {formData.password && (
+              <div className='mt-2 space-y-2 bg-[var(--color-surface-dim)] p-3 rounded-lg border border-[var(--color-border)]'>
+                {/* Progress bar */}
+                <div className='flex gap-1 h-1.5 w-full bg-gray-200 rounded-full overflow-hidden'>
+                  {[...Array(4)].map((_, i) => {
+                    let barColor = 'bg-gray-300';
+                    if (i < passwordStrength.score) {
+                      if (passwordStrength.score <= 1) barColor = 'bg-red-500';
+                      else if (passwordStrength.score <= 3) barColor = 'bg-amber-500';
+                      else barColor = 'bg-emerald-500';
+                    }
+                    return (
+                      <div
+                        key={i}
+                        className={`h-full flex-1 rounded-full transition-all duration-300 ${barColor}`}
+                      />
+                    );
+                  })}
+                </div>
+                {/* Labels */}
+                <div className='flex justify-between items-center text-[10px] uppercase font-bold tracking-wider'>
+                  <span className={
+                    passwordStrength.score <= 1 ? 'text-red-500' :
+                    passwordStrength.score <= 3 ? 'text-amber-500' : 'text-emerald-500'
+                  }>
+                    Password Strength: {
+                      passwordStrength.score <= 1 ? 'Weak' :
+                      passwordStrength.score <= 3 ? 'Medium' : 'Strong'
+                    }
+                  </span>
+                </div>
+                {/* Checklist */}
+                <div className='grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-[var(--color-foreground)] pt-1'>
+                  <div className='flex items-center gap-1.5'>
+                    <span className={passwordStrength.hasMinLength ? 'text-emerald-500' : 'text-gray-400'}>
+                      {passwordStrength.hasMinLength ? '●' : '○'}
+                    </span>
+                    <span className={passwordStrength.hasMinLength ? 'text-[var(--color-foreground)] font-medium' : 'text-[var(--color-muted)]'}>
+                      At least 8 characters
+                    </span>
+                  </div>
+                  <div className='flex items-center gap-1.5'>
+                    <span className={passwordStrength.hasUpper ? 'text-emerald-500' : 'text-gray-400'}>
+                      {passwordStrength.hasUpper ? '●' : '○'}
+                    </span>
+                    <span className={passwordStrength.hasUpper ? 'text-[var(--color-foreground)] font-medium' : 'text-[var(--color-muted)]'}>
+                      Uppercase letter (A-Z)
+                    </span>
+                  </div>
+                  <div className='flex items-center gap-1.5'>
+                    <span className={passwordStrength.hasLower ? 'text-emerald-500' : 'text-gray-400'}>
+                      {passwordStrength.hasLower ? '●' : '○'}
+                    </span>
+                    <span className={passwordStrength.hasLower ? 'text-[var(--color-foreground)] font-medium' : 'text-[var(--color-muted)]'}>
+                      Lowercase letter (a-z)
+                    </span>
+                  </div>
+                  <div className='flex items-center gap-1.5'>
+                    <span className={passwordStrength.hasNumber ? 'text-emerald-500' : 'text-gray-400'}>
+                      {passwordStrength.hasNumber ? '●' : '○'}
+                    </span>
+                    <span className={passwordStrength.hasNumber ? 'text-[var(--color-foreground)] font-medium' : 'text-[var(--color-muted)]'}>
+                      Number (0-9)
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Confirm Password */}
@@ -553,17 +683,26 @@ const ErrandRegistrationPage = () => {
                 </span>
               )}
             </label>
-            <input
-              id='confirmPassword'
-              name='confirmPassword'
-              type='password'
-              placeholder='Confirm your password'
-              required={!user}
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className={inputClass}
-              autoComplete='new-password'
-            />
+            <div className='relative'>
+              <input
+                id='confirmPassword'
+                name='confirmPassword'
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder='Confirm your password'
+                required={!user}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className={`${inputClass} pr-10`}
+                autoComplete='new-password'
+              />
+              <button
+                type='button'
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className='absolute inset-y-0 right-0 flex items-center pr-3 text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
+              >
+                {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           {/* Submit Button */}
