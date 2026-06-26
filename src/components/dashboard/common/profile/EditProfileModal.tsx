@@ -4,7 +4,7 @@ import { FC, useState, useEffect } from "react";
 import { X, User, Phone, MapPin, Globe, MessageSquare, AlignLeft, PlayCircle } from "lucide-react";
 import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
 import { useFormValidation } from "@/hooks/useFormValidation";
-import { validateName, validateEmail, validateCityState, validateTextarea, validateGenericString } from "@/lib/validation";
+import { validateName, validateEmail, validateCityState, validateTextarea, validateGenericString, validateRate } from "@/lib/validation";
 
 interface EditProfileModalProps {
   user: any;
@@ -40,7 +40,7 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
     state: (v) => validateCityState(v, "State"),
     bio: (v) => validateTextarea(v, 2000, "Bio", false),
     services: (v) => validateGenericString(v, 150, "Services", false),
-    ratePerHour: (v) => validateGenericString(String(v), 10, "Rate", false),
+    ratePerHour: (v) => validateRate(v, false),
   });
 
   // Close on escape key
@@ -239,7 +239,12 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
                   type='number'
                   name='ratePerHour'
                   value={formData.ratePerHour}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^0-9.]/g, '');
+                    const parts = val.split('.');
+                    const sanitized = parts[0] + (parts.length > 1 ? '.' + parts.slice(1).join('') : '');
+                    setFormData(prev => ({ ...prev, ratePerHour: sanitized }));
+                  }}
                   placeholder='e.g. 25.00'
                   className={`w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all ${touched.ratePerHour && errors.ratePerHour ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
                   maxLength={10}

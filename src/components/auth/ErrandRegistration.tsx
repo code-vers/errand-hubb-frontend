@@ -628,7 +628,12 @@ const ErrandRegistrationPage = () => {
               type='text'
               placeholder='e.g. 15'
               value={formData.rate}
-              onChange={handleChange}
+              onChange={(e) => {
+                const val = e.target.value.replace(/[^0-9.]/g, '');
+                const parts = val.split('.');
+                const sanitized = parts[0] + (parts.length > 1 ? '.' + parts.slice(1).join('') : '');
+                setFormData(prev => ({ ...prev, rate: sanitized }));
+              }}
               className={`${inputClass} ${touched.rate && errors.rate ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
               maxLength={10}
                 onBlur={(e) => handleBlur('rate', e.target.value)}

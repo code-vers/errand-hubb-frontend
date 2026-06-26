@@ -118,3 +118,19 @@ export const validateGenericString = (value: string, maxLength: number, fieldNam
   if (trimmed.length > maxLength) return `${fieldName} cannot exceed ${maxLength} characters.`;
   return null;
 };
+
+export const validateRate = (value: string | number, required: boolean = true): string | null => {
+  const valStr = String(value || "").trim();
+  if (!valStr && required) return "Rate is required.";
+  if (!valStr && !required) return null;
+  
+  const num = Number(valStr);
+  if (isNaN(num)) return "Rate must be a valid number.";
+  if (num < 0) return "Rate cannot be negative.";
+  if (num > 10000) return "Rate cannot exceed $10,000.";
+  
+  // Optional: strictly check format for max 2 decimal places
+  if (!/^\d+(\.\d{1,2})?$/.test(valStr)) return "Rate can have up to 2 decimal places.";
+  
+  return null;
+};
