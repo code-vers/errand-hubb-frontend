@@ -3,6 +3,8 @@
 import { FC, useState, useEffect } from "react";
 import { X, User, Phone, MapPin, Globe, MessageSquare, AlignLeft, PlayCircle } from "lucide-react";
 import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { validateName, validateEmail, validateCityState, validateTextarea, validateGenericString } from "@/lib/validation";
 
 interface EditProfileModalProps {
   user: any;
@@ -31,6 +33,16 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
     youtubeLink: user?.profile?.youtubeLink || "",
   });
 
+  const { errors, touched, handleBlur, validateForm } = useFormValidation({
+    firstName: (v) => validateName(v),
+    lastName: (v) => validateName(v),
+    city: (v) => validateCityState(v, "City"),
+    state: (v) => validateCityState(v, "State"),
+    bio: (v) => validateTextarea(v, 2000, "Bio", false),
+    services: (v) => validateGenericString(v, 150, "Services", false),
+    ratePerHour: (v) => validateGenericString(String(v), 10, "Rate", false),
+  });
+
   // Close on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -55,6 +67,7 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm(formData)) return;
     await onSave(formData);
     onClose();
   };
@@ -95,8 +108,15 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
                 value={formData.firstName}
                 onChange={handleChange}
                 placeholder='Enter first name'
-                className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all'
+                className={`w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all ${touched.firstName && errors.firstName ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={50}
+                onBlur={(e) => handleBlur('firstName', e.target.value)}
+                aria-invalid={touched.firstName && !!errors.firstName}
+                aria-describedby={touched.firstName && errors.firstName ? "firstName-error" : undefined}
               />
+              {touched.firstName && errors.firstName && (
+                <p id="firstName-error" className="text-red-500 text-xs mt-1 font-medium">{errors.firstName}</p>
+              )}
             </div>
 
             {/* Last Name */}
@@ -110,8 +130,15 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
                 value={formData.lastName}
                 onChange={handleChange}
                 placeholder='Enter last name'
-                className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all'
+                className={`w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all ${touched.lastName && errors.lastName ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={50}
+                onBlur={(e) => handleBlur('lastName', e.target.value)}
+                aria-invalid={touched.lastName && !!errors.lastName}
+                aria-describedby={touched.lastName && errors.lastName ? "lastName-error" : undefined}
               />
+              {touched.lastName && errors.lastName && (
+                <p id="lastName-error" className="text-red-500 text-xs mt-1 font-medium">{errors.lastName}</p>
+              )}
             </div>
 
             {/* Phone */}
@@ -154,8 +181,15 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
                 value={formData.city}
                 onChange={handleChange}
                 placeholder='Enter city'
-                className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all'
+                className={`w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all ${touched.city && errors.city ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={80}
+                onBlur={(e) => handleBlur('city', e.target.value)}
+                aria-invalid={touched.city && !!errors.city}
+                aria-describedby={touched.city && errors.city ? "city-error" : undefined}
               />
+              {touched.city && errors.city && (
+                <p id="city-error" className="text-red-500 text-xs mt-1 font-medium">{errors.city}</p>
+              )}
             </div>
 
             {/* State */}
@@ -169,8 +203,15 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
                 value={formData.state}
                 onChange={handleChange}
                 placeholder='Enter state'
-                className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all'
+                className={`w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all ${touched.state && errors.state ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={80}
+                onBlur={(e) => handleBlur('state', e.target.value)}
+                aria-invalid={touched.state && !!errors.state}
+                aria-describedby={touched.state && errors.state ? "state-error" : undefined}
               />
+              {touched.state && errors.state && (
+                <p id="state-error" className="text-red-500 text-xs mt-1 font-medium">{errors.state}</p>
+              )}
             </div>
 
             {/* Time Zone */}
@@ -200,8 +241,15 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
                   value={formData.ratePerHour}
                   onChange={handleChange}
                   placeholder='e.g. 25.00'
-                  className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all'
-                />
+                  className={`w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all ${touched.ratePerHour && errors.ratePerHour ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                  maxLength={10}
+                onBlur={(e) => handleBlur('ratePerHour', e.target.value)}
+                aria-invalid={touched.ratePerHour && !!errors.ratePerHour}
+                aria-describedby={touched.ratePerHour && errors.ratePerHour ? "ratePerHour-error" : undefined}
+              />
+              {touched.ratePerHour && errors.ratePerHour && (
+                <p id="ratePerHour-error" className="text-red-500 text-xs mt-1 font-medium">{errors.ratePerHour}</p>
+              )}
               </div>
             )}
 
@@ -215,8 +263,15 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
                 value={formData.bio}
                 onChange={handleChange}
                 placeholder='Tell us about yourself...'
-                className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm min-h-[100px] resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all'
+                className={`w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm min-h-[100px] resize-none focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all ${touched.bio && errors.bio ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={2000}
+                onBlur={(e) => handleBlur('bio', e.target.value)}
+                aria-invalid={touched.bio && !!errors.bio}
+                aria-describedby={touched.bio && errors.bio ? "bio-error" : undefined}
               />
+              {touched.bio && errors.bio && (
+                <p id="bio-error" className="text-red-500 text-xs mt-1 font-medium">{errors.bio}</p>
+              )}
             </div>
 
             {/* Services (For Errand role) */}
@@ -231,8 +286,15 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
                   value={formData.services}
                   onChange={handleChange}
                   placeholder='e.g. Cleaning, Delivery, Moving'
-                  className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all'
-                />
+                  className={`w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all ${touched.services && errors.services ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                  maxLength={150}
+                onBlur={(e) => handleBlur('services', e.target.value)}
+                aria-invalid={touched.services && !!errors.services}
+                aria-describedby={touched.services && errors.services ? "services-error" : undefined}
+              />
+              {touched.services && errors.services && (
+                <p id="services-error" className="text-red-500 text-xs mt-1 font-medium">{errors.services}</p>
+              )}
               </div>
             )}
 

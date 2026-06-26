@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { authService } from '@/services/auth.service';
 import Link from 'next/link';
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { validateEmail } from "@/lib/validation";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -10,8 +12,13 @@ export default function ForgotPasswordPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const { errors, touched, handleBlur, validateForm } = useFormValidation({
+    email: (v) => validateEmail(v),
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm({ email })) return;
     setLoading(true);
     setMessage('');
     setError('');
@@ -44,11 +51,22 @@ export default function ForgotPasswordPage() {
             <input
               type="email"
               required
+              maxLength={254}
               placeholder="your@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)]"
+              onBlur={(e) => handleBlur('email', e.target.value)}
+              aria-invalid={touched.email && !!errors.email}
+              aria-describedby={touched.email && errors.email ? "email-error" : undefined}
+              className={`w-full px-3 py-2 border rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 transition-colors bg-[var(--color-background)] ${
+                touched.email && errors.email 
+                  ? "border-red-500 focus:ring-red-500 focus:border-red-500" 
+                  : "border-[var(--color-border)] focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)]"
+              }`}
             />
+            {touched.email && errors.email && (
+              <p id="email-error" className="text-red-500 text-xs mt-1 font-medium">{errors.email}</p>
+            )}
           </div>
 
           {message && (

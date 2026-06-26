@@ -52,6 +52,7 @@ export interface SettingsFieldProps {
   error?: string;
   required?: boolean;
   rows?: number;
+  maxLength?: number;
 }
 
 export interface SettingsToggleProps {

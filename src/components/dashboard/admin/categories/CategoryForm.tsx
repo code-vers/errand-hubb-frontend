@@ -6,6 +6,8 @@ import React, { useState, useEffect } from "react";
 import { categoryService } from "@/services/category.service";
 import { toast } from "sonner";
 import { getImageUrl } from "@/configs/api.config";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { validateGenericString, validateTextarea } from "@/lib/validation";
 
 interface CategoryFormProps {
   category?: Category;
@@ -38,6 +40,11 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ category, onClose, onSucces
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
+  const { errors, touched, handleBlur, validateForm } = useFormValidation({
+    name: (v) => validateGenericString(v, 100, "Category Name"),
+    description: (v) => validateTextarea(v, 1000, "Description", false),
+  });
+
   useEffect(() => {
     if (category) {
       setFormData(category);
@@ -62,6 +69,7 @@ const CategoryForm: React.FC<CategoryFormProps> = ({ category, onClose, onSucces
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm(formData as any)) return;
     setIsSubmitting(true);
     try {
       if (category?.id) {

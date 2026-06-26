@@ -12,6 +12,7 @@ const SettingsField: React.FC<SettingsFieldProps> = ({
   error,
   required = false,
   rows = 3,
+  maxLength,
 }) => {
   const inputClasses = `
     block w-full px-4 py-2.5 bg-gray-50 border rounded-md text-sm
@@ -53,6 +54,7 @@ const SettingsField: React.FC<SettingsFieldProps> = ({
           placeholder={placeholder}
           disabled={disabled}
           rows={rows}
+          maxLength={maxLength}
           className={inputClasses}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}
@@ -66,6 +68,7 @@ const SettingsField: React.FC<SettingsFieldProps> = ({
           onChange={handleChange}
           placeholder={placeholder}
           disabled={disabled}
+          maxLength={maxLength}
           className={inputClasses}
           aria-invalid={!!error}
           aria-describedby={error ? `${id}-error` : undefined}

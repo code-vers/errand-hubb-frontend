@@ -125,6 +125,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
             onChange={(value) => handleFieldChange("siteName", value)}
             placeholder='e.g. ErrandHubb'
             required
+            maxLength={120}
             error={errors.siteName}
           />
           <SettingsField
@@ -135,6 +136,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
             onChange={(value) => handleFieldChange("siteUrl", value)}
             placeholder='e.g. https://errandhubb.com'
             required
+            maxLength={254}
             error={errors.siteUrl}
           />
         </div>
@@ -146,6 +148,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
           onChange={(value) => handleFieldChange("supportEmail", value)}
           placeholder='e.g. support@errandhubb.com'
           required
+          maxLength={254}
           error={errors.supportEmail}
         />
         <SettingsField
@@ -155,6 +158,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({
           value={formData.siteDescription}
           onChange={(value) => handleFieldChange("siteDescription", value)}
           placeholder='Describe your platform...'
+          maxLength={2000}
           error={errors.siteDescription}
           rows={3}
         />

@@ -7,6 +7,8 @@ import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import Link from "next/link";
 import { Shield, ArrowLeft, RefreshCw, Eye, EyeOff } from "lucide-react";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { validateEmail, validateGenericString } from "@/lib/validation";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -20,6 +22,11 @@ export default function LoginPage() {
     required: false,
     userId: "",
     code: "",
+  });
+
+  const { errors, touched, handleBlur, validateForm } = useFormValidation({
+    email: (v) => validateEmail(v),
+    password: (v) => validateGenericString(v, 128, "Password"),
   });
 
   const { login: authLogin } = useAuth();
@@ -99,6 +106,7 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm(formData)) return;
     login(formData);
   };
 
@@ -199,11 +207,22 @@ export default function LoginPage() {
               type='email'
               name='email'
               required
+              maxLength={254}
               placeholder='your@email.com'
               value={formData.email}
               onChange={handleChange}
-              className='w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)]'
+              onBlur={(e) => handleBlur('email', e.target.value)}
+              aria-invalid={touched.email && !!errors.email}
+              aria-describedby={touched.email && errors.email ? "email-error" : undefined}
+              className={`w-full px-3 py-2 border rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 transition-colors bg-[var(--color-background)] ${
+                touched.email && errors.email 
+                  ? "border-red-500 focus:ring-red-500 focus:border-red-500" 
+                  : "border-[var(--color-border)] focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)]"
+              }`}
             />
+            {touched.email && errors.email && (
+              <p id="email-error" className="text-red-500 text-xs mt-1 font-medium">{errors.email}</p>
+            )}
           </div>
 
           <div>
@@ -222,10 +241,18 @@ export default function LoginPage() {
                 type={showPassword ? "text" : "password"}
                 name='password'
                 required
+                maxLength={128}
                 placeholder='Your password'
                 value={formData.password}
                 onChange={handleChange}
-                className='w-full pl-3 pr-10 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)]'
+                onBlur={(e) => handleBlur('password', e.target.value)}
+                aria-invalid={touched.password && !!errors.password}
+                aria-describedby={touched.password && errors.password ? "password-error" : undefined}
+                className={`w-full pl-3 pr-10 py-2 border rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 transition-colors bg-[var(--color-background)] ${
+                  touched.password && errors.password 
+                    ? "border-red-500 focus:ring-red-500 focus:border-red-500" 
+                    : "border-[var(--color-border)] focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)]"
+                }`}
               />
               <button
                 type='button'
@@ -235,6 +262,9 @@ export default function LoginPage() {
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+            {touched.password && errors.password && (
+              <p id="password-error" className="text-red-500 text-xs mt-1 font-medium">{errors.password}</p>
+            )}
           </div>
 
           <button

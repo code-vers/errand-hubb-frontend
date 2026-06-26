@@ -4,6 +4,8 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { authService } from '@/services/auth.service';
 import Link from 'next/link';
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { validatePassword } from "@/lib/validation";
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -14,6 +16,10 @@ function ResetPasswordForm() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const { errors, touched, handleBlur, validateForm } = useFormValidation({
+    newPassword: (v) => validatePassword(v),
+  });
 
   useEffect(() => {
     const t = searchParams.get('token');
@@ -26,6 +32,7 @@ function ResetPasswordForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm({ newPassword })) return;
     
     if (newPassword !== confirmPassword) {
       setError('Passwords do not match');
@@ -67,13 +74,24 @@ function ResetPasswordForm() {
               </label>
               <input
                 type="password"
+                name="newPassword"
                 required
-                placeholder="Minimum 6 characters"
+                maxLength={128}
+                placeholder="Minimum 8 characters"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)]"
-                minLength={6}
+                onBlur={(e) => handleBlur('newPassword', e.target.value)}
+                aria-invalid={touched.newPassword && !!errors.newPassword}
+                aria-describedby={touched.newPassword && errors.newPassword ? "newPassword-error" : undefined}
+                className={`w-full px-3 py-2 border rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 transition-colors bg-[var(--color-background)] ${
+                  touched.newPassword && errors.newPassword 
+                    ? "border-red-500 focus:ring-red-500 focus:border-red-500" 
+                    : "border-[var(--color-border)] focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)]"
+                }`}
               />
+              {touched.newPassword && errors.newPassword && (
+                <p id="newPassword-error" className="text-red-500 text-xs mt-1 font-medium">{errors.newPassword}</p>
+              )}
             </div>
             <div>
               <label className="block text-xs font-bold text-[var(--color-secondary)] uppercase tracking-wide mb-2">
@@ -82,6 +100,7 @@ function ResetPasswordForm() {
               <input
                 type="password"
                 required
+                maxLength={128}
                 placeholder="Confirm your new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}

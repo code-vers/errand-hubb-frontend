@@ -5,6 +5,8 @@ import { Upload, Eye, EyeOff } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { validateName, validateEmail, validateCityState, validatePassword } from "@/lib/validation";
 
 const ClientRegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -23,6 +25,15 @@ const ClientRegistrationPage = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const { errors, touched, handleBlur, validateForm } = useFormValidation({
+    firstName: (v) => validateName(v),
+    lastName: (v) => validateName(v),
+    email: (v) => validateEmail(v),
+    city: (v) => validateCityState(v, "City"),
+    state: (v) => validateCityState(v, "State"),
+    password: (v) => validatePassword(v),
+  });
   const [passwordStrength, setPasswordStrength] = useState({
     score: 0,
     hasMinLength: false,
@@ -194,8 +205,15 @@ const ClientRegistrationPage = () => {
                 required
                 value={formData.firstName}
                 onChange={handleChange}
-                className={inputClass}
+                className={`${inputClass} ${touched.firstName && errors.firstName ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={50}
+                onBlur={(e) => handleBlur('firstName', e.target.value)}
+                aria-invalid={touched.firstName && !!errors.firstName}
+                aria-describedby={touched.firstName && errors.firstName ? "firstName-error" : undefined}
               />
+              {touched.firstName && errors.firstName && (
+                <p id="firstName-error" className="text-red-500 text-xs mt-1 font-medium">{errors.firstName}</p>
+              )}
             </div>
 
             {/* Last Name */}
@@ -211,8 +229,15 @@ const ClientRegistrationPage = () => {
                 required
                 value={formData.lastName}
                 onChange={handleChange}
-                className={inputClass}
+                className={`${inputClass} ${touched.lastName && errors.lastName ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={50}
+                onBlur={(e) => handleBlur('lastName', e.target.value)}
+                aria-invalid={touched.lastName && !!errors.lastName}
+                aria-describedby={touched.lastName && errors.lastName ? "lastName-error" : undefined}
               />
+              {touched.lastName && errors.lastName && (
+                <p id="lastName-error" className="text-red-500 text-xs mt-1 font-medium">{errors.lastName}</p>
+              )}
             </div>
           </div>
 
@@ -229,8 +254,15 @@ const ClientRegistrationPage = () => {
               required
               value={formData.email}
               onChange={handleChange}
-              className={inputClass}
-            />
+              className={`${inputClass} ${touched.email && errors.email ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+              maxLength={254}
+                onBlur={(e) => handleBlur('email', e.target.value)}
+                aria-invalid={touched.email && !!errors.email}
+                aria-describedby={touched.email && errors.email ? "email-error" : undefined}
+              />
+              {touched.email && errors.email && (
+                <p id="email-error" className="text-red-500 text-xs mt-1 font-medium">{errors.email}</p>
+              )}
           </div>
 
           {/* Phone */}
@@ -259,8 +291,15 @@ const ClientRegistrationPage = () => {
                 placeholder='City'
                 value={formData.city}
                 onChange={handleChange}
-                className={inputClass}
+                className={`${inputClass} ${touched.city && errors.city ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={80}
+                onBlur={(e) => handleBlur('city', e.target.value)}
+                aria-invalid={touched.city && !!errors.city}
+                aria-describedby={touched.city && errors.city ? "city-error" : undefined}
               />
+              {touched.city && errors.city && (
+                <p id="city-error" className="text-red-500 text-xs mt-1 font-medium">{errors.city}</p>
+              )}
             </div>
 
             {/* State */}
@@ -275,8 +314,15 @@ const ClientRegistrationPage = () => {
                 placeholder='State'
                 value={formData.state}
                 onChange={handleChange}
-                className={inputClass}
+                className={`${inputClass} ${touched.state && errors.state ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={80}
+                onBlur={(e) => handleBlur('state', e.target.value)}
+                aria-invalid={touched.state && !!errors.state}
+                aria-describedby={touched.state && errors.state ? "state-error" : undefined}
               />
+              {touched.state && errors.state && (
+                <p id="state-error" className="text-red-500 text-xs mt-1 font-medium">{errors.state}</p>
+              )}
             </div>
           </div>
 
@@ -294,8 +340,12 @@ const ClientRegistrationPage = () => {
                 required
                 value={formData.password}
                 onChange={handleChange}
-                className={`${inputClass} pr-10`}
+                className={`${inputClass} pr-10 ${touched.password && errors.password ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
                 autoComplete='new-password'
+                maxLength={128}
+                onBlur={(e) => handleBlur('password', e.target.value)}
+                aria-invalid={touched.password && !!errors.password}
+                aria-describedby={touched.password && errors.password ? "password-error" : undefined}
               />
               <button
                 type='button'
@@ -305,6 +355,9 @@ const ClientRegistrationPage = () => {
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+            {touched.password && errors.password && (
+              <p id="password-error" className="text-red-500 text-xs mt-1 font-medium">{errors.password}</p>
+            )}
             {/* Password Strength Indicator */}
             {formData.password && (
               <div className='mt-2 space-y-2 bg-[var(--color-surface-dim)] p-3 rounded-lg border border-[var(--color-border)]'>

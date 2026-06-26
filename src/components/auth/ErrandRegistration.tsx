@@ -8,6 +8,8 @@ import { getImageUrl } from "@/configs/api.config";
 import { toast } from "sonner";
 import { Upload, PlayCircle, X, Eye, EyeOff } from "lucide-react";
 import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { validateName, validateEmail, validateCityState, validateTextarea, validateGenericString, validatePassword } from "@/lib/validation";
 
 const ErrandRegistrationPage = () => {
   const { user, setUser } = useAuth();
@@ -39,6 +41,18 @@ const ErrandRegistrationPage = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const { errors, touched, handleBlur, validateForm } = useFormValidation({
+    firstName: (v) => validateName(v),
+    lastName: (v) => validateName(v),
+    email: (v) => validateEmail(v),
+    city: (v) => validateCityState(v, "City"),
+    state: (v) => validateCityState(v, "State"),
+    bio: (v) => validateTextarea(v, 2000, "Bio", false),
+    services: (v) => validateGenericString(v, 150, "Services", false),
+    rate: (v) => validateGenericString(v, 10, "Rate", false),
+    password: (v) => user ? null : validatePassword(v),
+  });
   const [passwordStrength, setPasswordStrength] = useState({
     score: 0,
     hasMinLength: false,
@@ -145,6 +159,7 @@ const ErrandRegistrationPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm(formData)) return;
 
     // Check strength if it's new registration, or if the user is changing their password
     const shouldCheckStrength = !user || formData.password;
@@ -316,8 +331,15 @@ const ErrandRegistrationPage = () => {
                 required
                 value={formData.firstName}
                 onChange={handleChange}
-                className={inputClass}
+                className={`${inputClass} ${touched.firstName && errors.firstName ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={50}
+                onBlur={(e) => handleBlur('firstName', e.target.value)}
+                aria-invalid={touched.firstName && !!errors.firstName}
+                aria-describedby={touched.firstName && errors.firstName ? "firstName-error" : undefined}
               />
+              {touched.firstName && errors.firstName && (
+                <p id="firstName-error" className="text-red-500 text-xs mt-1 font-medium">{errors.firstName}</p>
+              )}
             </div>
             <div className='flex flex-col space-y-1'>
               <label htmlFor='lastName' className={labelClass}>
@@ -331,8 +353,15 @@ const ErrandRegistrationPage = () => {
                 required
                 value={formData.lastName}
                 onChange={handleChange}
-                className={inputClass}
+                className={`${inputClass} ${touched.lastName && errors.lastName ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={50}
+                onBlur={(e) => handleBlur('lastName', e.target.value)}
+                aria-invalid={touched.lastName && !!errors.lastName}
+                aria-describedby={touched.lastName && errors.lastName ? "lastName-error" : undefined}
               />
+              {touched.lastName && errors.lastName && (
+                <p id="lastName-error" className="text-red-500 text-xs mt-1 font-medium">{errors.lastName}</p>
+              )}
             </div>
           </div>
 
@@ -349,8 +378,15 @@ const ErrandRegistrationPage = () => {
               required
               value={formData.email}
               onChange={handleChange}
-              className={inputClass}
-            />
+              className={`${inputClass} ${touched.email && errors.email ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+              maxLength={254}
+                onBlur={(e) => handleBlur('email', e.target.value)}
+                aria-invalid={touched.email && !!errors.email}
+                aria-describedby={touched.email && errors.email ? "email-error" : undefined}
+              />
+              {touched.email && errors.email && (
+                <p id="email-error" className="text-red-500 text-xs mt-1 font-medium">{errors.email}</p>
+              )}
           </div>
 
           {/* Phone */}
@@ -378,8 +414,15 @@ const ErrandRegistrationPage = () => {
                 placeholder='City'
                 value={formData.city}
                 onChange={handleChange}
-                className={inputClass}
+                className={`${inputClass} ${touched.city && errors.city ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={80}
+                onBlur={(e) => handleBlur('city', e.target.value)}
+                aria-invalid={touched.city && !!errors.city}
+                aria-describedby={touched.city && errors.city ? "city-error" : undefined}
               />
+              {touched.city && errors.city && (
+                <p id="city-error" className="text-red-500 text-xs mt-1 font-medium">{errors.city}</p>
+              )}
             </div>
             <div className='flex flex-col space-y-1'>
               <label htmlFor='state' className={labelClass}>
@@ -392,8 +435,15 @@ const ErrandRegistrationPage = () => {
                 placeholder='State'
                 value={formData.state}
                 onChange={handleChange}
-                className={inputClass}
+                className={`${inputClass} ${touched.state && errors.state ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={80}
+                onBlur={(e) => handleBlur('state', e.target.value)}
+                aria-invalid={touched.state && !!errors.state}
+                aria-describedby={touched.state && errors.state ? "state-error" : undefined}
               />
+              {touched.state && errors.state && (
+                <p id="state-error" className="text-red-500 text-xs mt-1 font-medium">{errors.state}</p>
+              )}
             </div>
           </div>
 
@@ -409,8 +459,15 @@ const ErrandRegistrationPage = () => {
               placeholder='Tell clients about yourself and your experience...'
               value={formData.bio}
               onChange={handleChange}
-              className='w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)] resize-none'
-            />
+              className={`w-full px-3 py-2 border rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 transition-colors bg-[var(--color-background)] resize-none ${touched.bio && errors.bio ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-[var(--color-border)] focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)]"}`}
+              maxLength={2000}
+                onBlur={(e) => handleBlur('bio', e.target.value)}
+                aria-invalid={touched.bio && !!errors.bio}
+                aria-describedby={touched.bio && errors.bio ? "bio-error" : undefined}
+              />
+              {touched.bio && errors.bio && (
+                <p id="bio-error" className="text-red-500 text-xs mt-1 font-medium">{errors.bio}</p>
+              )}
           </div>
 
           {/* Upload Images (Gallery) */}
@@ -530,8 +587,15 @@ const ErrandRegistrationPage = () => {
               placeholder='e.g. Grocery, Delivery, Pharmacy...'
               value={formData.services}
               onChange={handleChange}
-              className={inputClass}
-            />
+              className={`${inputClass} ${touched.services && errors.services ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+              maxLength={150}
+                onBlur={(e) => handleBlur('services', e.target.value)}
+                aria-invalid={touched.services && !!errors.services}
+                aria-describedby={touched.services && errors.services ? "services-error" : undefined}
+              />
+              {touched.services && errors.services && (
+                <p id="services-error" className="text-red-500 text-xs mt-1 font-medium">{errors.services}</p>
+              )}
           </div>
 
           {/* YouTube Link */}
@@ -565,8 +629,15 @@ const ErrandRegistrationPage = () => {
               placeholder='e.g. 15'
               value={formData.rate}
               onChange={handleChange}
-              className={inputClass}
-            />
+              className={`${inputClass} ${touched.rate && errors.rate ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+              maxLength={10}
+                onBlur={(e) => handleBlur('rate', e.target.value)}
+                aria-invalid={touched.rate && !!errors.rate}
+                aria-describedby={touched.rate && errors.rate ? "rate-error" : undefined}
+              />
+              {touched.rate && errors.rate && (
+                <p id="rate-error" className="text-red-500 text-xs mt-1 font-medium">{errors.rate}</p>
+              )}
           </div>
 
           {/* Password */}
@@ -586,9 +657,13 @@ const ErrandRegistrationPage = () => {
                 type={showPassword ? "text" : "password"}
                 placeholder='Create a password'
                 required={!user}
+                maxLength={128}
                 value={formData.password}
                 onChange={handleChange}
-                className={`${inputClass} pr-10`}
+                onBlur={(e) => handleBlur('password', e.target.value)}
+                aria-invalid={touched.password && !!errors.password}
+                aria-describedby={touched.password && errors.password ? "password-error" : undefined}
+                className={`${inputClass} pr-10 ${touched.password && errors.password ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
                 autoComplete='new-password'
               />
               <button
@@ -599,6 +674,9 @@ const ErrandRegistrationPage = () => {
                 {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+            {touched.password && errors.password && (
+              <p id="password-error" className="text-red-500 text-xs mt-1 font-medium">{errors.password}</p>
+            )}
             {/* Password Strength Indicator */}
             {formData.password && (
               <div className='mt-2 space-y-2 bg-[var(--color-surface-dim)] p-3 rounded-lg border border-[var(--color-border)]'>

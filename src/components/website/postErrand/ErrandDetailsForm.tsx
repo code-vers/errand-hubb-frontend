@@ -4,6 +4,8 @@ import { Upload, X, Loader2, PlayCircle, ChevronDown } from "lucide-react";
 import { Category } from "@/types/categories";
 import { toast } from "sonner";
 import { getImageUrl } from "@/configs/api.config";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { validateCityState, validateGenericString, validateTextarea } from "@/lib/validation";
 
 interface ErrandDetailsFormProps {
   formData: Errand;
@@ -29,6 +31,16 @@ const ErrandDetailsForm = ({
   setNewGalleryFiles,
 }: ErrandDetailsFormProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { errors, touched, handleBlur, validateForm } = useFormValidation({
+    title: (v) => validateGenericString(v || "", 120, "Title"),
+    description: (v) => validateTextarea(v || "", 5000, "Description"),
+    city: (v) => validateCityState(v || "", "City"),
+    state: (v) => validateCityState(v || "", "State"),
+    budget: (v) => validateGenericString(String(v || ""), 20, "Budget"),
+    contactInfo: (v) => validateGenericString(v || "", 150, "Contact Info"),
+    youtubeLink: (v) => validateGenericString(v || "", 200, "YouTube Link", false),
+  });
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -56,7 +68,7 @@ const ErrandDetailsForm = ({
     <section className='w-full  bg-white p-6 rounded-md shadow-sm'>
       <h2 className='text-[#2a3a4a] text-3xl font-extrabold'>Errand Details</h2>
 
-      <form className='mt-6 flex flex-col gap-4' onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>
+      <form className='mt-6 flex flex-col gap-4' onSubmit={(e) => { e.preventDefault(); if(validateForm(formData as any)) onSubmit(); }}>
         <label className='flex flex-col gap-1.5'>
           <span className='text-gray-600 text-xs font-bold uppercase tracking-wide'>
             Errand Title

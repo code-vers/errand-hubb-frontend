@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import PageHeader from "../../common/PageHeader";
 import { getImageUrl } from "@/configs/api.config";
 import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { validateEmail, validateAddress, validateBusinessName, validateGenericString, validateTextarea } from "@/lib/validation";
 
 export default function EditAdPage({ id }: { id: string }) {
   const router = useRouter();
@@ -34,6 +36,15 @@ export default function EditAdPage({ id }: { id: string }) {
   const [existingImageUrl, setExistingImageUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { errors, touched, handleBlur, validateForm } = useFormValidation({
+    title: (v) => validateGenericString(v, 120, "Title"),
+    companyName: (v) => validateBusinessName(v),
+    address: (v) => validateAddress(v),
+    email: (v) => validateEmail(v),
+    description: (v) => validateTextarea(v, 2000, "Description"),
+    youtubeLink: (v) => validateGenericString(v, 200, "YouTube Link", false),
+  });
 
   useEffect(() => {
     const fetchAd = async () => {
@@ -94,6 +105,7 @@ export default function EditAdPage({ id }: { id: string }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm(formData as any)) return;
     setIsSubmitting(true);
     
     try {
@@ -220,8 +232,15 @@ export default function EditAdPage({ id }: { id: string }) {
                 required
                 value={formData.title}
                 onChange={handleChange}
-                className={inputClass}
-              />
+                className={`${inputClass} ${touched.title && errors.title ? "border-red-500 focus:ring-red-500" : ""}`}
+                maxLength={120}
+                  onBlur={(e) => handleBlur('title', e.target.value)}
+                  aria-invalid={touched.title && !!errors.title}
+                  aria-describedby={touched.title && errors.title ? "title-error" : undefined}
+                />
+                {touched.title && errors.title && (
+                  <p id="title-error" className="text-red-500 text-xs mt-1 font-medium">{errors.title}</p>
+                )}
             </div>
 
             {/* Company Name */}
@@ -237,8 +256,15 @@ export default function EditAdPage({ id }: { id: string }) {
                 required
                 value={formData.companyName}
                 onChange={handleChange}
-                className={inputClass}
-              />
+                className={`${inputClass} ${touched.companyName && errors.companyName ? "border-red-500 focus:ring-red-500" : ""}`}
+                maxLength={120}
+                  onBlur={(e) => handleBlur('companyName', e.target.value)}
+                  aria-invalid={touched.companyName && !!errors.companyName}
+                  aria-describedby={touched.companyName && errors.companyName ? "companyName-error" : undefined}
+                />
+                {touched.companyName && errors.companyName && (
+                  <p id="companyName-error" className="text-red-500 text-xs mt-1 font-medium">{errors.companyName}</p>
+                )}
             </div>
 
             {/* Main Category */}
@@ -295,8 +321,15 @@ export default function EditAdPage({ id }: { id: string }) {
                 required
                 value={formData.address}
                 onChange={handleChange}
-                className={inputClass}
-              />
+                className={`${inputClass} ${touched.address && errors.address ? "border-red-500 focus:ring-red-500" : ""}`}
+                maxLength={150}
+                  onBlur={(e) => handleBlur('address', e.target.value)}
+                  aria-invalid={touched.address && !!errors.address}
+                  aria-describedby={touched.address && errors.address ? "address-error" : undefined}
+                />
+                {touched.address && errors.address && (
+                  <p id="address-error" className="text-red-500 text-xs mt-1 font-medium">{errors.address}</p>
+                )}
             </div>
 
             {/* Telephone */}
@@ -326,8 +359,15 @@ export default function EditAdPage({ id }: { id: string }) {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className={inputClass}
-              />
+                className={`${inputClass} ${touched.email && errors.email ? "border-red-500 focus:ring-red-500" : ""}`}
+                maxLength={254}
+                  onBlur={(e) => handleBlur('email', e.target.value)}
+                  aria-invalid={touched.email && !!errors.email}
+                  aria-describedby={touched.email && errors.email ? "email-error" : undefined}
+                />
+                {touched.email && errors.email && (
+                  <p id="email-error" className="text-red-500 text-xs mt-1 font-medium">{errors.email}</p>
+                )}
             </div>
 
             {/* Description */}
@@ -342,9 +382,16 @@ export default function EditAdPage({ id }: { id: string }) {
                 required
                 value={formData.description}
                 onChange={handleChange}
-                className={inputClass}
+                className={`${inputClass} ${touched.description && errors.description ? "border-red-500 focus:ring-red-500" : ""}`}
                 rows={4}
-              />
+                maxLength={2000}
+                  onBlur={(e) => handleBlur('description', e.target.value)}
+                  aria-invalid={touched.description && !!errors.description}
+                  aria-describedby={touched.description && errors.description ? "description-error" : undefined}
+                />
+                {touched.description && errors.description && (
+                  <p id="description-error" className="text-red-500 text-xs mt-1 font-medium">{errors.description}</p>
+                )}
             </div>
 
             {/* Youtube Link */}
@@ -359,8 +406,15 @@ export default function EditAdPage({ id }: { id: string }) {
                 placeholder="https://www.youtube.com/watch?v=..."
                 value={formData.youtubeLink}
                 onChange={handleChange}
-                className={inputClass}
-              />
+                className={`${inputClass} ${touched.youtubeLink && errors.youtubeLink ? "border-red-500 focus:ring-red-500" : ""}`}
+                maxLength={200}
+                  onBlur={(e) => handleBlur('youtubeLink', e.target.value)}
+                  aria-invalid={touched.youtubeLink && !!errors.youtubeLink}
+                  aria-describedby={touched.youtubeLink && errors.youtubeLink ? "youtubeLink-error" : undefined}
+                />
+                {touched.youtubeLink && errors.youtubeLink && (
+                  <p id="youtubeLink-error" className="text-red-500 text-xs mt-1 font-medium">{errors.youtubeLink}</p>
+                )}
             </div>
           </div>
 
