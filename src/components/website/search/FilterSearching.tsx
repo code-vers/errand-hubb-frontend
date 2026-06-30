@@ -84,160 +84,149 @@ const FilterSearching = ({
 
   return (
     <div className='max-w-7xl mx-auto w-full'>
-      <div className='bg-white rounded-[10px] shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-4 md:p-6 flex flex-col w-full'>
+      <div className='bg-white rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] overflow-hidden w-full transition-all duration-300'>
         {/* Mobile Toggle Header */}
         <div 
-          className='flex md:hidden justify-between items-center cursor-pointer select-none'
+          className='flex md:hidden justify-between items-center cursor-pointer select-none p-4 bg-gray-50 hover:bg-gray-100/50 border-b border-gray-100 transition-colors'
           onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
         >
           <div className='flex items-center gap-2 text-primary'>
             <Filter size={18} />
-            <span className='font-bold text-[14px] uppercase tracking-wider'>Search Filters</span>
+            <span className='font-bold text-[13px] uppercase tracking-wider text-gray-700'>Search Filters</span>
           </div>
           {isMobileFilterOpen ? <ChevronUp size={20} className="text-gray-500" /> : <ChevronDown size={20} className="text-gray-500" />}
         </div>
 
         {/* Filter Content */}
-        <form onSubmit={handleSearchSubmit} className={`${isMobileFilterOpen ? 'flex mt-4' : 'hidden'} md:flex flex-col gap-4 w-full`}>
-          {/* Top Row: Search, Category, Location */}
-          <div className='flex flex-col md:flex-row items-end gap-4 w-full'>
-          {/* Keyword Search */}
-          <div className='flex flex-col gap-1.5 flex-1 w-full'>
-            <label
-              htmlFor='search'
-              className='text-[12px] font-bold text-[#555555] uppercase tracking-wider'>
-              What do you need help with?
-            </label>
-            <input
-              id='search'
-              type='text'
-              placeholder='e.g. Delivery, Cleaning, Tech Support'
-              value={filters.search}
-              onChange={(e) => handleInputChange("search", e.target.value)}
-              className='h-10 w-full border border-gray-200 rounded-md px-3 text-[13px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors'
-            />
-          </div>
-
-          {/* Category Dropdown */}
-          <div className='flex flex-col gap-1.5 flex-1 w-full'>
-            <label
-              htmlFor='category'
-              className='text-[12px] font-bold text-[#555555] uppercase tracking-wider'>
-              Category
-            </label>
-            <select
-              id='category'
-              value={filters.categoryId}
-              onChange={(e) => handleInputChange("categoryId", e.target.value)}
-              className='h-10 w-full border border-gray-200 rounded-md px-3 text-[13px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors bg-white'
-            >
-              <option value='all'>All Categories</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Location */}
-          <div className='flex flex-col gap-1.5 flex-1 w-full'>
-            <label
-              htmlFor='location'
-              className='text-[12px] font-bold text-[#555555] uppercase tracking-wider'>
-              Location
-            </label>
-            <input
-              id='location'
-              type='text'
-              placeholder='City or State...'
-              value={filters.location}
-              onChange={(e) => handleInputChange("location", e.target.value)}
-              className='h-10 w-full border border-gray-200 rounded-md px-3 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors'
-            />
-          </div>
-        </div>
-
-        {/* Worker Search Row: Name and Email */}
-        <div className='flex flex-col md:flex-row items-end gap-4 w-full mt-2 border-t border-gray-100 pt-4'>
-          <div className='flex flex-col gap-1.5 flex-1 w-full'>
-            <label
-              htmlFor='workerName'
-              className='text-[12px] font-bold text-[#555555] uppercase tracking-wider'>
-              Worker Details (Name or Email)
-            </label>
-            <input
-              id='workerName'
-              type='text'
-              placeholder='e.g. John Smith or john@example.com'
-              value={filters.workerName || ""}
-              onChange={(e) => handleInputChange("workerName", e.target.value)}
-              className='h-10 w-full border border-gray-200 rounded-md px-3 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors'
-            />
-          </div>
-        </div>
-
-        {/* Bottom Row: Budget, Sorting, Buttons */}
-        <div className='flex flex-col md:flex-row items-end gap-4 w-full mt-2 border-t border-gray-100 pt-4'>
-          {/* Budget Range */}
-          <div className='flex flex-1 gap-2'>
-            <div className='flex flex-col gap-1.5 flex-1'>
-              <label className='text-[10px] font-bold text-[#555555] uppercase tracking-wider'>Min Budget ($)</label>
+        <form 
+          onSubmit={handleSearchSubmit} 
+          className={`${isMobileFilterOpen ? 'flex' : 'hidden'} md:flex flex-col p-5 md:p-6 gap-6 w-full`}
+        >
+          {/* Grid Layout for Fields */}
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6'>
+            
+            {/* Keyword Search */}
+            <div className='flex flex-col gap-1.5 lg:col-span-2'>
+              <label htmlFor='search' className='text-[11px] font-bold text-[#555555] uppercase tracking-wider'>
+                What do you need help with?
+              </label>
               <input
-                type='number'
-                placeholder='Min'
-                value={filters.minBudget}
-                onChange={(e) => handleInputChange("minBudget", e.target.value)}
-                className='h-9 w-full border border-gray-200 rounded-md px-2 text-[13px] focus:ring-1 focus:ring-primary focus:border-primary'
+                id='search'
+                type='text'
+                placeholder='e.g. Delivery, Cleaning, Tech Support'
+                value={filters.search}
+                onChange={(e) => handleInputChange("search", e.target.value)}
+                className='h-10 w-full border border-gray-200 rounded-lg px-3 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all'
               />
             </div>
-            <div className='flex flex-col gap-1.5 flex-1'>
-              <label className='text-[10px] font-bold text-[#555555] uppercase tracking-wider'>Max Budget ($)</label>
+
+            {/* Category Dropdown */}
+            <div className='flex flex-col gap-1.5'>
+              <label htmlFor='category' className='text-[11px] font-bold text-[#555555] uppercase tracking-wider'>
+                Category
+              </label>
+              <select
+                id='category'
+                value={filters.categoryId}
+                onChange={(e) => handleInputChange("categoryId", e.target.value)}
+                className='h-10 w-full border border-gray-200 rounded-lg px-3 text-[13px] text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white cursor-pointer'
+              >
+                <option value='all'>All Categories</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Location */}
+            <div className='flex flex-col gap-1.5'>
+              <label htmlFor='location' className='text-[11px] font-bold text-[#555555] uppercase tracking-wider'>
+                Location
+              </label>
               <input
-                type='number'
-                placeholder='Max'
-                value={filters.maxBudget}
-                onChange={(e) => handleInputChange("maxBudget", e.target.value)}
-                className='h-9 w-full border border-gray-200 rounded-md px-2 text-[13px] focus:ring-1 focus:ring-primary focus:border-primary'
+                id='location'
+                type='text'
+                placeholder='City or State...'
+                value={filters.location}
+                onChange={(e) => handleInputChange("location", e.target.value)}
+                className='h-10 w-full border border-gray-200 rounded-lg px-3 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all'
               />
             </div>
-          </div>
 
-          {/* Sorting */}
-          <div className='flex flex-col gap-1.5 flex-1 w-full'>
-            <label className='text-[10px] font-bold text-[#555555] uppercase tracking-wider'>Sort By</label>
-            <select
-              value={`${filters.sortBy}-${filters.sortOrder}`}
-              onChange={(e) => {
-                const [by, order] = e.target.value.split('-');
-                setFilters((prev) => ({ ...prev, sortBy: by, sortOrder: order as "asc" | "desc" }));
-              }}
-              className='h-9 w-full border border-gray-200 rounded-md px-2 text-[13px] focus:ring-1 focus:ring-primary bg-white'
-            >
-              <option value='createdAt-desc'>Newest First</option>
-              <option value='createdAt-asc'>Oldest First</option>
-              <option value='budget-desc'>Highest Budget</option>
-              <option value='budget-asc'>Lowest Budget</option>
-            </select>
+            {/* Worker Details */}
+            <div className='flex flex-col gap-1.5 lg:col-span-2'>
+              <label htmlFor='workerName' className='text-[11px] font-bold text-[#555555] uppercase tracking-wider'>
+                Worker Details (Name or Email)
+              </label>
+              <input
+                id='workerName'
+                type='text'
+                placeholder='e.g. John Smith or john@example.com'
+                value={filters.workerName || ""}
+                onChange={(e) => handleInputChange("workerName", e.target.value)}
+                className='h-10 w-full border border-gray-200 rounded-lg px-3 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all'
+              />
+            </div>
+
+            {/* Max Budget Slider */}
+            <div className='flex flex-col gap-1.5 justify-center'>
+              <label className='text-[11px] font-bold text-[#555555] uppercase tracking-wider flex justify-between items-center'>
+                <span>Max Budget</span>
+                <span className="text-primary font-extrabold text-[13px]">${filters.maxBudget || "500"}</span>
+              </label>
+              <div className="h-10 flex items-center px-1">
+                <input
+                  type='range'
+                  min='5'
+                  max='500'
+                  step='5'
+                  value={filters.maxBudget || "500"}
+                  onChange={(e) => handleInputChange("maxBudget", e.target.value)}
+                  className='w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary'
+                />
+              </div>
+            </div>
+
+            {/* Sort By Dropdown */}
+            <div className='flex flex-col gap-1.5'>
+              <label className='text-[11px] font-bold text-[#555555] uppercase tracking-wider'>
+                Sort By
+              </label>
+              <select
+                value={`${filters.sortBy}-${filters.sortOrder}`}
+                onChange={(e) => {
+                  const [by, order] = e.target.value.split('-');
+                  setFilters((prev) => ({ ...prev, sortBy: by, sortOrder: order as "asc" | "desc" }));
+                }}
+                className='h-10 w-full border border-gray-200 rounded-lg px-3 text-[13px] text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-white cursor-pointer'
+              >
+                <option value='createdAt-desc'>Newest First</option>
+                <option value='createdAt-asc'>Oldest First</option>
+                <option value='budget-desc'>Highest Budget</option>
+                <option value='budget-asc'>Lowest Budget</option>
+              </select>
+            </div>
+
           </div>
 
           {/* Action Buttons */}
-          <div className='flex gap-2 w-full md:w-auto mt-4 md:mt-0'>
+          <div className='flex justify-end gap-3 pt-5 border-t border-gray-100 mt-2'>
             <button
               type='button'
               onClick={handleReset}
-              className='h-9 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-[11px] uppercase tracking-wider rounded-md transition-all duration-200'
+              className='h-10 px-5 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-600 font-bold text-[12px] uppercase tracking-wider rounded-lg transition-all duration-200'
             >
               Reset
             </button>
             <button
               type='submit'
-              className='h-9 px-8 bg-primary active:scale-95 text-white font-bold text-[11px] uppercase tracking-wider rounded-md transition-all duration-200 shadow-sm'
+              className='h-10 px-8 bg-primary hover:bg-primary/95 active:scale-[0.98] text-white font-bold text-[12px] uppercase tracking-wider rounded-lg transition-all duration-200 shadow-md shadow-primary/20'
             >
               Search Errands
             </button>
           </div>
-        </div>
         </form>
       </div>
     </div>

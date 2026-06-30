@@ -198,17 +198,7 @@ const SearchPage = () => {
       );
     }
 
-    // Budget Min Filter
-    if (filters.minBudget) {
-      const min = parseFloat(filters.minBudget);
-      if (!isNaN(min)) {
-        result = result.filter(
-          (post) => post.budget && parseFloat(post.budget) >= min
-        );
-      }
-    }
-
-    // Budget Max Filter
+    // Budget Max Filter (Up to $X)
     if (filters.maxBudget) {
       const max = parseFloat(filters.maxBudget);
       if (!isNaN(max)) {
