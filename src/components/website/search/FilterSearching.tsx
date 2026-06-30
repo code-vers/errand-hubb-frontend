@@ -78,6 +78,11 @@ const FilterSearching = ({
     onSearch(defaultFilters);
   };
 
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleSearchClick();
+  };
+
   return (
     <div className='max-w-7xl mx-auto w-full'>
       <div className='bg-white rounded-[10px] shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-4 md:p-6 flex flex-col w-full'>
@@ -94,7 +99,7 @@ const FilterSearching = ({
         </div>
 
         {/* Filter Content */}
-        <div className={`${isMobileFilterOpen ? 'flex mt-4' : 'hidden'} md:flex flex-col gap-4 w-full`}>
+        <form onSubmit={handleSearchSubmit} className={`${isMobileFilterOpen ? 'flex mt-4' : 'hidden'} md:flex flex-col gap-4 w-full`}>
           {/* Top Row: Search, Category, Location */}
           <div className='flex flex-col md:flex-row items-end gap-4 w-full'>
           {/* Keyword Search */}
@@ -243,15 +248,14 @@ const FilterSearching = ({
               Reset
             </button>
             <button
-              type='button'
-              onClick={handleSearchClick}
+              type='submit'
               className='h-9 px-8 bg-primary active:scale-95 text-white font-bold text-[11px] uppercase tracking-wider rounded-md transition-all duration-200 shadow-sm'
             >
               Search Errands
             </button>
           </div>
         </div>
-        </div>
+        </form>
       </div>
     </div>
   );
