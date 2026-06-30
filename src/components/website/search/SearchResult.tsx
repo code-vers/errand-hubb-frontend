@@ -11,6 +11,7 @@ import { useConnect } from '@/hooks/useConnect';
 
 interface SearchResultProps {
   posts: Post[];
+  onClearFilters?: () => void;
 }
 
 const getYoutubeEmbedUrl = (url: string) => {
@@ -20,7 +21,7 @@ const getYoutubeEmbedUrl = (url: string) => {
   return match && match[2].length === 11 ? `https://www.youtube.com/embed/${match[2]}` : null;
 };
 
-const SearchResult = ({ posts }: SearchResultProps) => {
+const SearchResult = ({ posts, onClearFilters }: SearchResultProps) => {
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
   const [activeGallery, setActiveGallery] = useState<string[] | null>(null);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
@@ -35,12 +36,20 @@ const SearchResult = ({ posts }: SearchResultProps) => {
 
   if (posts.length === 0) {
     return (
-      <div className='text-center py-20 bg-white rounded-[10px] shadow-sm'>
+      <div className='text-center py-20 bg-white rounded-[10px] shadow-sm flex flex-col items-center'>
         <FolderX className='mx-auto h-16 w-16 text-gray-300 mb-4' strokeWidth={1} />
         <h3 className='text-xl font-bold text-gray-800'>No Errands Found</h3>
-        <p className='mt-2 text-gray-500 font-medium'>
+        <p className='mt-2 text-gray-500 font-medium mb-6'>
           Try adjusting your search filters to find more results.
         </p>
+        {onClearFilters && (
+          <button
+            onClick={onClearFilters}
+            className='h-10 px-6 bg-primary text-white font-bold text-[13px] uppercase tracking-wider rounded-md transition-all duration-200 hover:bg-primary/90 active:scale-95 shadow-sm'
+          >
+            Clear Filters
+          </button>
+        )}
       </div>
     );
   }

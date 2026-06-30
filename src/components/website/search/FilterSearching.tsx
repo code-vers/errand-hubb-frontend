@@ -3,6 +3,7 @@ import { SearchFilters } from "@/types/search";
 import { useState, useEffect } from "react";
 import { categoryService } from "@/services/category.service";
 import { Category } from "@/types/categories";
+import { Filter, ChevronDown, ChevronUp } from "lucide-react";
 
 const STATIC_CATEGORIES: Category[] = [
   { id: "ee522b07-c43e-4136-bcac-bba637a47928", name: "Grocery Shopping", icon: "🛒", iconType: "emoji", color: "#ec6f27", description: "Get your groceries delivered to your doorstep without any hassle.", status: "active" },
@@ -30,6 +31,11 @@ const FilterSearching = ({
 }: FilterSearchingProps) => {
   const [filters, setFilters] = useState<SearchFilters>(initialFilters);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+  useEffect(() => {
+    setFilters(initialFilters);
+  }, [initialFilters]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -74,9 +80,23 @@ const FilterSearching = ({
 
   return (
     <div className='max-w-7xl mx-auto w-full'>
-      <div className='bg-white rounded-[10px] shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-6 flex flex-col gap-4 w-full'>
-        {/* Top Row: Search, Category, Location */}
-        <div className='flex flex-col md:flex-row items-end gap-4 w-full'>
+      <div className='bg-white rounded-[10px] shadow-[0_8px_30px_rgba(0,0,0,0.06)] p-4 md:p-6 flex flex-col w-full'>
+        {/* Mobile Toggle Header */}
+        <div 
+          className='flex md:hidden justify-between items-center cursor-pointer select-none'
+          onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
+        >
+          <div className='flex items-center gap-2 text-primary'>
+            <Filter size={18} />
+            <span className='font-bold text-[14px] uppercase tracking-wider'>Search Filters</span>
+          </div>
+          {isMobileFilterOpen ? <ChevronUp size={20} className="text-gray-500" /> : <ChevronDown size={20} className="text-gray-500" />}
+        </div>
+
+        {/* Filter Content */}
+        <div className={`${isMobileFilterOpen ? 'flex mt-4' : 'hidden'} md:flex flex-col gap-4 w-full`}>
+          {/* Top Row: Search, Category, Location */}
+          <div className='flex flex-col md:flex-row items-end gap-4 w-full'>
           {/* Keyword Search */}
           <div className='flex flex-col gap-1.5 flex-1 w-full'>
             <label
@@ -230,6 +250,7 @@ const FilterSearching = ({
               Search Errands
             </button>
           </div>
+        </div>
         </div>
       </div>
     </div>

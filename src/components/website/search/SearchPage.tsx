@@ -144,6 +144,20 @@ const SearchPage = () => {
     }, 300);
   };
 
+  const handleClearFilters = () => {
+    handleSearch({
+      search: "",
+      categoryId: "all",
+      location: "",
+      minBudget: "",
+      maxBudget: "",
+      sortBy: "createdAt",
+      sortOrder: "desc",
+      workerName: "",
+      workerEmail: "",
+    });
+  };
+
   const filteredPosts = useMemo(() => {
     let result = [...STATIC_POSTS];
 
@@ -255,7 +269,7 @@ const SearchPage = () => {
               </h2>
             </div>
 
-            <SearchResult posts={posts} />
+            <SearchResult posts={posts} onClearFilters={handleClearFilters} />
 
             {totalPages > 1 && (
               <div className='mt-8'>
