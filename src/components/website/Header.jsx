@@ -15,8 +15,6 @@ export default function Header() {
     { name: "About", href: "/about" },
     { name: "Errand", href: "/errand" },
     { name: "Errand Gallery", href: "/gallery" },
-    { name: "Client Registration", href: "/client-registration" },
-    { name: "ErrandR Registration", href: "/errand-registration" },
     { name: "Investor Relations", href: "/investor-relations" },
     { name: "Contact", href: "/contact" },
     { name: "Legal", href: "/legal" },
@@ -63,11 +61,16 @@ export default function Header() {
           isLogout: true,
         });
       } else {
-        // Logged out: Add Login after Ads
+        // Logged out: Add Login and Sign Up after Ads
         links.splice(adsIndexAfterDashboard + 1, 0, {
           name: "Login",
           href: "/login",
           isLogin: true,
+        });
+        links.splice(adsIndexAfterDashboard + 2, 0, {
+          name: "Sign Up",
+          href: "/signup",
+          isSignup: true,
         });
       }
     } else {
@@ -76,6 +79,7 @@ export default function Header() {
         links.push({ name: "Logout", href: "#", onClick: logout, isLogout: true });
       } else {
         links.push({ name: "Login", href: "/login", isLogin: true });
+        links.push({ name: "Sign Up", href: "/signup", isSignup: true });
       }
     }
 
@@ -188,7 +192,9 @@ export default function Header() {
                           ? "inline-block bg-[#1a3a7a] uppercase text-white font-extrabold italic tracking-wide px-4 py-[5px] rounded-sm text-[22px]"
                           : link.isLogin
                             ? "inline-block bg-[#1a3a7a] hover:bg-[#122856] text-white font-bold px-4 py-1.5 rounded-md uppercase tracking-wider active:scale-95 transition-all text-center"
-                            : "text-white hover:text-white/80"
+                            : link.isSignup
+                              ? "inline-block bg-white hover:bg-gray-100 text-primary font-bold px-4 py-1.5 rounded-md uppercase tracking-wider active:scale-95 transition-all text-center md:ml-2 mt-2 md:mt-0"
+                              : "text-white hover:text-white/80"
                       }`}
                       onClick={() => setIsMenuOpen(false)}>
                       {link.name}
