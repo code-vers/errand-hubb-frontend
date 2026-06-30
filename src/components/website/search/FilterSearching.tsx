@@ -72,7 +72,6 @@ const FilterSearching = ({
       sortBy: "createdAt",
       sortOrder: "desc",
       workerName: "",
-      workerEmail: "",
     };
     setFilters(defaultFilters);
     onSearch(defaultFilters);
@@ -165,30 +164,14 @@ const FilterSearching = ({
             <label
               htmlFor='workerName'
               className='text-[12px] font-bold text-[#555555] uppercase tracking-wider'>
-              Worker Name
+              Worker Details (Name or Email)
             </label>
             <input
               id='workerName'
               type='text'
-              placeholder='e.g. John Smith'
+              placeholder='e.g. John Smith or john@example.com'
               value={filters.workerName || ""}
               onChange={(e) => handleInputChange("workerName", e.target.value)}
-              className='h-10 w-full border border-gray-200 rounded-md px-3 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors'
-            />
-          </div>
-
-          <div className='flex flex-col gap-1.5 flex-1 w-full'>
-            <label
-              htmlFor='workerEmail'
-              className='text-[12px] font-bold text-[#555555] uppercase tracking-wider'>
-              Worker Email
-            </label>
-            <input
-              id='workerEmail'
-              type='email'
-              placeholder='e.g. john@example.com'
-              value={filters.workerEmail || ""}
-              onChange={(e) => handleInputChange("workerEmail", e.target.value)}
               className='h-10 w-full border border-gray-200 rounded-md px-3 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors'
             />
           </div>

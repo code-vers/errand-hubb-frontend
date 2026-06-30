@@ -130,7 +130,6 @@ const SearchPage = () => {
     sortBy: "createdAt",
     sortOrder: "desc",
     workerName: "",
-    workerEmail: "",
   });
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -154,7 +153,6 @@ const SearchPage = () => {
       sortBy: "createdAt",
       sortOrder: "desc",
       workerName: "",
-      workerEmail: "",
     });
   };
 
@@ -189,22 +187,14 @@ const SearchPage = () => {
       );
     }
 
-    // Worker Name Filter
+    // Worker Details Filter (Name or Email)
     if (filters.workerName) {
-      const nameLower = filters.workerName.toLowerCase();
+      const queryLower = filters.workerName.toLowerCase();
       result = result.filter(
         (post) =>
-          post.user.firstName.toLowerCase().includes(nameLower) ||
-          post.user.lastName.toLowerCase().includes(nameLower)
-      );
-    }
-
-    // Worker Email Filter
-    if (filters.workerEmail) {
-      const emailLower = filters.workerEmail.toLowerCase();
-      result = result.filter(
-        (post) =>
-          post.contactInfo && post.contactInfo.toLowerCase().includes(emailLower)
+          post.user.firstName.toLowerCase().includes(queryLower) ||
+          post.user.lastName.toLowerCase().includes(queryLower) ||
+          (post.contactInfo && post.contactInfo.toLowerCase().includes(queryLower))
       );
     }
 

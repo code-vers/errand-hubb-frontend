@@ -37,7 +37,6 @@ export interface SearchFilters {
   sortBy: string;
   sortOrder: "asc" | "desc";
   workerName?: string;
-  workerEmail?: string;
 }
 
 export interface PaginatedResponse<T> {
