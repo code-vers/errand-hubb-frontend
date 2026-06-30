@@ -8,6 +8,8 @@ import icon2 from '../../../../public/errand/icon.jpg';
 import { useState } from 'react';
 import { getImageUrl } from '@/configs/api.config';
 import { useConnect } from '@/hooks/useConnect';
+import PublicUserProfileModal from '@/components/common/PublicUserProfileModal';
+import { PostUser } from '@/types/search';
 
 interface SearchResultProps {
   posts: Post[];
@@ -27,6 +29,7 @@ const SearchResult = ({ posts, onClearFilters }: SearchResultProps) => {
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
   const { connect, isConnecting } = useConnect();
   const [connectingUserId, setConnectingUserId] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<PostUser | null>(null);
 
   const handleContact = async (userId: string) => {
     setConnectingUserId(userId);
@@ -75,7 +78,10 @@ const SearchResult = ({ posts, onClearFilters }: SearchResultProps) => {
               {/* Top row: avatar + info + media */}
               <div className='flex gap-4 mb-3'>
                 {/* Avatar */}
-                <div className='shrink-0 bg-gray-50 flex items-center justify-center w-20 h-20 rounded overflow-hidden'>
+                <div 
+                  className='shrink-0 bg-gray-50 flex items-center justify-center w-20 h-20 rounded overflow-hidden cursor-pointer hover:opacity-80 transition-opacity'
+                  onClick={() => setSelectedUser(post.user)}
+                >
                   <img
                     src={displayImage}
                     alt={`${post.user.firstName} profile`}
@@ -87,7 +93,10 @@ const SearchResult = ({ posts, onClearFilters }: SearchResultProps) => {
                 <div className='grow'>
                   <div className='flex justify-between items-start'>
                     <div>
-                      <h2 className='text-[16px] font-bold text-secondary leading-tight'>
+                      <h2 
+                        className='text-[16px] font-bold text-secondary leading-tight cursor-pointer hover:text-primary transition-colors hover:underline inline-block'
+                        onClick={() => setSelectedUser(post.user)}
+                      >
                         {post.user.firstName} {post.user.lastName}
                       </h2>
                       <div className='flex items-center text-[12px] font-normal text-[#555555] mt-0.5'>
@@ -322,6 +331,12 @@ const SearchResult = ({ posts, onClearFilters }: SearchResultProps) => {
           </div>
         </div>
       )} */}
+
+      <PublicUserProfileModal 
+        user={selectedUser} 
+        isOpen={!!selectedUser} 
+        onClose={() => setSelectedUser(null)} 
+      />
     </div>
   );
 };

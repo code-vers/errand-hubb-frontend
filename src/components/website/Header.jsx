@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import logo from "../../../public/logo2.svg";
 import { useAuth } from "@/context/AuthContext";
+import { getImageUrl } from "@/configs/api.config";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -53,8 +54,13 @@ export default function Header() {
     const adsIndexAfterDashboard = links.findIndex(l => l.name === "Ads");
     if (adsIndexAfterDashboard !== -1) {
       if (user) {
-        // Logged in: Add Logout after Ads
+        // Logged in: Add Profile then Logout after Ads
         links.splice(adsIndexAfterDashboard + 1, 0, {
+          name: "Profile",
+          href: "/dashboard/profile",
+          isProfile: true,
+        });
+        links.splice(adsIndexAfterDashboard + 2, 0, {
           name: "Logout",
           href: "#",
           onClick: logout,
@@ -76,6 +82,7 @@ export default function Header() {
     } else {
       // Fallback
       if (user) {
+        links.push({ name: "Profile", href: "/dashboard/profile", isProfile: true });
         links.push({ name: "Logout", href: "#", onClick: logout, isLogout: true });
       } else {
         links.push({ name: "Login", href: "/login", isLogin: true });
@@ -171,7 +178,25 @@ export default function Header() {
                       ? "opacity-100 translate-x-0"
                       : "opacity-0 -translate-x-4 md:opacity-100 md:translate-x-0"
                   }`}>
-                  {link.onClick ? (
+                  {link.isProfile ? (
+                    <Link
+                      href={link.href}
+                      className="flex items-center gap-2 hover:bg-white/10 px-3 py-1.5 rounded-md transition-colors"
+                      onClick={() => setIsMenuOpen(false)}>
+                      <div className="w-8 h-8 rounded-full overflow-hidden bg-white/20 flex items-center justify-center shrink-0 shadow-sm border border-white/30">
+                        {user.profileImage ? (
+                          <img src={getImageUrl(user.profileImage)} alt="profile" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-white font-bold text-sm uppercase">
+                            {user.firstName?.charAt(0) || user.email?.charAt(0) || "U"}
+                          </span>
+                        )}
+                      </div>
+                      <span className="text-white text-[13px] font-bold hidden md:inline-block">
+                        {user.firstName ? `${user.firstName} ${user.lastName || ''}` : user.email?.split('@')[0]}
+                      </span>
+                    </Link>
+                  ) : link.onClick ? (
                     <button
                       onClick={() => {
                         link.onClick();
