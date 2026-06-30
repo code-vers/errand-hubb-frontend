@@ -8,9 +8,12 @@ import icon2 from '../../../../public/errand/icon.jpg';
 import { useState } from 'react';
 import { getImageUrl } from '@/configs/api.config';
 import { useConnect } from '@/hooks/useConnect';
+import PublicUserProfileModal from '@/components/common/PublicUserProfileModal';
+import { PostUser } from '@/types/search';
 
 interface SearchResultProps {
   posts: Post[];
+  onClearFilters?: () => void;
 }
 
 const getYoutubeEmbedUrl = (url: string) => {
@@ -20,12 +23,13 @@ const getYoutubeEmbedUrl = (url: string) => {
   return match && match[2].length === 11 ? `https://www.youtube.com/embed/${match[2]}` : null;
 };
 
-const SearchResult = ({ posts }: SearchResultProps) => {
+const SearchResult = ({ posts, onClearFilters }: SearchResultProps) => {
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
   const [activeGallery, setActiveGallery] = useState<string[] | null>(null);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
   const { connect, isConnecting } = useConnect();
   const [connectingUserId, setConnectingUserId] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<PostUser | null>(null);
 
   const handleContact = async (userId: string) => {
     setConnectingUserId(userId);
@@ -35,12 +39,20 @@ const SearchResult = ({ posts }: SearchResultProps) => {
 
   if (posts.length === 0) {
     return (
-      <div className='text-center py-20 bg-white rounded-[10px] shadow-sm'>
+      <div className='text-center py-20 bg-white rounded-[10px] shadow-sm flex flex-col items-center'>
         <FolderX className='mx-auto h-16 w-16 text-gray-300 mb-4' strokeWidth={1} />
         <h3 className='text-xl font-bold text-gray-800'>No Errands Found</h3>
-        <p className='mt-2 text-gray-500 font-medium'>
+        <p className='mt-2 text-gray-500 font-medium mb-6'>
           Try adjusting your search filters to find more results.
         </p>
+        {onClearFilters && (
+          <button
+            onClick={onClearFilters}
+            className='h-10 px-6 bg-primary text-white font-bold text-[13px] uppercase tracking-wider rounded-md transition-all duration-200 hover:bg-primary/90 active:scale-95 shadow-sm'
+          >
+            Clear Filters
+          </button>
+        )}
       </div>
     );
   }
@@ -66,7 +78,10 @@ const SearchResult = ({ posts }: SearchResultProps) => {
               {/* Top row: avatar + info + media */}
               <div className='flex gap-4 mb-3'>
                 {/* Avatar */}
-                <div className='shrink-0 bg-gray-50 flex items-center justify-center w-20 h-20 rounded overflow-hidden'>
+                <div 
+                  className='shrink-0 bg-gray-50 flex items-center justify-center w-20 h-20 rounded overflow-hidden cursor-pointer hover:opacity-80 transition-opacity'
+                  onClick={() => setSelectedUser(post.user)}
+                >
                   <img
                     src={displayImage}
                     alt={`${post.user.firstName} profile`}
@@ -78,7 +93,10 @@ const SearchResult = ({ posts }: SearchResultProps) => {
                 <div className='grow'>
                   <div className='flex justify-between items-start'>
                     <div>
-                      <h2 className='text-[16px] font-bold text-secondary leading-tight'>
+                      <h2 
+                        className='text-[16px] font-bold text-secondary leading-tight cursor-pointer hover:text-primary transition-colors hover:underline inline-block'
+                        onClick={() => setSelectedUser(post.user)}
+                      >
                         {post.user.firstName} {post.user.lastName}
                       </h2>
                       <div className='flex items-center text-[12px] font-normal text-[#555555] mt-0.5'>
@@ -313,6 +331,12 @@ const SearchResult = ({ posts }: SearchResultProps) => {
           </div>
         </div>
       )} */}
+
+      <PublicUserProfileModal 
+        user={selectedUser} 
+        isOpen={!!selectedUser} 
+        onClose={() => setSelectedUser(null)} 
+      />
     </div>
   );
 };

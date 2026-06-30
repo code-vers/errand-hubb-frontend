@@ -6,8 +6,10 @@ import Link from "next/link";
 import { getImageUrl } from "@/configs/api.config";
 import { useProviders } from "@/hooks/useProviders";
 import Pagination from "@/components/common/Pagination";
+import PublicUserProfileModal from "@/components/common/PublicUserProfileModal";
+import { useState } from "react";
 
-const ErrandCard: React.FC<{ errand: any }> = ({ errand: post }) => {
+const ErrandCard: React.FC<{ errand: any; onUserClick: (user: any) => void }> = ({ errand: post, onUserClick }) => {
   // Map Post object to Card UI
   const user = post.user;
   
@@ -22,7 +24,10 @@ const ErrandCard: React.FC<{ errand: any }> = ({ errand: post }) => {
   return (
     <div className='bg-[#FDF5EC] rounded-lg p-5 flex gap-3.5 items-start relative border border-primary/10 hover:border-primary/30 transition-all'>
       {/* Errand Image */}
-      <div className='w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-primary/10 bg-white flex items-center justify-center'>
+      <div 
+        className='w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-primary/10 bg-white flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity'
+        onClick={() => onUserClick(user)}
+      >
         <img
           src={displayImage}
           alt={title}
@@ -32,7 +37,10 @@ const ErrandCard: React.FC<{ errand: any }> = ({ errand: post }) => {
 
       {/* Content */}
       <div className='flex-1'>
-        <h3 className='text-[16px] font-bold text-foreground mb-1.5 pr-18 leading-snug'>
+        <h3 
+          className='text-[16px] font-bold text-foreground mb-1.5 pr-18 leading-snug cursor-pointer hover:text-primary transition-colors hover:underline inline-block'
+          onClick={() => onUserClick(user)}
+        >
           {title}
         </h3>
         <p className='text-[12px] text-[#555555] leading-relaxed mb-2.5 line-clamp-2'>
@@ -63,6 +71,7 @@ const ErrandCard: React.FC<{ errand: any }> = ({ errand: post }) => {
 };
 
 const ErrandsPage: React.FC = () => {
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
   const { 
     providers: posts, 
     loading: isLoading, 
@@ -117,7 +126,7 @@ const ErrandsPage: React.FC = () => {
             {/* Grid */}
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               {errandsList.map((errand: any) => (
-                <ErrandCard key={errand.id} errand={errand} />
+                <ErrandCard key={errand.id} errand={errand} onUserClick={setSelectedUser} />
               ))}
             </div>
 
@@ -132,6 +141,12 @@ const ErrandsPage: React.FC = () => {
           </>
         )}
       </div>
+
+      <PublicUserProfileModal 
+        user={selectedUser} 
+        isOpen={!!selectedUser} 
+        onClose={() => setSelectedUser(null)} 
+      />
     </div>
   );
 };

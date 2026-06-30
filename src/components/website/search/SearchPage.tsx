@@ -130,7 +130,6 @@ const SearchPage = () => {
     sortBy: "createdAt",
     sortOrder: "desc",
     workerName: "",
-    workerEmail: "",
   });
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -142,6 +141,19 @@ const SearchPage = () => {
     setTimeout(() => {
       setIsLoading(false);
     }, 300);
+  };
+
+  const handleClearFilters = () => {
+    handleSearch({
+      search: "",
+      categoryId: "all",
+      location: "",
+      minBudget: "",
+      maxBudget: "",
+      sortBy: "createdAt",
+      sortOrder: "desc",
+      workerName: "",
+    });
   };
 
   const filteredPosts = useMemo(() => {
@@ -175,36 +187,18 @@ const SearchPage = () => {
       );
     }
 
-    // Worker Name Filter
+    // Worker Details Filter (Name or Email)
     if (filters.workerName) {
-      const nameLower = filters.workerName.toLowerCase();
+      const queryLower = filters.workerName.toLowerCase();
       result = result.filter(
         (post) =>
-          post.user.firstName.toLowerCase().includes(nameLower) ||
-          post.user.lastName.toLowerCase().includes(nameLower)
+          post.user.firstName.toLowerCase().includes(queryLower) ||
+          post.user.lastName.toLowerCase().includes(queryLower) ||
+          (post.contactInfo && post.contactInfo.toLowerCase().includes(queryLower))
       );
     }
 
-    // Worker Email Filter
-    if (filters.workerEmail) {
-      const emailLower = filters.workerEmail.toLowerCase();
-      result = result.filter(
-        (post) =>
-          post.contactInfo && post.contactInfo.toLowerCase().includes(emailLower)
-      );
-    }
-
-    // Budget Min Filter
-    if (filters.minBudget) {
-      const min = parseFloat(filters.minBudget);
-      if (!isNaN(min)) {
-        result = result.filter(
-          (post) => post.budget && parseFloat(post.budget) >= min
-        );
-      }
-    }
-
-    // Budget Max Filter
+    // Budget Max Filter (Up to $X)
     if (filters.maxBudget) {
       const max = parseFloat(filters.maxBudget);
       if (!isNaN(max)) {
@@ -255,7 +249,7 @@ const SearchPage = () => {
               </h2>
             </div>
 
-            <SearchResult posts={posts} />
+            <SearchResult posts={posts} onClearFilters={handleClearFilters} />
 
             {totalPages > 1 && (
               <div className='mt-8'>
