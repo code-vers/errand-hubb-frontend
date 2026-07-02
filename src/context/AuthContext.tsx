@@ -22,7 +22,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
-  login: (userData: User) => void;
+  login: (userData: User, redirectUrl?: string) => void;
   logout: () => void;
   isLoading: boolean;
 }
@@ -51,11 +51,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   const login = useCallback(
-    (userData: User) => {
+    (userData: User, redirectUrl?: string) => {
       setUser(userData);
       localStorage.setItem("errand_user", JSON.stringify(userData));
       
-      if (userData.role === "client") {
+      if (redirectUrl) {
+        router.push(redirectUrl);
+      } else if (userData.role === "client") {
         router.push("/dashboard/profile");
       } else {
         router.push("/dashboard");
