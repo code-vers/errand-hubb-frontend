@@ -1,4 +1,5 @@
 export interface Errand {
+  id?: string;
   title: string;
   description: string;
   city: string;
@@ -7,7 +8,9 @@ export interface Errand {
   dateNeeded: string;
   contactInfo: string;
   photoUrl: string;
-  type: string;
+  youtubeLink?: string;
+  categoryId: string;
+  status?: string;
 }
 
 export interface ErrandType {

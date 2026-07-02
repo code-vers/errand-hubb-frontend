@@ -3,16 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "NODE_OPTIONS='--max-old-space-size=4096' next dev",
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
-    "lucide-react": "^1.14.0",
+    "@stripe/react-stripe-js": "^6.6.0",
+    "@stripe/stripe-js": "^9.8.0",
+    "@tanstack/react-query": "^5.100.14",
+    "axios": "^1.16.1",
+    "chart.js": "^4.5.1",
+    "date-fns": "^4.2.1",
+    "lucide-react": "^1.16.0",
     "next": "16.2.6",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "react-phone-number-input": "^3.4.17",
+    "socket.io-client": "^4.8.3",
+    "sonner": "^2.0.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -20,6 +29,7 @@
     "@types/react": "19.2.14",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "sharp": "^0.35.2",
     "tailwindcss": "^4"
   }
 }

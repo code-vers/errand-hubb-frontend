@@ -2,59 +2,143 @@
 
 :root {
   /* Brand Colors */
-  --color-primary: #F47A22; /* F47A22 */
-  --color-primary-dark: #BB4D00;
-  --color-secondary: #063B5C;
-  --color-background: #FFFFFF;
+  --color-primary: #f47a22;
+  --color-primary-dark: #bb4d00;
+  --color-secondary: #063b5c;
+  --color-background: #ffffff;
   --color-foreground: #111111;
-  --color-text-secondary: #4B5563;
-  --color-text-placeholder: #6B7280;
-  --color-success: #16A34A;
-  --color-error: #D93025;
-  
+  --color-text-secondary: #4b5563;
+  --color-text-placeholder: #6b7280;
+  --color-success: #16a34a;
+  --color-error: #d93025;
+
   /* UI Elements */
-  --color-surface-dim: #F4F4F4;
-  --color-border: #E2E8F0;
-  --color-hover: #F1F5F9;
-  
+  --color-surface-dim: #f4f4f4;
+  --color-border: #e2e8f0;
+  --color-hover: #f1f5f9;
+
   /* Feedback/Alerts */
-  --color-warning-light: #FFF3CD;
-  --color-warning-bg: #FFE6B3;
-  --color-warning-border: #FEE685;
-  --color-error-light: #FFE2E2;
-  --color-error-border: #FFC9C9;
-  
+  --color-warning-light: #fff3cd;
+  --color-warning-bg: #ffe6b3;
+  --color-warning-border: #fee685;
+  --color-error-light: #ffe2e2;
+  --color-error-border: #ffc9c9;
+
   /* Utils */
-  --color-shadow: #0000001A;
-  --color-muted: #62748E;
+  --color-shadow: #0000001a;
+  --color-muted: #62748e;
+
+  /* Status Colors */
+  --color-status-orange: #ec6f27;
+  --color-status-red: #ef4444;
+  --color-status-blue: #3b82f6;
+  --color-status-purple: #a855f7;
+  --color-status-green: #22c55e;
+  --color-status-pink: #ec4899;
+
+  /* Badge Backgrounds (Translucent) */
+  --color-badge-pending: #fff7ed;
+  --color-badge-asap: #fef2f2;
+  --color-badge-scheduled: #eff6ff;
+  --color-badge-progress: #faf5ff;
+  --color-badge-completed: #f0fdf4;
+  --color-badge-cancelled: #fdf2f2;
 }
 
 @theme inline {
-  --color-primary: #F47A22;
-  --color-primary-dark: #BB4D00;
-  --color-secondary: #063B5C;
-  --color-background: #FFFFFF;
-  --color-foreground: #111111;
-  --color-text-secondary: #4B5563;
-  --color-text-placeholder: #6B7280;
-  --color-success: #16A34A;
-  --color-error: #D93025;
-  --color-surface-dim: #F4F4F4;
-  --color-border: #E2E8F0;
-  --color-hover: #F1F5F9;
-  --color-warning-light: #FFF3CD;
-  --color-warning-bg: #FFE6B3;
-  --color-warning-border: #FEE685;
-  --color-error-light: #FFE2E2;
-  --color-error-border: #FFC9C9;
-  --color-shadow: #0000001A;
-  --color-muted: #62748E;
-  
+  --color-primary: var(--color-primary);
+  --color-primary-dark: var(--color-primary-dark);
+  --color-secondary: var(--color-secondary);
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-placeholder: var(--color-text-placeholder);
+  --color-success: var(--color-success);
+  --color-error: var(--color-error);
+  --color-surface-dim: var(--color-surface-dim);
+  --color-border: var(--color-border);
+  --color-hover: var(--color-hover);
+  --color-warning-light: var(--color-warning-light);
+  --color-warning-bg: var(--color-warning-bg);
+  --color-warning-border: var(--color-warning-border);
+  --color-error-light: var(--color-error-light);
+  --color-error-border: var(--color-error-border);
+  --color-shadow: var(--color-shadow);
+  --color-muted: var(--color-muted);
+
+  /* Status Colors Mapping */
+  --color-status-orange: var(--color-status-orange);
+  --color-status-red: var(--color-status-red);
+  --color-status-blue: var(--color-status-blue);
+  --color-status-purple: var(--color-status-purple);
+  --color-status-green: var(--color-status-green);
+  --color-status-pink: var(--color-status-pink);
+
+  /* Badge Backgrounds Mapping */
+  --color-badge-pending: var(--color-badge-pending);
+  --color-badge-asap: var(--color-badge-asap);
+  --color-badge-scheduled: var(--color-badge-scheduled);
+  --color-badge-progress: var(--color-badge-progress);
+  --color-badge-completed: var(--color-badge-completed);
+  --color-badge-cancelled: var(--color-badge-cancelled);
+
   --font-sans: var(--font-montserrat), Arial, Helvetica, sans-serif;
+}
+
+@layer components {
+  .status-dot {
+    @apply w-1.5 h-1.5 rounded-full mr-2;
+  }
 }
 
 body {
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
+}
+
+@layer components {
+  .toggle-checkbox:checked {
+    right: 0;
+    border-color: var(--color-primary);
+  }
+
+  .toggle-checkbox:checked + .toggle-label {
+    background-color: var(--color-primary);
+  }
+
+  .toggle-checkbox {
+    right: 0;
+    z-index: 1;
+    border-color: var(--color-border);
+    transition: all 0.3s;
+  }
+
+  .toggle-label {
+    width: 3rem;
+    height: 1.5rem;
+    background-color: var(--color-border);
+    border-radius: 9999px;
+    transition: all 0.3s;
+  }
+
+  .toggle-checkbox-btn {
+    width: 1.25rem;
+    height: 1.25rem;
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s;
+    transform: translateX(0.125rem);
+  }
+
+  .toggle-checkbox:checked + .toggle-label .toggle-checkbox-btn {
+    transform: translateX(1.625rem);
+  }
+
+  input:focus {
+    outline: none;
+    border-color: var(--color-primary) !important;
+    box-shadow: 0 0 0 1px var(--color-primary) !important;
+  }
 }

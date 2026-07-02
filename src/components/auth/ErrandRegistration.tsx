@@ -1,8 +1,22 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { useRegisterErrand } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthContext";
+import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
+import { getImageUrl } from "@/configs/api.config";
+import { toast } from "sonner";
+import { Upload, PlayCircle, X, Eye, EyeOff } from "lucide-react";
+import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
+import { useFormValidation } from "@/hooks/useFormValidation";
+import { validateName, validateEmail, validateCityState, validateTextarea, validateGenericString, validatePassword } from "@/lib/validation";
 
 const ErrandRegistrationPage = () => {
+  const { user, setUser } = useAuth();
+  const { data: profileData } = useProfile();
+  const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
+  const { mutate: register, isPending } = useRegisterErrand();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -12,24 +26,129 @@ const ErrandRegistrationPage = () => {
     state: "",
     bio: "",
     services: "",
+    youtubeLink: "",
     rate: "",
     password: "",
     confirmPassword: "",
   });
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const profileInputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<File[]>([]);
+  const [existingGallery, setExistingGallery] = useState<string[]>([]);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const { errors, touched, handleBlur, validateForm } = useFormValidation({
+    firstName: (v) => validateName(v),
+    lastName: (v) => validateName(v),
+    email: (v) => validateEmail(v),
+    city: (v) => validateCityState(v, "City"),
+    state: (v) => validateCityState(v, "State"),
+    bio: (v) => validateTextarea(v, 2000, "Bio", false),
+    services: (v) => validateGenericString(v, 150, "Services", false),
+    rate: (v) => validateGenericString(v, 10, "Rate", false),
+    password: (v) => user ? null : validatePassword(v),
+  });
+  const [passwordStrength, setPasswordStrength] = useState({
+    score: 0,
+    hasMinLength: false,
+    hasUpper: false,
+    hasLower: false,
+    hasNumber: false,
+  });
+
+  const evaluatePassword = (pass: string) => {
+    const hasMinLength = pass.length >= 8;
+    const hasUpper = /[A-Z]/.test(pass);
+    const hasLower = /[a-z]/.test(pass);
+    const hasNumber = /[0-9]/.test(pass);
+
+    let score = 0;
+    if (hasMinLength) score++;
+    if (hasUpper) score++;
+    if (hasLower) score++;
+    if (hasNumber) score++;
+
+    return {
+      score,
+      hasMinLength,
+      hasUpper,
+      hasLower,
+      hasNumber,
+    };
+  };
+
+  // Clean up preview URL
+  useEffect(() => {
+    let url: string | null = null;
+    if (profileImage) {
+      url = URL.createObjectURL(profileImage);
+      setPreviewUrl(url);
+    }
+    return () => {
+      if (url) URL.revokeObjectURL(url);
+    };
+  }, [profileImage]);
+
+  // Pre-fill if logged in
+  useEffect(() => {
+    if (user && profileData) {
+      setFormData({
+        firstName: profileData.firstName || "",
+        lastName: profileData.lastName || "",
+        email: profileData.email || "",
+        phone: profileData.profile?.phone || "",
+        city: profileData.profile?.city || "",
+        state: profileData.profile?.state || "",
+        bio: profileData.profile?.bio || "",
+        services: profileData.profile?.services || "",
+        youtubeLink: profileData.profile?.youtubeLink || "",
+        rate: profileData.profile?.ratePerHour
+          ? String(profileData.profile.ratePerHour)
+          : "",
+        password: "",
+        confirmPassword: "",
+      });
+      if (profileData.profileImage) {
+        setPreviewUrl(getImageUrl(profileData.profileImage));
+      }
+      if (profileData.profile?.gallery) {
+        setExistingGallery(profileData.profile.gallery);
+      }
+    }
+  }, [profileData, user]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (name === "password") {
+      setPasswordStrength(evaluatePassword(value));
+    }
+  };
+
+  const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setProfileImage(e.target.files[0]);
+    }
   };
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
     const valid = Array.from(files).filter((f) => f.size <= 25 * 1024 * 1024);
-    setImages((prev) => [...prev, ...valid]);
+    setImages((prev) => {
+      const combined = [...prev, ...valid];
+      if (existingGallery.length + combined.length > 5) {
+        toast.error("You can upload up to 5 gallery images in total.");
+        return combined.slice(0, 5 - existingGallery.length);
+      }
+      return combined;
+    });
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -40,7 +159,85 @@ const ErrandRegistrationPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ formData, images });
+    if (!validateForm(formData)) return;
+
+    // Check strength if it's new registration, or if the user is changing their password
+    const shouldCheckStrength = !user || formData.password;
+    if (shouldCheckStrength) {
+      const strength = evaluatePassword(formData.password);
+      if (!strength.hasMinLength) {
+        toast.error("Password must be at least 8 characters long");
+        return;
+      }
+      if (!strength.hasUpper || !strength.hasLower) {
+        toast.error("Password must contain both uppercase and lowercase letters");
+        return;
+      }
+      if (!strength.hasNumber) {
+        toast.error("Password must contain at least one number");
+        return;
+      }
+    }
+
+    if (!user && formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    if (
+      user &&
+      formData.password &&
+      formData.password !== formData.confirmPassword
+    ) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    const submitData = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key !== "confirmPassword" && value !== "") {
+        if (user && key === "password") {
+          // Skip password field on update unless it has a value
+          return;
+        }
+        submitData.append(key, value);
+      }
+    });
+
+    if (profileImage) {
+      submitData.append("profileImage", profileImage);
+    }
+
+    images.forEach((image) => {
+      submitData.append("gallery", image);
+    });
+
+    if (user) {
+      submitData.append("retainedGallery", JSON.stringify(existingGallery));
+      updateProfile(submitData, {
+        onSuccess: (response: any) => {
+          if (response?.data) {
+            setUser({
+              ...user,
+              firstName: response.data.firstName,
+              lastName: response.data.lastName,
+              profileImage: response.data.profileImage,
+            });
+            localStorage.setItem(
+              "errand_user",
+              JSON.stringify({
+                ...user,
+                firstName: response.data.firstName,
+                lastName: response.data.lastName,
+                profileImage: response.data.profileImage,
+              }),
+            );
+          }
+        },
+      });
+    } else {
+      register(submitData);
+    }
   };
 
   const inputClass =
@@ -51,7 +248,7 @@ const ErrandRegistrationPage = () => {
 
   return (
     <div
-      className='min-h-screen flex items-center justify-center p-4'
+      className='min-h-screen py-8 flex items-center justify-center p-4'
       style={{ backgroundColor: "var(--color-surface-dim)" }}>
       <main
         className='w-full max-w-240 rounded-lg p-6'
@@ -70,7 +267,7 @@ const ErrandRegistrationPage = () => {
           <p
             className='text-xs font-bold uppercase tracking-wide'
             style={{ color: "var(--color-primary)" }}>
-            Just $10 / Month
+            Just $5 / Month
           </p>
           <p className='text-xs mt-0.5' style={{ color: "var(--color-muted)" }}>
             Create your ErrandR profile and start getting hired
@@ -85,6 +282,41 @@ const ErrandRegistrationPage = () => {
         </h1>
 
         <form onSubmit={handleSubmit} className='space-y-3'>
+          {/* Profile Photo Upload */}
+          <div className='flex flex-col items-center mb-6'>
+            <div
+              onClick={() => profileInputRef.current?.click()}
+              className='relative w-24 h-24 rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50 overflow-hidden'>
+              {previewUrl ? (
+                <img
+                  src={previewUrl}
+                  alt='profile'
+                  className='w-full h-full object-cover'
+                />
+              ) : (
+                <Upload className='w-8 h-8 text-gray-400' />
+              )}
+              <input
+                type='file'
+                ref={profileInputRef}
+                onChange={handleProfileChange}
+                className='hidden'
+                accept='image/*'
+              />
+            </div>
+            <p className='text-[10px] font-bold text-muted uppercase mt-2 tracking-widest'>
+              Profile Photo
+            </p>
+            {profileImage && (
+              <button
+                type='button'
+                onClick={() => setProfileImage(null)}
+                className='text-[10px] text-red-500 font-bold uppercase mt-1'>
+                Remove
+              </button>
+            )}
+          </div>
+
           {/* Name Row */}
           <div className='grid grid-cols-2 gap-3'>
             <div className='flex flex-col space-y-1'>
@@ -96,10 +328,18 @@ const ErrandRegistrationPage = () => {
                 name='firstName'
                 type='text'
                 placeholder='First name'
+                required
                 value={formData.firstName}
                 onChange={handleChange}
-                className={inputClass}
+                className={`${inputClass} ${touched.firstName && errors.firstName ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={50}
+                onBlur={(e) => handleBlur('firstName', e.target.value)}
+                aria-invalid={touched.firstName && !!errors.firstName}
+                aria-describedby={touched.firstName && errors.firstName ? "firstName-error" : undefined}
               />
+              {touched.firstName && errors.firstName && (
+                <p id="firstName-error" className="text-red-500 text-xs mt-1 font-medium">{errors.firstName}</p>
+              )}
             </div>
             <div className='flex flex-col space-y-1'>
               <label htmlFor='lastName' className={labelClass}>
@@ -110,10 +350,18 @@ const ErrandRegistrationPage = () => {
                 name='lastName'
                 type='text'
                 placeholder='Last name'
+                required
                 value={formData.lastName}
                 onChange={handleChange}
-                className={inputClass}
+                className={`${inputClass} ${touched.lastName && errors.lastName ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={50}
+                onBlur={(e) => handleBlur('lastName', e.target.value)}
+                aria-invalid={touched.lastName && !!errors.lastName}
+                aria-describedby={touched.lastName && errors.lastName ? "lastName-error" : undefined}
               />
+              {touched.lastName && errors.lastName && (
+                <p id="lastName-error" className="text-red-500 text-xs mt-1 font-medium">{errors.lastName}</p>
+              )}
             </div>
           </div>
 
@@ -127,10 +375,18 @@ const ErrandRegistrationPage = () => {
               name='email'
               type='email'
               placeholder='your@email.com'
+              required
               value={formData.email}
               onChange={handleChange}
-              className={inputClass}
-            />
+              className={`${inputClass} ${touched.email && errors.email ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+              maxLength={254}
+                onBlur={(e) => handleBlur('email', e.target.value)}
+                aria-invalid={touched.email && !!errors.email}
+                aria-describedby={touched.email && errors.email ? "email-error" : undefined}
+              />
+              {touched.email && errors.email && (
+                <p id="email-error" className="text-red-500 text-xs mt-1 font-medium">{errors.email}</p>
+              )}
           </div>
 
           {/* Phone */}
@@ -138,14 +394,10 @@ const ErrandRegistrationPage = () => {
             <label htmlFor='phone' className={labelClass}>
               Phone Number
             </label>
-            <input
-              id='phone'
+            <InternationalPhoneInput
               name='phone'
-              type='tel'
-              placeholder='(555) 000-0000'
               value={formData.phone}
-              onChange={handleChange}
-              className={inputClass}
+              onChange={(value) => setFormData({ ...formData, phone: value })}
             />
           </div>
 
@@ -162,8 +414,15 @@ const ErrandRegistrationPage = () => {
                 placeholder='City'
                 value={formData.city}
                 onChange={handleChange}
-                className={inputClass}
+                className={`${inputClass} ${touched.city && errors.city ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={80}
+                onBlur={(e) => handleBlur('city', e.target.value)}
+                aria-invalid={touched.city && !!errors.city}
+                aria-describedby={touched.city && errors.city ? "city-error" : undefined}
               />
+              {touched.city && errors.city && (
+                <p id="city-error" className="text-red-500 text-xs mt-1 font-medium">{errors.city}</p>
+              )}
             </div>
             <div className='flex flex-col space-y-1'>
               <label htmlFor='state' className={labelClass}>
@@ -176,8 +435,15 @@ const ErrandRegistrationPage = () => {
                 placeholder='State'
                 value={formData.state}
                 onChange={handleChange}
-                className={inputClass}
+                className={`${inputClass} ${touched.state && errors.state ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                maxLength={80}
+                onBlur={(e) => handleBlur('state', e.target.value)}
+                aria-invalid={touched.state && !!errors.state}
+                aria-describedby={touched.state && errors.state ? "state-error" : undefined}
               />
+              {touched.state && errors.state && (
+                <p id="state-error" className="text-red-500 text-xs mt-1 font-medium">{errors.state}</p>
+              )}
             </div>
           </div>
 
@@ -193,13 +459,22 @@ const ErrandRegistrationPage = () => {
               placeholder='Tell clients about yourself and your experience...'
               value={formData.bio}
               onChange={handleChange}
-              className='w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)] resize-none'
-            />
+              className={`w-full px-3 py-2 border rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 transition-colors bg-[var(--color-background)] resize-none ${touched.bio && errors.bio ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-[var(--color-border)] focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)]"}`}
+              maxLength={2000}
+                onBlur={(e) => handleBlur('bio', e.target.value)}
+                aria-invalid={touched.bio && !!errors.bio}
+                aria-describedby={touched.bio && errors.bio ? "bio-error" : undefined}
+              />
+              {touched.bio && errors.bio && (
+                <p id="bio-error" className="text-red-500 text-xs mt-1 font-medium">{errors.bio}</p>
+              )}
           </div>
 
-          {/* Upload Images */}
+          {/* Upload Images (Gallery) */}
           <div className='flex flex-col space-y-1'>
-            <label className={labelClass}>Upload Images</label>
+            <label className={labelClass}>
+              Portfolio Gallery (Add Up to 5 Photo)
+            </label>
             <div
               onClick={() => fileInputRef.current?.click()}
               onDrop={handleDrop}
@@ -222,21 +497,7 @@ const ErrandRegistrationPage = () => {
                 className='hidden'
                 onChange={(e) => handleFiles(e.target.files)}
               />
-              {/* Upload Icon */}
-              <svg
-                className='mb-2'
-                width='32'
-                height='32'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='var(--color-muted)'
-                strokeWidth='1.5'
-                strokeLinecap='round'
-                strokeLinejoin='round'>
-                <path d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4' />
-                <polyline points='17 8 12 3 7 8' />
-                <line x1='12' y1='3' x2='12' y2='15' />
-              </svg>
+              <Upload className='mb-2 text-gray-400 w-8 h-8' />
               <p className='text-sm'>
                 <span
                   className='font-bold'
@@ -252,14 +513,66 @@ const ErrandRegistrationPage = () => {
                 style={{ color: "var(--color-muted)" }}>
                 (Max. File Size: 25 MB)
               </p>
-              {images.length > 0 && (
+              {(images.length > 0 || existingGallery.length > 0) && (
                 <p
                   className='text-xs mt-2'
                   style={{ color: "var(--color-primary)" }}>
-                  {images.length} file{images.length > 1 ? "s" : ""} selected
+                  {existingGallery.length + images.length} of 5 images
+                  loaded/selected
                 </p>
               )}
             </div>
+
+            {/* Gallery Previews */}
+            {(existingGallery.length > 0 || images.length > 0) && (
+              <div className='grid grid-cols-5 gap-2 mt-3'>
+                {existingGallery.map((url, idx) => (
+                  <div
+                    key={`existing-${idx}`}
+                    className='relative aspect-square rounded-md overflow-hidden border border-[var(--color-border)]'>
+                    <img
+                      src={getImageUrl(url)}
+                      alt={`gallery-${idx}`}
+                      className='w-full h-full object-cover'
+                    />
+                    <button
+                      type='button'
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExistingGallery((prev) =>
+                          prev.filter((_, i) => i !== idx),
+                        );
+                      }}
+                      className='absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors flex items-center justify-center'>
+                      <X size={12} />
+                    </button>
+                  </div>
+                ))}
+                {images.map((file, idx) => {
+                  const objectUrl = URL.createObjectURL(file);
+                  return (
+                    <div
+                      key={`new-${idx}`}
+                      className='relative aspect-square rounded-md overflow-hidden border border-[var(--color-border)]'>
+                      <img
+                        src={objectUrl}
+                        alt={`new-gallery-${idx}`}
+                        className='w-full h-full object-cover'
+                      />
+                      <button
+                        type='button'
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setImages((prev) => prev.filter((_, i) => i !== idx));
+                        }}
+                        className='absolute top-1 right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors flex items-center justify-center'>
+                        <X size={12} />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Services Offered */}
@@ -273,6 +586,32 @@ const ErrandRegistrationPage = () => {
               type='text'
               placeholder='e.g. Grocery, Delivery, Pharmacy...'
               value={formData.services}
+              onChange={handleChange}
+              className={`${inputClass} ${touched.services && errors.services ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+              maxLength={150}
+                onBlur={(e) => handleBlur('services', e.target.value)}
+                aria-invalid={touched.services && !!errors.services}
+                aria-describedby={touched.services && errors.services ? "services-error" : undefined}
+              />
+              {touched.services && errors.services && (
+                <p id="services-error" className="text-red-500 text-xs mt-1 font-medium">{errors.services}</p>
+              )}
+          </div>
+
+          {/* YouTube Link */}
+          <div className='flex flex-col space-y-1'>
+            <label
+              htmlFor='youtubeLink'
+              className={labelClass + " flex items-center gap-1.5"}>
+              <PlayCircle size={12} className='text-red-500' /> YouTube Video
+              Link (Optional)
+            </label>
+            <input
+              id='youtubeLink'
+              name='youtubeLink'
+              type='url'
+              placeholder='https://www.youtube.com/watch?v=...'
+              value={formData.youtubeLink}
               onChange={handleChange}
               className={inputClass}
             />
@@ -289,58 +628,187 @@ const ErrandRegistrationPage = () => {
               type='text'
               placeholder='e.g. 15'
               value={formData.rate}
-              onChange={handleChange}
-              className={inputClass}
-            />
+              onChange={(e) => {
+                const val = e.target.value.replace(/[^0-9.]/g, '');
+                const parts = val.split('.');
+                const sanitized = parts[0] + (parts.length > 1 ? '.' + parts.slice(1).join('') : '');
+                setFormData(prev => ({ ...prev, rate: sanitized }));
+              }}
+              className={`${inputClass} ${touched.rate && errors.rate ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+              maxLength={10}
+                onBlur={(e) => handleBlur('rate', e.target.value)}
+                aria-invalid={touched.rate && !!errors.rate}
+                aria-describedby={touched.rate && errors.rate ? "rate-error" : undefined}
+              />
+              {touched.rate && errors.rate && (
+                <p id="rate-error" className="text-red-500 text-xs mt-1 font-medium">{errors.rate}</p>
+              )}
           </div>
 
           {/* Password */}
           <div className='flex flex-col space-y-1'>
             <label htmlFor='password' className={labelClass}>
-              Password
+              Password{" "}
+              {user && (
+                <span className='text-xs text-gray-500 font-normal'>
+                  (Leave blank to keep current)
+                </span>
+              )}
             </label>
-            <input
-              id='password'
-              name='password'
-              type='password'
-              placeholder='Create a password'
-              value={formData.password}
-              onChange={handleChange}
-              className={inputClass}
-            />
+            <div className='relative'>
+              <input
+                id='password'
+                name='password'
+                type={showPassword ? "text" : "password"}
+                placeholder='Create a password'
+                required={!user}
+                maxLength={128}
+                value={formData.password}
+                onChange={handleChange}
+                onBlur={(e) => handleBlur('password', e.target.value)}
+                aria-invalid={touched.password && !!errors.password}
+                aria-describedby={touched.password && errors.password ? "password-error" : undefined}
+                className={`${inputClass} pr-10 ${touched.password && errors.password ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                autoComplete='new-password'
+              />
+              <button
+                type='button'
+                onClick={() => setShowPassword(!showPassword)}
+                className='absolute inset-y-0 right-0 flex items-center pr-3 text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+            {touched.password && errors.password && (
+              <p id="password-error" className="text-red-500 text-xs mt-1 font-medium">{errors.password}</p>
+            )}
+            {/* Password Strength Indicator */}
+            {formData.password && (
+              <div className='mt-2 space-y-2 bg-[var(--color-surface-dim)] p-3 rounded-lg border border-[var(--color-border)]'>
+                {/* Progress bar */}
+                <div className='flex gap-1 h-1.5 w-full bg-gray-200 rounded-full overflow-hidden'>
+                  {[...Array(4)].map((_, i) => {
+                    let barColor = 'bg-gray-300';
+                    if (i < passwordStrength.score) {
+                      if (passwordStrength.score <= 1) barColor = 'bg-red-500';
+                      else if (passwordStrength.score <= 3) barColor = 'bg-amber-500';
+                      else barColor = 'bg-emerald-500';
+                    }
+                    return (
+                      <div
+                        key={i}
+                        className={`h-full flex-1 rounded-full transition-all duration-300 ${barColor}`}
+                      />
+                    );
+                  })}
+                </div>
+                {/* Labels */}
+                <div className='flex justify-between items-center text-[10px] uppercase font-bold tracking-wider'>
+                  <span className={
+                    passwordStrength.score <= 1 ? 'text-red-500' :
+                    passwordStrength.score <= 3 ? 'text-amber-500' : 'text-emerald-500'
+                  }>
+                    Password Strength: {
+                      passwordStrength.score <= 1 ? 'Weak' :
+                      passwordStrength.score <= 3 ? 'Medium' : 'Strong'
+                    }
+                  </span>
+                </div>
+                {/* Checklist */}
+                <div className='grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-[var(--color-foreground)] pt-1'>
+                  <div className='flex items-center gap-1.5'>
+                    <span className={passwordStrength.hasMinLength ? 'text-emerald-500' : 'text-gray-400'}>
+                      {passwordStrength.hasMinLength ? '●' : '○'}
+                    </span>
+                    <span className={passwordStrength.hasMinLength ? 'text-[var(--color-foreground)] font-medium' : 'text-[var(--color-muted)]'}>
+                      At least 8 characters
+                    </span>
+                  </div>
+                  <div className='flex items-center gap-1.5'>
+                    <span className={passwordStrength.hasUpper ? 'text-emerald-500' : 'text-gray-400'}>
+                      {passwordStrength.hasUpper ? '●' : '○'}
+                    </span>
+                    <span className={passwordStrength.hasUpper ? 'text-[var(--color-foreground)] font-medium' : 'text-[var(--color-muted)]'}>
+                      Uppercase letter (A-Z)
+                    </span>
+                  </div>
+                  <div className='flex items-center gap-1.5'>
+                    <span className={passwordStrength.hasLower ? 'text-emerald-500' : 'text-gray-400'}>
+                      {passwordStrength.hasLower ? '●' : '○'}
+                    </span>
+                    <span className={passwordStrength.hasLower ? 'text-[var(--color-foreground)] font-medium' : 'text-[var(--color-muted)]'}>
+                      Lowercase letter (a-z)
+                    </span>
+                  </div>
+                  <div className='flex items-center gap-1.5'>
+                    <span className={passwordStrength.hasNumber ? 'text-emerald-500' : 'text-gray-400'}>
+                      {passwordStrength.hasNumber ? '●' : '○'}
+                    </span>
+                    <span className={passwordStrength.hasNumber ? 'text-[var(--color-foreground)] font-medium' : 'text-[var(--color-muted)]'}>
+                      Number (0-9)
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Confirm Password */}
           <div className='flex flex-col space-y-1'>
             <label htmlFor='confirmPassword' className={labelClass}>
-              Confirm Password
+              Confirm Password{" "}
+              {user && (
+                <span className='text-xs text-gray-500 font-normal'>
+                  (Leave blank to keep current)
+                </span>
+              )}
             </label>
-            <input
-              id='confirmPassword'
-              name='confirmPassword'
-              type='password'
-              placeholder='Confirm your password'
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className={inputClass}
-            />
+            <div className='relative'>
+              <input
+                id='confirmPassword'
+                name='confirmPassword'
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder='Confirm your password'
+                required={!user}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className={`${inputClass} pr-10`}
+                autoComplete='new-password'
+              />
+              <button
+                type='button'
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className='absolute inset-y-0 right-0 flex items-center pr-3 text-[var(--color-muted)] hover:text-[var(--color-foreground)]'
+              >
+                {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           {/* Submit Button */}
           <div className='pt-3'>
             <button
               type='submit'
-              className='w-full text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors text-sm tracking-wide uppercase'
+              disabled={isPending || isUpdating}
+              className='w-full text-white font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors text-sm tracking-wide uppercase disabled:opacity-50'
               style={{ backgroundColor: "var(--color-primary)" }}
               onMouseEnter={(e) =>
+                !(isPending || isUpdating) &&
                 ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
                   "var(--color-primary-dark)")
               }
               onMouseLeave={(e) =>
+                !(isPending || isUpdating) &&
                 ((e.currentTarget as HTMLButtonElement).style.backgroundColor =
                   "var(--color-primary)")
               }>
-              Create ErrandR Profile — $10/Mo
+              {user
+                ? isUpdating
+                  ? "Saving..."
+                  : "Save Profile"
+                : isPending
+                  ? "Creating Profile..."
+                  : "Create ErrandR Profile — $5/Mo"}
             </button>
           </div>
         </form>
