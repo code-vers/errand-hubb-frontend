@@ -32,6 +32,27 @@ const initialFilters: SearchFilters = {
 
 export function useProviders(initialLimit: number = 6) {
   const [filters, setFilters] = useState<SearchFilters>(initialFilters);
+  const [isInitialized, setIsInitialized] = useState(false);
+  
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      setFilters({
+        search: searchParams.get('search') || initialFilters.search,
+        categoryId: searchParams.get('categoryId') || initialFilters.categoryId,
+        location: searchParams.get('location') || initialFilters.location,
+        minBudget: searchParams.get('minBudget') || initialFilters.minBudget,
+        maxBudget: searchParams.get('maxBudget') || initialFilters.maxBudget,
+        sortBy: searchParams.get('sortBy') || initialFilters.sortBy,
+        sortOrder: (searchParams.get('sortOrder') as "asc" | "desc") || initialFilters.sortOrder,
+        page: initialFilters.page,
+        workerName: searchParams.get('workerName') || initialFilters.workerName,
+        workerEmail: searchParams.get('workerEmail') || initialFilters.workerEmail,
+      });
+      setIsInitialized(true);
+    }
+  }, []);
+
   const [providers, setProviders] = useState<Post[]>([]);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
@@ -39,6 +60,8 @@ export function useProviders(initialLimit: number = 6) {
   const [error, setError] = useState<string | null>(null);
 
   const fetchPosts = useCallback(async () => {
+    if (!isInitialized) return;
+    
     setLoading(true);
     setError(null);
     try {
@@ -64,7 +87,7 @@ export function useProviders(initialLimit: number = 6) {
     } finally {
       setLoading(false);
     }
-  }, [filters, initialLimit]);
+  }, [filters, initialLimit, isInitialized]);
 
   useEffect(() => {
     fetchPosts();

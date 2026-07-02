@@ -5,6 +5,8 @@ import SearchResult from "./SearchResult";
 import { SearchFilters, Post } from "@/types/search";
 import Pagination from "@/components/common/Pagination";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 const STATIC_POSTS: Post[] = [
   {
@@ -134,13 +136,36 @@ const SearchPage = () => {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
 
+  const router = useRouter();
+  const { user } = useAuth();
+
   const handleSearch = (newFilters: SearchFilters) => {
     setIsLoading(true);
     setFilters(newFilters);
-    setPage(1);
+    
+    const query = new URLSearchParams();
+    if (newFilters.search) query.set('search', newFilters.search);
+    if (newFilters.categoryId && newFilters.categoryId !== 'all') query.set('categoryId', newFilters.categoryId);
+    if (newFilters.location) query.set('location', newFilters.location);
+    if (newFilters.minBudget) query.set('minBudget', newFilters.minBudget);
+    if (newFilters.maxBudget) query.set('maxBudget', newFilters.maxBudget);
+    if (newFilters.sortBy) query.set('sortBy', newFilters.sortBy);
+    if (newFilters.sortOrder) query.set('sortOrder', newFilters.sortOrder);
+    if (newFilters.workerName) query.set('workerName', newFilters.workerName);
+
+    const queryString = query.toString();
+    const searchUrl = `/dashboard/client-search-errands${queryString ? `?${queryString}` : ''}`;
+
+    if (!user) {
+      router.push(`/login?returnTo=${encodeURIComponent(searchUrl)}`);
+    } else {
+      router.push(searchUrl);
+    }
+    
+    // Fallback UI reset if navigation takes time
     setTimeout(() => {
       setIsLoading(false);
-    }, 300);
+    }, 1000);
   };
 
   const handleClearFilters = () => {

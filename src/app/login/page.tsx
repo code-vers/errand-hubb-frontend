@@ -75,7 +75,10 @@ export default function LoginPage() {
 
         toast.success("Login successful!");
         queryClient.setQueryData(["user"], userData);
-        authLogin(userData);
+        
+        const searchParams = new URLSearchParams(window.location.search);
+        const returnTo = searchParams.get('returnTo');
+        authLogin(userData, returnTo || undefined);
       }
     },
     onError: (error: any) => handleApiError(error, "Login failed"),
@@ -90,7 +93,10 @@ export default function LoginPage() {
       const accessToken = response.data.accessToken;
       toast.success("Authentication successful!");
       queryClient.setQueryData(["user"], userData);
-      authLogin(userData);
+      
+      const searchParams = new URLSearchParams(window.location.search);
+      const returnTo = searchParams.get('returnTo');
+      authLogin(userData, returnTo || undefined);
     },
     onError: (error: any) => handleApiError(error, "Verification failed"),
   });
