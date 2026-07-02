@@ -7,12 +7,14 @@ interface ProviderGridProps {
   providers: Post[];
   loading: boolean;
   error: string | null;
+  onOpenGallery?: (images: string[]) => void;
 }
 
 export default function ProviderGrid({
   providers,
   loading,
   error,
+  onOpenGallery,
 }: ProviderGridProps) {
   if (loading) {
     return (
@@ -80,7 +82,11 @@ export default function ProviderGrid({
       className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6'
       data-purpose='service-provider-grid'>
       {providers.map((post) => (
-        <ProviderCard key={post.id} provider={post} />
+        <ProviderCard 
+          key={post.id} 
+          provider={post} 
+          onOpenGallery={onOpenGallery}
+        />
       ))}
     </section>
   );

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { getImageUrl } from "@/configs/api.config";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { validateCityState, validateGenericString, validateTextarea } from "@/lib/validation";
+import { StateDropdown, CityDropdown } from "@/components/shared/StateCityDropdown";
 
 interface ErrandDetailsFormProps {
   formData: Errand;
@@ -124,27 +125,27 @@ const ErrandDetailsForm = ({
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
           <label className='flex flex-col gap-1.5'>
             <span className='text-gray-600 text-xs font-bold uppercase tracking-wide'>
-              City
+              State
             </span>
-            <input
-              type='text'
+            <StateDropdown
               required
-              value={formData.city || ""}
-              onChange={(e) => onChange("city", e.target.value)}
-              placeholder='City'
+              value={formData.state || ""}
+              onChange={(e) => {
+                onChange("state", e.target.value);
+                onChange("city", "");
+              }}
               className='h-11 rounded-md border border-gray-200 px-3 text-sm outline-none focus:border-[#1b539c] transition-colors'
             />
           </label>
           <label className='flex flex-col gap-1.5'>
             <span className='text-gray-600 text-xs font-bold uppercase tracking-wide'>
-              State
+              City
             </span>
-            <input
-              type='text'
+            <CityDropdown
               required
-              value={formData.state || ""}
-              onChange={(e) => onChange("state", e.target.value)}
-              placeholder='State'
+              stateName={formData.state || ""}
+              value={formData.city || ""}
+              onChange={(e) => onChange("city", e.target.value)}
               className='h-11 rounded-md border border-gray-200 px-3 text-sm outline-none focus:border-[#1b539c] transition-colors'
             />
           </label>

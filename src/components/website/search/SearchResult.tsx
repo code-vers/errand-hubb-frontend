@@ -78,7 +78,7 @@ const SearchResult = ({ posts, onClearFilters }: SearchResultProps) => {
               {/* Top row: avatar + info + media */}
               <div className='flex gap-4 mb-3'>
                 {/* Avatar */}
-                <div 
+                <div
                   className='shrink-0 bg-gray-50 flex items-center justify-center w-20 h-20 rounded overflow-hidden cursor-pointer hover:opacity-80 transition-opacity'
                   onClick={() => setSelectedUser(post.user)}
                 >
@@ -93,7 +93,7 @@ const SearchResult = ({ posts, onClearFilters }: SearchResultProps) => {
                 <div className='grow'>
                   <div className='flex justify-between items-start'>
                     <div>
-                      <h2 
+                      <h2
                         className='text-[16px] font-bold text-secondary leading-tight cursor-pointer hover:text-primary transition-colors hover:underline inline-block'
                         onClick={() => setSelectedUser(post.user)}
                       >
@@ -183,7 +183,7 @@ const SearchResult = ({ posts, onClearFilters }: SearchResultProps) => {
                   {/* Contact button */}
                   <div>
                     <button
-                      onClick={() => handleContact(post.user.id)}
+                      // onClick={() => handleContact(post.user.id)}
                       disabled={isThisConnecting}
                       className='bg-[#f27b2a] hover:bg-orange-600 active:scale-95 text-white text-[12px] font-bold py-2 px-6 rounded shadow-sm transition-all uppercase tracking-wide disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2'
                     >
@@ -332,10 +332,10 @@ const SearchResult = ({ posts, onClearFilters }: SearchResultProps) => {
         </div>
       )} */}
 
-      <PublicUserProfileModal 
-        user={selectedUser} 
-        isOpen={!!selectedUser} 
-        onClose={() => setSelectedUser(null)} 
+      <PublicUserProfileModal
+        user={selectedUser}
+        isOpen={!!selectedUser}
+        onClose={() => setSelectedUser(null)}
       />
     </div>
   );

@@ -10,6 +10,7 @@ import { Upload, PlayCircle, X, Eye, EyeOff } from "lucide-react";
 import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { validateName, validateEmail, validateCityState, validateTextarea, validateGenericString, validatePassword } from "@/lib/validation";
+import { StateDropdown, CityDropdown } from "@/components/shared/StateCityDropdown";
 
 const ErrandRegistrationPage = () => {
   const { user, setUser } = useAuth();
@@ -403,46 +404,49 @@ const ErrandRegistrationPage = () => {
 
           {/* City & State Row */}
           <div className='grid grid-cols-2 gap-3'>
-            <div className='flex flex-col space-y-1'>
-              <label htmlFor='city' className={labelClass}>
-                City
-              </label>
-              <input
-                id='city'
-                name='city'
-                type='text'
-                placeholder='City'
-                value={formData.city}
-                onChange={handleChange}
-                className={`${inputClass} ${touched.city && errors.city ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
-                maxLength={80}
-                onBlur={(e) => handleBlur('city', e.target.value)}
-                aria-invalid={touched.city && !!errors.city}
-                aria-describedby={touched.city && errors.city ? "city-error" : undefined}
-              />
-              {touched.city && errors.city && (
-                <p id="city-error" className="text-red-500 text-xs mt-1 font-medium">{errors.city}</p>
-              )}
-            </div>
+            {/* State */}
             <div className='flex flex-col space-y-1'>
               <label htmlFor='state' className={labelClass}>
                 State
               </label>
-              <input
+              <StateDropdown
                 id='state'
                 name='state'
-                type='text'
-                placeholder='State'
+                required
                 value={formData.state}
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e as any);
+                  setFormData(prev => ({ ...prev, city: "" }));
+                }}
                 className={`${inputClass} ${touched.state && errors.state ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
-                maxLength={80}
                 onBlur={(e) => handleBlur('state', e.target.value)}
                 aria-invalid={touched.state && !!errors.state}
                 aria-describedby={touched.state && errors.state ? "state-error" : undefined}
               />
               {touched.state && errors.state && (
                 <p id="state-error" className="text-red-500 text-xs mt-1 font-medium">{errors.state}</p>
+              )}
+            </div>
+
+            {/* City */}
+            <div className='flex flex-col space-y-1'>
+              <label htmlFor='city' className={labelClass}>
+                City
+              </label>
+              <CityDropdown
+                id='city'
+                name='city'
+                required
+                stateName={formData.state}
+                value={formData.city}
+                onChange={handleChange as any}
+                className={`${inputClass} ${touched.city && errors.city ? "border-red-500 focus:ring-red-500 focus:border-red-500" : ""}`}
+                onBlur={(e) => handleBlur('city', e.target.value)}
+                aria-invalid={touched.city && !!errors.city}
+                aria-describedby={touched.city && errors.city ? "city-error" : undefined}
+              />
+              {touched.city && errors.city && (
+                <p id="city-error" className="text-red-500 text-xs mt-1 font-medium">{errors.city}</p>
               )}
             </div>
           </div>
