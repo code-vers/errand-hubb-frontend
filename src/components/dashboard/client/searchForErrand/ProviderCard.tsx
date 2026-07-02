@@ -6,12 +6,14 @@ import Image from "next/image";
 import StarRating from "./StarRating";
 import Link from "next/link";
 import { getImageUrl } from "@/configs/api.config";
+import { toast } from "sonner";
 
 interface ProviderCardProps {
   provider: Post;
+  onOpenGallery?: (images: string[]) => void;
 }
 
-export default function ProviderCard({ provider }: ProviderCardProps) {
+export default function ProviderCard({ provider, onOpenGallery }: ProviderCardProps) {
   return (
     <article className='bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between h-full hover:shadow-md transition-shadow duration-300'>
       {/* Header */}
@@ -45,9 +47,25 @@ export default function ProviderCard({ provider }: ProviderCardProps) {
             </div>
           </div>
         </div>
-        <span className='px-3 py-1 text-[#ec6f27] border border-[#ec6f27] bg-[#FDF0E3]  rounded-full text-[14px] font-normal'>
-          {provider.category.name}
-        </span>
+        <div className='flex flex-col items-end gap-2'>
+          <span className='px-3 py-1 text-[#ec6f27] border border-[#ec6f27] bg-[#FDF0E3] rounded-full text-[14px] font-normal'>
+            {provider.category.name}
+          </span>
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              const gallery = provider.user.profile?.gallery || [];
+              if (gallery.length > 0 && onOpenGallery) {
+                onOpenGallery(gallery);
+              } else {
+                toast.info("No images available for this provider.");
+              }
+            }}
+            className='text-primary text-[11px] font-semibold hover:underline bg-primary/5 px-2 py-1 rounded-md transition-colors'
+          >
+            More Images
+          </button>
+        </div>
       </div>
       <div className='bg-[#f5e9d3] w-full h-px mb-4 mt-1'></div>
       {/* Body */}
