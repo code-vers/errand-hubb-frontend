@@ -8,6 +8,7 @@ import Pagination from "@/components/common/Pagination";
 import ProviderGrid from "./ProviderGrid";
 import SearchBar from "./SearchBar";
 import { useProviders } from "./useProviders";
+import ImageGalleryModal from "@/components/common/ImageGalleryModal";
 
 const SortDropdown = ({
   value,
@@ -87,6 +88,8 @@ const SearchForErrandPage = () => {
     setWorkerEmail,
   } = useProviders();
 
+  const [activeGallery, setActiveGallery] = useState<string[] | null>(null);
+
   return (
     <div className='min-h-screen py-5 px-12 font-sans'>
       <div className='mx-auto flex flex-col gap-3.5'>
@@ -116,7 +119,12 @@ const SearchForErrandPage = () => {
           </div>
 
           {/* Provider Grid */}
-          <ProviderGrid providers={providers} loading={loading} error={error} />
+          <ProviderGrid 
+            providers={providers} 
+            loading={loading} 
+            error={error} 
+            onOpenGallery={setActiveGallery}
+          />
 
           {/* Pagination */}
           <Pagination
@@ -126,6 +134,13 @@ const SearchForErrandPage = () => {
           />
         </div>
       </div>
+      
+      {/* Gallery Modal */}
+      <ImageGalleryModal
+        images={activeGallery || []}
+        isOpen={!!activeGallery}
+        onClose={() => setActiveGallery(null)}
+      />
     </div>
   );
 };
