@@ -14,7 +14,7 @@ import { StateDropdown, CityDropdown } from "@/components/shared/StateCityDropdo
 
 const ErrandRegistrationPage = () => {
   const { user, setUser } = useAuth();
-  const { data: profileData } = useProfile();
+  const { data: profileData } = useProfile(!!user);
   const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile();
   const { mutate: register, isPending } = useRegisterErrand();
 

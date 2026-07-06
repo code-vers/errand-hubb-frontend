@@ -2,13 +2,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { profileService } from '@/services/profile.service';
 import { toast } from 'sonner';
 
-export const useProfile = () => {
+export const useProfile = (enabled: boolean = true) => {
   return useQuery({
     queryKey: ['profile'],
     queryFn: async () => {
       const response = await profileService.getMe();
       return response.data;
     },
+    enabled,
   });
 };
 

@@ -35,7 +35,7 @@ export const useRegisterClient = () => {
   return useMutation({
     mutationFn: (data: any) => authService.registerClient(data),
     onSuccess: () => {
-      toast.success('Registration successful! Please login.');
+      toast.success('Registration successful! Please check your email to verify your account before logging in.', { duration: 5000 });
       router.push('/login');
     },
     onError: handleApiError,
@@ -48,7 +48,7 @@ export const useRegisterErrand = () => {
   return useMutation({
     mutationFn: (data: any) => authService.registerErrand(data),
     onSuccess: () => {
-      toast.success('ErrandR profile created! Please login.');
+      toast.success('ErrandR profile created! Please check your email to verify your account before logging in.', { duration: 5000 });
       router.push('/login');
     },
     onError: handleApiError,
