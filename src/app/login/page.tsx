@@ -48,6 +48,20 @@ export default function LoginPage() {
     }
 
     if (typeof error.message === "string") {
+      if (error.message === "Please verify your email before logging in.") {
+        toast.error(error.message, {
+          action: {
+            label: "Resend Email",
+            onClick: () => {
+              authService.resendVerification(formData.email)
+                .then(() => toast.success("Verification email resent! Please check your inbox."))
+                .catch((err) => toast.error(err.message || "Failed to resend email"));
+            }
+          },
+          duration: 10000,
+        });
+        return;
+      }
       toast.error(error.message);
       return;
     }

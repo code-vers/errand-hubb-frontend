@@ -52,4 +52,12 @@ export const authService = {
   getSecurityLogs: async () => {
     return api.get('/auth/security-logs');
   },
+
+  verifyEmail: async (token: string) => {
+    return api.post('/auth/verify-email', { token });
+  },
+
+  resendVerification: async (email: string) => {
+    return api.post('/auth/resend-verification', { email });
+  },
 };
