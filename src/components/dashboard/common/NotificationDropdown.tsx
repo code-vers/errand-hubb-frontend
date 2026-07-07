@@ -30,6 +30,27 @@ const NotificationDropdown: FC = () => {
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [inAppNotifsOn, setInAppNotifsOn] = useState(true);
+
+  useEffect(() => {
+    const loadPrefs = () => {
+      const prefsStr = localStorage.getItem("errand_notif_prefs");
+      if (prefsStr) {
+        try {
+          const prefs = JSON.parse(prefsStr);
+          if (prefs.inAppNotifications === false) {
+            setInAppNotifsOn(false);
+            return;
+          }
+        } catch (e) {}
+      }
+      setInAppNotifsOn(true);
+    };
+
+    loadPrefs();
+    window.addEventListener("notif_prefs_updated", loadPrefs);
+    return () => window.removeEventListener("notif_prefs_updated", loadPrefs);
+  }, []);
   
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { socket } = useSocket();
@@ -72,15 +93,26 @@ const NotificationDropdown: FC = () => {
 
       // Trigger a toast for non-message notifications (message toasts are handled in SocketContext.tsx)
       if (notification.type !== "new_message") {
-        toast.info(notification.title, {
-          description: notification.message,
-          action: {
-            label: "View",
-            onClick: () => {
-              handleNotificationClick(notification);
+        let shouldShowToast = true;
+        try {
+          const prefsStr = localStorage.getItem("errand_notif_prefs");
+          if (prefsStr) {
+            const prefs = JSON.parse(prefsStr);
+            if (prefs.inAppNotifications === false) shouldShowToast = false;
+          }
+        } catch (e) {}
+
+        if (shouldShowToast) {
+          toast.info(notification.title, {
+            description: notification.message,
+            action: {
+              label: "View",
+              onClick: () => {
+                handleNotificationClick(notification);
+              },
             },
-          },
-        });
+          });
+        }
       }
     };
 
@@ -205,7 +237,7 @@ const NotificationDropdown: FC = () => {
         aria-label="Notifications"
       >
         <Bell className="text-[#EC6F27] w-6 h-6" />
-        {unreadCount > 0 && (
+        {inAppNotifsOn && unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white animate-pulse">
             {unreadCount}
           </span>

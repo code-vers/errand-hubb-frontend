@@ -11,6 +11,7 @@ import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneI
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { validateName, validateEmail, validateCityState, validateTextarea, validateGenericString, validatePassword } from "@/lib/validation";
 import { StateDropdown, CityDropdown } from "@/components/shared/StateCityDropdown";
+import AudioPlayer from "@/components/shared/AudioPlayer";
 
 const ErrandRegistrationPage = () => {
   const { user, setUser } = useAuth();
@@ -249,8 +250,9 @@ const ErrandRegistrationPage = () => {
 
   return (
     <div
-      className='min-h-screen py-8 flex items-center justify-center p-4'
+      className='min-h-screen py-8 flex justify-center p-4 w-full'
       style={{ backgroundColor: "var(--color-surface-dim)" }}>
+      <div className='flex flex-col lg:flex-row items-start justify-center gap-12 max-w-[1200px] w-full'>
       <main
         className='w-full max-w-240 rounded-lg p-6'
         style={{
@@ -817,6 +819,15 @@ const ErrandRegistrationPage = () => {
           </div>
         </form>
       </main>
+      <div className="hidden lg:flex flex-col items-center gap-6 mt-16 lg:sticky lg:top-24">
+        <img 
+          src='/ERRANDER LADY.png' 
+          alt='Errander' 
+          className='w-64 h-64 object-cover shadow-md bg-white p-2'
+        />
+        <AudioPlayer src='/ERRANDER FILE.mp3' />
+      </div>
+      </div>
     </div>
   );
 };

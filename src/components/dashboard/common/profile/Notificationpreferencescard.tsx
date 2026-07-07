@@ -80,21 +80,14 @@ const NotificationPreferencesCard: React.FC<
         label='Email Notifications'
         description='Receive updates via email'
         checked={preferences.emailNotifications}
-        onToggle={() => toggle("emailNotifications")}
+        onToggle={() => {}}
         icon={<Mail size={16} strokeWidth={2} />}
       />
       <ToggleRow
-        label='SMS Notifications'
-        description='Receive text message alerts'
-        checked={preferences.smsNotifications}
-        onToggle={() => toggle("smsNotifications")}
-        icon={<MessageSquare size={16} strokeWidth={2} />}
-      />
-      <ToggleRow
-        label='Push Notifications'
-        description='Browser push notifications'
-        checked={preferences.pushNotifications}
-        onToggle={() => toggle("pushNotifications")}
+        label='In-App Notifications'
+        description='Receive toasts and alerts in the app'
+        checked={preferences.inAppNotifications}
+        onToggle={() => toggle("inAppNotifications")}
         isLast
         icon={<Bell size={16} strokeWidth={2} />}
       />

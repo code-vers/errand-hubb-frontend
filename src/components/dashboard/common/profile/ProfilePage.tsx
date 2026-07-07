@@ -18,7 +18,20 @@ export default function ProfilePage() {
   const { data: profileData, isLoading } = useProfile();
   const { mutate: updateProfile, isPending } = useUpdateProfile();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [notifPrefs, setNotifPrefs] = useState({
+    emailNotifications: true,
+    inAppNotifications: true,
+  });
   const router = useRouter();
+
+  React.useEffect(() => {
+    const savedPrefs = localStorage.getItem('errand_notif_prefs');
+    if (savedPrefs) {
+      try {
+        setNotifPrefs(JSON.parse(savedPrefs));
+      } catch (e) {}
+    }
+  }, []);
 
   if (isLoading) {
     return <div className="p-12 text-center">Loading profile...</div>;
@@ -88,8 +101,10 @@ export default function ProfilePage() {
   };
 
   const handleToggle = (key: keyof NotificationPreferences, value: boolean) => {
-    // This would ideally be a separate setting in the DB
-    console.log("Toggle notification", key, value);
+    const newPrefs = { ...notifPrefs, [key]: value };
+    setNotifPrefs(newPrefs);
+    localStorage.setItem('errand_notif_prefs', JSON.stringify(newPrefs));
+    window.dispatchEvent(new Event('notif_prefs_updated'));
   };
 
   return (
@@ -108,11 +123,7 @@ export default function ProfilePage() {
           <PersonalInfoCard info={personalInfoData} />
           <AccountOverviewCard overview={accountOverviewData} />
           <NotificationPreferencesCard
-            preferences={{
-              emailNotifications: true,
-              smsNotifications: false,
-              pushNotifications: true,
-            }}
+            preferences={notifPrefs}
             onToggle={handleToggle}
           />
           <QuickActionsCard
