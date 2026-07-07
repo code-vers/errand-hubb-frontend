@@ -8,6 +8,7 @@ import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneI
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { validateName, validateEmail, validateCityState, validatePassword } from "@/lib/validation";
 import { StateDropdown, CityDropdown } from "@/components/shared/StateCityDropdown";
+import AudioPlayer from "@/components/shared/AudioPlayer";
 
 const ClientRegistrationPage = () => {
   const [formData, setFormData] = useState({
@@ -137,8 +138,9 @@ const ClientRegistrationPage = () => {
 
   return (
     <div
-      className=' flex items-center justify-center p-4 py-12'
+      className=' flex justify-center p-4 py-12 w-full'
       style={{ backgroundColor: "var(--color-surface-dim)" }}>
+      <div className='flex flex-col lg:flex-row items-start justify-center gap-12 max-w-[1200px] w-full'>
       <main
         className='w-full max-w-230 rounded-lg p-8'
         style={{
@@ -481,6 +483,15 @@ const ClientRegistrationPage = () => {
           </div>
         </form>
       </main>
+      <div className="hidden lg:flex flex-col items-center gap-6 mt-16 lg:sticky lg:top-24">
+        <img 
+          src='/CLIENT MAN.png' 
+          alt='Client' 
+          className='w-64 h-64 object-cover shadow-md bg-white p-2'
+        />
+        <AudioPlayer src='/CLIENT FILE _1.mp3' />
+      </div>
+      </div>
     </div>
   );
 };

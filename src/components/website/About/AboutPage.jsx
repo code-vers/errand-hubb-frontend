@@ -1,3 +1,5 @@
+import AudioPlayer from "@/components/shared/AudioPlayer";
+
 const AboutPage = () => {
   return (
     <div className='w-full max-w-385 mx-auto bg-white font-sans px-6 py-8 md:py-10'>
@@ -53,14 +55,24 @@ const AboutPage = () => {
         </div>
 
         {/* ── ErrandR Definition Box ── */}
-        <div className='mt-10 bg-surface-dim border-l-4 border-primary px-5 py-4 max-w-sm'>
-          <p className='text-base font-extrabold text-secondary leading-tight'>
-            ErrandR
-          </p>
-          <p className='text-xs text-text-secondary italic mt-0.5'>noun</p>
-          <p className='text-sm text-foreground mt-2'>
-            Find local errand runners fast.
-          </p>
+        <div className='mt-10 flex flex-col md:flex-row items-start md:items-center gap-6'>
+          <div className='bg-surface-dim border-l-4 border-primary px-5 py-4 w-full max-w-sm'>
+            <p className='text-base font-extrabold text-secondary leading-tight'>
+              ErrandR
+            </p>
+            <p className='text-xs text-text-secondary italic mt-0.5'>noun</p>
+            <p className='text-sm text-foreground mt-2'>
+              Find local errand runners fast.
+            </p>
+          </div>
+          <div className='flex items-center gap-4 mt-4 md:mt-0'>
+            <img 
+              src='/ABOUT LADY.png' 
+              alt='About ErrandR' 
+              className='h-32 object-contain shadow-md'
+            />
+            <AudioPlayer src='/ABOUT FILE.mp3' />
+          </div>
         </div>
       </div>
     </div>
