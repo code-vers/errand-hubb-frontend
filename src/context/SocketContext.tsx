@@ -61,10 +61,19 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       });
 
       newSocket.on('message_notification', (data) => {
+        let inAppNotifsOn = true;
+        try {
+          const prefsStr = localStorage.getItem('errand_notif_prefs');
+          if (prefsStr) {
+            const prefs = JSON.parse(prefsStr);
+            if (prefs.inAppNotifications === false) inAppNotifsOn = false;
+          }
+        } catch (e) {}
+
         const urlParams = new URLSearchParams(window.location.search);
         const currentConvId = urlParams.get('convId');
         
-        if (window.location.pathname !== '/dashboard/messages' || currentConvId !== data.conversationId) {
+        if (inAppNotifsOn && (window.location.pathname !== '/dashboard/messages' || currentConvId !== data.conversationId)) {
           toast.info(`New message from ${data.senderName}`, {
             description: data.content.substring(0, 50) + (data.content.length > 50 ? '...' : ''),
             action: {
