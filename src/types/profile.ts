@@ -27,6 +27,5 @@ export interface AccountOverview {
 
 export interface NotificationPreferences {
   emailNotifications: boolean;
-  smsNotifications: boolean;
-  pushNotifications: boolean;
+  inAppNotifications: boolean;
 }
