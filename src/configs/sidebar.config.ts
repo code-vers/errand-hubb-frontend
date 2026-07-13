@@ -12,7 +12,8 @@ import {
   User,
   Users,
   Megaphone,
-  MonitorPlay
+  MonitorPlay,
+  ShoppingBag
 } from "lucide-react";
 
 export const sidebarConfig: SidebarMenuItem[] = [
@@ -92,6 +93,12 @@ export const sidebarConfig: SidebarMenuItem[] = [
     title: "Subscription Management",
     path: "/dashboard/subscription-management",
     icon: CreditCard,
+    roles: ["admin"],
+  },
+  {
+    title: "Merchandise Orders",
+    path: "/dashboard/merchandise-orders",
+    icon: ShoppingBag,
     roles: ["admin"],
   },
   {
