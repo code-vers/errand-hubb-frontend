@@ -99,7 +99,7 @@ export default function AdminUsersPage() {
         <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
           {statusOptions.map((opt) => {
             const isActive = activeStatus === opt.value;
-            const activeBg = opt.value === 'all' ? '#EC6F27' : opt.color || '#EC6F27';
+            const activeBg = opt.value === 'all' ? '#EC6F27' : (opt as any).color || '#EC6F27';
 
             return (
               <button

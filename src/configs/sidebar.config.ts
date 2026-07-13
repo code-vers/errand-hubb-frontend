@@ -135,7 +135,7 @@ export const sidebarConfig: SidebarMenuItem[] = [
     title: "Messages",
     path: "/dashboard/messages",
     icon: MessageSquare,
-    roles: ["client", "errand", "admin"],
+    roles: ["client", "errand"],
   },
   {
     title: "Profile",
