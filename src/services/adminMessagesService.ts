@@ -19,5 +19,15 @@ export const adminMessagesService = {
       console.error('Error fetching admin messages:', error);
       throw error;
     }
+  },
+
+  getAdminSchedules: async () => {
+    try {
+      const response = await api.get('/messages/admin/schedules');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching admin schedules:', error);
+      throw error;
+    }
   }
 };
