@@ -12,7 +12,8 @@ import {
   User,
   Users,
   Megaphone,
-  MonitorPlay
+  MonitorPlay,
+  ShoppingBag
 } from "lucide-react";
 
 export const sidebarConfig: SidebarMenuItem[] = [
@@ -95,6 +96,12 @@ export const sidebarConfig: SidebarMenuItem[] = [
     roles: ["admin"],
   },
   {
+    title: "Merchandise Orders",
+    path: "/dashboard/merchandise-orders",
+    icon: ShoppingBag,
+    roles: ["admin"],
+  },
+  {
     title: "System Settings",
     path: "/dashboard/system-settings",
     icon: ShieldAlert,
@@ -128,7 +135,7 @@ export const sidebarConfig: SidebarMenuItem[] = [
     title: "Messages",
     path: "/dashboard/messages",
     icon: MessageSquare,
-    roles: ["client", "errand", "admin"],
+    roles: ["client", "errand"],
   },
   {
     title: "Profile",

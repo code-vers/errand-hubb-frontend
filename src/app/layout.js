@@ -15,7 +15,7 @@ const montserrat = Montserrat({
 
 function RootLayoutContent({ children }) {
   const pathname = usePathname();
-  const isDashboard = pathname.startsWith('/dashboard') || pathname.startsWith('/login');
+  const isDashboard = pathname.startsWith('/dashboard') || pathname.startsWith('/login') || pathname.startsWith('/merchandise');
 
   return (
     <body className={`min-h-screen flex flex-col font-sans ${montserrat.variable}`}>

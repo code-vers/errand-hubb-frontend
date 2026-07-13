@@ -12,6 +12,8 @@ import { useFormValidation } from "@/hooks/useFormValidation";
 import { validateName, validateEmail, validateCityState, validateTextarea, validateGenericString, validatePassword } from "@/lib/validation";
 import { StateDropdown, CityDropdown } from "@/components/shared/StateCityDropdown";
 import AudioPlayer from "@/components/shared/AudioPlayer";
+import Link from "next/link";
+import MerchBannerAd from "@/components/shared/MerchBannerAd";
 
 const ErrandRegistrationPage = () => {
   const { user, setUser } = useAuth();
@@ -826,6 +828,7 @@ const ErrandRegistrationPage = () => {
           className='w-64 h-64 object-cover shadow-md bg-white p-2'
         />
         <AudioPlayer src='/ERRANDER FILE.mp3' />
+        <MerchBannerAd />
       </div>
       </div>
     </div>
