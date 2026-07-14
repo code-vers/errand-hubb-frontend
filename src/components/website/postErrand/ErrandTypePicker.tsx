@@ -10,12 +10,12 @@ interface ErrandTypePickerProps {
 
 const ErrandTypePicker = ({ categories, selectedCategoryId, onSelect }: ErrandTypePickerProps) => {
   return (
-    <aside className='w-full bg-white p-4 rounded-md shadow-sm'>
-      <h3 className='text-[#2a3a4a] text-xs font-extrabold uppercase tracking-wide'>
+    <aside className='w-full bg-white p-4 rounded-md shadow-sm h-fit max-h-[850px] flex flex-col'>
+      <h3 className='text-[#2a3a4a] text-xs font-extrabold uppercase tracking-wide shrink-0 mb-4'>
         Choose Errand Type
       </h3>
 
-      <div className='mt-4 grid grid-cols-3 gap-2.5'>
+      <div className='grid grid-cols-3 gap-2.5 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent'>
         {categories.map((item) => {
           const isSelected = selectedCategoryId === item.id;
           return (

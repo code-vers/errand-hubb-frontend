@@ -12,6 +12,7 @@ import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { STATIC_CATEGORIES } from "@/constants/categories";
 
 const PostErrandPage = () => {
   const { user } = useAuth();
@@ -47,7 +48,11 @@ const PostErrandPage = () => {
       try {
         // Fetch categories first
         const cats = await categoryService.getActive();
-        setCategories(cats);
+        if (cats && cats.length > 0) {
+          setCategories(cats);
+        } else {
+          setCategories(STATIC_CATEGORIES);
+        }
 
         // Always fetch user profile data first for auto-filling and gallery
         let profileData: any = null;
