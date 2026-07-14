@@ -15,12 +15,26 @@ export default function CartPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const savedCart = localStorage.getItem('merch_cart');
-    if (savedCart) {
-      try {
-        setCartItems(JSON.parse(savedCart));
-      } catch (e) {
-        console.error('Failed to parse cart', e);
+    // Check URL parameters for Stripe callbacks
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('success') === 'true') {
+      setOrderPlaced(true);
+      localStorage.removeItem('merch_cart');
+      setCartItems([]);
+      // Optional: Clean URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else {
+      if (searchParams.get('canceled') === 'true') {
+        setError('Payment was canceled. You can try checking out again.');
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+      const savedCart = localStorage.getItem('merch_cart');
+      if (savedCart) {
+        try {
+          setCartItems(JSON.parse(savedCart));
+        } catch (e) {
+          console.error('Failed to parse cart', e);
+        }
       }
     }
     setIsLoaded(true);
@@ -53,15 +67,17 @@ export default function CartPage() {
         totalAmount: parseFloat(cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0).toFixed(2)),
       };
 
-      await merchandiseOrdersService.createOrder(orderPayload);
+      const response = await merchandiseOrdersService.createOrder(orderPayload);
       
-      localStorage.removeItem('merch_cart');
-      setCartItems([]);
-      setOrderPlaced(true);
+      if (response.checkoutUrl) {
+        window.location.href = response.checkoutUrl;
+      } else {
+        setError('Failed to initiate payment. Please try again.');
+        setIsSubmitting(false);
+      }
     } catch (err) {
       console.error(err);
       setError('Failed to place order. Please try again.');
-    } finally {
       setIsSubmitting(false);
     }
   };

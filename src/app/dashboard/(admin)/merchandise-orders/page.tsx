@@ -165,6 +165,7 @@ export default function MerchandiseOrdersPage() {
                     <th className="py-4 px-6">Order ID / Date</th>
                     <th className="py-4 px-6">Customer</th>
                     <th className="py-4 px-6">Total Amount</th>
+                    <th className="py-4 px-6">Payment</th>
                     <th className="py-4 px-6">Status</th>
                     <th className="py-4 px-6 text-right">Actions</th>
                   </tr>
@@ -199,6 +200,17 @@ export default function MerchandiseOrdersPage() {
                           <div className="text-[10px] text-gray-500 mt-0.5">
                             {order.items?.length || 0} items
                           </div>
+                        </td>
+                        <td className="py-4 px-6">
+                          {order.isPaid ? (
+                            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider inline-block text-green-700 bg-green-100">
+                              Paid
+                            </span>
+                          ) : (
+                            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider inline-block text-red-700 bg-red-100">
+                              Unpaid
+                            </span>
+                          )}
                         </td>
                         <td className="py-4 px-6">
                           <span 
@@ -252,6 +264,18 @@ export default function MerchandiseOrdersPage() {
                       <p className="font-bold text-gray-900">{selectedOrder.name}</p>
                       <p className="text-sm text-gray-500">{selectedOrder.email}</p>
                     </div>
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <p className="text-xs font-semibold text-gray-500 mb-1">Payment Status:</p>
+                    {selectedOrder.isPaid ? (
+                      <span className="px-2.5 py-1 rounded-lg text-xs font-bold text-green-700 bg-green-100 inline-block">
+                        ✓ Paid via Stripe
+                      </span>
+                    ) : (
+                      <span className="px-2.5 py-1 rounded-lg text-xs font-bold text-red-700 bg-red-100 inline-block">
+                        ✗ Unpaid
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
