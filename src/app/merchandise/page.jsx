@@ -191,12 +191,6 @@ export default function MerchandisePage() {
                 className='object-contain'
               />
             </div>
-            <div className='flex justify-center gap-2 mb-3'>
-              <div className='w-4 h-4 rounded-full bg-[#063b5c] border border-gray-300'></div>
-              <div className='w-4 h-4 rounded-full bg-black border border-gray-300'></div>
-              <div className='w-4 h-4 rounded-full bg-white border border-gray-300'></div>
-              <div className='w-4 h-4 rounded-full bg-red-600 border border-gray-300'></div>
-            </div>
             <h3 className='text-center font-bold text-gray-900 mb-2'>
               ErrandHubb
               <br />
@@ -206,9 +200,6 @@ export default function MerchandisePage() {
               Large ERRANDHUBB logo on front with small logo on sleeve.
             </p>
             <div className='text-center font-extrabold text-xl mb-3'>$24.99</div>
-            <div className='text-xs text-center font-semibold text-gray-700 tracking-widest mb-3'>
-              S M L XL XXL XXXL
-            </div>
             <div className='flex justify-center items-center gap-1 mb-4 text-[#f47a22]'>
               <Star size={14} fill='currentColor' />
               <Star size={14} fill='currentColor' />
@@ -236,10 +227,6 @@ export default function MerchandisePage() {
                 className='object-contain'
               />
             </div>
-            <div className='flex justify-center gap-2 mb-3'>
-              <div className='w-4 h-4 rounded-full bg-[#063b5c] border border-gray-300'></div>
-              <div className='w-4 h-4 rounded-full bg-black border border-gray-300'></div>
-            </div>
             <h3 className='text-center font-bold text-gray-900 mb-2'>
               ErrandHubb
               <br />
@@ -254,9 +241,6 @@ export default function MerchandisePage() {
               </p>
             </div>
             <div className='text-center font-extrabold text-xl mb-3'>$29.99</div>
-            <div className='text-xs text-center font-semibold text-gray-700 tracking-widest mb-3'>
-              S M L XL XXL XXXL
-            </div>
             <div className='flex justify-center items-center gap-1 mb-4 text-[#f47a22]'>
               <Star size={14} fill='currentColor' />
               <Star size={14} fill='currentColor' />
@@ -284,12 +268,6 @@ export default function MerchandisePage() {
                 className='object-contain'
               />
             </div>
-            <div className='flex justify-center gap-2 mb-3'>
-              <div className='w-4 h-4 rounded-full bg-[#063b5c] border border-gray-300'></div>
-              <div className='w-4 h-4 rounded-full bg-black border border-gray-300'></div>
-              <div className='w-4 h-4 rounded-full bg-white border border-gray-300'></div>
-              <div className='w-4 h-4 rounded-full bg-gray-400 border border-gray-300'></div>
-            </div>
             <h3 className='text-center font-bold text-gray-900 mb-2'>
               ErrandHubb
               <br />
@@ -301,9 +279,6 @@ export default function MerchandisePage() {
               <li>Wrinkle resistant</li>
             </ul>
             <div className='text-center font-extrabold text-xl mb-3'>$39.99</div>
-            <div className='text-xs text-center font-semibold text-gray-700 tracking-widest mb-3'>
-              S M L XL XXL XXXL 4XL
-            </div>
             <div className='flex justify-center items-center gap-1 mb-4 text-[#f47a22]'>
               <Star size={14} fill='currentColor' />
               <Star size={14} fill='currentColor' />
@@ -331,12 +306,6 @@ export default function MerchandisePage() {
                 className='object-contain'
               />
             </div>
-            <div className='flex justify-center gap-2 mb-3'>
-              <div className='w-4 h-4 rounded-full bg-[#063b5c] border border-gray-300'></div>
-              <div className='w-4 h-4 rounded-full bg-black border border-gray-300'></div>
-              <div className='w-4 h-4 rounded-full bg-white border border-gray-300'></div>
-              <div className='w-4 h-4 rounded-full bg-gray-400 border border-gray-300'></div>
-            </div>
             <h3 className='text-center font-bold text-gray-900 mb-2'>
               ErrandHubb
               <br />
@@ -354,9 +323,6 @@ export default function MerchandisePage() {
               </p>
             </div>
             <div className='text-center font-extrabold text-xl mb-3'>$44.99</div>
-            <div className='text-xs text-center font-semibold text-gray-700 tracking-widest mb-3'>
-              S M L XL XXL XXXL 4XL
-            </div>
             <div className='flex justify-center items-center gap-1 mb-4 text-[#f47a22]'>
               <Star size={14} fill='currentColor' />
               <Star size={14} fill='currentColor' />
