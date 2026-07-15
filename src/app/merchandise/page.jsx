@@ -16,8 +16,55 @@ import {
   Quote,
 } from 'lucide-react';
 
+const ProductOptions = ({ productName, availableColors, selections, updateSelection }) => {
+  const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
+  const colorHex = { Black: '#111827', White: '#F9FAFB', Navy: '#1E3A8A' };
+  
+  const currentColor = selections[productName]?.color || 'Black';
+  const currentSize = selections[productName]?.size || 'L';
+
+  return (
+    <div className="flex flex-col gap-3 mb-5 w-full text-left">
+      <div>
+        <p className="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2">Color: <span className="text-gray-900">{currentColor}</span></p>
+        <div className="flex gap-2">
+          {availableColors.map(c => (
+            <button 
+              key={c}
+              onClick={() => updateSelection(productName, 'color', c)}
+              className={`w-6 h-6 rounded-full border-2 transition-all ${currentColor === c ? 'border-[#f47a22] scale-110 shadow-sm' : 'border-gray-200 hover:border-gray-400'}`}
+              style={{ backgroundColor: colorHex[c] }}
+              title={c}
+            />
+          ))}
+        </div>
+      </div>
+      
+      <div>
+        <p className="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-2 mt-1">Size: <span className="text-gray-900">{currentSize}</span></p>
+        <div className="flex gap-1.5">
+          {sizes.map(s => (
+            <button 
+              key={s}
+              onClick={() => updateSelection(productName, 'size', s)}
+              className={`w-8 h-8 flex items-center justify-center rounded-md text-[11px] font-bold transition-all ${
+                currentSize === s 
+                  ? 'bg-[#063b5c] text-white shadow-md' 
+                  : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-400 hover:bg-gray-50'
+              }`}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function MerchandisePage() {
   const [cartItems, setCartItems] = useState([]);
+  const [selections, setSelections] = useState({});
 
   useEffect(() => {
     const savedCart = localStorage.getItem('merch_cart');
@@ -39,12 +86,27 @@ export default function MerchandisePage() {
     'Driver Bundle': { price: 79.99, image: '/merch/merch_bundle_logo.png' },
   };
 
+  const updateSelection = (productName, field, value) => {
+    setSelections(prev => ({
+      ...prev,
+      [productName]: {
+        ...(prev[productName] || {}),
+        [field]: value
+      }
+    }));
+  };
+
   const handleAddToCart = (productName) => {
     const product = productDetails[productName];
     if (!product) return;
 
+    const color = selections[productName]?.color || 'Black';
+    const size = selections[productName]?.size || 'L';
+
     // Check if item already in cart to increment quantity, or add new
-    const existingIndex = cartItems.findIndex((item) => item.name === productName);
+    const existingIndex = cartItems.findIndex((item) => 
+      item.name === productName && item.color === color && item.size === size
+    );
     let updatedCart;
 
     if (existingIndex >= 0) {
@@ -57,17 +119,19 @@ export default function MerchandisePage() {
         price: product.price,
         image: product.image,
         quantity: 1,
+        color,
+        size
       };
       updatedCart = [...cartItems, newItem];
     }
 
     setCartItems(updatedCart);
     localStorage.setItem('merch_cart', JSON.stringify(updatedCart));
-    console.log(`Added to cart: ${productName}`);
+    console.log(`Added to cart: ${productName} (${color} - ${size})`);
   };
 
-  const handleAction = (actionName) => {
-    console.log(`Action triggered: ${actionName}`);
+  const scrollToProducts = () => {
+    document.getElementById('featured-products')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -143,14 +207,14 @@ export default function MerchandisePage() {
 
             <div className='flex flex-wrap gap-4 pt-2'>
               <button
-                onClick={() => handleAction('Shop T-Shirts')}
-                className='bg-[#063b5c] text-white px-8 py-3 rounded-md font-bold hover:bg-[#042840] transition uppercase'
+                onClick={scrollToProducts}
+                className='bg-[#063b5c] text-white px-8 py-3 rounded-md font-bold hover:bg-[#042840] hover:-translate-y-0.5 shadow-md hover:shadow-lg transition-all duration-300 uppercase'
               >
                 Shop T-Shirts
               </button>
               <button
-                onClick={() => handleAction('Shop Polo Shirts')}
-                className='bg-[#f47a22] text-white px-8 py-3 rounded-md font-bold hover:bg-[#d66519] transition uppercase'
+                onClick={scrollToProducts}
+                className='bg-[#f47a22] text-white px-8 py-3 rounded-md font-bold hover:bg-[#d66519] hover:-translate-y-0.5 shadow-md hover:shadow-lg transition-all duration-300 uppercase'
               >
                 Shop Polo Shirts
               </button>
@@ -170,7 +234,7 @@ export default function MerchandisePage() {
       </section>
 
       {/* Featured Products */}
-      <section className='py-16 md:py-24 max-w-7xl mx-auto px-6 md:px-12'>
+      <section id="featured-products" className='py-16 md:py-24 max-w-7xl mx-auto px-6 md:px-12 scroll-mt-20'>
         <div className='flex items-center justify-center gap-4 mb-12'>
           <div className='h-px bg-gray-300 w-16 md:w-32'></div>
           <h2 className='text-2xl md:text-3xl font-bold text-[#063b5c] uppercase tracking-wide'>
@@ -208,6 +272,14 @@ export default function MerchandisePage() {
               <Star size={14} fill='currentColor' />
               <span className='text-xs text-gray-500 ml-1'>(4.9/5)</span>
             </div>
+            
+            <ProductOptions 
+              productName="Classic Logo T-Shirt" 
+              availableColors={['Black', 'White', 'Navy']} 
+              selections={selections} 
+              updateSelection={updateSelection} 
+            />
+
             <button
               onClick={() => handleAddToCart('Classic Logo T-Shirt')}
               className='mt-auto w-full bg-[#063b5c] text-white py-2 rounded font-bold flex items-center justify-center gap-2 hover:bg-[#042840] transition'
@@ -249,6 +321,14 @@ export default function MerchandisePage() {
               <Star size={14} fill='currentColor' />
               <span className='text-xs text-gray-500 ml-1'>(4.9/5)</span>
             </div>
+
+            <ProductOptions 
+              productName="Elite Driver T-Shirt" 
+              availableColors={['Black', 'Navy']} 
+              selections={selections} 
+              updateSelection={updateSelection} 
+            />
+
             <button
               onClick={() => handleAddToCart('Elite Driver T-Shirt')}
               className='mt-auto w-full bg-[#063b5c] text-white py-2 rounded font-bold flex items-center justify-center gap-2 hover:bg-[#042840] transition'
@@ -287,6 +367,14 @@ export default function MerchandisePage() {
               <Star size={14} fill='currentColor' />
               <span className='text-xs text-gray-500 ml-1'>(4.9/5)</span>
             </div>
+
+            <ProductOptions 
+              productName="Professional Polo Shirt" 
+              availableColors={['Black', 'White', 'Navy']} 
+              selections={selections} 
+              updateSelection={updateSelection} 
+            />
+
             <button
               onClick={() => handleAddToCart('Professional Polo Shirt')}
               className='mt-auto w-full bg-[#063b5c] text-white py-2 rounded font-bold flex items-center justify-center gap-2 hover:bg-[#042840] transition'
@@ -331,6 +419,14 @@ export default function MerchandisePage() {
               <Star size={14} fill='currentColor' />
               <span className='text-xs text-gray-500 ml-1'>(4.9/5)</span>
             </div>
+
+            <ProductOptions 
+              productName="Premium Executive Polo" 
+              availableColors={['Black', 'White', 'Navy']} 
+              selections={selections} 
+              updateSelection={updateSelection} 
+            />
+
             <button
               onClick={() => handleAddToCart('Premium Executive Polo')}
               className='mt-auto w-full bg-[#063b5c] text-white py-2 rounded font-bold flex items-center justify-center gap-2 hover:bg-[#042840] transition'
@@ -341,10 +437,10 @@ export default function MerchandisePage() {
 
           {/* Bundle */}
           <div className='bg-white border-2 border-[#f47a22] rounded-lg p-5 flex flex-col relative shadow-md hover:shadow-xl transition'>
-            <div className='absolute top-0 right-0 bg-[#f47a22] text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-sm z-10'>
+            <div className='absolute -top-3 -right-3 bg-red-500 text-white text-[10px] font-extrabold px-3 py-1 rounded-full z-10 shadow-md border-2 border-white tracking-widest'>
               SAVE 20%
             </div>
-            <h3 className='bg-[#f47a22] text-white text-center font-bold py-2 -mt-5 -mx-5 mb-4 rounded-t-sm uppercase tracking-wider'>
+            <h3 className='bg-[#f47a22] text-white text-center font-bold py-2 -mt-5 -mx-5 mb-4 rounded-t-sm uppercase tracking-wider pr-2'>
               Driver Bundle
             </h3>
 
@@ -370,10 +466,17 @@ export default function MerchandisePage() {
               </li>
             </ul>
 
-            <div className='text-center mb-4'>
+            <div className='text-center mb-2'>
               <p className='text-gray-600 text-sm font-semibold mb-1'>Bundle Price:</p>
               <p className='text-3xl font-extrabold text-[#f47a22]'>$79.99</p>
             </div>
+
+            <ProductOptions 
+              productName="Driver Bundle" 
+              availableColors={['Black', 'Navy']} 
+              selections={selections} 
+              updateSelection={updateSelection} 
+            />
 
             <button
               onClick={() => handleAddToCart('Driver Bundle')}

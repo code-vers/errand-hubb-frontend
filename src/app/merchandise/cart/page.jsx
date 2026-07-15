@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Trash2, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, Trash2, ShoppingBag, Plus, Minus } from 'lucide-react';
 import { merchandiseOrdersService } from '@/services/merchandiseOrdersService';
 
 export default function CartPage() {
@@ -47,6 +47,16 @@ export default function CartPage() {
     localStorage.setItem('merch_cart', JSON.stringify(updatedCart));
   };
 
+  const updateQuantity = (index, delta) => {
+    const updatedCart = [...cartItems];
+    const newQuantity = updatedCart[index].quantity + delta;
+    if (newQuantity > 0) {
+      updatedCart[index].quantity = newQuantity;
+      setCartItems(updatedCart);
+      localStorage.setItem('merch_cart', JSON.stringify(updatedCart));
+    }
+  };
+
   const handleCheckout = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -62,7 +72,9 @@ export default function CartPage() {
         items: cartItems.map(item => ({
           name: item.name,
           quantity: item.quantity,
-          price: item.price
+          price: item.price,
+          color: item.color || 'Black',
+          size: item.size || 'L'
         })),
         totalAmount: parseFloat(cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0).toFixed(2)),
       };
@@ -87,138 +99,242 @@ export default function CartPage() {
   const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
   
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans pb-20">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans pb-20">
       {/* Header */}
-      <header className="border-b border-gray-200 py-4 px-6 md:px-12 flex items-center justify-between bg-white sticky top-0 z-50">
-        <Link href="/merchandise" className="flex items-center gap-2 text-[#063b5c] hover:text-[#f47a22] transition font-semibold">
-          <ArrowLeft size={20} />
-          Back to Store
+      <header className="border-b border-slate-200 py-4 px-6 md:px-12 flex items-center justify-between bg-white sticky top-0 z-50 shadow-sm">
+        <Link href="/merchandise" className="flex items-center gap-2 text-slate-600 hover:text-[#f47a22] transition-colors font-medium text-sm">
+          <ArrowLeft size={18} />
+          Continue Shopping
         </Link>
-
-        <div className="font-extrabold text-2xl tracking-tight text-secondary">
-          ERRAND<span className="text-primary">HUBB</span>
+        <div className="font-extrabold text-xl md:text-2xl tracking-tight text-slate-800">
+          ERRAND<span className="text-[#f47a22]">HUBB</span>
         </div>
       </header>
 
-      <div className="max-w-4xl mx-auto px-6 mt-12">
-        <h1 className="text-3xl font-extrabold text-[#063b5c] mb-8 uppercase tracking-wide">Your Shopping Cart</h1>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-8 md:mt-12">
+        <div className="flex items-center gap-3 mb-8">
+          <ShoppingBag className="text-[#063b5c]" size={28} />
+          <h1 className="text-2xl md:text-3xl font-extrabold text-[#063b5c] tracking-tight">Checkout</h1>
+        </div>
 
         {orderPlaced ? (
-          <div className="bg-white p-12 rounded-lg shadow-sm border border-gray-200 text-center">
-            <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-              <ShoppingBag size={40} />
+          <div className="bg-white p-10 md:p-16 rounded-2xl shadow-sm border border-slate-200 text-center max-w-2xl mx-auto mt-12">
+            <div className="w-24 h-24 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-green-100">
+              <ShoppingBag size={48} strokeWidth={1.5} />
             </div>
-            <h2 className="text-2xl font-bold mb-4">Order Placed Successfully!</h2>
-            <p className="text-gray-600 mb-8">
-              We have received your order and will begin processing it right away.
+            <h2 className="text-3xl font-extrabold text-slate-800 mb-4">Order Confirmed!</h2>
+            <p className="text-slate-500 mb-10 text-lg">
+              Thank you for representing ErrandHubb. We're getting your gear ready.
             </p>
             <Link 
               href="/merchandise"
-              className="bg-[#063b5c] text-white px-8 py-3 rounded-md font-bold hover:bg-[#042840] transition inline-block uppercase"
+              className="bg-[#063b5c] text-white px-8 py-3.5 rounded-lg font-bold hover:bg-[#042840] transition-colors inline-block tracking-wide shadow-md hover:shadow-lg"
             >
-              Continue Shopping
+              Return to Store
             </Link>
           </div>
         ) : cartItems.length === 0 ? (
-          <div className="bg-white p-12 rounded-lg shadow-sm border border-gray-200 text-center">
-            <p className="text-gray-500 mb-6 text-lg">Your cart is currently empty.</p>
+          <div className="bg-white p-12 md:p-20 rounded-2xl shadow-sm border border-slate-200 text-center max-w-2xl mx-auto mt-12">
+            <ShoppingBag className="mx-auto text-slate-300 mb-6" size={64} strokeWidth={1} />
+            <h2 className="text-2xl font-bold text-slate-800 mb-3">Your cart is empty</h2>
+            <p className="text-slate-500 mb-8 text-lg">Looks like you haven't added any gear yet.</p>
             <Link 
               href="/merchandise"
-              className="bg-[#f47a22] text-white px-8 py-3 rounded-md font-bold hover:bg-[#d66519] transition inline-block uppercase"
+              className="bg-[#f47a22] text-white px-8 py-3.5 rounded-lg font-bold hover:bg-[#d66519] transition-colors inline-block tracking-wide shadow-md"
             >
-              Shop Merchandise
+              Explore Merchandise
             </Link>
           </div>
         ) : (
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="md:col-span-2 space-y-4">
-              {cartItems.map((item, index) => (
-                <div key={`${item.id}-${index}`} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex gap-4 items-center">
-                  <div className="w-24 h-24 bg-gray-100 rounded-md relative flex-shrink-0">
-                    <Image src={item.image} alt={item.name} fill className="object-contain p-2" />
-                  </div>
-                  <div className="flex-grow">
-                    <h3 className="font-bold text-gray-900">{item.name}</h3>
-                    <p className="text-gray-500 text-sm">Qty: {item.quantity}</p>
-                    <p className="font-extrabold text-[#063b5c] mt-2">${item.price}</p>
-                  </div>
-                  <button 
-                    onClick={() => removeFromCart(index)}
-                    className="p-2 text-red-500 hover:bg-red-50 rounded-full transition"
-                  >
-                    <Trash2 size={20} />
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            {/* Shipping Details Form */}
-            <div className="md:col-span-2 mt-8 bg-white p-6 md:p-8 rounded-lg shadow-sm border border-gray-200">
-              <h2 className="font-extrabold text-xl mb-6 text-[#063b5c] border-b border-gray-100 pb-4">Shipping Details</h2>
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 items-start">
+            
+            {/* Left Column: Cart Items & Shipping Form */}
+            <div className="w-full lg:flex-1 space-y-8">
               
-              <form id="checkout-form" onSubmit={handleCheckout} className="space-y-5">
-                {error && <div className="bg-red-50 text-red-500 p-3 rounded text-sm font-semibold border border-red-100">{error}</div>}
-                
-                <div className="grid md:grid-cols-2 gap-5">
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-700">Full Name</label>
-                    <input required type="text" placeholder="John Doe" className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#f47a22] focus:border-transparent outline-none transition" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-700">Email Address</label>
-                    <input required type="email" placeholder="john@example.com" className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#f47a22] focus:border-transparent outline-none transition" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
-                  </div>
+              {/* Cart Items List */}
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div className="p-6 border-b border-slate-100 bg-slate-50/50">
+                  <h2 className="font-bold text-lg text-slate-800">Order Items ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})</h2>
                 </div>
-                
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-gray-700">Street Address</label>
-                  <input required type="text" placeholder="123 Main St, Apt 4B" className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#f47a22] focus:border-transparent outline-none transition" value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} />
-                </div>
+                <div className="divide-y divide-slate-100">
+                  {cartItems.map((item, index) => (
+                    <div key={`${item.id}-${index}`} className="p-6 flex flex-col sm:flex-row gap-6 items-start sm:items-center hover:bg-slate-50/30 transition-colors">
+                      <div className="w-24 h-24 sm:w-28 sm:h-28 bg-slate-50 rounded-xl relative flex-shrink-0 border border-slate-100">
+                        <Image src={item.image} alt={item.name} fill className="object-contain p-3" />
+                      </div>
+                      
+                      <div className="flex-grow space-y-2">
+                        <div className="flex justify-between items-start gap-4">
+                          <h3 className="font-bold text-slate-800 text-lg leading-tight">{item.name}</h3>
+                          <p className="font-extrabold text-[#063b5c] text-lg">${item.price}</p>
+                        </div>
+                        
+                        <div className="flex flex-wrap items-center gap-3 text-sm">
+                          {item.color && (
+                            <div className="flex items-center gap-1.5 bg-slate-100 px-2.5 py-1 rounded-md text-slate-600 font-medium">
+                              <div className="w-3 h-3 rounded-full border border-slate-300 shadow-sm" style={{ backgroundColor: item.color === 'Black' ? '#111827' : item.color === 'White' ? '#F9FAFB' : '#1E3A8A' }}></div>
+                              {item.color}
+                            </div>
+                          )}
+                          {item.size && (
+                            <div className="bg-slate-100 px-2.5 py-1 rounded-md text-slate-600 font-medium flex items-center gap-1.5">
+                              <span className="text-slate-400 text-xs">Size:</span> {item.size}
+                            </div>
+                          )}
+                        </div>
 
-                <div className="grid md:grid-cols-3 gap-5">
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-700">City</label>
-                    <input required type="text" placeholder="New York" className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#f47a22] focus:border-transparent outline-none transition" value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-700">State / Province</label>
-                    <input required type="text" placeholder="NY" className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#f47a22] focus:border-transparent outline-none transition" value={formData.state} onChange={e => setFormData({...formData, state: e.target.value})} />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-sm font-medium text-gray-700">Zip Code</label>
-                    <input required type="text" placeholder="10001" className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#f47a22] focus:border-transparent outline-none transition" value={formData.zipCode} onChange={e => setFormData({...formData, zipCode: e.target.value})} />
-                  </div>
-                </div>
-              </form>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 h-fit">
-              <h2 className="font-bold text-xl mb-6 text-[#063b5c]">Order Summary</h2>
-              
-              <div className="space-y-3 text-gray-600 mb-6">
-                <div className="flex justify-between">
-                  <span>Subtotal</span>
-                  <span className="font-semibold text-gray-900">${subtotal.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Shipping</span>
-                  <span className="font-semibold text-gray-900">Calculated at checkout</span>
-                </div>
-                <div className="border-t border-gray-200 pt-3 mt-3 flex justify-between items-center">
-                  <span className="font-bold text-gray-900">Estimated Total</span>
-                  <span className="font-extrabold text-2xl text-[#f47a22]">${subtotal.toFixed(2)}</span>
+                        <div className="flex items-center justify-between pt-2 mt-2 border-t border-slate-100">
+                          <div className="flex items-center gap-3">
+                            <span className="text-slate-500 text-sm font-medium">Qty:</span>
+                            <div className="flex items-center bg-slate-50 rounded-lg border border-slate-200">
+                              <button 
+                                type="button"
+                                onClick={() => updateQuantity(index, -1)}
+                                disabled={item.quantity <= 1}
+                                className="p-1.5 text-slate-500 hover:text-[#063b5c] hover:bg-slate-200 rounded-l-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                <Minus size={14} />
+                              </button>
+                              <span className="w-8 text-center text-sm font-bold text-slate-800">{item.quantity}</span>
+                              <button 
+                                type="button"
+                                onClick={() => updateQuantity(index, 1)}
+                                className="p-1.5 text-slate-500 hover:text-[#063b5c] hover:bg-slate-200 rounded-r-lg transition-colors"
+                              >
+                                <Plus size={14} />
+                              </button>
+                            </div>
+                          </div>
+                          <button 
+                            onClick={() => removeFromCart(index)}
+                            className="text-red-500 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-colors flex items-center gap-1.5 text-sm font-medium"
+                          >
+                            <Trash2 size={16} /> <span className="hidden sm:inline">Remove</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
-              <button 
-                type="submit"
-                form="checkout-form"
-                disabled={isSubmitting}
-                className="w-full bg-[#f47a22] text-white py-4 rounded-md font-extrabold hover:bg-[#d66519] transition uppercase tracking-wider shadow-md disabled:opacity-70 mt-6"
-              >
-                {isSubmitting ? 'Processing...' : 'Place Order'}
-              </button>
+              {/* Shipping Details Form */}
+              <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <h2 className="font-bold text-xl mb-6 text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-4">
+                  <span className="bg-[#063b5c] text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
+                  Shipping Information
+                </h2>
+                
+                <form id="checkout-form" onSubmit={handleCheckout} className="space-y-6">
+                  {error && (
+                    <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm font-medium border border-red-100 flex items-start gap-2">
+                      <span className="mt-0.5">⚠️</span> {error}
+                    </div>
+                  )}
+                  
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-slate-700">Full Name</label>
+                      <input required type="text" placeholder="e.g. Jane Doe" 
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22] outline-none transition-all placeholder:text-slate-400" 
+                        value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-slate-700">Email Address</label>
+                      <input required type="email" placeholder="jane@example.com" 
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22] outline-none transition-all placeholder:text-slate-400" 
+                        value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} 
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-semibold text-slate-700">Street Address</label>
+                    <input required type="text" placeholder="123 Main St, Apt 4B" 
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22] outline-none transition-all placeholder:text-slate-400" 
+                      value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} 
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-slate-700">City</label>
+                      <input required type="text" placeholder="New York" 
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22] outline-none transition-all placeholder:text-slate-400" 
+                        value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-slate-700">State</label>
+                      <input required type="text" placeholder="NY" 
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22] outline-none transition-all placeholder:text-slate-400" 
+                        value={formData.state} onChange={e => setFormData({...formData, state: e.target.value})} 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-slate-700">Zip Code</label>
+                      <input required type="text" placeholder="10001" 
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22] outline-none transition-all placeholder:text-slate-400" 
+                        value={formData.zipCode} onChange={e => setFormData({...formData, zipCode: e.target.value})} 
+                      />
+                    </div>
+                  </div>
+                </form>
+              </div>
             </div>
+
+            {/* Right Column: Order Summary (Sticky) */}
+            <div className="w-full lg:w-[380px] flex-shrink-0">
+              <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 lg:sticky lg:top-24">
+                <h2 className="font-bold text-xl mb-6 text-slate-800 border-b border-slate-100 pb-4">Order Summary</h2>
+                
+                <div className="space-y-4 text-slate-600 mb-8">
+                  <div className="flex justify-between items-center text-sm">
+                    <span>Subtotal ({cartItems.reduce((acc, item) => acc + item.quantity, 0)} items)</span>
+                    <span className="font-semibold text-slate-900">${subtotal.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span>Shipping</span>
+                    <span className="font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded text-xs">Free</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span>Taxes</span>
+                    <span className="font-medium text-slate-400">Calculated later</span>
+                  </div>
+                  
+                  <div className="border-t border-slate-200 pt-5 mt-5 flex justify-between items-end">
+                    <div>
+                      <span className="block font-bold text-slate-800 text-lg">Total</span>
+                      <span className="text-xs text-slate-400 font-medium">USD</span>
+                    </div>
+                    <span className="font-extrabold text-3xl text-[#f47a22]">${subtotal.toFixed(2)}</span>
+                  </div>
+                </div>
+
+                <button 
+                  type="submit"
+                  form="checkout-form"
+                  disabled={isSubmitting}
+                  className="w-full bg-[#f47a22] text-white py-4 rounded-xl font-extrabold hover:bg-[#d66519] transition-all uppercase tracking-wide shadow-md hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      Processing...
+                    </>
+                  ) : (
+                    'Proceed to Payment'
+                  )}
+                </button>
+                
+                <div className="mt-6 text-center text-xs font-medium text-slate-400 flex items-center justify-center gap-1.5">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                  Secure SSL Checkout via Stripe
+                </div>
+              </div>
+            </div>
+            
           </div>
         )}
       </div>

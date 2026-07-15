@@ -301,7 +301,14 @@ export default function MerchandiseOrdersPage() {
                     <tbody className="divide-y divide-gray-100">
                       {selectedOrder.items && Array.isArray(selectedOrder.items) && selectedOrder.items.map((item: any, idx: number) => (
                         <tr key={idx} className="hover:bg-gray-50/30">
-                          <td className="px-4 py-3 text-sm text-gray-800 font-semibold">{item.name}</td>
+                          <td className="px-4 py-3 text-sm text-gray-800 font-semibold">
+                            {item.name}
+                            {(item.color || item.size) && (
+                              <div className="text-xs text-gray-500 font-normal mt-0.5">
+                                {item.color ? `Color: ${item.color}` : ''} {item.color && item.size ? '|' : ''} {item.size ? `Size: ${item.size}` : ''}
+                              </div>
+                            )}
+                          </td>
                           <td className="px-4 py-3 text-sm text-gray-500 text-center font-medium">{item.quantity}</td>
                           <td className="px-4 py-3 text-sm text-gray-800 text-right font-medium">${item.price}</td>
                         </tr>
