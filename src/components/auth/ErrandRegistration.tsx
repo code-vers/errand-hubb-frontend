@@ -821,7 +821,7 @@ const ErrandRegistrationPage = () => {
           </div>
         </form>
       </main>
-      <div className="hidden lg:flex flex-col items-center gap-6 mt-16 lg:sticky lg:top-24">
+      <div className="flex flex-col items-center gap-6 mt-8 lg:mt-16 lg:sticky lg:top-24 pb-8 lg:pb-0">
         <img 
           src='/ERRANDER LADY.png' 
           alt='Errander' 
