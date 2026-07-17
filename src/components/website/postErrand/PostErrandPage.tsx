@@ -40,20 +40,25 @@ const PostErrandPage = () => {
 
   useEffect(() => {
     const initPage = async () => {
-      if (!user) {
-        setIsLoading(false);
-        return;
-      }
-
       try {
-        // Fetch categories first
+        // Fetch categories first, regardless of auth state
         const cats = await categoryService.getActive();
         if (cats && cats.length > 0) {
           setCategories(cats);
         } else {
           setCategories(STATIC_CATEGORIES);
         }
+      } catch (error) {
+        console.error("Failed to fetch categories", error);
+        setCategories(STATIC_CATEGORIES);
+      }
 
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
         // Always fetch user profile data first for auto-filling and gallery
         let profileData: any = null;
         try {
