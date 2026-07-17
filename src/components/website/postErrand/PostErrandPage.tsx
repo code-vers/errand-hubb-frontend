@@ -42,7 +42,15 @@ const PostErrandPage = () => {
     const initPage = async () => {
       try {
         // Fetch categories first, regardless of auth state
-        const cats = await categoryService.getActive();
+        const response = await categoryService.getActive();
+        let cats: Category[] = [];
+        
+        if (Array.isArray(response)) {
+          cats = response;
+        } else if (response && typeof response === 'object' && Array.isArray((response as any).data)) {
+          cats = (response as any).data;
+        }
+
         if (cats && cats.length > 0) {
           setCategories(cats);
         } else {
