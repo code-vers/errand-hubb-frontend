@@ -16,7 +16,7 @@ export function useSubscription() {
   });
 
   const createCheckoutMutation = useMutation({
-    mutationFn: () => subscriptionService.createCheckoutSession(),
+    mutationFn: (plan: 'monthly' | 'yearly') => subscriptionService.createCheckoutSession(plan),
     onSuccess: (res) => {
       if (res.data?.url) {
         window.location.href = res.data.url;
