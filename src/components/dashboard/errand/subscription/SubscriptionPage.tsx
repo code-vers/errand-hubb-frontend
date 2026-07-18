@@ -26,6 +26,14 @@ const SubscriptionPage = () => {
     }
   }, [searchParams, queryClient]);
 
+  useEffect(() => {
+    if (subscription?.amount === 50) {
+      setBillingCycle('yearly');
+    } else if (subscription?.amount === 5) {
+      setBillingCycle('monthly');
+    }
+  }, [subscription]);
+
   const benefits = [
     "Unlimited errand applications",
     "Priority listing in search results",
