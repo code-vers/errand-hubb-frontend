@@ -54,7 +54,7 @@ export default function LoginPage() {
             label: "Resend Email",
             onClick: () => {
               authService.resendVerification(formData.email)
-                .then(() => toast.success("Verification email resent! Please check your inbox."))
+                .then(() => toast.success("Verification email resent! Please check your inbox. If you do not see it, please check your spam folder."))
                 .catch((err) => toast.error(err.message || "Failed to resend email"));
             }
           },
