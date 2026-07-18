@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PageHeader from "../../common/PageHeader";
 import { CreditCard, CheckCircle, Clock, Zap, Loader2, AlertCircle } from "lucide-react";
 import { useSubscription } from "./useSubscription";
@@ -11,6 +11,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const SubscriptionPage = () => {
   const { subscription, loading, error, subscribe, manageBilling, isSubscribing, isManaging } = useSubscription();
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const searchParams = useSearchParams();
   const queryClient = useQueryClient();
 
@@ -104,16 +105,35 @@ const SubscriptionPage = () => {
           </div>
           
           <div className='p-8'>
-            <div className='flex items-center gap-2 mb-6'>
-              <div className='w-10 h-10 rounded-xl bg-[#FFF3CD] flex items-center justify-center'>
-                <Zap className='w-6 h-6 text-[#EC6F27]' />
+            <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6'>
+              <div className='flex items-center gap-2'>
+                <div className='w-10 h-10 rounded-xl bg-[#FFF3CD] flex items-center justify-center'>
+                  <Zap className='w-6 h-6 text-[#EC6F27]' />
+                </div>
+                <h2 className='text-2xl font-black text-secondary uppercase tracking-tight'>Pro Plan</h2>
               </div>
-              <h2 className='text-2xl font-black text-secondary uppercase tracking-tight'>Pro Plan</h2>
+              
+              {!isSubscribed && (
+                <div className="flex bg-gray-100 p-1 rounded-xl">
+                  <button
+                    onClick={() => setBillingCycle('monthly')}
+                    className={`px-4 py-1.5 text-xs font-bold uppercase rounded-lg transition-all ${billingCycle === 'monthly' ? 'bg-white text-secondary shadow-sm' : 'text-muted hover:text-secondary'}`}
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    onClick={() => setBillingCycle('yearly')}
+                    className={`px-4 py-1.5 text-xs font-bold uppercase rounded-lg transition-all ${billingCycle === 'yearly' ? 'bg-[#EC6F27] text-white shadow-sm' : 'text-muted hover:text-secondary'}`}
+                  >
+                    Yearly
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className='flex items-baseline gap-1 mb-8'>
-              <span className='text-4xl font-black text-secondary'>$5</span>
-              <span className='text-muted font-bold'>/Month</span>
+              <span className='text-4xl font-black text-secondary'>${billingCycle === 'yearly' ? '50' : '5'}</span>
+              <span className='text-muted font-bold'>/{billingCycle === 'yearly' ? 'Year' : 'Month'}</span>
             </div>
 
             <ul className='space-y-4 mb-8'>
@@ -137,7 +157,7 @@ const SubscriptionPage = () => {
               </button>
             ) : (
               <button 
-                onClick={() => subscribe()}
+                onClick={() => subscribe(billingCycle)}
                 disabled={isSubscribing}
                 className='w-full py-4 bg-[#EC6F27] text-white rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[#d85e1b] transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 shadow-lg shadow-[#EC6F27]/20 disabled:opacity-70 disabled:cursor-not-allowed'>
                 {isSubscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className='w-4 h-4' />}

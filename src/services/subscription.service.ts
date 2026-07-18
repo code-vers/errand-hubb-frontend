@@ -5,8 +5,8 @@ export const subscriptionService = {
     return api.get('/subscriptions/me');
   },
 
-  createCheckoutSession: async () => {
-    return api.post('/subscriptions/create-checkout-session');
+  createCheckoutSession: async (plan: 'monthly' | 'yearly' = 'monthly') => {
+    return api.post('/subscriptions/create-checkout-session', { plan });
   },
 
   createCustomerPortal: async () => {
