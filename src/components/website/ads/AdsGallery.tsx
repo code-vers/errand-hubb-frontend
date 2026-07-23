@@ -60,35 +60,39 @@ const AdsGallery = () => {
             </div>
           </div>
 
-          <div className='w-full lg:w-1/4'>
+          <div className='w-full lg:w-1/3'>
             <label className='block text-xs font-bold text-gray-400 uppercase mb-2 ml-1'>Category</label>
             <select
               className='w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all'
-              value={filters.categoryId}
-              onChange={(e) => setCategory(e.target.value)}
+              value={filters.subcategoryId ? `sub_${filters.subcategoryId}_${filters.categoryId}` : (filters.categoryId ? `cat_${filters.categoryId}` : '')}
+              onChange={(e) => {
+                const val = e.target.value;
+                if (!val) {
+                  setCategory('');
+                  setSubcategory('');
+                } else if (val.startsWith('cat_')) {
+                  setCategory(val.split('_')[1]);
+                  setSubcategory('');
+                } else if (val.startsWith('sub_')) {
+                  const parts = val.split('_');
+                  setSubcategory(parts[1]);
+                  setCategory(parts[2]);
+                }
+              }}
             >
               <option value=''>All Categories</option>
               {categories.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                <optgroup key={cat.id} label={cat.name}>
+                  <option value={`cat_${cat.id}`}>All {cat.name}</option>
+                  {cat.subcategories?.map((sub: any) => (
+                    <option key={sub.id} value={`sub_${sub.id}_${cat.id}`}>
+                      {sub.name}
+                    </option>
+                  ))}
+                </optgroup>
               ))}
             </select>
           </div>
-
-          {selectedCategory && selectedCategory.subcategories?.length > 0 && (
-            <div className='w-full lg:w-1/4 animate-in fade-in slide-in-from-left-2 duration-300'>
-              <label className='block text-xs font-bold text-gray-400 uppercase mb-2 ml-1'>Subcategory</label>
-              <select
-                className='w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all'
-                value={filters.subcategoryId}
-                onChange={(e) => setSubcategory(e.target.value)}
-              >
-                <option value=''>All Subcategories</option>
-                {selectedCategory.subcategories.map((sub: any) => (
-                  <option key={sub.id} value={sub.id}>{sub.name}</option>
-                ))}
-              </select>
-            </div>
-          )}
 
           <button 
             onClick={resetFilters}
