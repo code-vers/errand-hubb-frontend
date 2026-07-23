@@ -231,46 +231,42 @@ const PostAdPage = () => {
                 )}
               </div>
 
-              {/* Main Category */}
-              <div className="flex flex-col">
+              {/* Category & Subcategory */}
+              <div className="flex flex-col md:col-span-2">
                 <label className={labelClass}>
                   <Tag size={14} className="text-[var(--color-primary)]" />
-                  Category
+                  Category / Subcategory
                 </label>
                 <select
                   name="categoryId"
                   required
-                  value={formData.categoryId}
-                  onChange={handleChange}
+                  value={formData.subcategoryId ? `sub_${formData.subcategoryId}_${formData.categoryId}` : (formData.categoryId ? `cat_${formData.categoryId}` : '')}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (!val) {
+                      setFormData(prev => ({ ...prev, categoryId: '', subcategoryId: '' }));
+                    } else if (val.startsWith('cat_')) {
+                      setFormData(prev => ({ ...prev, categoryId: val.split('_')[1], subcategoryId: '' }));
+                    } else if (val.startsWith('sub_')) {
+                      const parts = val.split('_');
+                      setFormData(prev => ({ ...prev, subcategoryId: parts[1], categoryId: parts[2] }));
+                    }
+                  }}
                   className={inputClass}
                 >
                   <option value="">Select a category</option>
                   {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    <optgroup key={cat.id} label={cat.name}>
+                      <option value={`cat_${cat.id}`}>All {cat.name}</option>
+                      {cat.subcategories?.map((sub: any) => (
+                        <option key={sub.id} value={`sub_${sub.id}_${cat.id}`}>
+                          {sub.name}
+                        </option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
               </div>
-
-              {/* Subcategory */}
-              {selectedCategory && selectedCategory.subcategories?.length > 0 && (
-                <div className="flex flex-col md:col-span-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                  <label className={labelClass}>
-                    <Tag size={14} className="text-[var(--color-primary)]" />
-                    Subcategory
-                  </label>
-                  <select
-                    name="subcategoryId"
-                    value={formData.subcategoryId}
-                    onChange={handleChange}
-                    className={inputClass}
-                  >
-                    <option value="">Select a specific service</option>
-                    {selectedCategory.subcategories.map((sub: any) => (
-                      <option key={sub.id} value={sub.id}>{sub.name}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
 
               {/* Address */}
               <div className="flex flex-col md:col-span-2">
