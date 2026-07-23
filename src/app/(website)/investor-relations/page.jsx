@@ -120,7 +120,7 @@ export default function InvestorRelationsPage() {
 
             {/* Contact Us */}
             <div className='border-t-2 border-[#e2e8f0] pt-6'>
-              <p className='text-sm font-bold tracking-[0.2em] uppercase text-gray-400 mb-2'>
+              <p className='text-sm font-bold tracking-[0.2em] uppercase text-gray-600 mb-2'>
                 Contact Us
               </p>
               <a

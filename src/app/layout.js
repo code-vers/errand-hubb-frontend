@@ -1,11 +1,7 @@
-'use client';
-
 import { Montserrat } from "next/font/google";
-import Footer from "../components/website/Footer";
-import Header from "../components/website/Header";
 import "./globals.css";
-import { usePathname } from "next/navigation";
 import Providers from "@/components/common/Providers";
+import RootLayoutContent from "./RootLayoutContent";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -13,25 +9,25 @@ const montserrat = Montserrat({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
-function RootLayoutContent({ children }) {
-  const pathname = usePathname();
-  const isDashboard = pathname.startsWith('/dashboard') || pathname.startsWith('/login') || pathname.startsWith('/merchandise');
-
-  return (
-    <body className={`min-h-screen flex flex-col font-sans ${montserrat.variable}`}>
-      {!isDashboard && <Header />}
-      <main className={!isDashboard ? '' : 'free'}>{children}</main>
-      {!isDashboard && <Footer />}
-    </body>
-  );
-}
+export const metadata = {
+  title: {
+    default: "Errand Hub",
+    template: "%s | Errand Hub",
+  },
+  description: "Errand Hub is a platform that connects client requests with local service providers and merchandise.",
+  keywords: ["errand", "service provider", "local services", "errand runner"],
+};
 
 export default function RootLayout({ children }) {
   return (
-    <html lang='en' className="h-full antialiased">
-      <Providers>
-        <RootLayoutContent>{children}</RootLayoutContent>
-      </Providers>
+    <html lang='en' className="h-full antialiased" suppressHydrationWarning>
+      <body className={`min-h-screen flex flex-col font-sans ${montserrat.variable}`} suppressHydrationWarning>
+        <Providers>
+          <RootLayoutContent>{children}</RootLayoutContent>
+        </Providers>
+      </body>
     </html>
   );
 }
+
+RootLayout.displayName = 'RootLayout';
