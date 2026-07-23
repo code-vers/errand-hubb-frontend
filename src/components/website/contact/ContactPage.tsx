@@ -5,8 +5,11 @@ import logo from "../../../../public/logo2.svg";
 import { useState } from "react";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { validateName, validateEmail, validateSubject, validateTextarea } from "@/lib/validation";
+import { toast } from "sonner";
+import axiosInstance from "@/services/api/axios";
 
 const ContactPage = () => {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -27,11 +30,26 @@ const ContactPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm(formData)) return;
-    // Handle submit here
-    console.log("Submit", formData);
+    
+    setLoading(true);
+    try {
+      await axiosInstance.post("/contact", formData);
+      toast.success("Message sent successfully! We will get back to you soon.");
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || error.message || "Failed to send message. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -188,8 +206,9 @@ const ContactPage = () => {
 
               <button
                 type='submit'
-                className='mt-1 h-12 rounded-md bg-primary text-white text-sm font-extrabold uppercase tracking-wider transition-colors hover:bg-primary-dark'>
-                Send Message
+                disabled={loading}
+                className='mt-1 h-12 rounded-md bg-primary text-white text-sm font-extrabold uppercase tracking-wider transition-colors hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center'>
+                {loading ? 'Sending...' : 'Send Message'}
               </button>
             </form>
           </section>
