@@ -15,7 +15,6 @@ const MORE_GALLERY_ITEMS = [
   { src: "/gallary/gallery7.png", alt: "Errand helper delivering grocery bag" },
   { src: "/gallary/gallery8.png", alt: "Errand helper unpacking dishes" },
   { src: "/gallary/gallery9.png", alt: "Moving and kitchen utensils box" },
-  { src: "/gallary/Container (7).png", alt: "Handyman repairing sink" },
   { src: "/gallary/Container (8).png", alt: "Errand helper reviewing paperwork" },
 ];
 
