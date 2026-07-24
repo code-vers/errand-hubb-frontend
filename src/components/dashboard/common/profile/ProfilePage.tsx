@@ -112,11 +112,9 @@ export default function ProfilePage() {
       <div className=' mx-auto flex flex-col gap-3.5'>
         <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 mb-2">
           <PageHeader title='Profile' />
-          {user?.role === 'client' && (
-            <div className="bg-[#E23F36] text-white px-4 py-1.5 font-bold shadow-sm whitespace-nowrap text-sm md:text-base md:-mt-4">
-              TO POST YOUR TALENT AND SKILLS CLICK SUBSCRIPTION
-            </div>
-          )}
+          <div className={`px-4 py-1.5 rounded-full text-xs font-bold ${user?.role === 'errand' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
+            {user?.role === 'errand' ? 'Welcome to Errand Profile' : 'Welcome to Client Profile'}
+          </div>
         </div>
 
         <ProfileHeader
@@ -134,6 +132,7 @@ export default function ProfilePage() {
             onToggle={handleToggle}
           />
           <QuickActionsCard
+            userRole={user?.role}
             onPostOnBoard={() => router.push('/post-errand')}
             onViewMyPosts={() => router.push('/dashboard/my-posts')}
           />

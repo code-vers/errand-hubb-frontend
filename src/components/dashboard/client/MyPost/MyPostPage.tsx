@@ -65,7 +65,7 @@ const MyPostPage = () => {
             onClick={handleCreateOpen}
             className='flex items-center gap-2 bg-status-orange hover:bg-[#D95F1B] text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-orange-500/20 transition-all active:scale-95'>
             <Plus size={18} />
-            Post on board
+            Create a Post
           </button>
         </div>
 
