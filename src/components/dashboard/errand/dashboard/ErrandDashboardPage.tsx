@@ -45,9 +45,6 @@ const ErrandDashboardPage = () => {
     <div className='w-full p-6'>
       <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 mb-2">
         <PageHeader title='Overview' />
-        <div className="bg-[#E23F36] text-white px-4 py-1.5 font-bold shadow-sm whitespace-nowrap text-sm md:text-base md:-mt-4">
-          TO POST YOUR TALENT AND SKILLS CLICK SUBSCRIPTION
-        </div>
       </div>
       <TaskDashboard 
         onReplyToClient={(clientId) => handleReply(clientId)}
