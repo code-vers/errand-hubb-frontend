@@ -69,6 +69,8 @@ const ChatContainer: FC = () => {
                 }
               } catch (startErr: any) {
                 console.error("CHAT: Failed to start conversation:", startErr);
+                const errorMessage = startErr?.response?.data?.message || startErr?.message || "Failed to start conversation";
+                toast.error(errorMessage);
               } finally {
                 pendingCreations.delete(errandIdFromUrl);
               }

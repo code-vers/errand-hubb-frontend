@@ -77,6 +77,7 @@ export function useProviders(initialLimit: number = 6) {
         limit: initialLimit,
         workerName: filters.workerName || undefined,
         workerEmail: filters.workerEmail || undefined,
+        userRole: 'errand',
       });
       setProviders(response.data.data);
       setTotal(response.data.meta.total);
