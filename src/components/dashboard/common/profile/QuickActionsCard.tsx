@@ -1,11 +1,13 @@
 import React from "react";
 
 interface QuickActionsCardProps {
+  userRole?: string;
   onPostOnBoard?: () => void;
   onViewMyPosts?: () => void;
 }
 
 const QuickActionsCard: React.FC<QuickActionsCardProps> = ({
+  userRole,
   onPostOnBoard,
   onViewMyPosts,
 }) => {
@@ -20,9 +22,9 @@ const QuickActionsCard: React.FC<QuickActionsCardProps> = ({
           Get things done faster with one click.
         </p>
 
-        {/* POST ON BOARD */}
+        {/* POST BUTTON */}
         <button
-          onClick={onPostOnBoard}
+          onClick={userRole === 'client' ? onViewMyPosts : onPostOnBoard}
           className='flex items-center justify-center gap-2 w-full py-[11px] px-4 bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white border-none rounded-md text-[13px] font-semibold cursor-pointer tracking-wide transition-colors duration-150 font-[var(--font-sans)]'>
           <svg
             width='15'
@@ -35,7 +37,7 @@ const QuickActionsCard: React.FC<QuickActionsCardProps> = ({
             <line x1='12' y1='8' x2='12' y2='16' />
             <line x1='8' y1='12' x2='16' y2='12' />
           </svg>
-          POST ON BOARD
+          {userRole === 'client' ? 'CREATE A POST' : 'POST ON BOARD'}
         </button>
 
         {/* VIEW MY POSTS */}

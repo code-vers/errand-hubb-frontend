@@ -66,6 +66,11 @@ const PostErrandPage = () => {
         return;
       }
 
+      if (user.role === "client") {
+        router.push("/dashboard/profile");
+        return;
+      }
+
       try {
         // Always fetch user profile data first for auto-filling and gallery
         let profileData: any = null;
