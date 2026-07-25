@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Image as ImageIcon } from 'lucide-react';
+import { X, Image as ImageIcon, Briefcase } from 'lucide-react';
 import { getImageUrl } from '@/configs/api.config';
 import { PostUser } from '@/types/search';
 import { useQuery } from '@tanstack/react-query';
@@ -89,28 +89,29 @@ const PublicUserProfileModal: React.FC<PublicUserProfileModalProps> = ({
             <div className='bg-white px-6 py-8 sm:px-8 sm:py-10'>
               {/* Categories Section */}
               {selectedCategories.length > 0 && (
-                <div className='mb-8'>
-                  <div className='mb-4 flex items-center text-[16px] font-bold text-foreground'>
-                    Categories
+                <div className='mb-8 pb-8 border-b border-gray-100'>
+                  <div className='mb-5 flex items-center text-[18px] font-extrabold text-gray-900'>
+                    <Briefcase className='w-5 h-5 text-primary mr-2' />
+                    Service Categories
                   </div>
                   <div className='flex flex-wrap gap-3'>
                     {selectedCategories.map((cat: any) => (
                       <div
                         key={cat.id}
-                        className='flex items-center gap-2 bg-[#FDF5EC] px-4 py-2 rounded-lg border border-[#F47A22]/20'
+                        className='flex items-center gap-2.5 bg-gradient-to-r from-[#FDF5EC] to-[#fffaf5] px-5 py-2.5 rounded-xl border border-[#F47A22]/20 shadow-sm hover:shadow-md transition-all duration-300 group cursor-default'
                       >
-                        <span style={{ color: cat.color || 'inherit' }}>
+                        <span className='flex items-center justify-center bg-white w-8 h-8 rounded-full shadow-sm' style={{ color: cat.color || 'inherit' }}>
                           {cat.iconType === 'emoji' ? (
-                            cat.icon
+                            <span className="text-lg">{cat.icon}</span>
                           ) : (
                             <img
                               src={getImageUrl(cat.icon) || ''}
                               alt={cat.name}
-                              className='w-5 h-5 object-contain'
+                              className='w-4 h-4 object-contain group-hover:scale-110 transition-transform duration-300'
                             />
                           )}
                         </span>
-                        <span className='text-sm font-semibold text-[#5C4A2A]'>{cat.name}</span>
+                        <span className='text-[15px] font-bold text-[#5C4A2A] tracking-tight'>{cat.name}</span>
                       </div>
                     ))}
                   </div>
