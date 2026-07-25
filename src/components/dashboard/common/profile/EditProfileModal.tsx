@@ -6,6 +6,9 @@ import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneI
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { validateName, validateEmail, validateCityState, validateTextarea, validateGenericString, validateRate } from "@/lib/validation";
 import { StateDropdown, CityDropdown } from "@/components/shared/StateCityDropdown";
+import MultiCategoryPicker from "@/components/shared/MultiCategoryPicker";
+import { useQuery } from "@tanstack/react-query";
+import { categoryService } from "@/services/category.service";
 
 interface EditProfileModalProps {
   user: any;
@@ -32,6 +35,12 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
     services: user?.profile?.services || "",
     ratePerHour: user?.profile?.ratePerHour || "",
     youtubeLink: user?.profile?.youtubeLink || "",
+    categoryIds: user?.profile?.categoryIds || [],
+  });
+
+  const { data: categories = [], isLoading: isLoadingCategories } = useQuery({
+    queryKey: ["categories-active"],
+    queryFn: () => categoryService.getActive(),
   });
 
   const { errors, touched, handleBlur, validateForm } = useFormValidation({
@@ -69,7 +78,19 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm(formData)) return;
-    await onSave(formData);
+    
+    const submitData = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      if (key !== "categoryIds") {
+        submitData.append(key, value as string);
+      }
+    });
+
+    if (formData.categoryIds.length > 0) {
+      submitData.append("categoryIds", JSON.stringify(formData.categoryIds));
+    }
+
+    await onSave(submitData as any);
     onClose();
   };
 
@@ -316,6 +337,20 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
               {touched.services && errors.services && (
                 <p id="services-error" className="text-red-500 text-xs mt-1 font-medium">{errors.services}</p>
               )}
+              </div>
+            )}
+
+            {/* Categories */}
+            {user?.role === 'errand' && (
+              <div className='flex flex-col gap-1.5 md:col-span-2 mb-4'>
+                {!isLoadingCategories && categories.length > 0 && (
+                  <MultiCategoryPicker
+                    categories={categories}
+                    selectedCategoryIds={formData.categoryIds}
+                    onChange={(categoryIds) => setFormData(prev => ({ ...prev, categoryIds }))}
+                    label="Select Categories of Interest"
+                  />
+                )}
               </div>
             )}
 

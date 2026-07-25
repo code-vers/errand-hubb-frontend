@@ -5,6 +5,8 @@ import Image from "next/image";
 import { getImageUrl } from "@/configs/api.config";
 import StarRating from "./StarRating";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { categoryService } from "@/services/category.service";
 
 interface ProviderDetailsModalProps {
   provider: any | null;
@@ -24,6 +26,12 @@ export default function ProviderDetailsModal({
   const profile = provider.profile || {};
   const gallery = profile.gallery || [];
   const videoId = profile.youtubeLink ? getYoutubeVideoId(profile.youtubeLink) : null;
+  const { data: categories = [] } = useQuery({
+    queryKey: ["categories-active"],
+    queryFn: () => categoryService.getActive(),
+  });
+  
+  const selectedCategories = categories.filter((c: any) => (profile.categoryIds || []).includes(c.id));
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm'>
@@ -82,6 +90,25 @@ export default function ProviderDetailsModal({
               </p>
             </div>
           </div>
+
+          {/* Categories */}
+          {selectedCategories.length > 0 && (
+            <div>
+              <h4 className='text-lg font-bold text-gray-900 mb-3'>Selected Categories</h4>
+              <div className='flex flex-wrap gap-3'>
+                {selectedCategories.map(cat => (
+                  <div key={cat.id} className="flex items-center gap-2 bg-[#FDF5EC] px-4 py-2 rounded-lg border border-[#F47A22]/20">
+                    <span style={{ color: cat.color || "inherit" }}>
+                      {cat.iconType === "emoji" ? cat.icon : (
+                        <img src={getImageUrl(cat.icon) || ""} alt={cat.name} className="w-5 h-5 object-contain" />
+                      )}
+                    </span>
+                    <span className="text-sm font-semibold text-[#5C4A2A]">{cat.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Media Section */}
           <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
