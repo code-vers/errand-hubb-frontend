@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { postService } from "@/services/post.service";
+import { profileService } from "@/services/profile.service";
 import { Post } from "@/types/search";
 
 export interface SearchFilters {
@@ -65,7 +65,7 @@ export function useProviders(initialLimit: number = 6) {
     setLoading(true);
     setError(null);
     try {
-      const response = await postService.findAll({
+      const response = await profileService.getAllErrands({
         search: filters.search,
         location: filters.location,
         categoryId: filters.categoryId === "all" ? "" : filters.categoryId,
@@ -77,7 +77,6 @@ export function useProviders(initialLimit: number = 6) {
         limit: initialLimit,
         workerName: filters.workerName || undefined,
         workerEmail: filters.workerEmail || undefined,
-        userRole: 'errand',
       });
       setProviders(response.data.data);
       setTotal(response.data.meta.total);

@@ -9,6 +9,7 @@ import ProviderGrid from "./ProviderGrid";
 import SearchBar from "./SearchBar";
 import { useProviders } from "./useProviders";
 import ImageGalleryModal from "@/components/common/ImageGalleryModal";
+import ProviderDetailsModal from "./ProviderDetailsModal";
 
 const SortDropdown = ({
   value,
@@ -89,6 +90,7 @@ const SearchForErrandPage = () => {
   } = useProviders();
 
   const [activeGallery, setActiveGallery] = useState<string[] | null>(null);
+  const [selectedProvider, setSelectedProvider] = useState<any | null>(null);
 
   return (
     <div className='min-h-screen py-5 px-12 font-sans'>
@@ -124,6 +126,7 @@ const SearchForErrandPage = () => {
             loading={loading} 
             error={error} 
             onOpenGallery={setActiveGallery}
+            onOpenDetails={setSelectedProvider}
           />
 
           {/* Pagination */}
@@ -140,6 +143,14 @@ const SearchForErrandPage = () => {
         images={activeGallery || []}
         isOpen={!!activeGallery}
         onClose={() => setActiveGallery(null)}
+      />
+
+      {/* Provider Details Modal */}
+      <ProviderDetailsModal
+        isOpen={!!selectedProvider}
+        onClose={() => setSelectedProvider(null)}
+        provider={selectedProvider}
+        onOpenGallery={setActiveGallery}
       />
     </div>
   );

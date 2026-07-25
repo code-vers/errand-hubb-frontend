@@ -48,18 +48,6 @@ export const sidebarConfig: SidebarMenuItem[] = [
     roles: ["errand"],
   },
   {
-    title: "Service Requests",
-    path: "/dashboard/service-requests",
-    icon: Briefcase,
-    roles: ["client"],
-  },
-  {
-    title: "Client Requests",
-    path: "/dashboard/client-requests",
-    icon: Search,
-    roles: ["errand"],
-  },
-  {
     title: "Security",
     path: "/dashboard/security",
     icon: Briefcase,

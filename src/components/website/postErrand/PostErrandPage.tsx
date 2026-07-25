@@ -12,12 +12,14 @@ import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { STATIC_CATEGORIES } from "@/constants/categories";
 
 const PostErrandPage = () => {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const postId = searchParams.get("id");
 
   const [formData, setFormData] = useState<Errand>({
@@ -66,7 +68,7 @@ const PostErrandPage = () => {
         return;
       }
 
-      if (user.role === "client") {
+      if (user.role === "errand") {
         router.push("/dashboard/profile");
         return;
       }
@@ -101,36 +103,16 @@ const PostErrandPage = () => {
             youtubeLink: post.youtubeLink || "",
             categoryId: post.categoryId,
           });
-        } else {
-          // Check if user already has any posts
-          const response = await postService.getMyPosts();
-          if (response.data && response.data.length > 0) {
-            // Pre-fill with the latest post and use its ID for updates
-            const post = response.data[0];
-            setFormData({
-              id: post.id,
-              title: post.title,
-              description: post.description,
-              city: post.city || profileData?.profile?.city || "",
-              state: post.state || profileData?.profile?.state || "",
-              budget: post.budget?.toString() || profileData?.profile?.ratePerHour?.toString() || "",
-              dateNeeded: post.dateNeeded ? new Date(post.dateNeeded).toISOString().split('T')[0] : "",
-              contactInfo: post.contactInfo || profileData?.phone || profileData?.email || "",
-              photoUrl: post.photoUrl || "",
-              youtubeLink: post.youtubeLink || profileData?.profile?.youtubeLink || "",
-              categoryId: post.categoryId,
-            });
-          } else if (profileData) {
-            // New post, but auto-fill from profile
-            setFormData(prev => ({
-              ...prev,
-              city: profileData.profile?.city || "",
-              state: profileData.profile?.state || "",
-              budget: profileData.profile?.ratePerHour?.toString() || "",
-              youtubeLink: profileData.profile?.youtubeLink || "",
-              contactInfo: profileData.phone || profileData.email || "",
-            }));
-          }
+        } else if (profileData) {
+          // New post, auto-fill from profile
+          setFormData(prev => ({
+            ...prev,
+            city: profileData.profile?.city || "",
+            state: profileData.profile?.state || "",
+            budget: profileData.profile?.ratePerHour?.toString() || "",
+            youtubeLink: profileData.profile?.youtubeLink || "",
+            contactInfo: profileData.phone || profileData.email || "",
+          }));
         }
       } catch (error) {
         console.error("Failed to initialize page data", error);
@@ -172,8 +154,11 @@ const PostErrandPage = () => {
       });
       await profileService.updateProfile(profileFormData);
 
-      toast.success("Errand post and gallery updated successfully!");
-      router.push("/errand");
+      // Invalidate the my-posts query to force a refetch on the dashboard
+      await queryClient.invalidateQueries({ queryKey: ["my-posts"] });
+
+      toast.success("Errand post updated successfully!");
+      router.push("/dashboard/my-posts");
     } catch (error: any) {
       console.error("Post Submission Error:", error);
       

@@ -5,8 +5,8 @@ export const profileService = {
     return api.get("/users/me");
   },
 
-  getAllErrands: async () => {
-    return api.get("/errand-profiles");
+  getAllErrands: async (params?: any) => {
+    return api.get("/errand-profiles", { params });
   },
 
   updateProfile: async (data: FormData | any) => {

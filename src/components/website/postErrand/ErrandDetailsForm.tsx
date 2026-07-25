@@ -69,7 +69,14 @@ const ErrandDetailsForm = ({
     <section className='w-full  bg-white p-6 rounded-md shadow-sm'>
       <h2 className='text-[#2a3a4a] text-3xl font-extrabold'>Errand Details</h2>
 
-      <form className='mt-6 flex flex-col gap-4' onSubmit={(e) => { e.preventDefault(); if(validateForm(formData as any)) onSubmit(); }}>
+      <form className='mt-6 flex flex-col gap-4' onSubmit={(e) => { 
+        e.preventDefault(); 
+        if(validateForm(formData as any)) {
+          onSubmit();
+        } else {
+          toast.error("Please fill out all required fields correctly.");
+        }
+      }}>
         <label className='flex flex-col gap-1.5'>
           <span className='text-gray-600 text-xs font-bold uppercase tracking-wide'>
             Errand Title
