@@ -284,6 +284,7 @@ export default function ErrandsPage() {
       ...(preferredCategoryIds.length > 0
         ? { preferredCategoryIds: JSON.stringify(preferredCategoryIds) }
         : {}),
+      status: 'available',
     };
   }, [filters, preferredCategoryIds]);
 

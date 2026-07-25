@@ -105,13 +105,13 @@ export const sidebarConfig: SidebarMenuItem[] = [
     title: "Ads Subscription",
     path: "/dashboard/ads-subscription",
     icon: Megaphone,
-    roles: ["client", "errand"],
+    roles: ["errand"],
   },
   {
     title: "My Ads",
     path: "/dashboard/my-ads",
     icon: MonitorPlay,
-    roles: ["client", "errand"],
+    roles: ["errand"],
   },
   {
     title: "Global Messages",

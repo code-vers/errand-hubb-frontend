@@ -46,6 +46,7 @@ export default function AvailableJobsPage() {
         location: filters.location || undefined,
         search: filters.search || undefined,
         userRole: "client", // Only get posts posted by clients
+        status: "available",
       });
       return res.data;
     },

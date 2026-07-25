@@ -70,6 +70,7 @@ export default function PostModal({
     location: "",
     serviceType: "Delivery" as ServiceType,
     status: "Pending Pickup" as ErrandStatus,
+    postState: "active" as string,
   });
 
   const { data: categories, isLoading: loadingCategories } = useQuery({
@@ -89,6 +90,7 @@ export default function PostModal({
         location: initialData.location,
         serviceType: initialData.serviceType,
         status: initialData.status,
+        postState: (initialData as any).postState || "active",
       });
     } else if (categories?.length) {
       setFormData(prev => ({
@@ -116,6 +118,7 @@ export default function PostModal({
       time: formData.time,
       serviceType: formData.serviceType,
       status: formData.status,
+      postState: formData.postState,
       categoryId: formData.categoryId,
     };
 
@@ -274,6 +277,33 @@ export default function PostModal({
                 </select>
                 <ChevronIcon />
               </div>
+            </div>
+          </div>
+
+          {/* Post State */}
+          <div>
+            <Label>Post State</Label>
+            <div className='relative'>
+              <span
+                className='absolute left-3.5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full'
+                style={{ background: formData.postState === "active" ? "#10B981" : formData.postState === "inactive" ? "#F59E0B" : "#EF4444" }}
+              />
+              <select
+                disabled={isLoading}
+                className='field disabled:bg-gray-100'
+                style={{ paddingLeft: "32px" }}
+                value={formData.postState}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    postState: e.target.value,
+                  })
+                }>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="closed">Closed</option>
+              </select>
+              <ChevronIcon />
             </div>
           </div>
 

@@ -49,14 +49,20 @@ const DashboardNavbar = () => {
             )}
           </Link>
 
-          {/* Post an Errand Button — Only for Errands */}
-          {user?.role === "errand" && (
+          {/* Role-based action button */}
+          {user?.role === "client" ? (
             <Link
               href='/post-errand'
               className='hidden md:flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-[#e66a10] transition-colors'>
               <span>Post an Errand</span>
             </Link>
-          )}
+          ) : user?.role === "errand" ? (
+            <Link
+              href='/dashboard/profile'
+              className='hidden md:flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-[#e66a10] transition-colors'>
+              <span>Update Profile</span>
+            </Link>
+          ) : null}
         </div>
       </div>
     </header>

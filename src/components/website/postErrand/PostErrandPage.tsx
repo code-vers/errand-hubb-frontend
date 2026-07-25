@@ -33,6 +33,8 @@ const PostErrandPage = () => {
     photoUrl: "",
     youtubeLink: "",
     categoryId: "",
+    status: "Pending Pickup",
+    postState: "active",
   });
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -102,6 +104,8 @@ const PostErrandPage = () => {
             photoUrl: post.photoUrl || "",
             youtubeLink: post.youtubeLink || "",
             categoryId: post.categoryId,
+            status: post.status || "Pending Pickup",
+            postState: post.postState || "active",
           });
         } else if (profileData) {
           // New post, auto-fill from profile
