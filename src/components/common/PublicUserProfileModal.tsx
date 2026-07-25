@@ -2,6 +2,9 @@ import React from 'react';
 import { X, Image as ImageIcon } from 'lucide-react';
 import { getImageUrl } from '@/configs/api.config';
 import { PostUser } from '@/types/search';
+import { useQuery } from '@tanstack/react-query';
+import { categoryService } from '@/services/category.service';
+import Image from 'next/image';
 
 interface PublicUserProfileModalProps {
   user: PostUser | null;
@@ -9,14 +12,27 @@ interface PublicUserProfileModalProps {
   onClose: () => void;
 }
 
-const PublicUserProfileModal: React.FC<PublicUserProfileModalProps> = ({ user, isOpen, onClose }) => {
+const PublicUserProfileModal: React.FC<PublicUserProfileModalProps> = ({
+  user,
+  isOpen,
+  onClose,
+}) => {
   if (!isOpen || !user) return null;
 
   const displayImage =
     getImageUrl(user.profileImage) ||
     'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=200&h=200&fit=crop';
-  
+
   const gallery = user.profile?.gallery || [];
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ['categories-active'],
+    queryFn: () => categoryService.getActive(),
+  });
+
+  const selectedCategories = categories.filter((c: any) =>
+    (user.profile?.categoryIds || []).includes(c.id),
+  );
 
   return (
     <>
@@ -31,7 +47,7 @@ const PublicUserProfileModal: React.FC<PublicUserProfileModalProps> = ({ user, i
       <div className='fixed inset-0 z-[101] w-screen overflow-y-auto'>
         <div className='flex min-h-full items-center justify-center p-4 text-center sm:p-0'>
           {/* Modal Panel */}
-          <div 
+          <div
             className='relative transform overflow-hidden rounded-[24px] bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-xl'
             onClick={(e) => e.stopPropagation()}
           >
@@ -39,21 +55,24 @@ const PublicUserProfileModal: React.FC<PublicUserProfileModalProps> = ({ user, i
             <div
               className='px-6 py-6 sm:px-8 sm:py-8 flex justify-between items-start'
               style={{
-                background: "linear-gradient(135deg, #FFDEB3 0%, #FFEBCD 100%)",
-              }}>
+                background: 'linear-gradient(135deg, #FFDEB3 0%, #FFEBCD 100%)',
+              }}
+            >
               <div className='flex items-center space-x-5'>
-                 <div className='h-20 w-20 sm:h-24 sm:w-24 rounded-2xl overflow-hidden shadow-md bg-white p-1'>
-                   <img
-                     alt={`${user.firstName} ${user.lastName}`}
-                     className='h-full w-full rounded-xl object-cover'
-                     src={displayImage}
-                   />
-                 </div>
-                 <div className='text-left mt-2'>
-                   <h2 className='text-[24px] sm:text-[28px] font-extrabold text-foreground tracking-tight leading-none mb-1'>
-                     {user.firstName} {user.lastName}
-                   </h2>
-                 </div>
+                <div className='h-20 w-20 sm:h-24 sm:w-24 rounded-2xl overflow-hidden shadow-md bg-white p-1'>
+                  <Image
+                    width={200}
+                    height={200}
+                    alt={`${user.firstName} ${user.lastName}`}
+                    className='h-full w-full rounded-xl object-cover'
+                    src={displayImage}
+                  />
+                </div>
+                <div className='text-left mt-2'>
+                  <h2 className='text-[24px] sm:text-[28px] font-extrabold text-foreground tracking-tight leading-none mb-1'>
+                    {user.firstName} {user.lastName}
+                  </h2>
+                </div>
               </div>
 
               {/* Close Button */}
@@ -61,23 +80,58 @@ const PublicUserProfileModal: React.FC<PublicUserProfileModalProps> = ({ user, i
                 aria-label='Close'
                 onClick={onClose}
                 className='rounded-full p-2 hover:bg-white/80 transition-colors focus:outline-none bg-white/50 backdrop-blur-md shadow-sm'
-                >
+              >
                 <X className='h-5 w-5 text-gray-700' aria-hidden='true' />
               </button>
             </div>
 
             {/* Modal Body */}
             <div className='bg-white px-6 py-8 sm:px-8 sm:py-10'>
+              {/* Categories Section */}
+              {selectedCategories.length > 0 && (
+                <div className='mb-8'>
+                  <div className='mb-4 flex items-center text-[16px] font-bold text-foreground'>
+                    Categories
+                  </div>
+                  <div className='flex flex-wrap gap-3'>
+                    {selectedCategories.map((cat: any) => (
+                      <div
+                        key={cat.id}
+                        className='flex items-center gap-2 bg-[#FDF5EC] px-4 py-2 rounded-lg border border-[#F47A22]/20'
+                      >
+                        <span style={{ color: cat.color || 'inherit' }}>
+                          {cat.iconType === 'emoji' ? (
+                            cat.icon
+                          ) : (
+                            <img
+                              src={getImageUrl(cat.icon) || ''}
+                              alt={cat.name}
+                              className='w-5 h-5 object-contain'
+                            />
+                          )}
+                        </span>
+                        <span className='text-sm font-semibold text-[#5C4A2A]'>{cat.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className='mb-4 flex items-center text-[16px] font-bold text-foreground'>
                 <ImageIcon className='w-5 h-5 text-primary mr-2' />
                 Gallery
               </div>
-              
+
               {gallery.length > 0 ? (
                 <div className='grid grid-cols-2 sm:grid-cols-3 gap-4'>
                   {gallery.map((imgUrl, idx) => (
-                    <div key={idx} className='relative aspect-square rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer group'>
-                      <img
+                    <div
+                      key={idx}
+                      className='relative aspect-square rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md transition-shadow cursor-pointer group'
+                    >
+                      <Image
+                        width={200}
+                        height={200}
                         src={getImageUrl(imgUrl)}
                         alt={`Gallery item ${idx + 1}`}
                         className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-300'
@@ -87,11 +141,10 @@ const PublicUserProfileModal: React.FC<PublicUserProfileModalProps> = ({ user, i
                 </div>
               ) : (
                 <div className='bg-gray-50 rounded-xl p-8 text-center border border-dashed border-gray-200'>
-                   <p className='text-gray-500 font-medium'>No gallery images available.</p>
+                  <p className='text-gray-500 font-medium'>No gallery images available.</p>
                 </div>
               )}
             </div>
-            
           </div>
         </div>
       </div>
