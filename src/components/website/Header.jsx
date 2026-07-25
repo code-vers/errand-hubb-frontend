@@ -27,16 +27,12 @@ export default function Header() {
 
     // Role-based links
     if (user?.role === "errand") {
-      // Errand professionals see "Post An Errand"
+      // Errand professionals see "Post An Errand" and "Errand's Board"
       links.splice(2, 0, { name: "Post An Errand", href: "/post-errand" });
+      links.splice(3, 0, { name: "Errand's Board", href: "/errand-board" });
     } else {
       // Clients and Logged-out users see "Search For ErrandR"
       links.splice(2, 0, { name: "Search For ErrandR", href: "/search" });
-      
-      // ONLY Clients see "Errand's Board"
-      if (user?.role === "client") {
-        links.splice(3, 0, { name: "Errand's Board", href: "/errand-board" });
-      }
     }
 
     // Add Dashboard if user is logged in

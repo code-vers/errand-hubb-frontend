@@ -4,10 +4,11 @@ import { Post } from "@/types/search";
 import ProviderCard from "./ProviderCard";
 
 interface ProviderGridProps {
-  providers: Post[];
+  providers: any[];
   loading: boolean;
   error: string | null;
   onOpenGallery?: (images: string[]) => void;
+  onOpenDetails?: (provider: any) => void;
 }
 
 export default function ProviderGrid({
@@ -15,6 +16,7 @@ export default function ProviderGrid({
   loading,
   error,
   onOpenGallery,
+  onOpenDetails,
 }: ProviderGridProps) {
   if (loading) {
     return (
@@ -86,6 +88,7 @@ export default function ProviderGrid({
           key={post.id} 
           provider={post} 
           onOpenGallery={onOpenGallery}
+          onOpenDetails={onOpenDetails}
         />
       ))}
     </section>

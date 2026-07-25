@@ -9,11 +9,12 @@ import { getImageUrl } from "@/configs/api.config";
 import { toast } from "sonner";
 
 interface ProviderCardProps {
-  provider: Post;
+  provider: any; // User object with profile
   onOpenGallery?: (images: string[]) => void;
+  onOpenDetails?: (provider: any) => void;
 }
 
-export default function ProviderCard({ provider, onOpenGallery }: ProviderCardProps) {
+export default function ProviderCard({ provider, onOpenGallery, onOpenDetails }: ProviderCardProps) {
   return (
     <article className='bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between h-full hover:shadow-md transition-shadow duration-300'>
       {/* Header */}
@@ -21,9 +22,9 @@ export default function ProviderCard({ provider, onOpenGallery }: ProviderCardPr
         <div className='flex items-center gap-3 '>
           <div className='relative'>
             <img
-              alt={provider.user.firstName}
+              alt={provider.firstName}
               className='w-16 h-16 rounded-lg border-[2px] border-[#FDCBA4]  object-cover'
-              src={getImageUrl(provider.user.profileImage) || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=200&h=200&fit=crop"}
+              src={getImageUrl(provider.profileImage) || "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=200&h=200&fit=crop"}
             />
             {/* Keeping the verified checkmark for design consistency */}
             <div className='absolute -bottom-1 -right-1 bg-white text-white rounded-full p-0.5'>
@@ -32,11 +33,11 @@ export default function ProviderCard({ provider, onOpenGallery }: ProviderCardPr
           </div>
           <div>
             <h3 className='font-semibold text-foreground text-[16px]  leading-tight'>
-              {provider.user.firstName} {provider.user.lastName}
+              {provider.firstName} {provider.lastName}
             </h3>
             <p className='text-xs flex items-center py-1 gap-1 font-normal text-[#6B6B6B]  '>
               <MapPin size={14} color='#FBBC04' />
-              {provider.city}, {provider.state}
+              {provider.profile?.city || "Remote"}, {provider.profile?.state || ""}
             </p>
             <div className='flex items-center mt-1'>
               {/* Mock rating for design consistency */}
@@ -49,12 +50,12 @@ export default function ProviderCard({ provider, onOpenGallery }: ProviderCardPr
         </div>
         <div className='flex flex-col items-end gap-2'>
           <span className='px-3 py-1 text-[#ec6f27] border border-[#ec6f27] bg-[#FDF0E3] rounded-full text-[14px] font-normal'>
-            {provider.category.name}
+            {provider.profile?.services || "Errand Provider"}
           </span>
           <button
             onClick={(e) => {
               e.preventDefault();
-              const gallery = provider.user.profile?.gallery || [];
+              const gallery = provider.profile?.gallery || [];
               if (gallery.length > 0 && onOpenGallery) {
                 onOpenGallery(gallery);
               } else {
@@ -72,14 +73,14 @@ export default function ProviderCard({ provider, onOpenGallery }: ProviderCardPr
       <div className='grow'>
         <div className='px-6'>
           <h4 className='text-[14px]  text-foreground font-semibold mb-1'>
-            {provider.title}
+            {provider.profile?.bio ? "About Me" : "Errand Services"}
           </h4>
           <p className='text-xs text-text-secondary mb-4 line-clamp-2'>
-            {provider.description}
+            {provider.profile?.bio || "No description provided."}
           </p>
 
           <div className='flex flex-wrap gap-2 mb-4'>
-            {[provider.category.name, "Reliable"].map((skill) => (
+            {["Reliable", "Verified"].map((skill) => (
               <span
                 key={skill}
                 className='px-3 py-1 bg-warning-light text-[#6B6B6B] rounded-lg text-[10px] font-medium'>
@@ -100,7 +101,7 @@ export default function ProviderCard({ provider, onOpenGallery }: ProviderCardPr
             </div>
             <div className='flex items-center gap-1.5'>
               <Clock size={15} className='text-[#FBBC04]' strokeWidth={2.5} />
-              <span>{provider.dateNeeded ? new Date(provider.dateNeeded).toLocaleDateString() : 'Flexible'}</span>
+              <span>Available Now</span>
             </div>
           </div>
         </div>
@@ -114,15 +115,22 @@ export default function ProviderCard({ provider, onOpenGallery }: ProviderCardPr
             Starting from
           </p>
           <p className='font-bold text-gray-900'>
-            ${provider.budget || "Negotiable"}
-            {provider.budget && <span className='text-xs text-gray-400'>/hr</span>}
+            ${provider.profile?.ratePerHour || "Negotiable"}
+            {provider.profile?.ratePerHour && <span className='text-xs text-gray-400'>/hr</span>}
           </p>
         </div>
-        <Link 
-          href={`/dashboard/messages?errandId=${provider.user.id}`}
-          className='bg-primary text-white px-8 py-2 rounded-lg text-sm font-bold shadow-md shadow-primary/10 hover:bg-primary-dark transition-colors duration-200'>
-          CONTACT
-        </Link>
+        <div className="flex gap-2">
+          <button
+            onClick={() => onOpenDetails && onOpenDetails(provider)}
+            className='bg-white text-primary border border-primary px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-primary/5 transition-colors duration-200'>
+            View Details
+          </button>
+          <Link 
+            href={`/dashboard/messages?errandId=${provider.id}`}
+            className='bg-primary text-white px-6 py-2 rounded-lg text-sm font-bold shadow-md shadow-primary/10 hover:bg-primary-dark transition-colors duration-200'>
+            CONTACT
+          </Link>
+        </div>
       </div>
     </article>
   );

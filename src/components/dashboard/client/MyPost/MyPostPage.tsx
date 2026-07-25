@@ -8,8 +8,8 @@ import PostGrid from "./PostGrid";
 import Pagination from "@/components/common/Pagination";
 import StatsInfo from "./StatsInfo";
 import { usePosts } from "./usePosts";
-import PostModal from "./PostModal";
 import { Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const MyPostPage = () => {
   const {
@@ -31,29 +31,14 @@ const MyPostPage = () => {
     isUpdating,
   } = usePosts();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<any>(null);
+  const router = useRouter();
 
   const handleCreateOpen = () => {
-    setSelectedPost(null);
-    setIsModalOpen(true);
+    router.push("/post-errand");
   };
 
   const handleEditOpen = (post: any) => {
-    setSelectedPost(post);
-    setIsModalOpen(true);
-  };
-
-  const handleModalSubmit = async (data: any) => {
-    if (selectedPost) {
-      updatePost({ id: selectedPost.id, data }, {
-        onSuccess: () => setIsModalOpen(false)
-      });
-    } else {
-      addPost(data, {
-        onSuccess: () => setIsModalOpen(false)
-      });
-    }
+    router.push(`/post-errand?id=${post.id}`);
   };
 
   return (
@@ -110,14 +95,6 @@ const MyPostPage = () => {
           />
         </div>
       </div>
-
-      <PostModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleModalSubmit}
-        initialData={selectedPost}
-        isLoading={isCreating || isUpdating}
-      />
     </div>
   );
 };

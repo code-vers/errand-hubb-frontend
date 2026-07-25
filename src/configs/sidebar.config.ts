@@ -48,18 +48,6 @@ export const sidebarConfig: SidebarMenuItem[] = [
     roles: ["errand"],
   },
   {
-    title: "Service Requests",
-    path: "/dashboard/service-requests",
-    icon: Briefcase,
-    roles: ["client"],
-  },
-  {
-    title: "Client Requests",
-    path: "/dashboard/client-requests",
-    icon: Search,
-    roles: ["errand"],
-  },
-  {
     title: "Security",
     path: "/dashboard/security",
     icon: Briefcase,
@@ -117,13 +105,13 @@ export const sidebarConfig: SidebarMenuItem[] = [
     title: "Ads Subscription",
     path: "/dashboard/ads-subscription",
     icon: Megaphone,
-    roles: ["client", "errand"],
+    roles: ["errand"],
   },
   {
     title: "My Ads",
     path: "/dashboard/my-ads",
     icon: MonitorPlay,
-    roles: ["client", "errand"],
+    roles: ["errand"],
   },
   {
     title: "Global Messages",

@@ -17,12 +17,14 @@ export const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = (
   name = "phone",
   required = false,
 }) => {
+  const formattedValue = value ? value.replace(/[^\d+]/g, '') : value;
+
   return (
     <div className="relative">
       <PhoneInput
         international
         defaultCountry="US"
-        value={value}
+        value={formattedValue}
         onChange={(val) => onChange(val || "")}
         name={name}
         required={required}

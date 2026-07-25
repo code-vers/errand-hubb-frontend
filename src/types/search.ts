@@ -7,6 +7,7 @@ export interface PostUser {
   profileImage: string | null;
   profile?: {
     gallery?: string[];
+    categoryIds?: string[];
   } | null;
 }
 

@@ -25,6 +25,7 @@ export interface ErrandPost {
   description: string;
   reward: number;
   status: ErrandStatus;
+  postState?: string;
   date: string;
   time: string;
   location: string;
@@ -63,6 +64,7 @@ export interface Post {
   id: string;
   title: string;
   status: PostStatus;
+  postState?: string;
   client: {
     id: string;
     name: string;

@@ -11,6 +11,9 @@ import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneI
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { validateName, validateEmail, validateCityState, validateTextarea, validateGenericString, validatePassword } from "@/lib/validation";
 import { StateDropdown, CityDropdown } from "@/components/shared/StateCityDropdown";
+import MultiCategoryPicker from "@/components/shared/MultiCategoryPicker";
+import { useQuery } from "@tanstack/react-query";
+import { categoryService } from "@/services/category.service";
 import AudioPlayer from "@/components/shared/AudioPlayer";
 import Link from "next/link";
 import MerchBannerAd from "@/components/shared/MerchBannerAd";
@@ -34,6 +37,7 @@ const ErrandRegistrationPage = () => {
     rate: "",
     password: "",
     confirmPassword: "",
+    categoryIds: [] as string[],
   });
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -45,6 +49,11 @@ const ErrandRegistrationPage = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const { data: categories = [], isLoading: isLoadingCategories } = useQuery({
+    queryKey: ["categories-active"],
+    queryFn: () => categoryService.getActive(),
+  });
 
   const { errors, touched, handleBlur, validateForm } = useFormValidation({
     firstName: (v) => validateName(v),
@@ -116,6 +125,7 @@ const ErrandRegistrationPage = () => {
           : "",
         password: "",
         confirmPassword: "",
+        categoryIds: profileData.profile?.categoryIds || [],
       });
       if (profileData.profileImage) {
         setPreviewUrl(getImageUrl(profileData.profileImage));
@@ -199,14 +209,18 @@ const ErrandRegistrationPage = () => {
 
     const submitData = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      if (key !== "confirmPassword" && value !== "") {
+      if (key !== "confirmPassword" && key !== "categoryIds" && value !== "") {
         if (user && key === "password") {
           // Skip password field on update unless it has a value
           return;
         }
-        submitData.append(key, value);
+        submitData.append(key, value as string);
       }
     });
+
+    if (formData.categoryIds.length > 0) {
+      submitData.append("categoryIds", JSON.stringify(formData.categoryIds));
+    }
 
     if (profileImage) {
       submitData.append("profileImage", profileImage);
@@ -604,6 +618,18 @@ const ErrandRegistrationPage = () => {
               {touched.services && errors.services && (
                 <p id="services-error" className="text-red-500 text-xs mt-1 font-medium">{errors.services}</p>
               )}
+          </div>
+
+          {/* Categories */}
+          <div className='flex flex-col space-y-1 mb-6'>
+            {!isLoadingCategories && categories.length > 0 && (
+              <MultiCategoryPicker
+                categories={categories}
+                selectedCategoryIds={formData.categoryIds}
+                onChange={(categoryIds) => setFormData(prev => ({ ...prev, categoryIds }))}
+                label="Select Categories of Interest"
+              />
+            )}
           </div>
 
           {/* YouTube Link */}

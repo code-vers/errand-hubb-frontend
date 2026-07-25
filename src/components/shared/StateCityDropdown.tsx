@@ -37,15 +37,27 @@ export const CityDropdown = React.forwardRef<HTMLSelectElement, CityDropdownProp
       return City.getCitiesOfState("US", stateObj.isoCode);
     }, [stateName]);
 
+    if (stateName && cities.length === 0) {
+      return (
+        <input
+          ref={ref as any}
+          type="text"
+          placeholder="Enter city manually"
+          className={`${className} bg-white`}
+          {...(props as any)}
+        />
+      );
+    }
+
     return (
       <select 
         ref={ref} 
-        disabled={!stateName || cities.length === 0} 
-        className={`${className} appearance-none bg-white disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${stateName && cities.length > 0 ? "cursor-pointer" : ""}`} 
+        disabled={!stateName} 
+        className={`${className} appearance-none bg-white disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${stateName ? "cursor-pointer" : ""}`} 
         {...props}
       >
         <option value="" disabled>
-          {stateName ? (cities.length > 0 ? "Select City" : "No cities available") : "Select State First"}
+          {stateName ? "Select City" : "Select State First"}
         </option>
         {cities.map((c) => (
           <option key={`${c.name}-${c.stateCode}`} value={c.name}>

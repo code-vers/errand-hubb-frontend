@@ -69,7 +69,14 @@ const ErrandDetailsForm = ({
     <section className='w-full  bg-white p-6 rounded-md shadow-sm'>
       <h2 className='text-[#2a3a4a] text-3xl font-extrabold'>Errand Details</h2>
 
-      <form className='mt-6 flex flex-col gap-4' onSubmit={(e) => { e.preventDefault(); if(validateForm(formData as any)) onSubmit(); }}>
+      <form className='mt-6 flex flex-col gap-4' onSubmit={(e) => { 
+        e.preventDefault(); 
+        if(validateForm(formData as any)) {
+          onSubmit();
+        } else {
+          toast.error("Please fill out all required fields correctly.");
+        }
+      }}>
         <label className='flex flex-col gap-1.5'>
           <span className='text-gray-600 text-xs font-bold uppercase tracking-wide'>
             Errand Title
@@ -102,6 +109,53 @@ const ErrandDetailsForm = ({
                   {cat.iconType === "emoji" ? `${cat.icon} ` : ""}{cat.name}
                 </option>
               ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+              <ChevronDown size={16} />
+            </div>
+          </div>
+        </label>
+
+        {formData.id && (
+          <label className='flex flex-col gap-1.5 relative'>
+            <span className='text-gray-600 text-xs font-bold uppercase tracking-wide'>
+              Visibility (Active/Inactive)
+            </span>
+            <div className="relative">
+              <select
+                required
+                value={formData.postState || "active"}
+                onChange={(e) => onChange("postState", e.target.value)}
+                className='w-full h-11 appearance-none rounded-md border border-gray-200 pl-3 pr-10 text-sm outline-none focus:border-[#1b539c] transition-colors bg-white'
+              >
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="closed">Closed</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
+                <ChevronDown size={16} />
+              </div>
+            </div>
+          </label>
+        )}
+
+        <label className='flex flex-col gap-1.5 relative'>
+          <span className='text-gray-600 text-xs font-bold uppercase tracking-wide'>
+            Errand Progress Status
+          </span>
+          <div className="relative">
+            <select
+              required
+              value={formData.status === "active" ? "Pending Pickup" : (formData.status || "Pending Pickup")}
+              onChange={(e) => onChange("status", e.target.value)}
+              className='w-full h-11 appearance-none rounded-md border border-gray-200 pl-3 pr-10 text-sm outline-none focus:border-[#1b539c] transition-colors bg-white'
+            >
+              <option value="Pending Pickup">Pending Pickup</option>
+              <option value="ASAP">ASAP</option>
+              <option value="Scheduled">Scheduled</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
               <ChevronDown size={16} />

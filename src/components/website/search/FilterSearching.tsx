@@ -142,23 +142,8 @@ const FilterSearching = ({
               />
             </div>
 
-            {/* Worker Details */}
-            <div className='flex flex-col gap-1.5 lg:col-span-2'>
-              <label htmlFor='workerName' className='text-[11px] font-bold text-[#555555] uppercase tracking-wider'>
-                Worker Details (Name or Email)
-              </label>
-              <input
-                id='workerName'
-                type='text'
-                placeholder='e.g. John Smith or john@example.com'
-                value={filters.workerName || ""}
-                onChange={(e) => handleInputChange("workerName", e.target.value)}
-                className='h-10 w-full border border-gray-200 rounded-lg px-3 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all'
-              />
-            </div>
-
             {/* Max Budget Slider */}
-            <div className='flex flex-col gap-1.5 justify-center'>
+            <div className='flex flex-col gap-1.5 justify-center lg:col-span-2'>
               <label className='text-[11px] font-bold text-[#555555] uppercase tracking-wider flex justify-between items-center'>
                 <span>Max Budget</span>
                 <span className="text-primary font-extrabold text-[13px]">${filters.maxBudget || "500"}</span>
@@ -177,7 +162,7 @@ const FilterSearching = ({
             </div>
 
             {/* Sort By Dropdown */}
-            <div className='flex flex-col gap-1.5'>
+            <div className='flex flex-col gap-1.5 lg:col-span-2'>
               <label className='text-[11px] font-bold text-[#555555] uppercase tracking-wider'>
                 Sort By
               </label>
