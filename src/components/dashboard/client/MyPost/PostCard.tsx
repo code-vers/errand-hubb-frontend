@@ -175,7 +175,7 @@ export default function PostCard({ post, onEdit, onDelete }: PostCardProps) {
         <div
           className={`${statusStyle.bg} ${statusStyle.text} px-4 py-2 rounded-full text-[10px] font-bold flex items-center`}>
           <span className={`status-dot ${statusStyle.dot}`}></span>
-          {post.status === "active" ? "Pending Pickup" : post.status}
+          {(post.status as string) === "active" ? "Pending Pickup" : post.status}
         </div>
       </div>
 

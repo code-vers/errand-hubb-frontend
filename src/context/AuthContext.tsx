@@ -17,6 +17,7 @@ interface User {
   lastName?: string;
   profileImage?: string;
   isTwoFactorEnabled?: boolean;
+  profile?: any;
 }
 
 interface AuthContextType {

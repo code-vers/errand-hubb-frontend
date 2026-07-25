@@ -11,6 +11,7 @@ export interface Errand {
   youtubeLink?: string;
   categoryId: string;
   status?: string;
+  postState?: string;
 }
 
 export interface ErrandType {
