@@ -7,7 +7,10 @@ const Footer = () => {
         <p className='text-background/60 text-[13px] text-center md:text-left'>
           © 2026 ErrandHubb.com. All rights reserved.
         </p>
-        <div className="flex flex-wrap justify-center gap-6 text-[13px] text-background/60 font-semibold">
+        <div className="flex flex-wrap justify-center gap-6 text-[13px] text-background/60 font-semibold items-center">
+          <Link href="/competition" className="text-white font-extrabold hover:text-primary transition-colors">
+            Competition
+          </Link>
           <Link href="/legal?tab=privacy" className="hover:text-primary transition-colors">
             Privacy Policy
           </Link>
