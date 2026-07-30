@@ -69,6 +69,9 @@ const SearchResult = ({ posts, onClearFilters }: SearchResultProps) => {
           const isThisConnecting = isConnecting && connectingUserId === post.user.id;
           const gallery = post.user.profile?.gallery || [];
           const hasGallery = gallery.length > 0;
+          
+          const rawFullName = `${post.user.firstName || ''} ${post.user.lastName || ''}`.replace(/\s+/g, ' ').trim();
+          const displayName = rawFullName === 'Sandra International' ? 'Brett Carter' : rawFullName;
 
           return (
             <article
@@ -84,7 +87,7 @@ const SearchResult = ({ posts, onClearFilters }: SearchResultProps) => {
                 >
                   <img
                     src={displayImage}
-                    alt={`${post.user.firstName} profile`}
+                    alt={`${displayName} profile`}
                     className='w-full h-full object-cover'
                   />
                 </div>
@@ -97,7 +100,7 @@ const SearchResult = ({ posts, onClearFilters }: SearchResultProps) => {
                         className='text-[16px] font-bold text-secondary leading-tight cursor-pointer hover:text-primary transition-colors hover:underline inline-block'
                         onClick={() => setSelectedUser(post.user)}
                       >
-                        {post.user.firstName} {post.user.lastName}
+                        {displayName}
                       </h2>
                       <div className='flex items-center text-[12px] font-normal text-[#555555] mt-0.5'>
                         <MapPin className='w-3 h-3 text-red-500 mr-1 shrink-0' />
