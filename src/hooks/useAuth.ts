@@ -5,6 +5,7 @@ import { authService } from '@/services/auth.service';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { showSpamAlert } from '@/components/ui/SpamAlertToast';
 
 const handleApiError = (error: any) => {
   if (error.errors && Array.isArray(error.errors)) {
@@ -35,7 +36,7 @@ export const useRegisterClient = () => {
   return useMutation({
     mutationFn: (data: any) => authService.registerClient(data),
     onSuccess: () => {
-      toast.success('Registration successful! Please check your email to verify your account before logging in. If you do not see it, please check your spam folder.', { duration: 6000 });
+      showSpamAlert('Registration successful! Please check your email to verify your account before logging in.');
       router.push('/login');
     },
     onError: handleApiError,
@@ -48,7 +49,7 @@ export const useRegisterErrand = () => {
   return useMutation({
     mutationFn: (data: any) => authService.registerErrand(data),
     onSuccess: () => {
-      toast.success('ErrandR profile created! Please check your email to verify your account before logging in. If you do not see it, please check your spam folder.', { duration: 6000 });
+      showSpamAlert('ErrandR profile created! Please check your email to verify your account before logging in.');
       router.push('/login');
     },
     onError: handleApiError,

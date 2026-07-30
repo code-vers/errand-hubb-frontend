@@ -99,7 +99,7 @@ export default function InvestorRelationsPage() {
                   President &amp; Founder
                 </p>
                 <p className='font-semibold'>ErrandHubb</p>
-                <p className='text-[#063b5c] font-bold'>1-844-377-2632</p>
+                <p className='text-[#063b5c] font-bold'>graemexbarrington@gmail.com</p>
               </div>
             </div>
 

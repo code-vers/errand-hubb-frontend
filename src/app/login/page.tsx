@@ -9,6 +9,7 @@ import Link from "next/link";
 import { Shield, ArrowLeft, RefreshCw, Eye, EyeOff } from "lucide-react";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { validateEmail, validateGenericString } from "@/lib/validation";
+import { showSpamAlert } from "@/components/ui/SpamAlertToast";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -54,7 +55,9 @@ export default function LoginPage() {
             label: "Resend Email",
             onClick: () => {
               authService.resendVerification(formData.email)
-                .then(() => toast.success("Verification email resent! Please check your inbox. If you do not see it, please check your spam folder."))
+                .then(() => {
+                  showSpamAlert("Verification email resent! Please check your inbox.");
+                })
                 .catch((err) => toast.error(err.message || "Failed to resend email"));
             }
           },
