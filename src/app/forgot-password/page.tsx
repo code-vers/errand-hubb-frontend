@@ -5,6 +5,7 @@ import { authService } from '@/services/auth.service';
 import Link from 'next/link';
 import { useFormValidation } from '@/hooks/useFormValidation';
 import { validateEmail } from '@/lib/validation';
+import { showSpamAlert } from '@/components/ui/SpamAlertToast';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -25,9 +26,8 @@ export default function ForgotPasswordPage() {
 
     try {
       await authService.forgotPassword(email);
-      setMessage(
-        'Password reset email sent! Please check your inbox., please check your Spam Folder',
-      );
+      setMessage('Password reset email sent! Please check your inbox.');
+      showSpamAlert();
     } catch (err: any) {
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {

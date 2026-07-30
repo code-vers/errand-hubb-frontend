@@ -6,6 +6,7 @@ import { authService } from "@/services/auth.service";
 import { toast } from "sonner";
 import Link from "next/link";
 import { CheckCircle, XCircle, Loader2 } from "lucide-react";
+import { showSpamAlert } from "@/components/ui/SpamAlertToast";
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
@@ -51,7 +52,7 @@ function VerifyEmailContent() {
     setIsResending(true);
     try {
       await authService.resendVerification(emailForResend);
-      toast.success("Verification email resent! Please check your inbox. If you do not see it, please check your spam folder.");
+      showSpamAlert("Verification email resent! Please check your inbox.");
       setEmailForResend("");
     } catch (error: any) {
       toast.error(error.response?.data?.message || error.message || "Failed to resend verification email.");

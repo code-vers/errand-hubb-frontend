@@ -22,13 +22,13 @@ const Homepage = () => {
         <div className='flex flex-col sm:flex-row gap-4 w-full justify-center'>
           <Link
             href='/errand'
-            className='bg-primary  active:scale-95 whitespace-nowrap text-white font-extrabold py-3 px-6 rounded-md uppercase tracking-widest text-sm transition-all duration-200 shadow-sm w-full sm:w-auto'>
+            className='relative z-10 bg-primary whitespace-nowrap text-white font-extrabold py-3 px-6 rounded-md uppercase tracking-widest text-sm transition-all duration-200 shadow-sm w-full sm:w-auto text-center hover:-translate-y-[3px] hover:shadow-[0_10px_20px_rgba(0,0,0,0.2)] active:-translate-y-[1px] active:shadow-[0_5px_10px_rgba(0,0,0,0.2)] after:content-[""] after:absolute after:inset-0 after:w-full after:h-full after:-z-10 after:bg-primary after:rounded-md after:transition-all after:duration-500 hover:after:scale-x-[1.4] hover:after:scale-y-[1.6] hover:after:opacity-0'>
             Become an Errandr
           </Link>
 
           <Link
             href='/search'
-            className='bg-primary  active:scale-95 whitespace-nowrap text-white font-extrabold py-3 px-6 rounded-md uppercase tracking-widest text-sm transition-all duration-200 shadow-sm w-full sm:w-auto'>
+            className='relative z-10 bg-primary whitespace-nowrap text-white font-extrabold py-3 px-6 rounded-md uppercase tracking-widest text-sm transition-all duration-200 shadow-sm w-full sm:w-auto text-center hover:-translate-y-[3px] hover:shadow-[0_10px_20px_rgba(0,0,0,0.2)] active:-translate-y-[1px] active:shadow-[0_5px_10px_rgba(0,0,0,0.2)] after:content-[""] after:absolute after:inset-0 after:w-full after:h-full after:-z-10 after:bg-primary after:rounded-md after:transition-all after:duration-500 hover:after:scale-x-[1.4] hover:after:scale-y-[1.6] hover:after:opacity-0'>
             Search For
             <br className='sm:hidden' /> Errandr
           </Link>
@@ -37,7 +37,7 @@ const Homepage = () => {
         {/* Bottom centered button */}
         <Link
           href='/post-errand'
-          className='bg-primary  active:scale-95 text-white font-extrabold py-3 px-6 rounded-md uppercase tracking-widest text-sm transition-all duration-200 shadow-sm w-full sm:w-auto'>
+          className='relative z-10 bg-primary text-white font-extrabold py-3 px-6 rounded-md uppercase tracking-widest text-sm transition-all duration-200 shadow-sm w-full sm:w-auto text-center hover:-translate-y-[3px] hover:shadow-[0_10px_20px_rgba(0,0,0,0.2)] active:-translate-y-[1px] active:shadow-[0_5px_10px_rgba(0,0,0,0.2)] after:content-[""] after:absolute after:inset-0 after:w-full after:h-full after:-z-10 after:bg-primary after:rounded-md after:transition-all after:duration-500 hover:after:scale-x-[1.4] hover:after:scale-y-[1.6] hover:after:opacity-0'>
           Post An Errand
         </Link>
       </div>
