@@ -267,7 +267,11 @@ const ErrandPage = () => {
       return {
         id: post.id,
         userId: user?.id || '',
-        name: `${user?.firstName || 'User'} ${(user?.lastName || '').charAt(0)}.`,
+        name: (() => {
+          const rawFullName = `${user?.firstName || ''} ${user?.lastName || ''}`.replace(/\s+/g, ' ').trim();
+          if (rawFullName === 'Sandra International') return 'Brett Carter';
+          return `${user?.firstName || 'User'} ${(user?.lastName || '').charAt(0)}.`;
+        })(),
         location: post.city ? `${post.city}, ${post.state}` : 'Location not set',
         bio: post.description || 'No description available.',
         tags: category?.name ? [category.name] : [],
