@@ -33,6 +33,22 @@ const GALLERY_ITEMS = [
   { src: "/gallary/img/WHITE_COLLAR_PROS.png", alt: "White Collar Pros" },
   { src: "/gallary/img/errandhubb_homework_image_2.png", alt: "Errandhubb Homework Image 2" },
   { src: "/gallary/img/magnific_a-black-woman-with-short-_ubosYXxQLD.png", alt: "Magnific A Black Woman" },
+  { src: "/gallary/gallary-2/BUSY PROFESSIONAL.jpg", alt: "Busy Professional" },
+  { src: "/gallary/gallary-2/COLLEGE STUDENT JOINING.png", alt: "College Student Joining" },
+  { src: "/gallary/gallary-2/CUSTOMER PLACING ORDER 2.png", alt: "Customer Placing Order 2" },
+  { src: "/gallary/gallary-2/ERRANDHUBB STAFF 2.png", alt: "Errandhubb Staff 2" },
+  { src: "/gallary/gallary-2/ERRANDHUBB STAFF 3.jpg", alt: "Errandhubb Staff 3" },
+  { src: "/gallary/gallary-2/ERRANDHUBB STAFF MEMBER.png", alt: "Errandhubb Staff Member" },
+  { src: "/gallary/gallary-2/ERRANDWORKER ACCEPTING JOB.png", alt: "Errandworker Accepting Job" },
+  { src: "/gallary/gallary-2/GETTING GASOLINE.png", alt: "Getting Gasoline" },
+  { src: "/gallary/gallary-2/GROCERY SHOPPING.png", alt: "Grocery Shopping" },
+  { src: "/gallary/gallary-2/HAPPY CUSTOMER.png", alt: "Happy Customer" },
+  { src: "/gallary/gallary-2/HELPER WITH SENIOR.png", alt: "Helper With Senior" },
+  { src: "/gallary/gallary-2/LAUNDRY 3.png", alt: "Laundry 3" },
+  { src: "/gallary/gallary-2/LAUNDRY WORKER 2.png", alt: "Laundry Worker 2" },
+  { src: "/gallary/gallary-2/PRESCRIPTION PICK UP.png", alt: "Prescription Pick Up" },
+  { src: "/gallary/gallary-2/TUTOR.png", alt: "Tutor" },
+  { src: "/gallary/gallary-2/WALKING DOG.png", alt: "Walking Dog" },
 ];
 
 /**

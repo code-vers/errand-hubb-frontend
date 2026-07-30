@@ -131,11 +131,13 @@ export default function ProfilePage() {
             preferences={notifPrefs}
             onToggle={handleToggle}
           />
-          <QuickActionsCard
-            userRole={user?.role}
-            onPostOnBoard={() => router.push('/post-errand')}
-            onViewMyPosts={() => router.push('/dashboard/my-posts')}
-          />
+          {user?.role === 'client' && (
+            <QuickActionsCard
+              userRole={user?.role}
+              onPostOnBoard={() => router.push('/post-errand')}
+              onViewMyPosts={() => router.push('/dashboard/my-posts')}
+            />
+          )}
         </div>
       </div>
 
