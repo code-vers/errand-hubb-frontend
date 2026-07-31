@@ -92,7 +92,7 @@ export default function LoginPage() {
 
         toast.success("Login successful!");
         queryClient.setQueryData(["user"], userData);
-        
+
         const searchParams = new URLSearchParams(window.location.search);
         const returnTo = searchParams.get('returnTo');
         authLogin(userData, returnTo || undefined);
@@ -110,7 +110,7 @@ export default function LoginPage() {
       const accessToken = response.data.accessToken;
       toast.success("Authentication successful!");
       queryClient.setQueryData(["user"], userData);
-      
+
       const searchParams = new URLSearchParams(window.location.search);
       const returnTo = searchParams.get('returnTo');
       authLogin(userData, returnTo || undefined);
@@ -237,11 +237,10 @@ export default function LoginPage() {
               onBlur={(e) => handleBlur('email', e.target.value)}
               aria-invalid={touched.email && !!errors.email}
               aria-describedby={touched.email && errors.email ? "email-error" : undefined}
-              className={`w-full px-3 py-2 border rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 transition-colors bg-[var(--color-background)] ${
-                touched.email && errors.email 
-                  ? "border-red-500 focus:ring-red-500 focus:border-red-500" 
+              className={`w-full px-3 py-2 border rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 transition-colors bg-[var(--color-background)] ${touched.email && errors.email
+                  ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                   : "border-[var(--color-border)] focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)]"
-              }`}
+                }`}
             />
             {touched.email && errors.email && (
               <p id="email-error" className="text-red-500 text-xs mt-1 font-medium">{errors.email}</p>
@@ -271,11 +270,10 @@ export default function LoginPage() {
                 onBlur={(e) => handleBlur('password', e.target.value)}
                 aria-invalid={touched.password && !!errors.password}
                 aria-describedby={touched.password && errors.password ? "password-error" : undefined}
-                className={`w-full pl-3 pr-10 py-2 border rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 transition-colors bg-[var(--color-background)] ${
-                  touched.password && errors.password 
-                    ? "border-red-500 focus:ring-red-500 focus:border-red-500" 
+                className={`w-full pl-3 pr-10 py-2 border rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 transition-colors bg-[var(--color-background)] ${touched.password && errors.password
+                    ? "border-red-500 focus:ring-red-500 focus:border-red-500"
                     : "border-[var(--color-border)] focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)]"
-                }`}
+                  }`}
               />
               <button
                 type='button'
@@ -312,6 +310,11 @@ export default function LoginPage() {
               href='/errand-registration'
               className='text-sm font-bold text-[var(--color-secondary)] hover:underline'>
               Become an ErrandR
+            </Link>
+            <Link
+              href='/'
+              className='text-sm   hover:underline'>
+              Home
             </Link>
           </div>
         </div>
