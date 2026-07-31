@@ -56,12 +56,12 @@ export default function MyAdsPage() {
   }
 
   return (
-    <div className="w-full p-6 space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="w-full py-4 sm:py-5 px-3 sm:px-6 md:px-8 space-y-4 sm:space-y-6 font-sans max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <PageHeader title="My Ads" />
         <Link 
           href="/post-ad"
-          className="flex items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-[var(--color-primary-dark)] transition-colors"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm hover:bg-[var(--color-primary-dark)] transition-colors cursor-pointer shrink-0"
         >
           <Plus size={16} />
           Post New Ad

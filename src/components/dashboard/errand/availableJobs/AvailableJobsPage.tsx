@@ -76,16 +76,16 @@ export default function AvailableJobsPage() {
   const activeCategory = filters.categoryId;
 
   return (
-    <div className="min-h-screen py-5 px-12 font-sans bg-surface-dim">
-      <div className="mx-auto flex flex-col gap-5">
+    <div className="min-h-screen py-4 sm:py-5 px-3 sm:px-6 md:px-12 font-sans bg-surface-dim">
+      <div className="mx-auto flex flex-col gap-4 sm:gap-5 max-w-7xl">
         <div className="flex justify-between items-center">
           <PageHeader title="Available Jobs" />
         </div>
 
         {/* Filter and Search Section */}
-        <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-sm space-y-4">
           <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row gap-3">
-            <div className="flex-1 relative flex items-center">
+            <div className="flex-1 relative flex items-center min-w-0">
               <span className="absolute left-4 text-orange-500">
                 <Search size={18} />
               </span>
@@ -94,7 +94,7 @@ export default function AvailableJobsPage() {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search jobs by title or keywords..."
-                className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 outline-none transition-all text-sm placeholder:text-gray-400"
+                className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 outline-none transition-all text-xs sm:text-sm placeholder:text-gray-400"
               />
             </div>
 
@@ -104,23 +104,23 @@ export default function AvailableJobsPage() {
                 value={filters.location}
                 onChange={(e) => updateFilter("location", e.target.value)}
                 placeholder="Location (City/State)"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 outline-none transition-all text-sm placeholder:text-gray-400"
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 outline-none transition-all text-xs sm:text-sm placeholder:text-gray-400"
               />
             </div>
 
             <button
               type="submit"
-              className="px-6 py-3 rounded-xl font-bold text-sm text-white bg-primary hover:bg-primary/95 transition-all shadow-sm active:scale-95"
+              className="w-full md:w-auto px-6 py-3 rounded-xl font-bold text-xs sm:text-sm text-white bg-primary hover:bg-primary/95 transition-all shadow-sm active:scale-95 cursor-pointer shrink-0"
             >
               Search
             </button>
           </form>
 
           {/* Category Tabs Horizontal Scroll */}
-          <div className="border-t border-gray-50 pt-4 flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <div className="border-t border-gray-50 pt-3 sm:pt-4 flex gap-2 overflow-x-auto pb-1 scrollbar-hide w-full max-w-full">
             <button
               onClick={() => updateFilter("categoryId", "all")}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+              className={`px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs font-bold transition-all shrink-0 whitespace-nowrap cursor-pointer ${
                 activeCategory === "all"
                   ? "bg-primary text-white shadow-sm"
                   : "bg-gray-50 text-gray-500 border border-gray-100 hover:border-orange-200"
@@ -132,7 +132,7 @@ export default function AvailableJobsPage() {
               <button
                 key={cat.id}
                 onClick={() => updateFilter("categoryId", cat.id)}
-                className={`px-4 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
+                className={`px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs font-bold transition-all shrink-0 whitespace-nowrap cursor-pointer ${
                   activeCategory === cat.id
                     ? "text-white shadow-sm"
                     : "bg-gray-50 text-gray-500 border border-gray-100 hover:border-orange-200"
@@ -154,17 +154,17 @@ export default function AvailableJobsPage() {
         {loading ? (
           <div className="py-16 text-center">
             <Loader2 className="w-10 h-10 animate-spin mx-auto text-primary" />
-            <p className="mt-4 text-muted">Finding available jobs...</p>
+            <p className="mt-4 text-muted text-sm">Finding available jobs...</p>
           </div>
         ) : posts.length === 0 ? (
-          <div className="bg-white rounded-2xl p-16 text-center shadow-sm border border-gray-100">
-            <h3 className="text-xl font-bold text-gray-800">No jobs found</h3>
-            <p className="text-gray-500 mt-2 max-w-xs mx-auto">
+          <div className="bg-white rounded-2xl p-12 sm:p-16 text-center shadow-sm border border-gray-100">
+            <h3 className="text-lg sm:text-xl font-bold text-gray-800">No jobs found</h3>
+            <p className="text-gray-500 text-xs sm:text-sm mt-2 max-w-xs mx-auto">
               No client job posts match the current filters or search criteria.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {posts.map((post: any) => {
               const categoryColor = post.category?.color || "#FF7A2F";
               const client = post.user || {};
@@ -173,12 +173,12 @@ export default function AvailableJobsPage() {
               return (
                 <article
                   key={post.id}
-                  className="bg-white rounded-2xl p-5 shadow-sm flex flex-col justify-between border border-gray-50 hover:shadow-md transition-shadow duration-300 relative"
+                  className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col justify-between border border-gray-50 hover:shadow-md transition-shadow duration-300 relative overflow-hidden"
                 >
                   <div className="space-y-3 mb-4">
-                    <div className="flex justify-between items-start">
+                    <div className="flex justify-between items-start gap-2">
                       <span
-                        className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider"
+                        className="px-2.5 sm:px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider truncate max-w-[150px]"
                         style={{
                           backgroundColor: `${categoryColor}15`,
                           color: categoryColor,
@@ -186,51 +186,53 @@ export default function AvailableJobsPage() {
                       >
                         {post.category?.name || "General"}
                       </span>
-                      <span className="px-2.5 py-1 rounded-md text-[10px] font-extrabold bg-green-50 text-green-600 uppercase">
+                      <span className="px-2.5 py-1 rounded-md text-[10px] font-extrabold bg-green-50 text-green-600 uppercase shrink-0">
                         Available
                       </span>
                     </div>
 
                     <div>
-                      <h3 className="card-title text-sm font-bold text-gray-900 line-clamp-1 leading-tight">
+                      <h3 className="card-title text-xs sm:text-sm font-bold text-gray-900 line-clamp-1 leading-tight truncate">
                         {post.title}
                       </h3>
-                      <p className="text-[10px] text-gray-400 font-bold uppercase mt-1">
+                      <p className="text-[10px] text-gray-400 font-bold uppercase mt-1 truncate">
                         Posted by {clientName}
                       </p>
                     </div>
                   </div>
 
-                  <p className="text-[13px] text-[#6B6B6B] mb-5 leading-[20px] line-clamp-3 h-15">
+                  <p className="text-xs sm:text-[13px] text-[#6B6B6B] mb-4 sm:mb-5 leading-relaxed line-clamp-3">
                     {post.description}
                   </p>
 
-                  <div className="mb-5">
+                  <div className="mb-4 sm:mb-5">
                     <span className="text-[10px] font-medium text-[#6B6B6B] uppercase block">
                       Reward
                     </span>
-                    <span className="text-xl font-bold text-orange-500">
+                    <span className="text-lg sm:text-xl font-bold text-orange-500 truncate">
                       {post.budget ? `$${post.budget}` : "Flexible"}
                     </span>
                   </div>
 
-                  <div className="pt-4 border-t border-[#F5E9D3] text-[10px] text-[#6B6B6B] space-y-2 mb-4">
-                    <div className="flex justify-between">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3 text-[#FF5A3C]" />
-                        {post.dateNeeded
-                          ? new Date(post.dateNeeded).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                            })
-                          : "Flexible Date"}
+                  <div className="pt-3 sm:pt-4 border-t border-[#F5E9D3] text-[10px] text-[#6B6B6B] space-y-2 mb-4">
+                    <div className="flex justify-between items-center gap-2">
+                      <span className="flex items-center gap-1 min-w-0 truncate">
+                        <Calendar className="w-3 h-3 text-[#FF5A3C] shrink-0" />
+                        <span className="truncate">
+                          {post.dateNeeded
+                            ? new Date(post.dateNeeded).toLocaleDateString("en-US", {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              })
+                            : "Flexible Date"}
+                        </span>
                       </span>
-                      {post.time && <span className="text-gray-500 font-bold">{post.time}</span>}
+                      {post.time && <span className="text-gray-500 font-bold shrink-0">{post.time}</span>}
                     </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-3 h-3 text-[#FF5A3C]" />
-                      <span>
+                    <div className="flex items-center gap-1 min-w-0 truncate">
+                      <MapPin className="w-3 h-3 text-[#FF5A3C] shrink-0" />
+                      <span className="truncate">
                         {post.city}
                         {post.state ? `, ${post.state}` : ""}
                       </span>
@@ -240,7 +242,7 @@ export default function AvailableJobsPage() {
                   <button
                     onClick={() => handleContactClient(post.user?.id || post.userId, post.id)}
                     disabled={isConnecting && connectingPostId === post.id}
-                    className="w-full py-3 rounded-xl text-xs font-bold text-white bg-primary hover:bg-primary/95 transition-all text-center flex items-center justify-center gap-1 shadow-md shadow-orange-500/10 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full py-2.5 sm:py-3 rounded-xl text-xs font-bold text-white bg-primary hover:bg-primary/95 transition-all text-center flex items-center justify-center gap-1 shadow-md shadow-orange-500/10 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
                   >
                     {isConnecting && connectingPostId === post.id ? (
                       <>
