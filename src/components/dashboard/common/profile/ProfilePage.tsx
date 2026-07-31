@@ -108,11 +108,11 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className=' min-h-screen  py-5 px-12 font-sans'>
-      <div className=' mx-auto flex flex-col gap-3.5'>
-        <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 mb-2">
+    <div className='min-h-screen py-4 sm:py-5 px-3 sm:px-6 md:px-12 font-sans'>
+      <div className='mx-auto flex flex-col gap-3.5 max-w-7xl'>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-1 sm:mb-2">
           <PageHeader title='Profile' />
-          <div className={`px-4 py-1.5 rounded-full text-xs font-bold ${user?.role === 'errand' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
+          <div className={`px-4 py-1.5 rounded-full text-xs font-bold w-fit ${user?.role === 'errand' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
             {user?.role === 'errand' ? 'Welcome to Errand Profile' : 'Welcome to Client Profile'}
           </div>
         </div>
@@ -124,7 +124,7 @@ export default function ProfilePage() {
           isUpdating={isPending}
         />
 
-        <div className='grid grid-cols-2 gap-3.5 max-sm:grid-cols-1 items-stretch'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4 items-stretch'>
           <PersonalInfoCard info={personalInfoData} />
           <AccountOverviewCard overview={accountOverviewData} />
           <NotificationPreferencesCard

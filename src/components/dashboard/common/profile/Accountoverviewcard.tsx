@@ -23,19 +23,19 @@ const StatRow: React.FC<StatRowProps> = ({
   isLast,
 }) => (
   <div
-    className={`flex items-center justify-between px-4.5 py-3 ${!isLast ? "border-b border-[#F5E9D3]" : ""}`}>
-    <div className='flex items-center gap-2.5'>
+    className={`flex items-center justify-between px-3.5 sm:px-4.5 py-3 gap-2 ${!isLast ? "border-b border-[#F5E9D3]" : ""}`}>
+    <div className='flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1 overflow-hidden'>
       <div
         className='w-7 h-7 rounded-lg flex items-center justify-center shrink-0'
         style={{ background: iconBg }}>
         {icon}
       </div>
-      <span className='text-[12.5px] font-medium text-(--color-text-secondary)'>
+      <span className='text-xs sm:text-[12.5px] font-medium text-text-secondary truncate'>
         {label}
       </span>
     </div>
 
-    <span className='text-[12px]  text-[#EC6F27] bg-[#fdf3e8] rounded-full px-3 py-0.5 border border-[1.5px] border-[#ec6f27]'>
+    <span className='text-[11px] sm:text-[12px] text-[#EC6F27] bg-[#fdf3e8] rounded-full px-2.5 sm:px-3 py-0.5 border border-[#ec6f27] shrink-0 font-semibold max-w-[140px] truncate text-center'>
       {value}
     </span>
   </div>

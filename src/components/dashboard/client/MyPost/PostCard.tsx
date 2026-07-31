@@ -84,42 +84,42 @@ export default function PostCard({ post, onEdit, onDelete }: PostCardProps) {
   }, []);
 
   return (
-    <article className='bg-white rounded-2xl p-5 shadow-sm flex flex-col justify-between border border-gray-50 hover:shadow-md transition-shadow duration-300 relative'>
+    <article className='bg-white rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col justify-between border border-gray-50 hover:shadow-md transition-shadow duration-300 relative overflow-hidden'>
       {/* Header */}
-      <div className='flex justify-between items-start mb-4'>
-        <div className='flex items-center gap-3'>
+      <div className='flex justify-between items-start mb-3 sm:mb-4 gap-2'>
+        <div className='flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1'>
           {/* Category Icon - Matches CategoryCard logic */}
           <div
             aria-hidden='true'
             style={{ backgroundColor: `${categoryColor}15`, color: categoryColor }}
-            className='w-12 h-12 rounded-xl flex items-center justify-center text-xl'>
+            className='w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-lg sm:text-xl shrink-0'>
             {category?.iconType === "emoji" ? (
               <span role='img' aria-label={category.name}>
                 {category.icon}
               </span>
             ) : category?.icon ? (
-              <img src={getImageUrl(category.icon) || ""} alt={category.name} className="w-6 h-6 object-contain" />
+              <img src={getImageUrl(category.icon) || ""} alt={category.name} className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
             ) : (
               <span role='img' aria-label='default'>🛒</span>
             )}
           </div>
-          <div>
-            <h3 className='card-title text-sm font-bold  leading-tight'>
+          <div className='min-w-0 flex-1'>
+            <h3 className='card-title text-xs sm:text-sm font-bold leading-tight truncate' title={post.title}>
               {post.title}
             </h3>
             <p
               style={{ color: categoryColor }}
-              className={`text-[11px] mt-1 font-bold uppercase tracking-wide`}>
+              className='text-[10px] sm:text-[11px] mt-0.5 font-bold uppercase tracking-wide truncate'>
               {post.type}
             </p>
           </div>
         </div>
-        <div className="relative" ref={menuRef}>
+        <div className="relative shrink-0" ref={menuRef}>
           <button
             onClick={() => setShowOptions(!showOptions)}
-            className='text-[#6B6B6B] transition-colors p-1 hover:bg-gray-100 rounded-full'
+            className='text-[#6B6B6B] transition-colors p-1 hover:bg-gray-100 rounded-full cursor-pointer'
             aria-label='More options'>
-            <MoreVertical className='w-5 ' />
+            <MoreVertical className='w-5 h-5' />
           </button>
           
           {showOptions && (
@@ -129,7 +129,7 @@ export default function PostCard({ post, onEdit, onDelete }: PostCardProps) {
                   onEdit();
                   setShowOptions(false);
                 }}
-                className="w-full flex items-center gap-2 px-4 py-2 text-[12px] text-gray-700 hover:bg-gray-50 transition-colors text-left"
+                className="w-full flex items-center gap-2 px-4 py-2 text-[12px] text-gray-700 hover:bg-gray-50 transition-colors text-left cursor-pointer"
               >
                 <Edit2 className="w-3.5 h-3.5" />
                 Edit Post
@@ -147,7 +147,7 @@ export default function PostCard({ post, onEdit, onDelete }: PostCardProps) {
                   }
                   setShowOptions(false);
                 }}
-                className="w-full flex items-center gap-2 px-4 py-2 text-[12px] text-red-500 hover:bg-red-50 transition-colors text-left"
+                className="w-full flex items-center gap-2 px-4 py-2 text-[12px] text-red-500 hover:bg-red-50 transition-colors text-left cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 Delete
@@ -158,60 +158,60 @@ export default function PostCard({ post, onEdit, onDelete }: PostCardProps) {
       </div>
 
       {/* Description */}
-      <p className='text-[13px] text-[#6B6B6B] mb-6 leading-[20.1px]'>
+      <p className='text-xs sm:text-[13px] text-[#6B6B6B] mb-4 sm:mb-6 leading-relaxed line-clamp-2 sm:line-clamp-3'>
         {post.description}
       </p>
 
       {/* Reward and Status */}
-      <div className='flex justify-between items-end mb-6'>
-        <div>
-          <span className='text-[10px] font-medium text-[#6B6B6B] uppercase'>
+      <div className='flex justify-between items-end gap-2 mb-4 sm:mb-6'>
+        <div className='min-w-0'>
+          <span className='text-[10px] font-medium text-[#6B6B6B] uppercase block'>
             Reward
           </span>
-          <div className='card-reward text-[22px] font-bold text-[#FF5A3C]'>
+          <div className='card-reward text-lg sm:text-[22px] font-bold text-[#FF5A3C] truncate'>
             ${post.reward}
           </div>
         </div>
         <div
-          className={`${statusStyle.bg} ${statusStyle.text} px-4 py-2 rounded-full text-[10px] font-bold flex items-center`}>
+          className={`${statusStyle.bg} ${statusStyle.text} px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] font-bold flex items-center shrink-0 max-w-[150px] truncate`}>
           <span className={`status-dot ${statusStyle.dot}`}></span>
-          {(post.status as string) === "active" ? "Pending Pickup" : post.status}
+          <span className='truncate'>{(post.status as string) === "active" ? "Pending Pickup" : post.status}</span>
         </div>
       </div>
 
       {/* Footer Info */}
-      <div className='pt-4 border-t border-[#F5E9D3] text-[10px] text-[#6B6B6B] space-y-2'>
-        <div className='flex justify-between'>
-          <span className='flex items-center gap-1'>
-            <Calendar className='w-3 h-3 text-[#FF5A3C]' />
-            {formatDate(post.date)}
+      <div className='pt-3 sm:pt-4 border-t border-[#F5E9D3] text-[10px] text-[#6B6B6B] space-y-2'>
+        <div className='flex justify-between items-center gap-2'>
+          <span className='flex items-center gap-1 min-w-0 truncate'>
+            <Calendar className='w-3 h-3 text-[#FF5A3C] shrink-0' />
+            <span className='truncate'>{formatDate(post.date)}</span>
           </span>
-          <span className='flex items-center gap-1'>
-            <Clock className='w-3 h-3 text-[#FF5A3C]' />
+          <span className='flex items-center gap-1 shrink-0'>
+            <Clock className='w-3 h-3 text-[#FF5A3C] shrink-0' />
             <span className='text-[#6B6B6B]'> {post.time}</span>
           </span>
         </div>
-        <div className='flex justify-between'>
-          <span className='flex items-center gap-1'>
-            <MapPin className='w-3 h-3 text-[#FF5A3C]' />
-            {post.location}
+        <div className='flex justify-between items-center gap-2'>
+          <span className='flex items-center gap-1 min-w-0 flex-1 truncate' title={post.location}>
+            <MapPin className='w-3 h-3 text-[#FF5A3C] shrink-0' />
+            <span className='truncate'>{post.location}</span>
           </span>
-          <span className='bg-yellow-50 text-orange-300 px-2 py-0.5 rounded text-[8px] font-bold'>
+          <span className='bg-yellow-50 text-orange-400 px-2 py-0.5 rounded text-[8px] font-bold shrink-0 max-w-[100px] truncate'>
             {post.serviceType}
           </span>
         </div>
-        <div className='flex items-center gap-1'>
+        <div className='flex items-center gap-1 min-w-0 truncate'>
           {post.assignedTo ? (
             <>
-              <Check className='w-3 h-3 text-status-green ' />
-              <span className='font-bold text-status-green'>
+              <Check className='w-3 h-3 text-status-green shrink-0' />
+              <span className='font-bold text-status-green truncate'>
                 Assigned to <span className='underline'>{post.assignedTo}</span>
               </span>
             </>
           ) : (
             <>
-              <User className='w-3 h-3' />
-              <span>No Errandr assigned yet</span>
+              <User className='w-3 h-3 shrink-0' />
+              <span className='truncate'>No Errandr assigned yet</span>
             </>
           )}
         </div>

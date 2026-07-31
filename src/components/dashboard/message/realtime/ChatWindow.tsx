@@ -5,7 +5,8 @@ import { ChatConversation, ChatMessage } from "@/types/messages";
 import { 
   Send, MoreVertical, Loader2, Circle, 
   Image as ImageIcon, Mic, Calendar, Paperclip, X,
-  Play, Pause, MapPin, Smile, Pin, Undo, Trash2, Navigation
+  Play, Pause, MapPin, Smile, Pin, Undo, Trash2, Navigation,
+  ChevronLeft
 } from "lucide-react";
 import { getImageUrl } from "@/configs/api.config";
 import { format } from "date-fns";
@@ -21,6 +22,7 @@ interface ChatWindowProps {
   otherUserTyping: boolean;
   isLoading?: boolean;
   isConnected?: boolean;
+  onBack?: () => void;
 }
 
 const COMMON_EMOJIS = [
@@ -84,6 +86,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
   otherUserTyping,
   isLoading = false,
   isConnected = false,
+  onBack,
 }) => {
   const [input, setInput] = useState("");
   const [isRecording, setIsRefreshing] = useState(false);
@@ -276,26 +279,36 @@ const ChatWindow: FC<ChatWindowProps> = ({
       )}
 
       {/* Header */}
-      <header className='px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10'>
-        <div className='flex items-center gap-4'>
-          <div className='relative'>
-            <div className='w-12 h-12 rounded-2xl overflow-hidden bg-gray-100 shadow-sm'>
+      <header className='px-3.5 sm:px-6 py-3.5 sm:py-5 border-b border-gray-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10'>
+        <div className='flex items-center gap-2 sm:gap-4 min-w-0 flex-1'>
+          {onBack && (
+            <button
+              type='button'
+              onClick={onBack}
+              className='p-1.5 sm:p-2 rounded-xl text-gray-600 hover:bg-gray-100 transition-colors md:hidden shrink-0 cursor-pointer'
+              aria-label='Back to chat list'
+            >
+              <ChevronLeft size={22} />
+            </button>
+          )}
+          <div className='relative shrink-0'>
+            <div className='w-10 h-10 sm:w-12 sm:h-12 rounded-2xl overflow-hidden bg-gray-100 shadow-sm'>
               {otherUser.profileImage ? (
                 <img src={getImageUrl(otherUser.profileImage) || ""} alt={otherUser.firstName} className='w-full h-full object-cover' />
               ) : (
-                <div className='w-full h-full flex items-center justify-center bg-primary text-white font-bold text-lg'>
+                <div className='w-full h-full flex items-center justify-center bg-primary text-white font-bold text-base sm:text-lg'>
                   {otherUser.firstName[0]}
                 </div>
               )}
             </div>
-            <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white shadow-sm ${isConnected ? 'bg-green-500' : 'bg-gray-300'}`} />
+            <div className={`absolute -bottom-1 -right-1 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 border-white shadow-sm ${isConnected ? 'bg-green-500' : 'bg-gray-300'}`} />
           </div>
-          <div>
-            <h3 className='text-[16px] font-bold text-gray-900 tracking-tight'>
+          <div className='min-w-0 flex-1'>
+            <h3 className='text-sm sm:text-[16px] font-bold text-gray-900 tracking-tight truncate'>
               {otherUser.firstName} {otherUser.lastName}
             </h3>
             <div className='flex items-center gap-1.5'>
-              <span className='text-[11px] text-gray-400 font-semibold uppercase tracking-wider'>
+              <span className='text-[10px] sm:text-[11px] text-gray-400 font-semibold uppercase tracking-wider truncate'>
                 {isConnected ? "Active Now" : "Connecting..."}
               </span>
             </div>
@@ -568,10 +581,10 @@ const ChatWindow: FC<ChatWindowProps> = ({
            </div>
         )}
 
-        <form onSubmit={handleSubmit} className='flex items-center gap-4 relative'>
+        <form onSubmit={handleSubmit} className='flex items-center gap-2 sm:gap-4 relative'>
           <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*,audio/*" />
           
-          <div className='flex-1 relative group'>
+          <div className='flex-1 relative group min-w-0'>
             {showEmojiPicker && (
                <div className="absolute bottom-full right-0 mb-4 bg-white border border-gray-100 shadow-2xl rounded-2xl p-3 z-30 animate-in fade-in slide-in-from-bottom-2 w-72">
                   <div className="flex justify-between items-center mb-2 px-1">
@@ -587,7 +600,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
                             e.stopPropagation();
                             setInput(prev => prev + emoji);
                           }}
-                          className="w-7 h-7 flex items-center justify-center hover:bg-orange-50 rounded-lg transition-colors text-lg"
+                          className="w-7 h-7 flex items-center justify-center hover:bg-orange-50 rounded-lg transition-colors text-lg cursor-pointer"
                         >
                           {emoji}
                         </button>
@@ -602,33 +615,33 @@ const ChatWindow: FC<ChatWindowProps> = ({
               onChange={handleInputChange}
               disabled={!isConnected || isRecording}
               placeholder={isRecording ? 'Recording audio...' : (isConnected ? 'Write a message...' : 'Connecting...')}
-              className='w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all pr-14 placeholder:text-gray-400'
+              className='w-full px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border border-gray-100 rounded-2xl text-xs sm:text-[15px] focus:outline-none focus:ring-2 focus:ring-primary/10 focus:bg-white transition-all pr-10 sm:pr-14 placeholder:text-gray-400'
             />
             <button 
               type="button" 
               onClick={(e) => { e.stopPropagation(); setShowEmojiPicker(!showEmojiPicker); setShowCalendar(false); setShowLocation(false); }}
-              className={`absolute right-4 top-1/2 -translate-y-1/2 transition-colors ${showEmojiPicker ? 'text-primary' : 'text-gray-300 hover:text-primary'}`}
+              className={`absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 transition-colors cursor-pointer ${showEmojiPicker ? 'text-primary' : 'text-gray-300 hover:text-primary'}`}
             >
-              <Smile size={22} />
+              <Smile className='w-4 h-4 sm:w-5 sm:h-5' />
             </button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <button
               type="button"
               onMouseDown={startRecording}
               onMouseUp={stopRecording}
-              className={`w-14 h-14 flex items-center justify-center rounded-2xl transition-all active:scale-90 shadow-lg ${
+              className={`w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center rounded-2xl transition-all active:scale-90 shadow-sm sm:shadow-lg cursor-pointer ${
                 isRecording ? 'bg-red-500 text-white animate-pulse' : 'bg-orange-50 text-primary hover:bg-orange-100'
               }`}>
-              <Mic size={24} />
+              <Mic className='w-4 h-4 sm:w-6 sm:h-6' />
             </button>
             
             <button
               type='submit'
               disabled={!input.trim() || !isConnected || isRecording}
-              className='w-14 h-14 flex items-center justify-center bg-primary text-white rounded-2xl shadow-lg shadow-primary/20 hover:bg-primary-dark active:scale-95 transition-all disabled:opacity-50 disabled:grayscale'>
-              <Send size={24} />
+              className='w-10 h-10 sm:w-14 sm:h-14 flex items-center justify-center bg-primary text-white rounded-2xl shadow-sm sm:shadow-lg shadow-primary/20 hover:bg-primary-dark active:scale-95 transition-all disabled:opacity-50 disabled:grayscale cursor-pointer'>
+              <Send className='w-4 h-4 sm:w-6 sm:h-6' />
             </button>
           </div>
         </form>

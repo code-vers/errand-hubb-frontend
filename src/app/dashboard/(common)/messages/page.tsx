@@ -22,7 +22,7 @@ const MessagesPage = () => {
   }
 
   return (
-    <div className='w-full p-6'>
+    <div className='w-full py-4 sm:py-5 px-3 sm:px-6 md:px-8 font-sans'>
       <PageHeader title='Inbox' />
       <Suspense fallback={
         <div className="flex items-center justify-center h-[400px]">

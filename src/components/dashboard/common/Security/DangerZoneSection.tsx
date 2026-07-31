@@ -16,23 +16,23 @@ const DangerZoneSection: FC<DangerZoneSectionProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <section className='bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-[#f5ebd8] flex flex-col'>
-      <header className='flex items-start gap-4 p-6 border-b border-[#f5ebd8]'>
-        <div className='bg-red-50 p-3 rounded-lg shrink-0'>
-          <Trash2 className='w-6 h-6 text-[var(--color-error)]' />
+    <section className='bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-[#f5ebd8] flex flex-col overflow-hidden'>
+      <header className='flex items-start gap-3 sm:gap-4 p-4 sm:p-6 border-b border-[#f5ebd8]'>
+        <div className='bg-red-50 p-2.5 sm:p-3 rounded-lg shrink-0'>
+          <Trash2 className='w-5 h-5 sm:w-6 sm:h-6 text-[var(--color-error)]' />
         </div>
         <div>
-          <h2 className='text-[16px] font-semibold text-[var(--color-error)]'>
+          <h2 className='text-sm sm:text-[16px] font-semibold text-[var(--color-error)]'>
             Danger Zone
           </h2>
-          <p className='text-[14px] text-[#4B5563] mt-1'>
+          <p className='text-xs sm:text-[14px] text-[#4B5563] mt-0.5 sm:mt-1'>
             Irreversible actions — proceed with caution.
           </p>
         </div>
       </header>
 
-      <div className='p-6'>
-        <h3 className='text-[15px] font-bold text-foreground'>
+      <div className='p-4 sm:p-6'>
+        <h3 className='text-sm sm:text-[15px] font-bold text-foreground'>
           Delete Account
         </h3>
         <p className='text-xs text-[var(--color-text-secondary)] mt-1 mb-4 leading-relaxed'>
@@ -43,7 +43,7 @@ const DangerZoneSection: FC<DangerZoneSectionProps> = ({
           <button
             onClick={() => setIsModalOpen(true)}
             disabled={isLoading}
-            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-6 rounded-lg text-sm transition-all shadow-sm hover:shadow-md uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed">
+            className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-4 sm:px-6 rounded-lg text-xs sm:text-sm transition-all shadow-sm hover:shadow-md uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
             {isLoading ? "PURGING DATA..." : "PERMANENTLY DELETE ACCOUNT"}
           </button>
         </div>
