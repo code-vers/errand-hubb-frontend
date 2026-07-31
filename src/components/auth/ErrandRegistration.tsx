@@ -846,6 +846,28 @@ const ErrandRegistrationPage = () => {
             </button>
           </div>
         </form>
+
+        <div className='mt-6 text-center space-y-2'>
+          {!user && (
+            <p className='text-sm text-[var(--color-muted)]'>
+              Already have an account?
+            </p>
+          )}
+          <div className='flex flex-col gap-2'>
+            {!user && (
+              <Link
+                href='/login'
+                className='text-sm font-bold text-[var(--color-primary)] hover:underline'>
+                Log In
+              </Link>
+            )}
+            <Link
+              href='/'
+              className='text-sm hover:underline'>
+              Home
+            </Link>
+          </div>
+        </div>
       </main>
       <div className="flex flex-col items-center gap-6 mt-8 lg:mt-16 lg:sticky lg:top-24 pb-8 lg:pb-0">
         <img 
