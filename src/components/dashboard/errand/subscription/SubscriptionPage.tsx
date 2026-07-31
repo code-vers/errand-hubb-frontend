@@ -66,24 +66,24 @@ const SubscriptionPage = () => {
   const isCanceled = subscription?.cancelAtPeriodEnd;
   
   return (
-    <div className='w-full p-6 space-y-8'>
+    <div className='w-full py-4 sm:py-5 px-3 sm:px-6 md:px-8 space-y-6 sm:space-y-8 font-sans max-w-7xl mx-auto'>
       <PageHeader title='Subscription' />
 
       {/* Subscription Status Banner */}
-      <div className={`rounded-2xl p-6 border flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm ${isSubscribed ? 'bg-white border-[#EC6F27]/10' : 'bg-gray-50 border-gray-200'}`}>
-        <div className='flex items-center gap-4'>
-          <div className={`w-14 h-14 rounded-full flex items-center justify-center ${isSubscribed ? 'bg-[#FFF3CD]' : 'bg-gray-200'}`}>
+      <div className={`rounded-2xl p-4 sm:p-6 border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6 shadow-sm ${isSubscribed ? 'bg-white border-[#EC6F27]/10' : 'bg-gray-50 border-gray-200'}`}>
+        <div className='flex items-center gap-3 sm:gap-4 min-w-0'>
+          <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shrink-0 ${isSubscribed ? 'bg-[#FFF3CD]' : 'bg-gray-200'}`}>
             {isSubscribed ? (
-              <CheckCircle className='w-8 h-8 text-[#EC6F27]' />
+              <CheckCircle className='w-6 h-6 sm:w-8 sm:h-8 text-[#EC6F27]' />
             ) : (
-              <AlertCircle className='w-8 h-8 text-gray-500' />
+              <AlertCircle className='w-6 h-6 sm:w-8 sm:h-8 text-gray-500' />
             )}
           </div>
-          <div>
-            <h3 className='text-lg font-bold text-secondary'>
+          <div className='min-w-0 flex-1'>
+            <h3 className='text-base sm:text-lg font-bold text-secondary truncate'>
               {isSubscribed ? (isCanceled ? "Canceling Soon" : "Active Status") : "Not Subscribed"}
             </h3>
-            <p className='text-sm text-muted'>
+            <p className='text-xs sm:text-sm text-muted leading-relaxed'>
               {isSubscribed 
                 ? (isCanceled ? "Your subscription will cancel at the end of the billing period" : "Your subscription is currently active") 
                 : "Upgrade to Pro to access all features"}
@@ -92,11 +92,11 @@ const SubscriptionPage = () => {
         </div>
         
         {isSubscribed && subscription?.currentPeriodEnd && (
-          <div className='flex flex-col items-end'>
-            <span className='text-xs font-bold text-muted uppercase tracking-wider mb-1'>
+          <div className='flex flex-col items-start md:items-end shrink-0'>
+            <span className='text-[10px] sm:text-xs font-bold text-muted uppercase tracking-wider mb-1'>
               {isCanceled ? "Ends On" : "Next Billing"}
             </span>
-            <p className='text-md font-bold text-secondary flex items-center gap-2'>
+            <p className='text-sm sm:text-md font-bold text-secondary flex items-center gap-2'>
               <Clock className='w-4 h-4 text-[#EC6F27]' />
               {format(new Date(subscription.currentPeriodEnd), "MMMM dd, yyyy")}
             </p>
@@ -104,7 +104,7 @@ const SubscriptionPage = () => {
         )}
       </div>
 
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8'>
         {/* Pricing Card */}
         <div className='bg-white rounded-3xl overflow-hidden border border-[#EC6F27]/20 shadow-xl relative'>
           <div className='absolute top-0 right-0'>
@@ -113,26 +113,26 @@ const SubscriptionPage = () => {
             </div>
           </div>
           
-          <div className='p-8'>
+          <div className='p-5 sm:p-8'>
             <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6'>
               <div className='flex items-center gap-2'>
-                <div className='w-10 h-10 rounded-xl bg-[#FFF3CD] flex items-center justify-center'>
+                <div className='w-10 h-10 rounded-xl bg-[#FFF3CD] flex items-center justify-center shrink-0'>
                   <Zap className='w-6 h-6 text-[#EC6F27]' />
                 </div>
-                <h2 className='text-2xl font-black text-secondary uppercase tracking-tight'>Pro Plan</h2>
+                <h2 className='text-xl sm:text-2xl font-black text-secondary uppercase tracking-tight'>Pro Plan</h2>
               </div>
               
               {!isSubscribed && (
-                <div className="flex bg-gray-100 p-1 rounded-xl">
+                <div className="flex bg-gray-100 p-1 rounded-xl w-full sm:w-auto justify-center">
                   <button
                     onClick={() => setBillingCycle('monthly')}
-                    className={`px-4 py-1.5 text-xs font-bold uppercase rounded-lg transition-all ${billingCycle === 'monthly' ? 'bg-white text-secondary shadow-sm' : 'text-muted hover:text-secondary'}`}
+                    className={`flex-1 sm:flex-initial px-4 py-1.5 text-xs font-bold uppercase rounded-lg transition-all cursor-pointer ${billingCycle === 'monthly' ? 'bg-white text-secondary shadow-sm' : 'text-muted hover:text-secondary'}`}
                   >
                     Monthly
                   </button>
                   <button
                     onClick={() => setBillingCycle('yearly')}
-                    className={`px-4 py-1.5 text-xs font-bold uppercase rounded-lg transition-all ${billingCycle === 'yearly' ? 'bg-[#EC6F27] text-white shadow-sm' : 'text-muted hover:text-secondary'}`}
+                    className={`flex-1 sm:flex-initial px-4 py-1.5 text-xs font-bold uppercase rounded-lg transition-all cursor-pointer ${billingCycle === 'yearly' ? 'bg-[#EC6F27] text-white shadow-sm' : 'text-muted hover:text-secondary'}`}
                   >
                     Yearly
                   </button>

@@ -8,11 +8,25 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-const DashboardSidebar = () => {
+interface DashboardSidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+const DashboardSidebar = ({ isOpen: externalIsOpen, onClose }: DashboardSidebarProps = {}) => {
   const pathname = usePathname();
   const { user, logout } = useAuth();
-  const [isOpen, setIsOpen] = useState(false);
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+
+  const isOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
+  const handleClose = () => {
+    if (onClose) {
+      onClose();
+    } else {
+      setInternalIsOpen(false);
+    }
+  };
 
   if (!user) return null;
 
@@ -51,13 +65,13 @@ const DashboardSidebar = () => {
           <button
             onClick={() => toggleExpand(item.title)}
             className={`${baseClass} ${isActive ? activeClass : inactiveClass} justify-between`}>
-            <div className='flex  items-center gap-3'>
+            <div className='flex items-center gap-3'>
               <item.icon
                 size={18}
                 className={isActive ? "text-primary" : "text-[#5C4A2A] group-hover:text-primary"}
                 strokeWidth={1.6}
               />
-              <span className='text-[14px] '>{item.title}</span>
+              <span className='text-[14px]'>{item.title}</span>
             </div>
             {isExpanded ? (
               <ChevronDown size={14} strokeWidth={2} />
@@ -67,7 +81,7 @@ const DashboardSidebar = () => {
           </button>
 
           {isExpanded && (
-            <div className='space-y-8'>
+            <div className='space-y-2 mt-1'>
               {item.children?.map((child) => (
                 <MenuItem key={child.path} item={child} depth={depth + 1} />
               ))}
@@ -81,7 +95,7 @@ const DashboardSidebar = () => {
       <Link
         href={item.path}
         className={`${baseClass} ${isActive ? activeClass : inactiveClass}`}
-        onClick={() => setIsOpen(false)}>
+        onClick={handleClose}>
         <item.icon
           size={18}
           className={isActive ? "text-primary" : "text-[#5C4A2A] group-hover:text-primary"}
@@ -94,23 +108,11 @@ const DashboardSidebar = () => {
 
   return (
     <>
-      {/* Mobile toggle */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className='fixed top-4 left-4 z-50 p-2 rounded-md lg:hidden'
-        style={{ background: "#FFE6B3", border: "1px solid #E8C98A" }}>
-        {isOpen ? (
-          <X size={20} className='text-[#5C4A2A]' />
-        ) : (
-          <Menu size={20} className='text-[#5C4A2A]' />
-        )}
-      </button>
-
       {/* Mobile overlay */}
       {isOpen && (
         <div
           className='fixed inset-0 z-40 bg-black/30 lg:hidden'
-          onClick={() => setIsOpen(false)}
+          onClick={handleClose}
         />
       )}
 

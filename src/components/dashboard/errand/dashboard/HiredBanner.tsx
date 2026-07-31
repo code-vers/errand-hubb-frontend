@@ -12,13 +12,13 @@ interface HiredBannerProps {
 
 const HiredBanner: FC<HiredBannerProps> = ({ data, onReplyClick }) => {
   return (
-    <section className='bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-[#f5ebd8] p-6 mb-8'>
-      <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4'>
-        <div className='flex items-center gap-3'>
-          <div className='text-[var(--color-primary)]'>
-            <PartyPopper className='w-6 h-6' />
+    <section className='bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-[#f5ebd8] p-4 sm:p-6 mb-6 sm:mb-8'>
+      <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-3 sm:gap-4 mb-4'>
+        <div className='flex items-center gap-2.5 sm:gap-3'>
+          <div className='text-[var(--color-primary)] shrink-0'>
+            <PartyPopper className='w-5 h-5 sm:w-6 sm:h-6' />
           </div>
-          <h1 className='text-xl md:text-2xl font-bold text-[var(--color-primary)] uppercase tracking-wide'>
+          <h1 className='text-base sm:text-xl md:text-2xl font-bold text-[var(--color-primary)] uppercase tracking-wide'>
             Congratulations.. You&apos;re hired!
           </h1>
         </div>
@@ -27,8 +27,8 @@ const HiredBanner: FC<HiredBannerProps> = ({ data, onReplyClick }) => {
           variant='outline'
           size='md'
           onClick={onReplyClick}
-          className='flex items-center gap-2'>
-          <CornerUpLeft className='w-5 h-5' />
+          className='w-full md:w-auto justify-center flex items-center gap-2 cursor-pointer text-xs sm:text-sm shrink-0'>
+          <CornerUpLeft className='w-4 h-4 sm:w-5 sm:h-5' />
           REPLY TO CLIENT HERE
         </Button>
       </div>

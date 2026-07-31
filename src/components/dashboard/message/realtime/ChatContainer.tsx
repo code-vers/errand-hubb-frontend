@@ -284,8 +284,10 @@ const ChatContainer: FC = () => {
   }
 
   return (
-    <div className='flex h-[calc(100vh-140px)] bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden'>
-      <div className='w-1/3 lg:w-1/4 h-full'>
+    <div className='flex h-[calc(100vh-140px)] min-h-[480px] bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden relative'>
+      <div className={`h-full border-r border-gray-100 transition-all duration-200 ${
+        selectedConvId ? 'hidden md:block md:w-80 lg:w-90 shrink-0' : 'w-full md:w-80 lg:w-90 shrink-0'
+      }`}>
         <ChatList
           conversations={conversations}
           selectedId={selectedConvId}
@@ -293,7 +295,9 @@ const ChatContainer: FC = () => {
           currentUserId={user?.id || ""}
         />
       </div>
-      <div className='flex-1 h-full'>
+      <div className={`flex-1 h-full min-w-0 ${
+        selectedConvId ? 'block w-full' : 'hidden md:flex'
+      }`}>
         <ChatWindow
           conversation={activeConversation}
           messages={messages}
@@ -305,6 +309,7 @@ const ChatContainer: FC = () => {
           otherUserTyping={activeConversation ? (activeConversation.clientId === user?.id ? isTyping[activeConversation.errandId] : isTyping[activeConversation.clientId]) : false}
           isLoading={isLoadingMessages}
           isConnected={isConnected}
+          onBack={() => setSelectedId(null)}
         />
       </div>
     </div>

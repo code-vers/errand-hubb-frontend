@@ -31,11 +31,11 @@ const SortDropdown = ({
     options.find((opt) => opt.value === value)?.label || "Highest Rated";
 
   return (
-    <div className='relative shrink-0 w-[200px]'>
+    <div className='relative shrink-0 w-full md:w-[200px]'>
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className='w-full flex items-center justify-between bg-white border border-gray-200 text-text-placeholder font-normal hover:border-primary hover:text-primary px-4 py-2.5 rounded-lg text-[12px] transition-all duration-200 outline-none focus:ring-2 focus:ring-primary/20'>
+        className='w-full flex items-center justify-between bg-white border border-gray-200 text-text-placeholder font-normal hover:border-primary hover:text-primary px-4 py-2.5 rounded-lg text-[12px] transition-all duration-200 outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer'>
         <span>Sort: {selectedLabel}</span>
         <ChevronDown
           size={14}
@@ -93,13 +93,13 @@ const SearchForErrandPage = () => {
   const [selectedProvider, setSelectedProvider] = useState<any | null>(null);
 
   return (
-    <div className='min-h-screen py-5 px-12 font-sans'>
+    <div className='min-h-screen py-4 sm:py-5 px-3 sm:px-6 md:px-12 font-sans'>
       <div className='mx-auto flex flex-col gap-3.5'>
         <PageHeader title='Search For Errand' />
 
-        <div className=' mx-auto w-full mt-4'>
+        <div className='mx-auto w-full mt-2 sm:mt-4'>
           {/* Search Section */}
-          <div className='mb-6'>
+          <div className='mb-4 sm:mb-6'>
             <SearchBar
               onSearch={setSearch}
               onWorkerNameSearch={setWorkerName}
@@ -108,8 +108,8 @@ const SearchForErrandPage = () => {
           </div>
 
           {/* Category Filter Pills & Sort Dropdown */}
-          <div className='mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4'>
-            <div className='overflow-x-auto pb-2 scrollbar-hide flex-1 w-full'>
+          <div className='mb-6 sm:mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 sm:gap-4'>
+            <div className='overflow-x-auto pb-1 scrollbar-hide flex-1 w-full max-w-full'>
               <CategoryFilters
                 selectedCategory={filters.categoryId}
                 onCategoryChange={setCategory}
@@ -117,7 +117,9 @@ const SearchForErrandPage = () => {
             </div>
 
             {/* Custom Sort Dropdown */}
-            <SortDropdown value={filters.sortBy} onChange={setSortBy} />
+            <div className='w-full md:w-auto shrink-0'>
+              <SortDropdown value={filters.sortBy} onChange={setSortBy} />
+            </div>
           </div>
 
           {/* Provider Grid */}

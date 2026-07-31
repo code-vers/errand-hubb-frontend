@@ -42,10 +42,10 @@ const ErrandDashboardPage = () => {
   };
 
   return (
-    <div className='w-full p-6'>
-      <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-8 mb-2">
+    <div className='w-full py-4 sm:py-5 px-3 sm:px-6 md:px-8 font-sans'>
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-4 mb-2">
         <PageHeader title='Overview' />
-        <div className="bg-[#E23F36] text-white px-4 py-1.5 font-bold shadow-sm whitespace-nowrap text-sm md:text-base md:-mt-4">
+        <div className="bg-[#E23F36] text-white px-3 sm:px-4 py-1.5 font-bold shadow-sm text-xs sm:text-sm rounded-md w-fit">
           TO POST YOUR TALENT AND SKILLS CLICK SUBSCRIPTION
         </div>
       </div>

@@ -186,11 +186,11 @@ const SecurityPage: FC<SecurityPageProps> = ({
   };
 
   return (
-    <div className='min-h-screen py-5 px-12 font-sans'>
-      <div className='mx-auto flex flex-col gap-3.5'>
+    <div className='min-h-screen py-4 sm:py-5 px-3 sm:px-6 md:px-12 font-sans'>
+      <div className='mx-auto flex flex-col gap-3.5 max-w-7xl'>
         <PageHeader title='Security' />
 
-        <div className=' gap-3.5 items-stretch'>
+        <div className='flex flex-col gap-3.5 items-stretch'>
           <div className='flex flex-col gap-3.5'>
             <PasswordSection
               onSubmit={handlePasswordSubmit}

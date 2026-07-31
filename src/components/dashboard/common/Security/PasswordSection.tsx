@@ -121,22 +121,22 @@ const PasswordSection: FC<PasswordSectionProps> = ({
   };
 
   return (
-    <section className='bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-[#f5ebd8] flex flex-col'>
-      <header className='flex items-start gap-4 p-6 border-b border-[#f5ebd8]'>
-        <div className='bg-orange-50 p-3 rounded-lg flex-shrink-0'>
-          <Lock className='w-6 h-6 text-[var(--color-primary)]' />
+    <section className='bg-white rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.06)] border border-[#f5ebd8] flex flex-col overflow-hidden'>
+      <header className='flex items-start gap-3 sm:gap-4 p-4 sm:p-6 border-b border-[#f5ebd8]'>
+        <div className='bg-orange-50 p-2.5 sm:p-3 rounded-lg shrink-0'>
+          <Lock className='w-5 h-5 sm:w-6 sm:h-6 text-[var(--color-primary)]' />
         </div>
         <div>
-          <h2 className='text-[16px] font-bold text-foreground'>
+          <h2 className='text-sm sm:text-[16px] font-bold text-foreground'>
             Password Management
           </h2>
-          <p className='text-sm text-[#4B5563] mt-1'>
+          <p className='text-xs sm:text-sm text-[#4B5563] mt-0.5 sm:mt-1'>
             Keep your account secure with a strong password.
           </p>
         </div>
       </header>
 
-      <div className='flex flex-col gap-5 p-6'>
+      <div className='flex flex-col gap-4 sm:gap-5 p-4 sm:p-6'>
         <PasswordInput
           id='current-password'
           label='Current Password'
@@ -171,14 +171,14 @@ const PasswordSection: FC<PasswordSectionProps> = ({
         />
       </div>
 
-      <footer className='flex flex-col sm:flex-row justify-between items-center p-6 border-t border-[#f5ebd8] gap-4'>
+      <footer className='flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 sm:p-6 border-t border-[#f5ebd8] gap-3 sm:gap-4'>
         <p className='text-xs text-[var(--color-text-secondary)]'>
           Use 8+ characters with uppercase, numbers & symbols.
         </p>
         <button
           onClick={handleSubmit}
           disabled={isLoading}
-          className='bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-semibold py-2.5 px-6 rounded-lg text-sm transition-colors w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed'>
+          className='bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-semibold py-2.5 px-6 rounded-lg text-xs sm:text-sm transition-colors w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shrink-0'>
           {isLoading ? "SAVING..." : "SAVE PASSWORD"}
         </button>
       </footer>

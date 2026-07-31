@@ -28,9 +28,9 @@ export default function CategoryFilters({
   }, []);
 
   return (
-    <div className='flex flex-wrap gap-2'>
+    <div className='flex flex-nowrap md:flex-wrap gap-2 overflow-x-auto pb-1 scrollbar-hide w-full'>
       <button
-        className={`px-6 py-2 rounded-lg text-[12px] font-medium transition-all duration-200 ${
+        className={`px-4 sm:px-6 py-2 rounded-lg text-[12px] font-medium transition-all duration-200 shrink-0 whitespace-nowrap cursor-pointer ${
           selectedCategory === "all" || !selectedCategory
             ? "bg-[#EC6F27] text-white"
             : "bg-white border border-gray-200 text-text-placeholder font-normal hover:border-primary hover:text-primary"
@@ -42,7 +42,7 @@ export default function CategoryFilters({
       {categories.map((category) => (
         <button
           key={category.id}
-          className={`px-6 py-2 rounded-lg text-[12px] font-medium transition-all duration-200 ${
+          className={`px-4 sm:px-6 py-2 rounded-lg text-[12px] font-medium transition-all duration-200 shrink-0 whitespace-nowrap cursor-pointer ${
             selectedCategory === category.id
               ? "bg-[#EC6F27] text-white "
               : "bg-white border border-gray-200 text-text-placeholder font-normal hover:border-primary hover:text-primary"

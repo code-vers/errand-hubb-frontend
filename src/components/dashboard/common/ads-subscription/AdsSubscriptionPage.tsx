@@ -55,34 +55,34 @@ const AdsSubscriptionPage = () => {
   const isCanceled = subscription?.cancelAtPeriodEnd;
   
   return (
-    <div className='w-full p-6 space-y-8'>
+    <div className='w-full py-4 sm:py-5 px-3 sm:px-6 md:px-8 space-y-6 sm:space-y-8 font-sans max-w-7xl mx-auto'>
       <PageHeader title='Ads Subscription' />
 
       {/* Info Alert */}
-      <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-3 items-start">
+      <div className="bg-blue-50 border border-blue-100 rounded-xl p-3.5 sm:p-4 flex gap-2.5 sm:gap-3 items-start">
         <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center shrink-0 mt-0.5">
            <span className="text-white text-xs font-bold">i</span>
         </div>
-        <div>
-            <p className="text-sm text-blue-700 font-medium">This subscription is specifically for posting business ads in our gallery. It is separate from the ErrandR Pro membership.</p>
+        <div className="min-w-0 flex-1">
+            <p className="text-xs sm:text-sm text-blue-700 font-medium leading-relaxed">This subscription is specifically for posting business ads in our gallery. It is separate from the ErrandR Pro membership.</p>
         </div>
       </div>
 
       {/* Subscription Status Banner */}
-      <div className={`rounded-2xl p-6 border flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm ${isSubscribed ? 'bg-white border-[var(--color-primary)]/10' : 'bg-gray-50 border-gray-200'}`}>
-        <div className='flex items-center gap-4'>
-          <div className={`w-14 h-14 rounded-full flex items-center justify-center ${isSubscribed ? 'bg-orange-50' : 'bg-gray-200'}`}>
+      <div className={`rounded-2xl p-4 sm:p-6 border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 sm:gap-6 shadow-sm ${isSubscribed ? 'bg-white border-[var(--color-primary)]/10' : 'bg-gray-50 border-gray-200'}`}>
+        <div className='flex items-center gap-3 sm:gap-4 min-w-0'>
+          <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center shrink-0 ${isSubscribed ? 'bg-orange-50' : 'bg-gray-200'}`}>
             {isSubscribed ? (
-              <CheckCircle className='w-8 h-8 text-[var(--color-primary)]' />
+              <CheckCircle className='w-6 h-6 sm:w-8 sm:h-8 text-[var(--color-primary)]' />
             ) : (
-              <AlertCircle className='w-8 h-8 text-gray-500' />
+              <AlertCircle className='w-6 h-6 sm:w-8 sm:h-8 text-gray-500' />
             )}
           </div>
-          <div>
-            <h3 className='text-lg font-bold text-secondary'>
+          <div className='min-w-0 flex-1'>
+            <h3 className='text-base sm:text-lg font-bold text-secondary truncate'>
               {isSubscribed ? (isCanceled ? "Ads Plan - Canceling Soon" : "Ads Plan - Active") : "No Active Ads Plan"}
             </h3>
-            <p className='text-sm text-muted'>
+            <p className='text-xs sm:text-sm text-muted leading-relaxed'>
               {isSubscribed 
                 ? (isCanceled ? "Access will end at the close of your current billing cycle" : "Your ads subscription is currently active") 
                 : "Subscribe to start promoting your business in our directory"}
@@ -91,11 +91,11 @@ const AdsSubscriptionPage = () => {
         </div>
         
         {isSubscribed && subscription?.currentPeriodEnd && (
-          <div className='flex flex-col items-end'>
-            <span className='text-xs font-bold text-muted uppercase tracking-wider mb-1'>
+          <div className='flex flex-col items-start md:items-end shrink-0'>
+            <span className='text-[10px] sm:text-xs font-bold text-muted uppercase tracking-wider mb-1'>
               {isCanceled ? "Ends On" : "Next Billing"}
             </span>
-            <p className='text-md font-bold text-secondary flex items-center gap-2'>
+            <p className='text-sm sm:text-md font-bold text-secondary flex items-center gap-2'>
               <Clock className='w-4 h-4 text-[var(--color-primary)]' />
               {format(new Date(subscription.currentPeriodEnd), "MMMM dd, yyyy")}
             </p>
@@ -103,10 +103,10 @@ const AdsSubscriptionPage = () => {
         )}
       </div>
 
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8'>
         {/* Pricing Card */}
         <div className='bg-white rounded-3xl overflow-hidden border border-[var(--color-primary)]/20 shadow-xl relative'>
-          <div className='p-8'>
+          <div className='p-5 sm:p-8'>
             <div className='flex items-center gap-2 mb-6'>
               <div className='w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center'>
                 <Megaphone className='w-6 h-6 text-[var(--color-primary)]' />

@@ -51,7 +51,7 @@ export default function StatusFilterTabs({
 }: StatusFilterTabsProps) {
   return (
     <nav
-      className='flex flex-wrap items-center gap-3'
+      className='flex flex-nowrap sm:flex-wrap items-center gap-2 overflow-x-auto pb-1 scrollbar-hide w-full max-w-full'
       data-purpose='filter-navigation'>
       {statuses.map((status) => {
         const isActive = selectedStatus === status;
@@ -77,10 +77,10 @@ export default function StatusFilterTabs({
         return (
           <button
             key={status}
-            className={`px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all duration-200 ${
+            className={`px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs font-bold flex items-center gap-2 transition-all duration-200 shrink-0 whitespace-nowrap cursor-pointer ${
               isActive
                 ? style.active + " shadow-md"
-                : "bg-white font-normal px-2 text-text-placeholder  border border-[#e5e7eb] hover:border-orange-200 hover:text-orange-500"
+                : "bg-white font-normal text-text-placeholder border border-[#e5e7eb] hover:border-orange-200 hover:text-orange-500"
             }`}
             onClick={() => onStatusChange(status)}>
             {status}

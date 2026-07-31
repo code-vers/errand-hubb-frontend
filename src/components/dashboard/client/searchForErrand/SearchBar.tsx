@@ -44,13 +44,13 @@ export default function SearchBar({ onSearch, onWorkerNameSearch, onWorkerEmailS
       </div>
 
       {/* Worker name and email row */}
-      <div className='flex flex-col md:flex-row gap-3'>
-        <div className='relative flex items-center flex-1'>
-          <div className='absolute left-3 text-gray-400'>
+      <div className='flex flex-col md:flex-row gap-3 w-full'>
+        <div className='relative flex items-center flex-1 min-w-0 w-full'>
+          <div className='absolute left-3 text-gray-400 pointer-events-none'>
             <User size={16} />
           </div>
           <input
-            className='w-full pl-10 pr-4 py-3 bg-white border border-gray-100 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm outline-none transition-all duration-200 text-sm placeholder:text-gray-400'
+            className='w-full pl-10 pr-4 py-3 bg-white border border-gray-100 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm outline-none transition-all duration-200 text-sm placeholder:text-gray-400 truncate'
             placeholder='Search by worker name…'
             type='text'
             value={workerName}
@@ -58,12 +58,12 @@ export default function SearchBar({ onSearch, onWorkerNameSearch, onWorkerEmailS
             onKeyDown={handleKeyDown}
           />
         </div>
-        <div className='relative flex items-center flex-1'>
-          <div className='absolute left-3 text-gray-400'>
+        <div className='relative flex items-center flex-1 min-w-0 w-full'>
+          <div className='absolute left-3 text-gray-400 pointer-events-none'>
             <Mail size={16} />
           </div>
           <input
-            className='w-full pl-10 pr-4 py-3 bg-white border border-gray-100 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm outline-none transition-all duration-200 text-sm placeholder:text-gray-400'
+            className='w-full pl-10 pr-4 py-3 bg-white border border-gray-100 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary shadow-sm outline-none transition-all duration-200 text-sm placeholder:text-gray-400 truncate'
             placeholder='Search by worker email…'
             type='email'
             value={workerEmail}
@@ -73,7 +73,7 @@ export default function SearchBar({ onSearch, onWorkerNameSearch, onWorkerEmailS
         </div>
         <button
           onClick={handleSearch}
-          className='px-6 py-3 bg-primary text-white rounded-lg text-sm font-bold shadow-sm hover:bg-primary/95 transition-all active:scale-95'
+          className='w-full md:w-auto px-6 py-3 bg-primary text-white rounded-lg text-sm font-bold shadow-sm hover:bg-primary/95 transition-all active:scale-95 cursor-pointer shrink-0'
         >
           Search
         </button>
