@@ -19,7 +19,7 @@ const Homepage = () => {
           aria-label='Play Video'
         >
           {/* Subtle pulse animation ring */}
-          <div className='absolute inset-0 rounded-full bg-[#f47a22]/20 animate-ping pointer-events-none' />
+          <div className='' />
 
           <svg
             viewBox='0 0 100 100'
@@ -30,6 +30,7 @@ const Homepage = () => {
               fill='#f47a22'
               className='transition-colors duration-200 group-hover:fill-[#e06812]'
             />
+        
             <text
               x='38'
               y='53'
