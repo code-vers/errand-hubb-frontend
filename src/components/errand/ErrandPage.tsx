@@ -308,12 +308,15 @@ const ErrandPage = () => {
               <p className=' text-[18px] font-bold leading-tight tracking-[0.4px] text-(--color-secondary) md:text-[34px]'>
                 YOUR HELP WITH AN ERRANDR POST
               </p>
-              <Link
-                href='/client-registration'
-                className='inline-flex min-h-12.5 items-center justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'
-              >
-                CREATE CLIENT PROFILE
-              </Link>
+              <div className='flex flex-wrap items-center gap-3 justify-center xl:justify-start'>
+                <Link
+                  href='/client-registration'
+                  className='inline-flex min-h-12.5 items-center justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'
+                >
+                  CREATE CLIENT PROFILE
+                </Link>
+                <p className='italic text-xl'>(A person needing help)</p>
+              </div>
             </div>
 
             <div className='flex items-center justify-center pb-1.5'>
@@ -328,12 +331,15 @@ const ErrandPage = () => {
                 {membershipPlan.billingCycle}
               </p>
 
-              <Link
-                href='/errand-registration'
-                className='inline-flex min-h-12.5 items-center mt-12 justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'
-              >
-                CREATE ERRAND PROFILE
-              </Link>
+              <div className='flex flex-wrap items-center gap-3 justify-center xl:justify-end'>
+                <p className='italic text-xl'>(A person that does work)</p>
+                <Link
+                  href='/errand-registration'
+                  className='inline-flex min-h-12.5 items-center justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'
+                >
+                  CREATE ERRAND PROFILE
+                </Link>
+              </div>
             </div>
           </div>
         </div>
