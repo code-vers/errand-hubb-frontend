@@ -315,7 +315,7 @@ const ErrandPage = () => {
                 >
                   CREATE CLIENT PROFILE
                 </Link>
-                <p className='italic text-xl'>(A person needing help)</p>
+                <p className='italic text-sm'>(A person needing help)</p>
               </div>
             </div>
 
@@ -332,7 +332,7 @@ const ErrandPage = () => {
               </p>
 
               <div className='flex flex-wrap items-center gap-3 justify-center xl:justify-end'>
-                <p className='italic text-xl'>(A person that does work)</p>
+                <p className='italic text-sm'>(A person that does work)</p>
                 <Link
                   href='/errand-registration'
                   className='inline-flex min-h-12.5 items-center justify-center rounded-md bg-(--color-primary) px-6 text-[14px] font-bold tracking-[0.8px] text-white no-underline hover:bg-(--color-primary-dark)'
