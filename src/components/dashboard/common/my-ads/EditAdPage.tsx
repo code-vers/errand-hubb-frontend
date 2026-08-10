@@ -198,6 +198,9 @@ export default function EditAdPage({ id }: { id: string }) {
                 accept="image/*"
               />
             </div>
+            <p className="text-red-500 text-xs sm:text-sm font-medium mt-3 text-center">
+              Artwork size: 3.5 x 4.5 with aspect ratio: 7:9 which would equal 1400 x 800 pixels
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
