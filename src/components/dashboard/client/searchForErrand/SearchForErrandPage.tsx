@@ -82,11 +82,13 @@ const SearchForErrandPage = () => {
     loading,
     error,
     setSearch,
+    setLocation,
     setCategory,
     setSortBy,
     setPage,
     setWorkerName,
     setWorkerEmail,
+    resetFilters,
   } = useProviders();
 
   const [activeGallery, setActiveGallery] = useState<string[] | null>(null);
@@ -102,8 +104,10 @@ const SearchForErrandPage = () => {
           <div className='mb-4 sm:mb-6'>
             <SearchBar
               onSearch={setSearch}
+              onLocationSearch={setLocation}
               onWorkerNameSearch={setWorkerName}
               onWorkerEmailSearch={setWorkerEmail}
+              onReset={resetFilters}
             />
           </div>
 
