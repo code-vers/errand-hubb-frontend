@@ -14,7 +14,7 @@ export default function Header() {
   const publicLinks = [
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
-    { name: "Errand", href: "/errand" },
+    { name: "Errands", href: "/errand" },
     { name: "Errand Gallery", href: "/gallery" },
     { name: "Investor Relations", href: "/investor-relations" },
     { name: "Contact", href: "/contact" },
