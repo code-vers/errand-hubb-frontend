@@ -204,12 +204,19 @@ const SearchPage = () => {
 
     // Location Filter
     if (filters.location) {
-      const locLower = filters.location.toLowerCase();
-      result = result.filter(
-        (post) =>
-          post.city.toLowerCase().includes(locLower) ||
-          post.state.toLowerCase().includes(locLower)
-      );
+      const locLower = filters.location.toLowerCase().trim();
+      const locParts = locLower.split(',').map(p => p.trim());
+      result = result.filter((post) => {
+        const postCity = (post.city || "").toLowerCase();
+        const postState = (post.state || "").toLowerCase();
+        return (
+          locParts.some(part => part && (postCity.includes(part) || postState.includes(part))) ||
+          postCity.includes(locLower) ||
+          postState.includes(locLower) ||
+          locLower.includes(postCity) ||
+          locLower.includes(postState)
+        );
+      });
     }
 
     // Worker Details Filter (Name or Email)

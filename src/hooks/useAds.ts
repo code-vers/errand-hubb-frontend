@@ -31,7 +31,7 @@ export function useAds(initialLimit: number = 6) {
     setLoading(true);
     setError(null);
     try {
-      const response = await adsService.findAll({
+      const response: any = await adsService.findAll({
         search: filters.search,
         categoryId: filters.categoryId,
         subcategoryId: filters.subcategoryId,
@@ -39,12 +39,24 @@ export function useAds(initialLimit: number = 6) {
         page: filters.page,
         limit: initialLimit,
       });
-      setAds(response.data.data);
-      setTotal(response.data.meta.total);
-      setTotalPages(response.data.meta.totalPages);
+
+      const adsList = Array.isArray(response)
+        ? response
+        : Array.isArray(response?.data)
+          ? response.data
+          : Array.isArray(response?.data?.data)
+            ? response.data.data
+            : [];
+
+      const meta = response?.meta || response?.data?.meta || {};
+
+      setAds(adsList);
+      setTotal(meta.total ?? adsList.length);
+      setTotalPages(meta.totalPages ?? 1);
     } catch (err: any) {
       console.error("Failed to fetch ads:", err);
-      setError(err.message || "Failed to load ads");
+      setError(err?.message || "Failed to load ads. Please try again.");
+      setAds([]);
     } finally {
       setLoading(false);
     }
