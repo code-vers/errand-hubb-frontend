@@ -10,10 +10,18 @@ export function useAdsCategories() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await adsService.getCategories();
-        setCategories(response.data);
+        const response: any = await adsService.getCategories();
+        const catsList = Array.isArray(response)
+          ? response
+          : Array.isArray(response?.data)
+            ? response.data
+            : Array.isArray(response?.data?.data)
+              ? response.data.data
+              : [];
+        setCategories(catsList);
       } catch (err) {
         console.error("Failed to fetch ads categories:", err);
+        setCategories([]);
       } finally {
         setLoading(false);
       }
