@@ -35,13 +35,13 @@ const AboutPage = () => {
           </p>
           <p>
             At ErrandHubb, we believe in community. We are not just a task
-            marketplace — we are a movement toward helping&nbsp; neighbors help
+            marketplace — we are a movement toward helping neighbors help
             neighbors. Our mission is to make everyday life a little easier for
-            everyone by creating meaningful local&nbsp; connections.
+            everyone by creating meaningful local connections.
           </p>
           <p>
             Whether you are a busy professional, a parent managing a household, a
-            senior who needs a helping hand, or simply&nbsp; someone who values
+            senior who needs a helping hand, or simply someone who values
             their time — ErrandHubb was built for you.
           </p>
           <p>
@@ -50,13 +50,13 @@ const AboutPage = () => {
           </p>
           <p>
             Thank you for being a part of the ErrandHubb community. We look
-            forward to helping you — and your neighbors —&nbsp; every single day.
+            forward to helping you — and your neighbors — every single day.
           </p>
         </div>
 
-        {/* ── ErrandR Definition Box ── */}
+        {/* ── ErrandR Definition Box & Audio Overview ── */}
         <div className='mt-10 flex flex-col md:flex-row items-start md:items-center gap-6'>
-          <div className='bg-surface-dim border-l-4 border-primary px-5 py-4 w-full max-w-sm'>
+          <div className='bg-surface-dim border-l-4 border-primary px-5 py-4 w-full max-w-sm rounded-r-xl'>
             <p className='text-base font-extrabold text-secondary leading-tight'>
               ErrandR
             </p>
@@ -69,9 +69,9 @@ const AboutPage = () => {
             <img 
               src='/ABOUT LADY.png' 
               alt='About ErrandR' 
-              className='h-32 object-contain shadow-md'
+              className='h-32 object-contain shadow-md rounded-lg'
             />
-            <AudioPlayer src='/ABOUT FILE.mp3' />
+            <AudioPlayer src='/ABOUT FILE.mp3' label='Audio Overview' />
           </div>
         </div>
       </div>
