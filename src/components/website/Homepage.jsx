@@ -11,40 +11,39 @@ const Homepage = () => {
 
   return (
     <section className='w-full flex flex-1 flex-col justify-center items-center bg-white font-sans antialiased py-10 relative'>
-      {/* Top Play Button - Centered horizontally */}
-      <div className='flex justify-center items-center mb-8'>
+      {/* Video Poster Thumbnail Card */}
+      <div className='flex justify-center items-center mb-8 px-4 w-full max-w-xl'>
         <button
           onClick={() => setIsVideoOpen(true)}
-          className='group relative flex items-center justify-center focus:outline-none cursor-pointer'
-          aria-label='Play Video'
+          className='group relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-lg border border-gray-100 focus:outline-none cursor-pointer transform hover:scale-[1.01] transition-all duration-300'
+          aria-label='Watch How ErrandHub Works'
         >
-          {/* Subtle pulse animation ring */}
-          <div className='' />
+          {/* First Frame Poster Image */}
+          <Image
+            src="/video-thumbnail.jpg"
+            alt="ErrandHub Video Poster - Local Help Done Fast"
+            fill
+            sizes="(max-width: 768px) 100vw, 600px"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent group-hover:from-black/70 transition-colors" />
 
-          <svg
-            viewBox='0 0 100 100'
-            className='w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 drop-shadow-md hover:drop-shadow-xl transition-all duration-300 transform group-hover:scale-105'
-          >
-            <path
-              d='M 12 8 C 8 8 5 11 5 16 L 5 84 C 5 89 8 92 12 92 C 14 92 16 91 18 90 L 88 56 C 93 53 93 47 88 44 L 18 10 C 16 9 14 8 12 8 Z'
-              fill='#f47a22'
-              className='transition-colors duration-200 group-hover:fill-[#e06812]'
-            />
-        
-            <text
-              x='38'
-              y='53'
-              fill='#ffffff'
-              fontSize='22'
-              fontWeight='900'
-              fontStyle='italic'
-              fontFamily='sans-serif'
-              textAnchor='middle'
-              dominantBaseline='middle'
-            >
-              play
-            </text>
-          </svg>
+          {/* Centered Play Control Button Overlay */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#f47a22] text-white flex items-center justify-center shadow-xl group-hover:bg-[#e06812] group-hover:scale-110 transition-all duration-300">
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-7 h-7 sm:w-8 sm:h-8 translate-x-0.5"
+              >
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+            <span className="text-white text-xs font-extrabold uppercase tracking-wider drop-shadow-md bg-black/40 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20">
+              Watch How It Works
+            </span>
+          </div>
         </button>
       </div>
 
