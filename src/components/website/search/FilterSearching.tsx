@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { categoryService } from "@/services/category.service";
 import { Category } from "@/types/categories";
 import { Filter, ChevronDown, ChevronUp } from "lucide-react";
+import { StateDropdown, CityDropdown } from "@/components/shared/StateCityDropdown";
 
 import { STATIC_CATEGORIES } from "@/constants/categories";
 
@@ -19,9 +20,23 @@ const FilterSearching = ({
   const [filters, setFilters] = useState<SearchFilters>(initialFilters);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [selectedState, setSelectedState] = useState<string>("");
+  const [selectedCity, setSelectedCity] = useState<string>("");
 
   useEffect(() => {
     setFilters(initialFilters);
+    if (initialFilters.location) {
+      const parts = initialFilters.location.split(',').map(s => s.trim());
+      if (parts.length > 1) {
+        setSelectedCity(parts[0]);
+        setSelectedState(parts[1]);
+      } else {
+        setSelectedState(parts[0]);
+      }
+    } else {
+      setSelectedState("");
+      setSelectedCity("");
+    }
   }, [initialFilters]);
 
   useEffect(() => {
@@ -45,6 +60,20 @@ const FilterSearching = ({
     setFilters((prev) => ({ ...prev, [field]: value }));
   };
 
+  const handleStateChange = (stateName: string) => {
+    setSelectedState(stateName);
+    setSelectedCity("");
+    setFilters((prev) => ({ ...prev, location: stateName }));
+  };
+
+  const handleCityChange = (cityName: string) => {
+    setSelectedCity(cityName);
+    const combinedLocation = cityName
+      ? (selectedState ? `${cityName}, ${selectedState}` : cityName)
+      : selectedState;
+    setFilters((prev) => ({ ...prev, location: combinedLocation }));
+  };
+
   const handleSearchClick = () => {
     onSearch(filters);
   };
@@ -60,6 +89,8 @@ const FilterSearching = ({
       sortOrder: "desc",
       workerName: "",
     };
+    setSelectedState("");
+    setSelectedCity("");
     setFilters(defaultFilters);
     onSearch(defaultFilters);
   };
@@ -127,18 +158,34 @@ const FilterSearching = ({
               </select>
             </div>
 
-            {/* Location */}
+            {/* State Dropdown */}
             <div className='flex flex-col gap-1.5'>
-              <label htmlFor='location' className='text-[11px] font-bold text-[#555555] uppercase tracking-wider'>
-                Location
+              <label htmlFor='state' className='text-[11px] font-bold text-[#555555] uppercase tracking-wider'>
+                State
               </label>
-              <input
-                id='location'
-                type='text'
-                placeholder='City or State...'
-                value={filters.location}
-                onChange={(e) => handleInputChange("location", e.target.value)}
-                className='h-10 w-full border border-gray-200 rounded-lg px-3 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all'
+              <StateDropdown
+                id='state'
+                value={selectedState}
+                allowAll={true}
+                placeholder="All States"
+                onChange={(e) => handleStateChange(e.target.value)}
+                className='h-10 w-full border border-gray-200 rounded-lg px-3 text-[13px] text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all'
+              />
+            </div>
+
+            {/* City Dropdown */}
+            <div className='flex flex-col gap-1.5'>
+              <label htmlFor='city' className='text-[11px] font-bold text-[#555555] uppercase tracking-wider'>
+                City
+              </label>
+              <CityDropdown
+                id='city'
+                stateName={selectedState}
+                value={selectedCity}
+                allowAll={true}
+                placeholder={selectedState ? "All Cities" : "Select State First"}
+                onChange={(e) => handleCityChange(e.target.value)}
+                className='h-10 w-full border border-gray-200 rounded-lg px-3 text-[13px] text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all'
               />
             </div>
 
