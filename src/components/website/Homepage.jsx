@@ -16,12 +16,12 @@ const Homepage = () => {
         <button
           onClick={() => setIsVideoOpen(true)}
           className='group relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-lg border border-gray-100 focus:outline-none cursor-pointer transform hover:scale-[1.01] transition-all duration-300'
-          aria-label='Watch How ErrandHub Works'
+          aria-label='Watch How ErrandHubb Works'
         >
           {/* First Frame Poster Image */}
           <Image
-            src="/video-thumbnail.jpg"
-            alt="ErrandHub Video Poster - Local Help Done Fast"
+            src="/video-thumbnail-v2.jpg"
+            alt="ErrandHubb Video Poster - Local Help Done Fast"
             fill
             sizes="(max-width: 768px) 100vw, 600px"
             className="object-cover group-hover:scale-105 transition-transform duration-500"
