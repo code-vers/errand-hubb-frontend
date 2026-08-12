@@ -48,7 +48,7 @@ const TwoFactorSetupModal: FC<TwoFactorSetupModalProps> = ({
   };
 
   const handleDownloadCodes = () => {
-    const content = `ErrandHub 2FA Backup Recovery Codes\nGenerated on: ${new Date().toLocaleString()}\n\n${recoveryCodes.join('\n')}\n\nKeep these codes in a safe place. Each code can only be used once.`;
+    const content = `ErrandHubb 2FA Backup Recovery Codes\nGenerated on: ${new Date().toLocaleString()}\n\n${recoveryCodes.join('\n')}\n\nKeep these codes in a safe place. Each code can only be used once.`;
     const blob = new Blob([content], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
