@@ -1,6 +1,11 @@
+'use client';
+
+import { useState } from "react";
 import AudioPlayer from "@/components/shared/AudioPlayer";
 
 const AboutPage = () => {
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
+
   return (
     <div className='w-full max-w-385 mx-auto bg-white font-sans px-6 py-8 md:py-10'>
       {/* Alignment container matching Header Nav items */}
@@ -53,6 +58,112 @@ const AboutPage = () => {
             forward to helping you — and your neighbors — every single day.
           </p>
         </div>
+
+        <div className='mt-7'>
+          <button
+            type='button'
+            onClick={() => setIsMoreOpen((isOpen) => !isOpen)}
+            aria-expanded={isMoreOpen}
+            aria-controls='graeme-bio'
+            className='rounded-lg bg-primary px-6 py-2.5 text-sm font-bold text-white transition-colors hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2'
+          >
+            {isMoreOpen ? 'Show Less' : 'More'}
+          </button>
+        </div>
+
+        {isMoreOpen && (
+          <section
+            id='graeme-bio'
+            className='mt-6 rounded-2xl border border-primary/20 bg-surface-dim p-6 md:p-8'
+            aria-labelledby='graeme-bio-heading'
+          >
+            <h2
+              id='graeme-bio-heading'
+              className='text-2xl font-extrabold text-secondary'
+            >
+              About Graeme X. Barrington
+            </h2>
+            <div className='mt-5'>
+              <AudioPlayer
+                src='/MORE ABOUT ERRANDHUBB.mp3'
+                label='More About ErrandHubb'
+              />
+            </div>
+
+            <div className='mt-5 space-y-4 text-[15px] font-normal leading-relaxed text-foreground'>
+              <p>
+                Graeme X. Barrington is a Los Angeles–born entrepreneur,
+                investor, and former investment banking professional with
+                decades of experience spanning technology, finance, consumer
+                services, and emerging-growth companies.
+              </p>
+              <p>
+                After graduating from Stanford University in 1988, Graeme began
+                building a career focused on entrepreneurship, investment, and
+                innovation. Throughout his career, he has been involved in the
+                founding, financing, and development of numerous companies and
+                early-stage ventures, including investments in companies such as
+                1-800-Flowers and PayPal. He was also involved with Great
+                Expectations, an innovative video-based dating platform that
+                introduced a concept similar to modern online and video dating
+                services long before the widespread adoption of the internet.
+              </p>
+
+              <h3 className='pt-2 text-lg font-extrabold text-secondary'>
+                Investment Banking &amp; Entrepreneurship
+              </h3>
+              <p>
+                During the late 1980s and early 1990s, Graeme worked in the
+                investment banking industry with Bear Stearns and Shearson
+                Lehman Brothers. During this period, he gained extensive
+                experience in corporate finance, capital formation, investment
+                strategy, and working with emerging companies and investors.
+              </p>
+              <p>
+                Over the course of his career, Graeme has participated in
+                raising substantial capital for startup and growth companies
+                while focusing on creating opportunities capable of generating
+                attractive returns for investors.
+              </p>
+              <p>
+                An entrepreneur at heart, Graeme has consistently looked for
+                opportunities to identify inefficiencies in established
+                industries and develop businesses designed to provide consumers
+                with simpler, more affordable, and more convenient alternatives.
+              </p>
+
+              <h3 className='pt-2 text-lg font-extrabold text-secondary'>
+                ErrandHubb
+              </h3>
+              <p>
+                Graeme&apos;s latest technology venture is ErrandHubb, an online
+                marketplace designed to simplify the way consumers connect with
+                independent errand runners and service providers.
+              </p>
+              <p>
+                The concept was born from a simple observation: consumers and
+                service providers are often burdened by complicated pricing
+                structures, lead fees, commissions, subscriptions, and other
+                charges imposed by existing marketplace platforms.
+              </p>
+              <p>
+                ErrandHubb seeks to take a fundamentally different approach by
+                creating a more transparent and cost-effective marketplace where
+                clients can connect directly with Errand&apos;ers and service
+                providers while minimizing the fees traditionally associated
+                with these platforms.
+              </p>
+              <p>
+                The opportunity is significant. Across the United States,
+                millions of consumers use online marketplaces each year to find
+                individuals and businesses capable of completing household
+                projects, personal errands, deliveries, and other services.
+                Graeme believes the industry represents a substantial
+                opportunity for innovation.
+              </p>
+            </div>
+          </section>
+        )}
 
         {/* ── ErrandR Definition Box & Audio Overview ── */}
         <div className='mt-10 flex flex-col md:flex-row items-start md:items-center gap-6'>

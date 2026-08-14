@@ -87,6 +87,22 @@ const MoreGallery = () => {
               </div>
             </div>
           ))}
+
+          <div className='col-span-2 flex flex-col justify-center rounded-2xl bg-white px-2 py-4 sm:px-5 lg:py-6'>
+            <p className='max-w-md text-[15px] font-medium italic leading-[1.28] text-black sm:text-[17px]'>
+              This wide-ranging collection of AI-generated images is for
+              illustrative purposes only and represents examples of the many
+              types of errands and services that Clients may request and
+              Erranders may perform through ErrandHubb.
+            </p>
+            <Image
+              src='/gallary/ai-generated-badge.png'
+              alt='AI-generated image notice'
+              width={1254}
+              height={1254}
+              className='mt-4 h-16 w-16 object-contain sm:h-18 sm:w-18'
+            />
+          </div>
         </div>
       </div>
 
@@ -147,4 +163,3 @@ const MoreGallery = () => {
 };
 
 export default MoreGallery;
-

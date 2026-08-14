@@ -26,7 +26,7 @@ const navItems = [
   ["How It Works", "#how-it-works"],
   ["Find Erranders", "/search"],
   ["Become an Errander", "/errand"],
-  ["Pricing", "/dashboard/subscription"],
+  ["Pricing", "/pricing"],
   ["For Business", "/post-ad"],
   ["Help", "/contact"],
 ];

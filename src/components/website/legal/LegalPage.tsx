@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import logo from "../../../../public/logo2.svg";
+import TermsOfService from "./TermsOfService";
 
 type TabType = "privacy" | "terms" | "refund";
 
@@ -343,7 +344,9 @@ function LegalContent() {
                 </article>
               )}
 
-              {activeTab === "terms" && (
+              {activeTab === "terms" && <TermsOfService />}
+
+              {false && (
                 <article className="prose max-w-none text-foreground font-sans">
                   <div className="border-b pb-5 mb-6 border-slate-100">
                     <h1 className="text-2xl sm:text-3xl font-extrabold text-secondary tracking-tight">
