@@ -7,10 +7,11 @@ import Footer from "../components/website/Footer";
 export default function RootLayoutContent({ children }) {
   const pathname = usePathname();
   const isDashboard = pathname.startsWith('/dashboard') || pathname.startsWith('/login') || pathname.startsWith('/merchandise');
+  const isHomePage = pathname === '/';
 
   return (
     <>
-      {!isDashboard && <Header />}
+      {!isDashboard && !isHomePage && <Header />}
       <main className={!isDashboard ? '' : 'free'}>{children}</main>
       {!isDashboard && <Footer />}
     </>
