@@ -320,7 +320,7 @@ const ErrandPage = () => {
             </div>
 
             <div className='flex items-center justify-center pb-1.5'>
-              <Image src={logo} alt='ErrandHubb' width={156} height={26} />
+              <Image src={logo} alt='ErrandHubb' width={0} height={0} className='hidden' />
             </div>
 
             <div className='flex flex-col  gap-4 xl:items-end'>
@@ -472,10 +472,18 @@ const ErrandPage = () => {
                         ))}
                       </div>
 
-                      <p className='mt-3 text-[11px] tracking-[0.8px] text-[#757b84]'>PRICES</p>
-                      <p className='mt-1.25 text-[27px] font-medium text-[#1e2329]'>
-                        {profile.pricingText}
-                      </p>
+                      <div className='relative mt-3'>
+                        <p className='text-[11px] tracking-[0.8px] text-[#757b84]'>PRICES</p>
+                        <p className='mt-1.25 text-[27px] font-medium text-[#1e2329]'>
+                          {profile.pricingText}
+                        </p>
+                        <span
+                          aria-hidden='true'
+                          className='pointer-events-none absolute right-2 bottom-6 rotate-[-12deg] text-[22px] font-extrabold tracking-[-0.5px] text-[#ef3e32]'
+                        >
+                          SAMPLE
+                        </span>
+                      </div>
 
                       <button
                         type='button'
