@@ -1,0 +1,998 @@
+ERRANDHUBB TERMS OF SERVICE
+Last Updated: August 13, 2026
+Welcome to ErrandHubb.
+These Terms of Service (“Terms”) govern your access to and use of the ErrandHubb website, mobile
+applications, software, communications tools, marketplace, membership services, advertising services, and
+related features (collectively, the “Platform” or “Services”).
+In these Terms:
+•
+•
+•
+•
+•
+“ErrandHubb,” “we,” “us,” or “our” means ErrandHubb and its applicable owners, operators,
+affiliates, and service providers.
+“Client” or “Customer” means a person or business using ErrandHubb to locate, communicate
+with, or hire an Errander.
+“Errander” means an independent person or business using ErrandHubb to advertise, offer,
+negotiate, or provide services to Clients.
+“User” means any Client, Errander, advertiser, visitor, or other person accessing the Platform.
+“Errand,” “Job,” or “Service” means a task or service independently offered or performed by an
+Errander for a Client.
+By creating an account, purchasing a membership or advertising plan, posting or accepting an Errand,
+communicating with another User, or otherwise accessing or using ErrandHubb, you agree to these Terms.
+If you do not agree to these Terms, do not use the Platform.
+1. WHAT ERRANDHUBB IS
+ErrandHubb is an online marketplace designed to connect people who need errands, tasks, deliveries,
+personal assistance, household help, local services, or other permitted services with independent
+individuals or businesses willing to perform those services.
+ErrandHubb provides technology that may allow Users to:
+•
+•
+•
+•
+•
+•
+•
+•
+Create Client and Errander profiles;
+Search for Erranders by service, location, availability, price, experience, or other criteria;
+Post available Errands or Jobs;
+Respond to available Jobs;
+Communicate through messaging tools;
+Negotiate service details and pricing;
+Review profiles and available information;
+Advertise permitted services;
+1
+•
+•
+•
+Maintain memberships;
+Leave ratings or reviews where available; and
+Use other marketplace features offered by ErrandHubb.
+ErrandHubb is a marketplace. ErrandHubb is not the provider of the underlying services performed
+by Erranders unless ErrandHubb expressly states otherwise in writing for a particular service.
+Erranders offer their services independently.
+Clients decide which Errander, if any, they wish to hire.
+ErrandHubb generally does not assign an Errander to a Client.
+2. HOW ERRANDHUBB WORKS
+The basic ErrandHubb marketplace process is described below.
+A. Client Creates an Account
+A Client may create an ErrandHubb account and use available marketplace features to search for an
+Errander or post an Errand.
+Unless otherwise expressly stated at the time of signup, ErrandHubb does not charge Clients a monthly
+marketplace membership fee.
+B. Errander Creates a Profile
+An Errander may create a profile describing the services the Errander is willing to provide.
+An Errander may be permitted to include information such as:
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+Profile name;
+Photograph;
+Service categories;
+Service area;
+Availability;
+Experience;
+Qualifications;
+Pricing;
+Description of services;
+Videos or photographs;
+Ratings and reviews; and
+Other permitted profile information.
+2
+Erranders are responsible for making sure their profile information is truthful, accurate, current, and not
+misleading.
+C. Client Searches for an Errander
+A Client may search or browse Errander profiles.
+The Client—not ErrandHubb—decides which Errander to contact and whether to hire that person.
+ErrandHubb does not guarantee that any particular Errander will be available, suitable, qualified, or willing
+to perform a particular Job.
+D. Client May Post an Errand
+Where the feature is available, a Client may post an Errand describing the requested work.
+A posting may contain information such as:
+•
+•
+•
+•
+•
+•
+•
+Type of task;
+General location;
+Requested date and time;
+Proposed budget;
+Description of work;
+Special instructions; and
+Other relevant information.
+Erranders may respond to available postings and may propose their own price or terms.
+The Client decides whether to accept, reject, or negotiate an Errander’s proposal.
+E. Client and Errander Communicate
+Clients and Erranders may communicate before agreeing to a Job.
+The parties should discuss and agree upon relevant details before work begins, including:
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+Scope of work;
+Price;
+Date and time;
+Location;
+Expected duration;
+Purchases or reimbursements;
+Supplies or equipment;
+Parking or transportation costs;
+Special instructions;
+Cancellation expectations; and
+3
+•
+Other material conditions.
+F. Client Selects the Errander
+The Client chooses the Errander.
+ErrandHubb does not guarantee the selection and does not require a Client to hire any particular Errander.
+G. Client and Errander Form Their Own Service Arrangement
+When a Client and Errander agree upon a Job, the agreement for the actual performance of that Job is
+between the Client and the Errander.
+Unless expressly stated otherwise in writing:
+ErrandHubb is not a party to the individual service agreement between the Client and Errander.
+The Client is responsible for communicating the requested work.
+The Errander is responsible for determining whether to accept the Job and for performing any accepted Job.
+3. ERRANDER MEMBERSHIP
+Erranders must maintain any membership required by ErrandHubb to access paid Errander features.
+Current standard membership options may include:
+Monthly Membership
+$5.00 per month
+Annual Membership
+$50.00 per year when paid upfront
+The annual plan represents a $10 savings compared with twelve monthly payments at $5 per month.
+Membership pricing displayed on the Platform at the time of purchase controls if it differs from pricing
+stated in these Terms.
+ErrandHubb may introduce additional plans, features, promotional prices, or membership options in the
+future.
+4
+4. AUTOMATIC RENEWAL OF MEMBERSHIPS
+If a membership is sold as an automatically renewing subscription, the renewal terms will be disclosed to
+the User before purchase.
+Unless otherwise stated at checkout:
+•
+•
+•
+•
+•
+Monthly memberships renew approximately once each month;
+Annual memberships renew approximately once each year;
+The payment method provided by the User may be charged automatically at renewal;
+Renewal continues until the User cancels the membership; and
+Cancellation stops future renewals but does not ordinarily reverse charges already properly incurred.
+ErrandHubb will provide cancellation methods as required by applicable law and will make applicable
+renewal disclosures during the signup or purchasing process.
+Users are responsible for maintaining an accurate payment method.
+If a payment fails, ErrandHubb may suspend or restrict paid membership features until payment is
+successfully completed.
+5. CANCELLING AN ERRANDER MEMBERSHIP
+An Errander may cancel an automatically renewing membership using the cancellation method provided
+through the Platform or another method identified by ErrandHubb.
+Cancellation prevents future subscription renewals.
+Unless required otherwise by law or expressly stated in a specific offer, cancellation does not create a right
+to a prorated refund for a partially used membership period.
+An Errander whose membership is canceled may generally continue using paid membership features
+through the end of the already-paid subscription period unless:
+•
+•
+•
+•
+The account is suspended;
+The account is terminated for a Terms violation;
+Fraud or chargeback activity occurs; or
+Applicable law requires a different result.
+5
+6. ERRANDHUBB DOES NOT TAKE A COMMISSION
+ON ERRANDER JOB EARNINGS
+ErrandHubb's standard marketplace business model is based primarily on membership and optional
+advertising fees rather than commissions from individual Jobs.
+Unless clearly disclosed otherwise before a particular transaction:
+ErrandHubb does not deduct a percentage commission from the amount a Client agrees to pay an
+Errander for an individual Job.
+For example:
+If a Client and Errander agree that a Job will cost $100, ErrandHubb does not automatically take a
+percentage of that $100 merely because the parties met through ErrandHubb.
+The Errander's separate membership obligation to ErrandHubb remains applicable.
+7. NO ESCROW OF CLIENT-TO-ERRANDER JOB
+PAYMENTS
+Unless ErrandHubb expressly introduces and identifies a separate payment feature:
+ErrandHubb does not hold the Client's payment to an Errander in escrow.
+ErrandHubb does not take possession of, control, or withhold the Errander's service earnings merely
+because the Client and Errander connected through the Platform.
+Clients and Erranders are responsible for agreeing upon an acceptable method and timing of payment for
+the underlying Job.
+If ErrandHubb later offers an integrated payment-processing feature, additional payment terms may apply
+and will be disclosed before Users utilize that feature.
+8. CLIENT-TO-ERRANDER PAYMENTS
+The Client and Errander are responsible for agreeing upon:
+Job price; •
+6
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+Deposit, if any;
+Payment timing;
+Payment method;
+Reimbursement of purchases;
+Materials;
+Supplies;
+Parking;
+Tolls;
+Mileage;
+Delivery expenses;
+Cancellation charges agreed upon between the parties; and
+Other Job-related costs.
+Unless ErrandHubb expressly states otherwise, payments for individual Jobs are made directly between the
+Client and Errander.
+ErrandHubb is not responsible for:
+•
+•
+•
+•
+•
+•
+•
+•
+A Client's failure to pay;
+An Errander's failure to complete a Job;
+Disputes concerning the agreed price;
+Reimbursement disputes;
+Chargebacks between the parties;
+Cash payment disputes;
+Disputed electronic payments; or
+Other disagreements concerning payment for the underlying Job.
+Users should document material terms and payment agreements through the Platform's messaging system
+whenever reasonably possible.
+9. OPTIONAL PRO PLAN ADVERTISING
+ErrandHubb may offer optional advertising or promotional placement.
+The current advertised price for the standard Pro Plan Ads program is:
+$20.00 per month
+Advertising may provide features such as:
+•
+•
+•
+•
+•
+Promotional profile placement;
+Featured listings;
+Increased marketplace visibility;
+Sponsored placement;
+Promotional business listings; or
+7
+•
+Other advertising features identified by ErrandHubb.
+Advertising is separate from an Errander's basic membership unless ErrandHubb expressly bundles the
+services.
+An Errander who purchases both a $5 monthly membership and a $20 monthly advertising plan may
+therefore pay a total of $25 per month, subject to any applicable promotional or revised pricing.
+Advertising Does Not Guarantee Results
+Purchasing an advertisement does not guarantee:
+•
+•
+•
+•
+•
+•
+•
+•
+•
+A certain number of profile views;
+Leads;
+Messages;
+Clients;
+Jobs;
+Revenue;
+Search position;
+Earnings; or
+Business success.
+ErrandHubb may determine advertising locations, rotation, presentation, and availability.
+Advertising must comply with these Terms and all applicable laws.
+ErrandHubb may reject or remove advertisements that are misleading, unlawful, unsafe, offensive,
+fraudulent, infringing, or inconsistent with Platform policies.
+10. ELIGIBILITY
+To use ErrandHubb, you must:
+•
+•
+•
+•
+•
+Be at least 18 years old;
+Be legally capable of entering into a binding agreement;
+Provide accurate account information;
+Use the Platform for lawful purposes; and
+Comply with these Terms.
+ErrandHubb may establish additional eligibility requirements for particular services.
+11. USER ACCOUNTS
+Users are responsible for maintaining the security of their accounts.
+8
+Users agree to:
+•
+•
+•
+•
+•
+•
+•
+Provide truthful information;
+Maintain accurate information;
+Protect passwords and login credentials;
+Not impersonate another person;
+Not permit unauthorized use of an account;
+Notify ErrandHubb of suspected unauthorized access; and
+Accept responsibility for activity performed through their account to the extent permitted by law.
+ErrandHubb may require identity, telephone, email, payment, or other verification.
+12. ERRANDER INDEPENDENCE
+Erranders are independent providers using the ErrandHubb marketplace to seek potential Clients.
+Unless otherwise required by applicable law or expressly agreed in writing:
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+Erranders are not employees of ErrandHubb;
+Erranders are not entitled to represent that they are ErrandHubb employees;
+Erranders decide which Jobs to pursue or accept;
+Erranders may reject Jobs;
+Erranders establish or negotiate their own service prices;
+Erranders control the manner and means of performing accepted services;
+Erranders generally determine their own availability;
+Erranders provide their own ordinary tools, equipment, transportation, and supplies unless
+otherwise agreed with a Client;
+Erranders are responsible for their own business expenses;
+Erranders are responsible for applicable licenses, permits, registrations, insurance, and taxes; and
+Erranders are responsible for complying with laws applicable to the services they independently
+provide.
+Nothing in these Terms is intended to override any rights or classifications established by applicable law.
+13. ERRANDHUBB DOES NOT CONTROL THE
+UNDERLYING SERVICE
+ErrandHubb provides marketplace technology.
+ErrandHubb generally does not:
+•
+Determine how an Errander performs a Job;
+9
+•
+•
+•
+•
+•
+•
+Set an Errander's individual Job price;
+Require an Errander to accept a particular Job;
+Require a Client to choose a particular Errander;
+Supervise ordinary Job performance;
+Guarantee the outcome of a Job; or
+Become a party to the Client-Errander service agreement.
+Clients and Erranders are responsible for exercising reasonable judgment when dealing with one another.
+14. BACKGROUND CHECKS AND VERIFICATION
+ErrandHubb may offer, require, facilitate, display, or obtain background checks, identity verification,
+credential verification, or similar screening for certain Erranders.
+A background check or verification is not a guarantee of:
+•
+•
+•
+•
+•
+•
+•
+•
+Character;
+Honesty;
+Competence;
+Safety;
+Reliability;
+Future behavior;
+Qualifications for every service; or
+Suitability for a particular Client.
+Information may be incomplete, outdated, inaccurate, or subject to limitations.
+Users should exercise their own judgment and reasonable safety precautions.
+ErrandHubb does not guarantee that every User has undergone the same type or level of screening unless
+specifically stated.
+15. ERRANDER RESPONSIBILITIES
+Erranders agree to:
+•
+•
+•
+•
+•
+•
+•
+Provide accurate profile information;
+Accurately describe their experience and qualifications;
+Perform only services they are legally permitted and reasonably capable of performing;
+Comply with applicable laws;
+Maintain any legally required licenses or permits;
+Maintain legally required insurance;
+Treat Clients and their property with reasonable care;
+10
+•
+•
+•
+•
+•
+Not misrepresent completion of a Job;
+Not steal, damage, misuse, or unlawfully retain Client property;
+Not engage in harassment or discrimination prohibited by law;
+Not perform illegal Jobs; and
+Honor agreements voluntarily made with Clients.
+Erranders are responsible for determining whether additional insurance is appropriate for their activities.
+16. CLIENT RESPONSIBILITIES
+Clients agree to:
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+Provide accurate Job descriptions;
+Disclose material conditions affecting the Job;
+Provide accurate location and contact information;
+Not request illegal or dangerous activities;
+Pay Erranders as agreed;
+Provide reimbursement when expressly agreed;
+Treat Erranders respectfully;
+Not discriminate or harass in violation of law;
+Provide reasonably safe access to a Job location;
+Secure dangerous animals or hazards when appropriate; and
+Comply with applicable laws.
+Clients are responsible for determining whether an Errander's advertised qualifications are appropriate for
+a particular task.
+17. SERVICES THAT MAY REQUIRE LICENSES OR
+SPECIAL QUALIFICATIONS
+Certain activities may be regulated by federal, state, or local law.
+Examples can include certain construction, electrical, plumbing, medical, legal, financial, transportation,
+childcare, security, hazardous-material, professional, or other regulated services.
+Erranders may not represent themselves as licensed, certified, bonded, insured, or professionally qualified
+unless that representation is truthful.
+Users are responsible for determining whether a particular Job requires a license, permit, registration,
+certification, insurance, or other qualification.
+ErrandHubb may prohibit particular service categories entirely.
+11
+18. PROHIBITED ACTIVITIES
+Users may not use ErrandHubb to:
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+Violate any law;
+Commit or facilitate fraud;
+Steal property;
+Transport illegal drugs;
+Transport unlawful weapons;
+Traffic persons;
+Exploit minors;
+Arrange sexual services prohibited by law;
+Threaten, stalk, harass, or harm another person;
+Transport hazardous materials without lawful authorization;
+Facilitate money laundering;
+Sell stolen goods;
+Circumvent Platform security;
+Introduce malware or malicious software;
+Scrape Platform data without authorization;
+Create fraudulent accounts;
+Manipulate reviews or ratings;
+Impersonate another person;
+Misrepresent professional credentials;
+Infringe intellectual-property rights; or
+Use the Platform in a manner that creates unreasonable safety or legal risk.
+ErrandHubb may remove content, restrict access, suspend an account, or terminate an account for
+prohibited activity.
+19. COMMUNICATIONS BETWEEN USERS
+ErrandHubb may provide messaging or communication features.
+Users understand that communications with another User may become relevant to:
+•
+Job disputes;
+•
+Safety investigations;
+•
+Fraud investigations;
+•
+Customer support;
+•
+Legal compliance; or
+•
+Enforcement of these Terms.
+Users should avoid transmitting unnecessary sensitive personal information.
+12
+Users may not use ErrandHubb communications to threaten, harass, defraud, spam, or unlawfully solicit
+another person.
+20. CANCELLATION OF INDIVIDUAL JOBS
+Because Clients and Erranders independently form their own Job arrangements, the parties should agree
+upon cancellation terms before the Job begins.
+Unless ErrandHubb expressly offers a separate booking or cancellation feature, ErrandHubb does not
+automatically determine or collect cancellation fees for Jobs arranged directly between Users.
+Any cancellation fee agreed upon between a Client and Errander is their responsibility, subject to applicable
+law.
+21. DISPUTES BETWEEN CLIENTS AND ERRANDERS
+ErrandHubb encourages Clients and Erranders to communicate clearly and attempt to resolve ordinary Job
+disagreements directly.
+A disagreement may include:
+•
+•
+•
+•
+•
+•
+•
+•
+•
+Quality of work;
+Payment;
+Incomplete work;
+Property damage;
+Reimbursements;
+Scheduling;
+Cancellation;
+Scope of work; or
+Other Job-related issues.
+ErrandHubb may choose to assist Users in communicating about a dispute but is not obligated to
+adjudicate private disputes between Clients and Erranders.
+ErrandHubb's decision to provide assistance does not make ErrandHubb responsible for the underlying Job.
+Users remain responsible for their independent contractual and legal obligations to each other.
+13
+22. MEMBERSHIP AND ADVERTISING REFUNDS
+Membership fees and advertising fees compensate ErrandHubb for access to Platform features and
+promotional services.
+Unless otherwise required by law or expressly stated during purchase:
+•
+•
+•
+•
+•
+•
+•
+Membership charges already incurred are non-refundable;
+Advertising charges already incurred are non-refundable;
+Cancellation prevents future renewal charges;
+Failure to obtain Jobs does not create a refund right;
+Failure to obtain Clients does not create a refund right;
+Failure to achieve advertising results does not create a refund right; and
+Removal or suspension for a serious violation of these Terms may result in loss of remaining access
+without refund where permitted by law.
+Nothing in this section limits rights that cannot legally be waived.
+23. TAXES
+Erranders are responsible for determining and satisfying tax obligations arising from their independent
+service activities, including income taxes, business taxes, licensing obligations, and other applicable
+assessments.
+Clients and Erranders are responsible for determining whether sales tax, use tax, local taxes, or other taxes
+apply to a particular transaction.
+ErrandHubb may collect, report, withhold, or provide tax information when required by law.
+Users should consult their own tax professional regarding their circumstances.
+24. INSURANCE
+ErrandHubb does not guarantee that any particular Errander maintains insurance unless the Platform
+expressly identifies and verifies a particular insurance status.
+Erranders are responsible for determining what insurance is required or appropriate for their services.
+This may include, depending upon the activities involved:
+•
+•
+Automobile insurance;
+Commercial automobile coverage;
+14
+•
+•
+•
+•
+•
+General liability insurance;
+Professional liability insurance;
+Business insurance;
+Workers' compensation where applicable; or
+Other coverage.
+Users should independently determine what protections are appropriate.
+25. RATINGS AND REVIEWS
+ErrandHubb may permit Users to submit ratings, reviews, comments, photographs, or other feedback.
+Reviews must reflect genuine experiences and may not:
+•
+•
+•
+•
+•
+•
+•
+Be fraudulent;
+Be purchased or manipulated;
+Contain unlawful threats;
+Contain defamatory statements;
+Disclose prohibited private information;
+Infringe intellectual property; or
+Violate these Terms.
+ErrandHubb may moderate or remove reviews consistent with applicable law and Platform policies.
+ErrandHubb does not guarantee that reviews are accurate.
+26. USER CONTENT
+Users may submit profiles, photographs, descriptions, videos, messages, reviews, advertisements, and
+other content (“User Content”).
+Users retain ownership rights they otherwise hold in their User Content.
+By submitting User Content to ErrandHubb, the User grants ErrandHubb a nonexclusive, worldwide, royalty-
+free license to host, store, reproduce, display, format, distribute, and use that content as reasonably
+necessary to operate, improve, promote, and provide the Platform, subject to applicable law and our Privacy
+Policy.
+Users represent that they have the necessary rights to submit their content.
+15
+27. ERRANDHUBB INTELLECTUAL PROPERTY
+The ErrandHubb name, logos, website design, software, graphics, trademarks, service marks, text, features,
+interfaces, and other proprietary materials owned by ErrandHubb are protected by applicable intellectual-
+property laws.
+Except as expressly authorized, Users may not:
+•
+•
+•
+•
+•
+•
+•
+•
+•
+Copy;
+Reproduce;
+Republish;
+Sell;
+License;
+Reverse engineer;
+Misappropriate;
+Modify; or
+Commercially exploit
+ErrandHubb proprietary materials.
+28. THIRD-PARTY SERVICES
+ErrandHubb may use or link to third-party services, including:
+•
+•
+•
+•
+•
+•
+•
+•
+Payment processors;
+Background-check providers;
+Mapping services;
+Identity-verification providers;
+Hosting services;
+Messaging providers;
+Analytics services; and
+Other vendors.
+Third-party services may be governed by separate terms and privacy policies.
+ErrandHubb is not responsible for third-party services to the extent permitted by law.
+29. SAFETY
+ErrandHubb encourages Users to exercise reasonable precautions when interacting with people they meet
+through the Platform.
+16
+Users should consider measures such as:
+•
+•
+•
+•
+•
+•
+•
+•
+•
+Communicating through the Platform before meeting;
+Reviewing available profile information;
+Confirming important Job details;
+Avoiding unnecessary disclosure of sensitive information;
+Using reasonable judgment regarding entry into homes or private locations;
+Informing another person of unusual or higher-risk appointments;
+Avoiding obviously unsafe requests;
+Following applicable laws; and
+Contacting emergency services when immediate danger exists.
+ErrandHubb cannot guarantee that every interaction will be safe.
+30. NO GUARANTEE OF JOBS OR EARNINGS
+ErrandHubb does not guarantee that an Errander will:
+•
+•
+•
+•
+•
+•
+•
+Receive Job requests;
+Be contacted by Clients;
+Obtain a minimum number of Jobs;
+Earn any particular amount;
+Receive recurring customers;
+Achieve a particular ranking; or
+Generate a profit from membership or advertising.
+Membership provides access to Platform features; it does not guarantee employment or income.
+31. NO GUARANTEE OF ERRANDER AVAILABILITY
+OR PERFORMANCE
+ErrandHubb does not guarantee that a Client will:
+•
+•
+•
+•
+•
+•
+•
+Find an Errander;
+Receive a response;
+Obtain a particular price;
+Obtain same-day service;
+Receive service by a particular time;
+Be satisfied with a particular Errander; or
+Achieve a particular result.
+Information on the Platform may change and may not always be complete or accurate.
+17
+32. DISCLAIMER OF WARRANTIES
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE ERRANDHUBB PLATFORM IS PROVIDED
+ON AN “AS IS” AND “AS AVAILABLE” BASIS.
+ERRANDHUBB DISCLAIMS WARRANTIES TO THE EXTENT PERMITTED BY LAW, INCLUDING IMPLIED
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+ERRANDHUBB DOES NOT WARRANT THAT THE PLATFORM WILL ALWAYS BE AVAILABLE, UNINTERRUPTED,
+ERROR-FREE, SECURE, OR FREE OF HARMFUL COMPONENTS.
+SOME JURISDICTIONS DO NOT ALLOW CERTAIN WARRANTY DISCLAIMERS, SO SOME OF THESE PROVISIONS
+MAY NOT APPLY TO A PARTICULAR USER.
+33. LIMITATION OF LIABILITY
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, ERRANDHUBB WILL NOT BE LIABLE FOR INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, CONSEQUENTIAL, OR PUNITIVE DAMAGES ARISING FROM OR RELATING
+TO USE OF THE PLATFORM.
+TO THE MAXIMUM EXTENT PERMITTED BY LAW, ERRANDHUBB IS NOT RESPONSIBLE FOR THE
+INDEPENDENT ACTS OR OMISSIONS OF CLIENTS OR ERRANDERS, INCLUDING:
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+Personal injury;
+Property damage;
+Theft;
+Loss;
+Failure to perform;
+Poor workmanship;
+Payment disputes;
+Harassment;
+Misconduct;
+Vehicle accidents;
+Lost property; or
+Other conduct occurring in connection with an independently arranged Job.
+Nothing in these Terms excludes or limits liability that cannot legally be excluded or limited.
+18
+34. INDEMNIFICATION
+To the extent permitted by law, a User agrees to defend, indemnify, and hold harmless ErrandHubb and its
+owners, officers, employees, affiliates, representatives, and service providers from third-party claims,
+liabilities, damages, judgments, losses, and reasonable expenses arising from:
+•
+•
+•
+•
+•
+•
+The User's violation of these Terms;
+The User's unlawful conduct;
+Services independently provided or requested by the User;
+The User's infringement of another person's rights;
+The User's User Content; or
+The User's material breach of an agreement with another User.
+This provision does not require indemnification where prohibited by applicable law.
+35. SUSPENSION AND TERMINATION
+ErrandHubb may investigate, restrict, suspend, or terminate an account for reasons including:
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+•
+Fraud;
+Safety concerns;
+Illegal activity;
+Harassment;
+Nonpayment of ErrandHubb fees;
+Chargeback abuse;
+Misrepresentation;
+False credentials;
+Manipulation of reviews;
+Repeated User complaints;
+Violation of these Terms; or
+Conduct creating material risk to ErrandHubb or its Users.
+Users may stop using ErrandHubb at any time.
+Terminating an account does not automatically eliminate financial or legal obligations incurred before
+termination.
+36. PRIVACY
+ErrandHubb's collection and use of personal information is governed by its Privacy Policy and applicable
+privacy laws.
+19
+Users should review the ErrandHubb Privacy Policy before using the Platform.
+The Privacy Policy is incorporated into these Terms by reference to the extent permitted by law.
+37. ELECTRONIC COMMUNICATIONS
+By using ErrandHubb, Users consent to receive electronic communications necessary to administer
+accounts and transactions, including:
+•
+•
+•
+•
+•
+•
+•
+•
+Account notices;
+Security alerts;
+Membership notices;
+Renewal notices where applicable;
+Receipts;
+Policy updates;
+Job communications; and
+Customer-service communications.
+Marketing communications will be handled according to applicable law and available opt-out rights.
+38. CHANGES TO PRICING
+ErrandHubb may change membership, advertising, or other Platform pricing in the future.
+Pricing changes will not be applied retroactively to completed billing periods.
+Where applicable law requires advance notice or affirmative consent for changes to automatically renewing
+subscriptions, ErrandHubb will provide such notice or obtain such consent.
+Current pricing displayed during checkout controls the transaction.
+39. CHANGES TO THESE TERMS
+ErrandHubb may update these Terms periodically.
+When material changes occur, ErrandHubb may provide notice through the Platform, email, or another
+legally permitted method.
+The effective date will appear at the top of the Terms.
+20
+Continued use after an updated version becomes effective constitutes acceptance to the extent permitted
+by applicable law.
+If applicable law requires additional consent, ErrandHubb will seek that consent.
+40. GOVERNING LAW
+These Terms are governed by the laws of the State of California, without regard to conflict-of-law principles,
+except to the extent another law must apply.
+Subject to applicable consumer-protection laws and other nonwaivable rights, legal proceedings
+concerning these Terms or use of ErrandHubb shall be brought in an appropriate court located in Los
+Angeles County, California.
+41. SEVERABILITY
+If any provision of these Terms is determined to be unlawful, invalid, or unenforceable, that provision will be
+enforced to the maximum extent permitted by law or severed where necessary.
+The remaining provisions will remain effective.
+42. NO WAIVER
+ErrandHubb's failure to enforce a provision of these Terms does not waive the right to enforce that
+provision later.
+A waiver must be expressly authorized to be effective.
+43. ENTIRE AGREEMENT
+These Terms, together with the Privacy Policy and any additional policies or terms expressly incorporated
+into them, constitute the agreement between ErrandHubb and the User concerning use of the Platform.
+Separate agreements between a Client and an Errander regarding an individual Job remain agreements
+between those Users.
+21
+44. CONTACT ERRANDHUBB
+Questions regarding these Terms may be directed to:
+ErrandHubb Support Team
+Email: info@errandhubb.com
+Phone: 425-500-8314
+ErrandHubb may publish or update its official business mailing address on the Platform.
+PLAIN-LANGUAGE SUMMARY: HOW ERRANDHUBB
+WORKS
+This summary is provided to help Users understand the marketplace. If this summary conflicts with the
+legal provisions above, the legal provisions control.
+FOR CLIENTS
+1. Create a Client account.
+Clients can use ErrandHubb to find people who perform errands and local services.
+2. Search for an Errander or post an Errand.
+A Client can browse available Erranders or describe a Job that needs to be completed.
+3. Review the Errander.
+The Client can review available profile information, pricing, services, experience, reviews, and other
+information.
+4. Communicate before hiring.
+Client and Errander discuss the Job, price, time, location, expenses, and other details.
+5. Choose your Errander.
+ErrandHubb does not ordinarily choose the worker for the Client. The Client decides whom to hire.
+6. Agree on the Job and price.
+22
+The Client and Errander reach their own agreement.
+7. Errander performs the Job.
+The Errander independently performs the agreed service.
+8. Client pays the Errander.
+Unless ErrandHubb expressly introduces a payment feature, the Client pays the Errander directly according
+to their agreement.
+FOR ERRANDERS
+1. Create an Errander profile.
+Describe the services you offer and provide accurate profile information.
+2. Choose your membership.
+Standard pricing is currently:
+$5 per month
+or
+$50 per year paid upfront
+3. Set your own service pricing.
+Erranders establish or negotiate their own prices.
+4. Search for opportunities and receive inquiries.
+Clients may contact Erranders directly, and Erranders may be able to respond to Jobs posted on the
+Platform.
+5. Communicate with the Client.
+Agree upon price, timing, location, expenses, and scope of work.
+6. Decide whether to accept the Job.
+Erranders are not required by ErrandHubb to accept every available Job.
+23
+7. Perform the Job.
+Complete the work according to the agreement made with the Client.
+8. Receive payment from the Client.
+Under the standard marketplace model, ErrandHubb does not take a percentage commission from the
+agreed Job price.
+OPTIONAL ADVERTISING
+Erranders or eligible businesses may purchase:
+Pro Plan Ads — $20 per month
+Advertising may provide additional marketplace visibility but does not guarantee Jobs or income.
+ERRANDHUBB'S SIMPLE PRICING MODEL
+Client
+Marketplace Membership: $0
+Errander
+$5/month
+or
+$50/year paid upfront
+Optional Advertising
+$20/month
+Commission on Individual Errander Earnings
+0%
+Percentage Deducted From Individual Jobs
+0%
+24
+ErrandHubb Escrow of Individual Job Earnings
+None under the standard direct-payment marketplace model
+Basic Money Flow
+Client → Errander
+Payment for the actual Job.
+Separately:
+Errander → ErrandHubb
+Payment for membership and any optional advertising.
+ErrandHubb connects the parties. The Client and Errander make their own service arrangement.
+25

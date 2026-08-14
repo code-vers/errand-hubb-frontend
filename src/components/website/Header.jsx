@@ -9,7 +9,10 @@ import { getImageUrl } from "@/configs/api.config";
 import {
   Image as ImageIcon,
   ShoppingBag,
+  BadgeDollarSign,
   Building2,
+  CircleHelp,
+  Trophy,
   TrendingUp,
   PhoneCall,
   ShieldCheck,
@@ -48,6 +51,27 @@ export default function Header() {
       href: "/gallery",
       icon: ImageIcon,
       badgeColor: "bg-purple-100/80 text-purple-600",
+    },
+    {
+      name: "Pricing",
+      subtitle: "Simple, transparent membership plans",
+      href: "/pricing",
+      icon: BadgeDollarSign,
+      badgeColor: "bg-emerald-100/80 text-emerald-600",
+    },
+    {
+      name: "Competition",
+      subtitle: "See how ErrandHubb compares",
+      href: "/competition",
+      icon: Trophy,
+      badgeColor: "bg-amber-100/80 text-amber-600",
+    },
+    {
+      name: "FAQ",
+      subtitle: "Answers for Clients and Erranders",
+      href: "/faq",
+      icon: CircleHelp,
+      badgeColor: "bg-sky-100/80 text-sky-600",
     },
     {
       name: "Merchandise Store",
@@ -93,6 +117,9 @@ export default function Header() {
       { name: "About", href: "/about" },
       { name: "Errands", href: "/errand" },
       { name: "Errand Gallery", href: "/gallery" },
+      { name: "Pricing", href: "/pricing" },
+      { name: "Competition", href: "/competition" },
+      { name: "FAQ", href: "/faq" },
       { name: "Investor Relations", href: "/investor-relations" },
       { name: "Contact", href: "/contact" },
       { name: "Legal", href: "/legal" },
@@ -435,7 +462,4 @@ export default function Header() {
     </header>
   );
 }
-
-
-
 
