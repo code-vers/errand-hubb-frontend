@@ -1,25 +1,25 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { useState, useRef, useEffect } from "react";
-import logo from "../../../public/logo2.svg";
-import { useAuth } from "@/context/AuthContext";
 import { getImageUrl } from "@/configs/api.config";
+import { useAuth } from "@/context/AuthContext";
 import {
-  Image as ImageIcon,
-  ShoppingBag,
   BadgeDollarSign,
   Building2,
+  ChevronDown,
   CircleHelp,
-  Trophy,
-  TrendingUp,
+  Image as ImageIcon,
+  Menu,
   PhoneCall,
   ShieldCheck,
-  ChevronDown,
-  Menu,
+  ShoppingBag,
+  TrendingUp,
+  Trophy,
   X,
 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import logo from "../../../public/logo2.svg";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -76,7 +76,7 @@ export default function Header() {
     {
       name: "Merchandise Store",
       subtitle: "Official ErrandHub gear & apparel",
-      href: "/gallery/more",
+      href: "/merchandise",
       icon: ShoppingBag,
       badgeColor: "bg-orange-100/80 text-orange-600",
     },
@@ -222,7 +222,7 @@ export default function Header() {
             className='bg-primary flex-1 items-center hidden md:flex whitespace-nowrap'
             data-purpose='main-navigation'>
             <div className='flex flex-row w-full justify-between items-center px-6 min-h-15'>
-              
+
               {/* Left Nav Group */}
               <ul className='flex flex-row items-center gap-2'>
                 {/* 1. Home */}
@@ -462,4 +462,3 @@ export default function Header() {
     </header>
   );
 }
-
