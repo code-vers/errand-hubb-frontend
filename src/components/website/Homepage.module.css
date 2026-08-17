@@ -5,6 +5,7 @@
 .nav { display: flex; flex: 1; align-items: center; justify-content: center; gap: 28px; }
 .nav a { color: var(--text); text-decoration: none; font-size: 16px; font-weight: 500; white-space: nowrap; }
 .nav a:hover { color: var(--orange); }
+.yellowMoreLink { color: var(--orange) !important; font-weight: 700 !important; }
 .headerActions { display: flex; gap: 14px; }
 .headerButton { border-radius: 11px; padding: 14px 26px; text-decoration: none; font-size: 16px; font-weight: 700; }
 .outlineButton { border: 1.5px solid var(--blue); color: var(--blue); background: #fff; }
