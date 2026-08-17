@@ -24,11 +24,7 @@ import styles from "./Homepage.module.css";
 
 const navItems = [
   ["How It Works", "#how-it-works"],
-  ["Find Erranders", "/search"],
-  ["Become an Errander", "/errand"],
-  ["Pricing", "/pricing"],
-  ["For Business", "/post-ad"],
-  ["Help", "/contact"],
+  ["More", "/errand"],
 ];
 
 const popularErrands = [
@@ -45,7 +41,7 @@ const trustItems = [
   ["Get It Done", "Fast, reliable help when you need it most.", Clock3],
 ];
 
-function Header() {
+function Header({ onHowItWorksClick }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -55,7 +51,21 @@ function Header() {
       </Link>
 
       <nav className={styles.nav} aria-label="Main navigation">
-        {navItems.map(([label, href]) => <Link key={label} href={href}>{label}</Link>)}
+        {navItems.map(([label, href]) => (
+          <Link
+            key={label}
+            href={href}
+            onClick={(e) => {
+              if (label === "How It Works") {
+                e.preventDefault();
+                onHowItWorksClick();
+              }
+            }}
+            className={label === "More" ? styles.yellowMoreLink : ""}
+          >
+            {label}
+          </Link>
+        ))}
       </nav>
 
       <div className={styles.headerActions}>
@@ -69,7 +79,22 @@ function Header() {
 
       {isOpen && (
         <nav className={styles.mobileNav} aria-label="Mobile navigation">
-          {navItems.map(([label, href]) => <Link key={label} href={href} onClick={() => setIsOpen(false)}>{label}</Link>)}
+          {navItems.map(([label, href]) => (
+            <Link
+              key={label}
+              href={href}
+              onClick={(e) => {
+                setIsOpen(false);
+                if (label === "How It Works") {
+                  e.preventDefault();
+                  onHowItWorksClick();
+                }
+              }}
+              className={label === "More" ? styles.yellowMoreLink : ""}
+            >
+              {label}
+            </Link>
+          ))}
           <div className={styles.mobileActions}>
             <Link className={`${styles.headerButton} ${styles.outlineButton}`} href="/login">Log In</Link>
             <Link className={`${styles.headerButton} ${styles.orangeButton}`} href="/signup">Sign Up</Link>
@@ -136,7 +161,7 @@ export default function Homepage() {
 
   return (
     <div className={styles.page}>
-      <Header />
+      <Header onHowItWorksClick={() => setIsVideoOpen(true)} />
       <main>
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
