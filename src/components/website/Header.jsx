@@ -10,6 +10,7 @@ import {
   Image as ImageIcon,
   Menu,
   PhoneCall,
+  Play,
   ShieldCheck,
   ShoppingBag,
   TrendingUp,
@@ -24,6 +25,7 @@ import logo from "../../../public/logo2.svg";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
   const { user, logout } = useAuth();
   const dropdownRef = useRef(null);
 
@@ -264,11 +266,11 @@ export default function Header() {
                 <li className='px-3 border-r border-[#E8670A]/40 relative' ref={dropdownRef}>
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className='flex items-center gap-2 text-xs font-extrabold text-white bg-white/10 hover:bg-white/20 border border-white/25 px-3 py-1.5 rounded-lg transition-all cursor-pointer uppercase tracking-wider shadow-sm'
+                    className='inline-flex items-center gap-2 bg-[#e57d38] hover:bg-[#d66f2b] text-white font-black text-xs tracking-wider uppercase px-3.5 py-1.5 rounded-xl border border-white/40 shadow-inner hover:shadow-md transition-all duration-200 cursor-pointer active:scale-95 outline-none'
                     aria-label='More options menu'>
-                    <Menu className='w-3.5 h-3.5' />
-                    <span>MORE</span>
-                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                    <Menu className='w-3.5 h-3.5 stroke-[2.5]' />
+                    <span className='font-extrabold tracking-wide'>MORE</span>
+                    <ChevronDown className={`w-3.5 h-3.5 stroke-[3] transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
 
                   {/* Popover Card */}
@@ -303,6 +305,18 @@ export default function Header() {
                       </div>
                     </div>
                   )}
+                </li>
+
+                {/* 5. PLAY VIDEO Commercial Link */}
+                <li className='px-3'>
+                  <button
+                    type='button'
+                    onClick={() => setIsVideoOpen(true)}
+                    className='text-[13px] font-black text-white hover:text-white/80 transition-colors uppercase tracking-widest cursor-pointer flex items-center gap-1.5 bg-transparent border-0 py-1'
+                    aria-label='Play commercial video'>
+                    <Play className='w-3.5 h-3.5 fill-current stroke-[2]' />
+                    <span className='font-black'>PLAY VIDEO</span>
+                  </button>
                 </li>
               </ul>
 
@@ -459,6 +473,38 @@ export default function Header() {
           </nav>
         </div>
       </div>
+
+      {/* Commercial Video Modal */}
+      {isVideoOpen && (
+        <div
+          className="fixed inset-0 z-100 grid place-items-center p-4 bg-slate-900/85 backdrop-blur-sm animate-in fade-in duration-200 text-left"
+          role="dialog"
+          aria-modal="true"
+          aria-label="ErrandHubb Commercial Video"
+          onClick={() => setIsVideoOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-4xl aspect-video rounded-2xl overflow-hidden bg-black shadow-2xl border border-white/10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setIsVideoOpen(false)}
+              className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-black/70 hover:bg-black text-white flex items-center justify-center transition-colors cursor-pointer border border-white/20"
+              aria-label="Close video"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <iframe
+              src="https://www.youtube.com/embed/KL1mL5e3mSo?autoplay=1&rel=0"
+              title="ErrandHubb Commercial Video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full border-0"
+            />
+          </div>
+        </div>
+      )}
     </header>
   );
 }
