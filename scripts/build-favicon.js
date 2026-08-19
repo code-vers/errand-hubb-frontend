@@ -52,9 +52,8 @@ async function generateFavicons() {
   const appDir = path.join(__dirname, '../src/app');
 
   // Save SVG
-  const svgPath = path.join(publicDir, 'icon.svg');
+  const svgPath = path.join(publicDir, 'brand-favicon.svg');
   fs.writeFileSync(svgPath, svgContent);
-  fs.writeFileSync(path.join(appDir, 'icon.svg'), svgContent);
 
   // Generate PNG sizes
   const sizes = [16, 32, 48, 64, 180, 192, 512];
