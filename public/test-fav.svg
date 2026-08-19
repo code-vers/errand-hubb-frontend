@@ -1,0 +1,36 @@
+<svg width='512' height='512' viewBox='0 0 512 512' fill='none' xmlns='http://www.w3.org/2000/svg'>
+  <defs>
+    <linearGradient id='bgGrad' x1='0' y1='0' x2='512' y2='512' gradientUnits='userSpaceOnUse'>
+      <stop offset='0%' stop-color='#084B75'/>
+      <stop offset='50%' stop-color='#063B5C'/>
+      <stop offset='100%' stop-color='#042940'/>
+    </linearGradient>
+    <linearGradient id='orangeGrad' x1='0' y1='0' x2='512' y2='512' gradientUnits='userSpaceOnUse'>
+      <stop offset='0%' stop-color='#FF8C38'/>
+      <stop offset='100%' stop-color='#F47A22'/>
+    </linearGradient>
+    <filter id='shadow' x='-10%' y='-10%' width='120%' height='120%'>
+      <feDropShadow dx='0' dy='8' stdDeviation='12' flood-color='#000000' flood-opacity='0.25'/>
+    </filter>
+  </defs>
+
+  <!-- Background Squircle -->
+  <rect width='512' height='512' rx='112' fill='url(#bgGrad)'/>
+
+  <!-- Subtle Inner Border Accent -->
+  <rect x='8' y='8' width='496' height='496' rx='104' fill='none' stroke='#FFFFFF' stroke-opacity='0.12' stroke-width='4'/>
+
+  <!-- Icon Mark Group -->
+  <g filter='url(#shadow)'>
+    <!-- Left 'E' Mark in Crisp White -->
+    <path d='M110 140 H220 V182 H160 V232 H210 V274 H160 V330 H220 V372 H110 Z' fill='#FFFFFF'/>
+
+    <!-- Right 'H' & Hub Arrow Mark in Vibrant Orange -->
+    <!-- Left bar of H -->
+    <path d='M250 140 H295 V372 H250 Z' fill='url(#orangeGrad)'/>
+    <!-- Right bar of H -->
+    <path d='M375 140 H420 V372 H375 Z' fill='url(#orangeGrad)'/>
+    <!-- Forward Arrow Crossbar of H -->
+    <path d='M295 232 H375 M375 256 L435 256 L400 210 V232 H295 V280 H400 V302 L435 256' fill='url(#orangeGrad)'/>
+  </g>
+</svg>
