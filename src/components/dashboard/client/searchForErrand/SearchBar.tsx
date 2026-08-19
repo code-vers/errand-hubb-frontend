@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, User, Mail, SlidersHorizontal, RotateCcw, MapPin } from "lucide-react";
+import { Search, User, Mail, SlidersHorizontal, RotateCcw, MapPin, X } from "lucide-react";
 import { useCallback, useState } from "react";
 import { StateDropdown, CityDropdown } from "@/components/shared/StateCityDropdown";
 
@@ -79,13 +79,26 @@ export default function SearchBar({
         <div className='relative flex-1 flex items-center min-w-0'>
           <Search size={18} className='absolute left-4 text-[#EC6F27]' />
           <input
-            className='w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm font-medium placeholder:text-gray-400 outline-none transition-all'
+            className='w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-primary/20 focus:border-primary text-sm font-medium placeholder:text-gray-400 outline-none transition-all'
             placeholder='Search tasks, keywords, or keywords...'
             type='text'
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
           />
+          {query && (
+            <button
+              type='button'
+              onClick={() => {
+                setQuery("");
+                onSearch("");
+              }}
+              className='absolute right-3 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-200/60 transition-all cursor-pointer'
+              aria-label='Clear search'
+            >
+              <X size={16} />
+            </button>
+          )}
         </div>
 
         <div className='flex items-center gap-2 shrink-0'>

@@ -3,7 +3,7 @@ import { SearchFilters } from "@/types/search";
 import { useState, useEffect } from "react";
 import { categoryService } from "@/services/category.service";
 import { Category } from "@/types/categories";
-import { Filter, ChevronDown, ChevronUp } from "lucide-react";
+import { Filter, ChevronDown, ChevronUp, X } from "lucide-react";
 import { StateDropdown, CityDropdown } from "@/components/shared/StateCityDropdown";
 
 import { STATIC_CATEGORIES } from "@/constants/categories";
@@ -128,14 +128,26 @@ const FilterSearching = ({
               <label htmlFor='search' className='text-[11px] font-bold text-[#555555] uppercase tracking-wider'>
                 What do you need help with?
               </label>
-              <input
-                id='search'
-                type='text'
-                placeholder='e.g. Delivery, Cleaning, Tech Support'
-                value={filters.search}
-                onChange={(e) => handleInputChange("search", e.target.value)}
-                className='h-10 w-full border border-gray-200 rounded-lg px-3 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all'
-              />
+              <div className='relative w-full'>
+                <input
+                  id='search'
+                  type='text'
+                  placeholder='e.g. Delivery, Cleaning, Tech Support'
+                  value={filters.search}
+                  onChange={(e) => handleInputChange("search", e.target.value)}
+                  className='h-10 w-full border border-gray-200 rounded-lg pl-3 pr-9 text-[13px] text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all'
+                />
+                {filters.search && (
+                  <button
+                    type='button'
+                    onClick={() => handleInputChange("search", "")}
+                    className='absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-0.5 rounded-full hover:bg-gray-100 transition-all cursor-pointer'
+                    aria-label='Clear search'
+                  >
+                    <X size={15} />
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Category Dropdown */}
