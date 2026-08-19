@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import Link from 'next/link';
 import { InternationalPhoneInput } from '@/components/shared/InternationalPhoneInput';
 import { useFormValidation } from '@/hooks/useFormValidation';
-import { validateName, validateEmail, validateCityState, validatePassword } from '@/lib/validation';
+import { validateName, validateEmail, validateCityState, validatePassword, validatePhone } from '@/lib/validation';
 import { StateDropdown, CityDropdown } from '@/components/shared/StateCityDropdown';
 import AudioPlayer from '@/components/shared/AudioPlayer';
 
@@ -33,6 +33,7 @@ const ClientRegistrationPage = () => {
     firstName: (v) => validateName(v),
     lastName: (v) => validateName(v),
     email: (v) => validateEmail(v),
+    phone: (v) => validatePhone(v, true),
     city: (v) => validateCityState(v, 'City'),
     state: (v) => validateCityState(v, 'State'),
     password: (v) => validatePassword(v),
@@ -284,10 +285,26 @@ const ClientRegistrationPage = () => {
                 Phone Number
               </label>
               <InternationalPhoneInput
+                id='phone'
                 name='phone'
+                required
                 value={formData.phone}
-                onChange={(value) => setFormData({ ...formData, phone: value })}
+                onChange={(value) => {
+                  setFormData((prev) => ({ ...prev, phone: value }));
+                  if (touched.phone) {
+                    handleBlur('phone', value);
+                  }
+                }}
+                onBlur={() => handleBlur('phone', formData.phone)}
+                hasError={touched.phone && !!errors.phone}
+                aria-invalid={touched.phone && !!errors.phone}
+                aria-describedby={touched.phone && errors.phone ? 'phone-error' : undefined}
               />
+              {touched.phone && errors.phone && (
+                <p id='phone-error' className='text-red-500 text-xs mt-1 font-medium'>
+                  {errors.phone}
+                </p>
+              )}
             </div>
 
             {/* City & State Row */}

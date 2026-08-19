@@ -4,7 +4,7 @@ import { FC, useState, useEffect } from "react";
 import { X, User, Phone, MapPin, Globe, MessageSquare, AlignLeft, PlayCircle } from "lucide-react";
 import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
 import { useFormValidation } from "@/hooks/useFormValidation";
-import { validateName, validateEmail, validateCityState, validateTextarea, validateGenericString, validateRate } from "@/lib/validation";
+import { validateName, validateEmail, validateCityState, validateTextarea, validateGenericString, validateRate, validatePhone } from "@/lib/validation";
 import { StateDropdown, CityDropdown } from "@/components/shared/StateCityDropdown";
 import MultiCategoryPicker from "@/components/shared/MultiCategoryPicker";
 import { useQuery } from "@tanstack/react-query";
@@ -46,6 +46,7 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
   const { errors, touched, handleBlur, validateForm } = useFormValidation({
     firstName: (v) => validateName(v),
     lastName: (v) => validateName(v),
+    phone: (v) => validatePhone(v, false),
     city: (v) => validateCityState(v, "City"),
     state: (v) => validateCityState(v, "State"),
     bio: (v) => validateTextarea(v, 2000, "Bio", false),
@@ -169,10 +170,23 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
                 <Phone size={14} className="text-primary" /> Phone Number
               </label>
               <InternationalPhoneInput
+                id='phone'
                 name='phone'
                 value={formData.phone}
-                onChange={(value) => setFormData({ ...formData, phone: value })}
+                onChange={(value) => {
+                  setFormData((prev) => ({ ...prev, phone: value }));
+                  if (touched.phone) {
+                    handleBlur('phone', value);
+                  }
+                }}
+                onBlur={() => handleBlur('phone', formData.phone)}
+                hasError={touched.phone && !!errors.phone}
+                aria-invalid={touched.phone && !!errors.phone}
+                aria-describedby={touched.phone && errors.phone ? "phone-error" : undefined}
               />
+              {touched.phone && errors.phone && (
+                <p id="phone-error" className="text-red-500 text-xs mt-1 font-medium">{errors.phone}</p>
+              )}
             </div>
 
             {/* Preferred Contact */}
