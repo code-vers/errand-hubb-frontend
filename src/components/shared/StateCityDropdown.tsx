@@ -2,6 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { State, City } from 'country-state-city';
+import { ChevronDown } from 'lucide-react';
 
 interface DropdownProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   placeholder?: string;
@@ -13,16 +14,23 @@ export const StateDropdown = React.forwardRef<HTMLSelectElement, DropdownProps>(
     const states = useMemo(() => State.getStatesOfCountry("US"), []);
 
     return (
-      <select ref={ref} className={`${className} appearance-none bg-white cursor-pointer`} {...props}>
-        <option value="" disabled={!allowAll}>
-          {placeholder}
-        </option>
-        {states.map((s) => (
-          <option key={s.isoCode} value={s.name}>
-            {s.name}
+      <div className="relative w-full">
+        <select
+          ref={ref}
+          className={`${className || ''} appearance-none bg-white cursor-pointer pr-10`}
+          {...props}
+        >
+          <option value="" disabled={!allowAll}>
+            {placeholder}
           </option>
-        ))}
-      </select>
+          {states.map((s) => (
+            <option key={s.isoCode} value={s.name}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+      </div>
     );
   }
 );
@@ -50,7 +58,7 @@ export const CityDropdown = React.forwardRef<HTMLSelectElement, CityDropdownProp
           ref={ref as any}
           type="text"
           placeholder="Enter city manually"
-          className={`${className} bg-white`}
+          className={`${className || ''} bg-white`}
           {...(props as any)}
         />
       );
@@ -59,22 +67,26 @@ export const CityDropdown = React.forwardRef<HTMLSelectElement, CityDropdownProp
     const defaultPlaceholder = placeholder || (stateName ? "Select City" : "Select State First");
 
     return (
-      <select 
-        ref={ref} 
-        disabled={!stateName && !allowAll} 
-        className={`${className} appearance-none bg-white disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${stateName || allowAll ? "cursor-pointer" : ""}`} 
-        {...props}
-      >
-        <option value="" disabled={!allowAll}>
-          {defaultPlaceholder}
-        </option>
-        {cities.map((c) => (
-          <option key={`${c.name}-${c.stateCode}`} value={c.name}>
-            {c.name}
+      <div className="relative w-full">
+        <select 
+          ref={ref} 
+          disabled={!stateName && !allowAll} 
+          className={`${className || ''} appearance-none bg-white disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${stateName || allowAll ? "cursor-pointer" : ""} pr-10`} 
+          {...props}
+        >
+          <option value="" disabled={!allowAll}>
+            {defaultPlaceholder}
           </option>
-        ))}
-      </select>
+          {cities.map((c) => (
+            <option key={`${c.name}-${c.stateCode}`} value={c.name}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+      </div>
     );
   }
 );
 CityDropdown.displayName = 'CityDropdown';
+
