@@ -1,7 +1,7 @@
 "use client";
 
 import { FC, useState, useEffect } from "react";
-import { X, User, Phone, MapPin, Globe, MessageSquare, AlignLeft, PlayCircle } from "lucide-react";
+import { X, User, Phone, MapPin, Globe, MessageSquare, AlignLeft, PlayCircle, ChevronDown } from "lucide-react";
 import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { validateName, validateEmail, validateCityState, validateTextarea, validateGenericString, validateRate, validatePhone } from "@/lib/validation";
@@ -194,16 +194,19 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
               <label className='text-xs font-bold text-text-secondary uppercase tracking-wider flex items-center gap-2'>
                 <MessageSquare size={14} className="text-primary" /> Preferred Contact
               </label>
-              <select
-                name='preferredContact'
-                value={formData.preferredContact}
-                onChange={handleChange}
-                className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all appearance-none'>
-                <option value=''>Select method</option>
-                <option value='email'>Email</option>
-                <option value='phone'>Phone</option>
-                <option value='whatsapp'>WhatsApp</option>
-              </select>
+              <div className='relative w-full'>
+                <select
+                  name='preferredContact'
+                  value={formData.preferredContact}
+                  onChange={handleChange}
+                  className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all appearance-none cursor-pointer pr-10'>
+                  <option value=''>Select method</option>
+                  <option value='email'>Email</option>
+                  <option value='phone'>Phone</option>
+                  <option value='whatsapp'>WhatsApp</option>
+                </select>
+                <ChevronDown className='absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none' />
+              </div>
             </div>
 
             {/* State */}
@@ -253,31 +256,34 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
               <label className='text-xs font-bold text-text-secondary uppercase tracking-wider flex items-center gap-2'>
                 <Globe size={14} className="text-primary" /> Time Zone
               </label>
-              <select
-                name='timeZone'
-                value={formData.timeZone}
-                onChange={handleChange}
-                className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all appearance-none'
-              >
-                <option value=''>Select Time Zone</option>
-                <option value='Pacific/Honolulu'>(GMT-10:00) Hawaii</option>
-                <option value='America/Anchorage'>(GMT-09:00) Alaska</option>
-                <option value='America/Los_Angeles'>(GMT-08:00) Pacific Time (US & Canada)</option>
-                <option value='America/Denver'>(GMT-07:00) Mountain Time (US & Canada)</option>
-                <option value='America/Chicago'>(GMT-06:00) Central Time (US & Canada)</option>
-                <option value='America/New_York'>(GMT-05:00) Eastern Time (US & Canada)</option>
-                <option value='America/Halifax'>(GMT-04:00) Atlantic Time (Canada)</option>
-                <option value='Europe/London'>(GMT+00:00) London</option>
-                <option value='Europe/Paris'>(GMT+01:00) Central European Time</option>
-                <option value='Asia/Dubai'>(GMT+04:00) Dubai</option>
-                <option value='Asia/Karachi'>(GMT+05:00) Karachi</option>
-                <option value='Asia/Dhaka'>(GMT+06:00) Dhaka</option>
-                <option value='Asia/Bangkok'>(GMT+07:00) Bangkok</option>
-                <option value='Asia/Singapore'>(GMT+08:00) Singapore, Beijing</option>
-                <option value='Asia/Tokyo'>(GMT+09:00) Tokyo</option>
-                <option value='Australia/Sydney'>(GMT+10:00) Sydney</option>
-                <option value='Pacific/Auckland'>(GMT+12:00) Auckland</option>
-              </select>
+              <div className='relative w-full'>
+                <select
+                  name='timeZone'
+                  value={formData.timeZone}
+                  onChange={handleChange}
+                  className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all appearance-none cursor-pointer pr-10'
+                >
+                  <option value=''>Select Time Zone</option>
+                  <option value='Pacific/Honolulu'>(GMT-10:00) Hawaii</option>
+                  <option value='America/Anchorage'>(GMT-09:00) Alaska</option>
+                  <option value='America/Los_Angeles'>(GMT-08:00) Pacific Time (US & Canada)</option>
+                  <option value='America/Denver'>(GMT-07:00) Mountain Time (US & Canada)</option>
+                  <option value='America/Chicago'>(GMT-06:00) Central Time (US & Canada)</option>
+                  <option value='America/New_York'>(GMT-05:00) Eastern Time (US & Canada)</option>
+                  <option value='America/Halifax'>(GMT-04:00) Atlantic Time (Canada)</option>
+                  <option value='Europe/London'>(GMT+00:00) London</option>
+                  <option value='Europe/Paris'>(GMT+01:00) Central European Time</option>
+                  <option value='Asia/Dubai'>(GMT+04:00) Dubai</option>
+                  <option value='Asia/Karachi'>(GMT+05:00) Karachi</option>
+                  <option value='Asia/Dhaka'>(GMT+06:00) Dhaka</option>
+                  <option value='Asia/Bangkok'>(GMT+07:00) Bangkok</option>
+                  <option value='Asia/Singapore'>(GMT+08:00) Singapore, Beijing</option>
+                  <option value='Asia/Tokyo'>(GMT+09:00) Tokyo</option>
+                  <option value='Australia/Sydney'>(GMT+10:00) Sydney</option>
+                  <option value='Pacific/Auckland'>(GMT+12:00) Auckland</option>
+                </select>
+                <ChevronDown className='absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none' />
+              </div>
             </div>
 
             {/* Rate Per Hour (Conditional or for Errand role) */}
