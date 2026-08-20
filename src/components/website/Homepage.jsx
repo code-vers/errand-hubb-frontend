@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import {
   ArrowRight,
   BadgeCheck,
@@ -115,6 +116,7 @@ function Header({ onHowItWorksClick }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const moreDropdownRef = useRef(null);
+  const { user, logout } = useAuth();
 
   // Close MORE dropdown when clicking outside on desktop
   useEffect(() => {
@@ -200,8 +202,17 @@ function Header({ onHowItWorksClick }) {
       </nav>
 
       <div className={styles.headerActions}>
-        <Link className={`${styles.headerButton} ${styles.outlineButton}`} href="/login">Log In</Link>
-        <Link className={`${styles.headerButton} ${styles.orangeButton}`} href="/signup">Sign Up</Link>
+        {user ? (
+          <>
+            <Link className={`${styles.headerButton} ${styles.outlineButton}`} href="/dashboard">Dashboard</Link>
+            <button type="button" className={`${styles.headerButton} ${styles.orangeButton} cursor-pointer`} onClick={logout}>Logout</button>
+          </>
+        ) : (
+          <>
+            <Link className={`${styles.headerButton} ${styles.outlineButton}`} href="/login">Log In</Link>
+            <Link className={`${styles.headerButton} ${styles.orangeButton}`} href="/signup">Sign Up</Link>
+          </>
+        )}
       </div>
 
       <button type="button" className={styles.menuButton} onClick={() => setIsOpen(!isOpen)} aria-label="Toggle navigation" aria-expanded={isOpen}>
@@ -249,8 +260,17 @@ function Header({ onHowItWorksClick }) {
           </div>
 
           <div className={styles.mobileActions}>
-            <Link className={`${styles.headerButton} ${styles.outlineButton}`} href="/login">Log In</Link>
-            <Link className={`${styles.headerButton} ${styles.orangeButton}`} href="/signup">Sign Up</Link>
+            {user ? (
+              <>
+                <Link className={`${styles.headerButton} ${styles.outlineButton}`} href="/dashboard" onClick={() => setIsOpen(false)}>Dashboard</Link>
+                <button type="button" className={`${styles.headerButton} ${styles.orangeButton} cursor-pointer`} onClick={() => { setIsOpen(false); logout(); }}>Logout</button>
+              </>
+            ) : (
+              <>
+                <Link className={`${styles.headerButton} ${styles.outlineButton}`} href="/login" onClick={() => setIsOpen(false)}>Log In</Link>
+                <Link className={`${styles.headerButton} ${styles.orangeButton}`} href="/signup" onClick={() => setIsOpen(false)}>Sign Up</Link>
+              </>
+            )}
           </div>
         </nav>
       )}
