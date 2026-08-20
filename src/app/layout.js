@@ -16,6 +16,12 @@ export const metadata = {
   },
   description: "Errand Hub is a platform that connects client requests with local service providers and merchandise.",
   keywords: ["errand", "service provider", "local services", "errand runner"],
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({ children }) {

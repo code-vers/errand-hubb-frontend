@@ -104,11 +104,21 @@ export const validateTextarea = (value: string, maxLength: number, fieldName: st
   return null;
 };
 
-export const validatePhone = (value: string): string | null => {
-  if (!value || value.trim() === "") return "Phone number is required.";
-  // react-phone-number-input handles its own strict E.164 formatting.
-  // We can just check max length to be safe. E.164 max is 15. With plus sign, it's 16.
-  if (value.length > 20) return "Phone number is too long.";
+import { isValidPhoneNumber } from "react-phone-number-input";
+
+export const validatePhone = (value: string, required: boolean = true): string | null => {
+  const trimmed = (value || "").trim();
+  if (!trimmed) {
+    if (required) return "Phone number is required.";
+    return null;
+  }
+
+  if (trimmed.length > 20) return "Phone number is too long.";
+
+  if (!isValidPhoneNumber(trimmed)) {
+    return "Please enter a valid phone number.";
+  }
+
   return null;
 };
 

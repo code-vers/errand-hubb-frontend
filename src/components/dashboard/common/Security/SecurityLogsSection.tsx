@@ -12,13 +12,23 @@ import {
   MailWarning, 
   Lock,
   Unlock,
-  AlertOctagon
+  AlertOctagon,
+  MailCheck
 } from "lucide-react";
 import { FC } from "react";
 import { formatDistanceToNow } from "date-fns";
 
+const formatEventName = (event: string): string => {
+  if (!event) return "";
+  return event
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+};
+
 const eventConfig: Record<string, { icon: any, color: string, label: string }> = {
   ACCOUNT_CREATED: { icon: UserPlus, color: "text-green-600", label: "Account Created" },
+  EMAIL_VERIFIED: { icon: MailCheck, color: "text-emerald-600", label: "Email Verified" },
   PASSWORD_CHANGED: { icon: Key, color: "text-blue-600", label: "Password Changed" },
   TWO_FACTOR_ENABLED: { icon: Lock, color: "text-indigo-600", label: "2FA Enabled" },
   TWO_FACTOR_DISABLED: { icon: Unlock, color: "text-orange-600", label: "2FA Disabled" },
@@ -68,7 +78,7 @@ const SecurityLogsSection: FC = () => {
           <div className="p-6 text-center text-sm text-gray-500">No security events recorded yet.</div>
         ) : (
           logs.map((log: any) => {
-            const config = eventConfig[log.event] || { icon: ShieldCheck, color: "text-gray-500", label: log.event };
+            const config = eventConfig[log.event] || { icon: ShieldCheck, color: "text-gray-500", label: formatEventName(log.event) };
             const Icon = config.icon;
 
             return (

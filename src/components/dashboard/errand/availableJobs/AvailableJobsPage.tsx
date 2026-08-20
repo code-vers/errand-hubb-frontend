@@ -6,7 +6,7 @@ import Pagination from "@/components/common/Pagination";
 import { useQuery } from "@tanstack/react-query";
 import { postService } from "@/services/post.service";
 import { categoryService } from "@/services/category.service";
-import { Search, Loader2, Calendar, MapPin, MessageSquare } from "lucide-react";
+import { Search, Loader2, Calendar, MapPin, MessageSquare, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getImageUrl } from "@/configs/api.config";
 import { useConnect } from "@/hooks/useConnect";
@@ -94,18 +94,41 @@ export default function AvailableJobsPage() {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="Search jobs by title or keywords..."
-                className="w-full pl-11 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 outline-none transition-all text-xs sm:text-sm placeholder:text-gray-400"
+                className="w-full pl-11 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 outline-none transition-all text-xs sm:text-sm placeholder:text-gray-400"
               />
+              {searchInput && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchInput("");
+                    updateFilter("search", "");
+                  }}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-200/60 transition-all cursor-pointer"
+                  aria-label="Clear search"
+                >
+                  <X size={16} />
+                </button>
+              )}
             </div>
 
-            <div className="w-full md:w-64">
+            <div className="w-full md:w-64 relative flex items-center">
               <input
                 type="text"
                 value={filters.location}
                 onChange={(e) => updateFilter("location", e.target.value)}
                 placeholder="Location (City/State)"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 outline-none transition-all text-xs sm:text-sm placeholder:text-gray-400"
+                className="w-full pl-4 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-orange-400/20 focus:border-orange-400 outline-none transition-all text-xs sm:text-sm placeholder:text-gray-400"
               />
+              {filters.location && (
+                <button
+                  type="button"
+                  onClick={() => updateFilter("location", "")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-200/60 transition-all cursor-pointer"
+                  aria-label="Clear location"
+                >
+                  <X size={16} />
+                </button>
+              )}
             </div>
 
             <button
