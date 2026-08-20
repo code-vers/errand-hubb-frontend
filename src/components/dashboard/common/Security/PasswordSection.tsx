@@ -3,6 +3,7 @@
 import { FC, useState } from "react";
 import { Lock, Eye, EyeOff } from "lucide-react";
 import type { PasswordFormData } from "@/types/settings";
+import { validatePassword } from "@/lib/validation";
 
 interface PasswordSectionProps {
   onSubmit: (data: PasswordFormData) => Promise<void>;
@@ -44,6 +45,7 @@ const PasswordInput: FC<{
         className={`w-full bg-[#fafaf8] border rounded-lg px-4 py-3 text-sm transition-colors pr-10
           focus:outline-none focus:border-[var(--color-primary)] focus:bg-white
           ${error ? "border-[var(--color-error)]" : "border-[var(--color-border)]"}
+          ${!show && value ? "tracking-[0.25em] text-[16px] sm:text-[18px] font-bold text-gray-800" : ""}
         `}
       />
       <button
@@ -93,11 +95,14 @@ const PasswordSection: FC<PasswordSectionProps> = ({
       newErrors.currentPassword = "Current password is required";
     }
 
-    if (formData.newPassword.length < 8) {
-      newErrors.newPassword = "Password must be at least 8 characters";
+    const passwordError = validatePassword(formData.newPassword);
+    if (passwordError) {
+      newErrors.newPassword = passwordError;
     }
 
-    if (formData.newPassword !== formData.confirmPassword) {
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your new password";
+    } else if (formData.newPassword !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
@@ -152,7 +157,7 @@ const PasswordSection: FC<PasswordSectionProps> = ({
           id='new-password'
           label='New Password'
           value={formData.newPassword}
-          placeholder='Min. 8 characters'
+          placeholder='Min. 8 chars (uppercase, lowercase & number)'
           show={showPasswords.new}
           error={errors.newPassword}
           onToggleVisibility={() => togglePasswordVisibility("new")}
@@ -173,7 +178,7 @@ const PasswordSection: FC<PasswordSectionProps> = ({
 
       <footer className='flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 sm:p-6 border-t border-[#f5ebd8] gap-3 sm:gap-4'>
         <p className='text-xs text-[var(--color-text-secondary)]'>
-          Use 8+ characters with uppercase, numbers & symbols.
+          Use 8+ characters with uppercase & lowercase letters and at least one number.
         </p>
         <button
           onClick={handleSubmit}

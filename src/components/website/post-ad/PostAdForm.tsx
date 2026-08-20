@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
 import { useFormValidation } from "@/hooks/useFormValidation";
-import { validateEmail, validateAddress, validateBusinessName, validateGenericString, validateTextarea } from "@/lib/validation";
+import { validateEmail, validateAddress, validateBusinessName, validateGenericString, validateTextarea, validatePhone } from "@/lib/validation";
 
 const PostAdPage = () => {
   const router = useRouter();
@@ -38,6 +38,7 @@ const PostAdPage = () => {
     title: (v) => validateGenericString(v, 120, "Title"),
     companyName: (v) => validateBusinessName(v),
     address: (v) => validateAddress(v),
+    telephone: (v) => validatePhone(v, true),
     email: (v) => validateEmail(v),
     description: (v) => validateTextarea(v, 2000, "Description"),
     youtubeLink: (v) => validateGenericString(v, 200, "YouTube Link", false),
@@ -303,10 +304,23 @@ const PostAdPage = () => {
                 </label>
                 <InternationalPhoneInput
                   name="telephone"
+                  id="telephone"
                   required
                   value={formData.telephone}
-                  onChange={(value) => setFormData({ ...formData, telephone: value })}
+                  onChange={(value) => {
+                    setFormData({ ...formData, telephone: value });
+                    if (touched.telephone) {
+                      handleBlur('telephone', value);
+                    }
+                  }}
+                  onBlur={() => handleBlur('telephone', formData.telephone)}
+                  hasError={touched.telephone && !!errors.telephone}
+                  aria-invalid={touched.telephone && !!errors.telephone}
+                  aria-describedby={touched.telephone && errors.telephone ? "telephone-error" : undefined}
                 />
+                {touched.telephone && errors.telephone && (
+                  <p id="telephone-error" className="text-red-500 text-xs mt-1 font-medium">{errors.telephone}</p>
+                )}
               </div>
 
               {/* Email */}
