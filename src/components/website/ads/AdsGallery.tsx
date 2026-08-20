@@ -1,6 +1,6 @@
 'use client';
 
-import { Play, Plus, Search, Loader2, AlertCircle, RotateCcw } from 'lucide-react';
+import { Play, Plus, Search, Loader2, AlertCircle, RotateCcw, X } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo } from 'react';
 import { useAds } from '@/hooks/useAds';
@@ -35,28 +35,28 @@ const AdsGallery = () => {
   }, [ads]);
 
   return (
-    <div className='min-h-screen bg-white py-12 px-6 lg:px-12'>
+    <div className='bg-[var(--color-surface-dim)] min-h-screen py-12 px-6 lg:px-12'>
       <div className='max-w-7xl mx-auto'>
-        {/* Header Section */}
-        <div className='flex flex-col md:flex-row justify-between items-center mb-10 gap-6 border-b pb-8'>
+        {/* Header */}
+        <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8'>
           <div>
-            <h1 className='text-3xl font-bold text-gray-900 tracking-tight'>
-              Company Posting Board ADS
+            <h1 className='text-3xl font-bold text-[var(--color-secondary)]'>
+              Business Ads Gallery
             </h1>
-            <p className=' mt-1 text-[#f47a22] font-semibold'>Just $20 PER MONTH</p>
+            <p className='text-gray-500 text-sm mt-1'>
+              Discover local businesses and services promoting in our community.
+            </p>
           </div>
-
           <Link
             href='/post-ad'
-            className='flex items-center gap-2 bg-[var(--color-primary)] text-white px-6 py-3 rounded-lg font-bold text-sm uppercase tracking-wider hover:bg-[var(--color-primary-dark)] transition-all active:scale-95 shadow-md shadow-orange-500/20'
+            className='flex items-center gap-2 bg-[var(--color-primary)] text-white px-6 py-3 rounded-xl font-bold hover:bg-[var(--color-primary-dark)] transition-colors shadow-sm cursor-pointer'
           >
-            <Plus size={18} />
-            Post New Poster
+            <Plus size={18} /> Post Your Ad
           </Link>
         </div>
 
-        {/* Filters Section */}
-        <div className='mb-12 flex flex-col lg:flex-row gap-4 items-end'>
+        {/* Filters */}
+        <div className='bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mb-10 flex flex-col lg:flex-row items-end gap-4'>
           <div className='w-full lg:w-1/3'>
             <label className='block text-xs font-bold text-gray-400 uppercase mb-2 ml-1'>
               Search
@@ -69,10 +69,20 @@ const AdsGallery = () => {
               <input
                 type='text'
                 placeholder='Search company, title, or keyword...'
-                className='w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all'
+                className='w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent outline-none transition-all'
                 value={filters.search}
                 onChange={(e) => setSearch(e.target.value)}
               />
+              {filters.search && (
+                <button
+                  type='button'
+                  onClick={() => setSearch('')}
+                  className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 cursor-pointer transition-colors'
+                  aria-label='Clear search'
+                >
+                  <X size={16} />
+                </button>
+              )}
             </div>
           </div>
 
@@ -119,8 +129,9 @@ const AdsGallery = () => {
           </div>
 
           <button
+            type='button'
             onClick={resetFilters}
-            className='h-[50px] px-6 text-gray-400 hover:text-gray-600 font-bold text-sm uppercase tracking-wider transition-colors cursor-pointer'
+            className='h-[48px] px-6 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl uppercase tracking-wider transition-all cursor-pointer shadow-xs hover:shadow-sm active:scale-95 flex items-center justify-center'
           >
             Reset
           </button>

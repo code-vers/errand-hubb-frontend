@@ -71,9 +71,18 @@ export default function ProviderCard({
               </span>
             </p>
             <div className='flex items-center mt-0.5 sm:mt-1'>
-              {/* Mock rating for design consistency */}
-              <StarRating rating={4.9} size='sm' />
-              <span className='text-[10px] sm:text-[11px] text-[#6B6B6B] ml-1 shrink-0'>4.9 (12 reviews)</span>
+              {provider.reviewCount > 0 || provider.rating > 0 ? (
+                <>
+                  <StarRating rating={provider.rating || 5} size='sm' />
+                  <span className='text-[10px] sm:text-[11px] text-[#6B6B6B] ml-1 shrink-0'>
+                    {provider.rating ? provider.rating.toFixed(1) : "5.0"} ({provider.reviewCount || 1} {provider.reviewCount === 1 ? 'review' : 'reviews'})
+                  </span>
+                </>
+              ) : (
+                <span className='text-[10px] sm:text-[11px] text-gray-400 font-medium italic'>
+                  No reviews yet
+                </span>
+              )}
             </div>
           </div>
         </div>

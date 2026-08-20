@@ -134,7 +134,7 @@ const AdsSubscriptionPage = () => {
               <button 
                 onClick={() => openPortal()}
                 disabled={isManaging}
-                className='w-full py-4 bg-gray-800 text-white rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-gray-900 transition-all flex items-center justify-center gap-2 shadow-lg shadow-gray-800/20 disabled:opacity-70 disabled:cursor-not-allowed'>
+                className='w-full py-4 bg-gray-800 text-white rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-gray-900 transition-all flex items-center justify-center gap-2 shadow-lg shadow-gray-800/20 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer'>
                 {isManaging ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className='w-4 h-4' />}
                 Manage Billing
               </button>
@@ -142,7 +142,7 @@ const AdsSubscriptionPage = () => {
               <button 
                 onClick={() => subscribe()}
                 disabled={isSubscribing}
-                className='w-full py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[var(--color-primary-dark)] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-primary)]/20 disabled:opacity-70 disabled:cursor-not-allowed'>
+                className='w-full py-4 bg-[var(--color-primary)] text-white rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[var(--color-primary-dark)] transition-all flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-primary)]/20 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer'>
                 {isSubscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Megaphone className='w-4 h-4' />}
                 Subscribe Now
               </button>

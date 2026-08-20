@@ -232,6 +232,7 @@ const ErrandDetailsForm = ({
           <input
             type='date'
             required
+            min={new Date().toISOString().split('T')[0]}
             value={formData.dateNeeded || ''}
             onChange={(e) => onChange('dateNeeded', e.target.value)}
             className='h-11 rounded-md border border-gray-200 px-3 text-sm outline-none focus:border-[#1b539c] transition-colors'

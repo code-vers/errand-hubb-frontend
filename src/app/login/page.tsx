@@ -36,19 +36,29 @@ export default function LoginPage() {
   const handleApiError = (error: any, fallback: string) => {
     if (error.errors && Array.isArray(error.errors)) {
       error.errors.forEach((err: any) => {
-        toast.error(`${err.property}: ${err.message}`);
+        const msg = err.message?.includes("longer than or equal to")
+          ? "Password must be at least 8 characters long"
+          : `${err.property ? err.property + ": " : ""}${err.message}`;
+        toast.error(msg);
       });
       return;
     }
 
     if (Array.isArray(error.message)) {
       error.message.forEach((msg: string) => {
-        toast.error(msg);
+        const formattedMsg = msg.includes("longer than or equal to")
+          ? "Password must be at least 8 characters long"
+          : msg;
+        toast.error(formattedMsg);
       });
       return;
     }
 
     if (typeof error.message === "string") {
+      if (error.message.includes("longer than or equal to")) {
+        toast.error("Password must be at least 8 characters long");
+        return;
+      }
       if (error.message === "Please verify your email before logging in.") {
         toast.error(error.message, {
           action: {
@@ -58,8 +68,10 @@ export default function LoginPage() {
                 .then(() => {
                   showSpamAlert("Verification email resent! Please check your inbox.");
                 })
-                .catch((err) => toast.error(err.message || "Failed to resend email"));
-            }
+                .catch((resendErr: any) => {
+                  toast.error(resendErr.message || "Failed to resend verification email.");
+                });
+            },
           },
           duration: 10000,
         });
@@ -291,7 +303,7 @@ export default function LoginPage() {
           <button
             type='submit'
             disabled={isLoginPending}
-            className='w-full py-3 bg-[var(--color-primary)] text-white font-bold rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors uppercase tracking-wide text-sm disabled:opacity-50'>
+            className='w-full py-3 bg-[var(--color-primary)] text-white font-bold rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors uppercase tracking-wide text-sm disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed'>
             {isLoginPending ? "Logging in..." : "Login"}
           </button>
         </form>

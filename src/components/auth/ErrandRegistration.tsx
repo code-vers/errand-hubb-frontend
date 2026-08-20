@@ -341,7 +341,7 @@ const ErrandRegistrationPage = () => {
           </div>
 
           {/* Name Row */}
-          <div className='grid grid-cols-2 gap-3'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
             <div className='flex flex-col space-y-1'>
               <label htmlFor='firstName' className={labelClass}>
                 First Name
@@ -439,7 +439,7 @@ const ErrandRegistrationPage = () => {
           </div>
 
           {/* City & State Row */}
-          <div className='grid grid-cols-2 gap-3'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
             {/* State */}
             <div className='flex flex-col space-y-1'>
               <label htmlFor='state' className={labelClass}>

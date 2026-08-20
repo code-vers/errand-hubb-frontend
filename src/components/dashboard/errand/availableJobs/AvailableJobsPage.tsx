@@ -224,7 +224,13 @@ export default function AvailableJobsPage() {
                     </div>
                   </div>
 
-                  <p className="text-xs sm:text-[13px] text-[#6B6B6B] mb-4 sm:mb-5 leading-relaxed line-clamp-3">
+                  {post.imageUrl && (
+                    <div className="w-full h-36 rounded-xl overflow-hidden mb-3 bg-gray-50 border border-gray-100">
+                      <img src={getImageUrl(post.imageUrl)} alt={post.title} className="w-full h-full object-cover" />
+                    </div>
+                  )}
+
+                  <p className="text-xs sm:text-[13px] text-[#6B6B6B] mb-4 sm:mb-5 leading-relaxed line-clamp-3 whitespace-pre-line">
                     {post.description}
                   </p>
 

@@ -136,7 +136,7 @@ const DashboardSidebar = ({ isOpen: externalIsOpen, onClose }: DashboardSidebarP
           <div className='pt-4 mt-2'>
             <button
               onClick={logout}
-              className='flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium text-[#111111] hover:text-[#F47A22] hover:bg-[#FFF3CD] hover:font-semibold transition-colors rounded-md group'>
+              className='flex items-center gap-3 w-full px-4 py-2.5 text-sm font-medium text-[#111111] hover:text-[#F47A22] hover:bg-[#FFF3CD] hover:font-semibold transition-colors rounded-md group cursor-pointer'>
               {/* Log Out icon inline — reuse lucide LogOut */}
               <svg
                 width='18'

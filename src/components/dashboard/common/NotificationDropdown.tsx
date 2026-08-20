@@ -233,7 +233,7 @@ const NotificationDropdown: FC = () => {
       {/* Bell Button */}
       <button
         onClick={toggleDropdown}
-        className="relative w-12 h-12 flex bg-warning-bg items-center justify-center rounded-lg hover:bg-hover transition-colors focus:outline-none"
+        className="relative w-12 h-12 flex bg-warning-bg items-center justify-center rounded-lg hover:bg-hover transition-colors focus:outline-none cursor-pointer"
         aria-label="Notifications"
       >
         <Bell className="text-[#EC6F27] w-6 h-6" />
