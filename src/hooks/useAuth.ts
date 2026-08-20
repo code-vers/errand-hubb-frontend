@@ -7,23 +7,42 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { showSpamAlert } from '@/components/ui/SpamAlertToast';
 
+const formatErrorMessage = (property?: string, message?: string): string => {
+  const msg = message || "";
+  const prop = property || "";
+
+  if (msg.includes("email must be an email") || (prop === "email" && msg.includes("must be an email"))) {
+    return "Please enter a valid email address.";
+  }
+  if (
+    (msg.toLowerCase().includes("phone") || prop === "phone") &&
+    (msg.toLowerCase().includes("already") || msg.toLowerCase().includes("exist") || msg.toLowerCase().includes("registered") || msg.toLowerCase().includes("unique"))
+  ) {
+    return "This phone number is already registered. Please sign in or use a different phone number.";
+  }
+  if (msg.includes("longer than or equal to")) {
+    return "Password must be at least 8 characters long.";
+  }
+  return prop ? `${prop}: ${msg}` : msg;
+};
+
 const handleApiError = (error: any) => {
   if (error.errors && Array.isArray(error.errors)) {
     error.errors.forEach((err: any) => {
-      toast.error(`${err.property}: ${err.message}`);
+      toast.error(formatErrorMessage(err.property, err.message));
     });
     return;
   }
 
   if (Array.isArray(error.message)) {
     error.message.forEach((msg: string) => {
-      toast.error(msg);
+      toast.error(formatErrorMessage(undefined, msg));
     });
     return;
   }
 
   if (typeof error.message === 'string') {
-    toast.error(error.message);
+    toast.error(formatErrorMessage(undefined, error.message));
     return;
   }
 

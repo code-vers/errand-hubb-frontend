@@ -317,16 +317,17 @@ const ChatWindow: FC<ChatWindowProps> = ({
         <div className='flex items-center relative'>
           <button 
             onClick={(e) => { e.stopPropagation(); setShowHeaderMenu(!showHeaderMenu); }} 
-            className='p-2.5 hover:bg-gray-50 rounded-xl text-gray-400 transition-all active:scale-90'
+            className='p-2.5 hover:bg-gray-50 rounded-xl text-gray-400 transition-all active:scale-90 cursor-pointer'
+            aria-label='More options'
           >
             <MoreVertical size={20} />
           </button>
           
           {showHeaderMenu && (
-            <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-1 z-20 animate-in fade-in">
+            <div className="absolute top-full right-0 mt-2 w-52 bg-white rounded-xl shadow-xl border border-gray-100 py-1.5 z-50 animate-in fade-in">
               <button 
                 onClick={() => { setShowPinnedSidebar(true); setShowHeaderMenu(false); }} 
-                className="w-full text-left px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-primary flex items-center gap-2"
+                className="w-full text-left px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-orange-50 hover:text-primary flex items-center gap-2 cursor-pointer transition-colors"
               >
                 <Pin size={16} /> View Pinned Messages
               </button>

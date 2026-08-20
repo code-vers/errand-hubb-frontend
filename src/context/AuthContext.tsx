@@ -8,6 +8,9 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import ConfirmationDialog from "@/components/common/ConfirmationDialog";
+import { authService } from "@/services/auth.service";
+import { toast } from "sonner";
 
 interface User {
   id: string;
@@ -20,11 +23,15 @@ interface User {
   profile?: any;
 }
 
+interface LogoutOptions {
+  skipConfirmation?: boolean;
+}
+
 interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   login: (userData: User, redirectUrl?: string) => void;
-  logout: () => void;
+  logout: (options?: LogoutOptions | any) => void;
   isLoading: boolean;
 }
 
@@ -35,6 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -67,15 +75,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     [router],
   );
 
-  const logout = useCallback(() => {
+  const confirmLogout = useCallback(async () => {
+    try {
+      await authService.logout();
+    } catch (e) {
+      console.error("Logout error", e);
+    }
     setUser(null);
     localStorage.removeItem("errand_user");
+    setIsLogoutModalOpen(false);
+    toast.success("Logged out successfully");
     router.push("/login");
   }, [router]);
+
+  const logout = useCallback((options?: LogoutOptions | any) => {
+    const skip = options && typeof options === "object" && options.skipConfirmation === true;
+    if (skip) {
+      confirmLogout();
+    } else {
+      setIsLogoutModalOpen(true);
+    }
+  }, [confirmLogout]);
 
   return (
     <AuthContext.Provider value={{ user, setUser, login, logout, isLoading }}>
       {children}
+      <ConfirmationDialog
+        isOpen={isLogoutModalOpen}
+        title="Confirm Logout"
+        message="Are you sure you want to log out of your account?"
+        confirmLabel="Yes, Logout"
+        cancelLabel="Cancel"
+        type="danger"
+        onConfirm={confirmLogout}
+        onCancel={() => setIsLogoutModalOpen(false)}
+      />
     </AuthContext.Provider>
   );
 };

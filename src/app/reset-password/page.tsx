@@ -6,6 +6,7 @@ import { authService } from '@/services/auth.service';
 import Link from 'next/link';
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { validatePassword } from "@/lib/validation";
+import { Eye, EyeOff } from "lucide-react";
 
 function ResetPasswordForm() {
   const searchParams = useSearchParams();
@@ -13,6 +14,8 @@ function ResetPasswordForm() {
   const [token, setToken] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -72,23 +75,33 @@ function ResetPasswordForm() {
               <label className="block text-xs font-bold text-[var(--color-secondary)] uppercase tracking-wide mb-2">
                 New Password
               </label>
-              <input
-                type="password"
-                name="newPassword"
-                required
-                maxLength={128}
-                placeholder="Minimum 8 characters"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                onBlur={(e) => handleBlur('newPassword', e.target.value)}
-                aria-invalid={touched.newPassword && !!errors.newPassword}
-                aria-describedby={touched.newPassword && errors.newPassword ? "newPassword-error" : undefined}
-                className={`w-full px-3 py-2 border rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 transition-colors bg-[var(--color-background)] ${
-                  touched.newPassword && errors.newPassword 
-                    ? "border-red-500 focus:ring-red-500 focus:border-red-500" 
-                    : "border-[var(--color-border)] focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)]"
-                }`}
-              />
+              <div className="relative">
+                <input
+                  type={showNewPassword ? "text" : "password"}
+                  name="newPassword"
+                  required
+                  maxLength={128}
+                  placeholder="Minimum 8 characters"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  onBlur={(e) => handleBlur('newPassword', e.target.value)}
+                  aria-invalid={touched.newPassword && !!errors.newPassword}
+                  aria-describedby={touched.newPassword && errors.newPassword ? "newPassword-error" : undefined}
+                  className={`w-full px-3 py-2 pr-10 border rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 transition-colors bg-[var(--color-background)] ${
+                    touched.newPassword && errors.newPassword 
+                      ? "border-red-500 focus:ring-red-500 focus:border-red-500" 
+                      : "border-[var(--color-border)] focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)]"
+                  }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                  aria-label={showNewPassword ? "Hide password" : "Show password"}
+                >
+                  {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
               {touched.newPassword && errors.newPassword && (
                 <p id="newPassword-error" className="text-red-500 text-xs mt-1 font-medium">{errors.newPassword}</p>
               )}
@@ -97,15 +110,25 @@ function ResetPasswordForm() {
               <label className="block text-xs font-bold text-[var(--color-secondary)] uppercase tracking-wide mb-2">
                 Confirm New Password
               </label>
-              <input
-                type="password"
-                required
-                maxLength={128}
-                placeholder="Confirm your new password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)]"
-              />
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  maxLength={128}
+                  placeholder="Confirm your new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full px-3 py-2 pr-10 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                >
+                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
             </div>
           </div>
 

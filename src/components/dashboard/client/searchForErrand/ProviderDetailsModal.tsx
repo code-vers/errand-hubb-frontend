@@ -79,8 +79,18 @@ export default function ProviderDetailsModal({
                 <span>{profile.city || 'Remote'}, {profile.state || ''}</span>
               </p>
               <div className='flex items-center gap-2 mt-2'>
-                <StarRating rating={4.9} size='sm' />
-                <span className='text-sm text-gray-500'>4.9 (12 reviews)</span>
+                {provider.reviewCount > 0 || provider.rating > 0 ? (
+                  <>
+                    <StarRating rating={provider.rating || 5} size='sm' />
+                    <span className='text-sm text-gray-500'>
+                      {provider.rating ? provider.rating.toFixed(1) : "5.0"} ({provider.reviewCount || 1} {provider.reviewCount === 1 ? 'review' : 'reviews'})
+                    </span>
+                  </>
+                ) : (
+                  <span className='text-xs text-gray-400 font-medium italic'>
+                    No reviews yet
+                  </span>
+                )}
               </div>
 
               {/* Services Badges */}
@@ -245,8 +255,8 @@ export default function ProviderDetailsModal({
             Close
           </button>
           <Link
-            href={`/dashboard/messages?errandId=${provider.id}`}
-            className='px-8 py-2.5 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-dark hover:shadow-xl transition-all'
+            href={`/dashboard/messages?userId=${provider.id}`}
+            className='px-8 py-2.5 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-dark hover:shadow-xl transition-all cursor-pointer'
           >
             Contact
           </Link>

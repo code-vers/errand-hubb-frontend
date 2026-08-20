@@ -29,7 +29,10 @@ export default function ForgotPasswordPage() {
       setMessage('Password reset email sent! Please check your inbox.');
       showSpamAlert();
     } catch (err: any) {
-      setError(err.message || 'Something went wrong. Please try again.');
+      const msg = err.message?.toLowerCase().includes("user not found") || err.message?.toLowerCase().includes("not found")
+        ? "No account was found with this email address. Please check the email and try again."
+        : (err.message || 'Something went wrong. Please try again.');
+      setError(msg);
     } finally {
       setLoading(false);
     }
@@ -88,7 +91,7 @@ export default function ForgotPasswordPage() {
           <button
             type='submit'
             disabled={loading}
-            className='w-full py-3 bg-[var(--color-primary)] text-white font-bold rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors uppercase tracking-wide text-sm disabled:opacity-50'
+            className='w-full py-3 bg-[var(--color-primary)] text-white font-bold rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors uppercase tracking-wide text-sm disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed'
           >
             {loading ? 'Sending...' : 'Send Reset Link'}
           </button>
