@@ -110,7 +110,7 @@ const MoreGallery = () => {
         <div
           className='fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-3 sm:p-6 animate-in fade-in duration-200 select-none'
           onClick={() => setSelectedIndex(null)}>
-          
+
           <button
             onClick={() => setSelectedIndex(null)}
             className='absolute top-4 right-4 z-50 p-3 rounded-full bg-black/60 text-white hover:bg-primary border border-white/20 shadow-2xl transition-all active:scale-90 cursor-pointer'
@@ -145,7 +145,7 @@ const MoreGallery = () => {
                 priority
                 sizes='(max-width: 768px) 100vw, 80vw'
               />
-              
+
               <div className='absolute bottom-3 inset-x-3 sm:bottom-5 sm:inset-x-5 bg-black/75 backdrop-blur-md px-4 py-2.5 sm:py-3 rounded-xl border border-white/15 text-center shadow-xl'>
                 <p className='text-white font-extrabold text-sm sm:text-base tracking-wide'>
                   {selectedItem.alt}
