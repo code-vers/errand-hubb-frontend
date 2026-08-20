@@ -94,29 +94,39 @@ const PostErrandPage = () => {
           const post = response.data;
           setFormData({
             id: post.id,
-            title: post.title,
-            description: post.description,
-            city: post.city,
-            state: post.state,
+            title: post.title || "",
+            description: post.description || "",
+            city: post.city || "",
+            state: post.state || "",
             budget: post.budget?.toString() || "",
             dateNeeded: post.dateNeeded ? new Date(post.dateNeeded).toISOString().split('T')[0] : "",
             contactInfo: post.contactInfo || "",
             photoUrl: post.photoUrl || "",
             youtubeLink: post.youtubeLink || "",
-            categoryId: post.categoryId,
+            categoryId: post.categoryId || "",
             status: post.status || "Pending Pickup",
             postState: post.postState || "active",
           });
-        } else if (profileData) {
-          // New post, auto-fill from profile
-          setFormData(prev => ({
-            ...prev,
-            city: profileData.profile?.city || "",
-            state: profileData.profile?.state || "",
-            budget: profileData.profile?.ratePerHour?.toString() || "",
-            youtubeLink: profileData.profile?.youtubeLink || "",
-            contactInfo: profileData.phone || profileData.email || "",
-          }));
+          setExistingGallery(post.photoUrl ? [post.photoUrl] : []);
+          setNewGalleryFiles([]);
+        } else {
+          // New post: reset all fields and media files completely
+          setFormData({
+            title: "",
+            description: "",
+            city: profileData?.profile?.city || "",
+            state: profileData?.profile?.state || "",
+            budget: "",
+            dateNeeded: "",
+            contactInfo: profileData?.phone || profileData?.email || "",
+            photoUrl: "",
+            youtubeLink: "",
+            categoryId: "",
+            status: "Pending Pickup",
+            postState: "active",
+          });
+          setExistingGallery([]);
+          setNewGalleryFiles([]);
         }
       } catch (error) {
         console.error("Failed to initialize page data", error);
@@ -144,24 +154,58 @@ const PostErrandPage = () => {
 
     setIsSubmitting(true);
     try {
-      if (formData.id) {
-        await postService.update(formData.id, formData);
+      let finalPhotoUrl = formData.photoUrl || "";
+
+      if (newGalleryFiles.length > 0) {
+        const profileFormData = new FormData();
+        profileFormData.append("retainedGallery", JSON.stringify(existingGallery));
+        newGalleryFiles.forEach((file) => {
+          profileFormData.append("gallery", file);
+        });
+        const updateRes = await profileService.updateProfile(profileFormData);
+        const uploadedGallery = updateRes?.data?.profile?.gallery || [];
+        if (uploadedGallery.length > 0) {
+          finalPhotoUrl = uploadedGallery[uploadedGallery.length - 1];
+        }
+      } else if (existingGallery.length > 0) {
+        finalPhotoUrl = existingGallery[0];
       } else {
-        await postService.create(formData);
+        finalPhotoUrl = "";
       }
 
-      // Save/update gallery to profile
-      const profileFormData = new FormData();
-      profileFormData.append("retainedGallery", JSON.stringify(existingGallery));
-      newGalleryFiles.forEach((file) => {
-        profileFormData.append("gallery", file);
-      });
-      await profileService.updateProfile(profileFormData);
+      const payload = {
+        ...formData,
+        photoUrl: finalPhotoUrl,
+      };
+
+      if (formData.id) {
+        await postService.update(formData.id, payload);
+      } else {
+        await postService.create(payload);
+      }
 
       // Invalidate the my-posts query to force a refetch on the dashboard
       await queryClient.invalidateQueries({ queryKey: ["my-posts"] });
 
-      toast.success("Errand post updated successfully!");
+      // Completely clear local form & gallery state
+      setFormData({
+        title: "",
+        description: "",
+        city: "",
+        state: "",
+        budget: "",
+        dateNeeded: "",
+        contactInfo: "",
+        photoUrl: "",
+        youtubeLink: "",
+        categoryId: "",
+        status: "Pending Pickup",
+        postState: "active",
+      });
+      setExistingGallery([]);
+      setNewGalleryFiles([]);
+
+      toast.success(formData.id ? "Errand post updated successfully!" : "Errand post created successfully!");
       router.push("/dashboard/my-posts");
     } catch (error: any) {
       console.error("Post Submission Error:", error);
