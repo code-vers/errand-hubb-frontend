@@ -11,7 +11,7 @@ export interface ChatMessage {
   conversationId: string;
   senderId: string;
   content: string;
-  type: "text" | "image" | "voice" | "location" | "calendar";
+  type: "text" | "image" | "video" | "voice" | "file" | "location" | "calendar" | string;
   metadata?: any;
   isRead: boolean;
   isPinned: boolean;

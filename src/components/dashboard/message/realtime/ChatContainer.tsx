@@ -257,19 +257,43 @@ const ChatContainer: FC = () => {
   };
 
   const handleUploadFile = async (file: File) => {
+    // 100MB file size limit validation
+    const MAX_FILE_SIZE = 100 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+      const errMsg = `File size (${sizeMB}MB) exceeds the maximum limit of 100MB. Please select a smaller file.`;
+      toast.error(errMsg);
+      throw new Error(errMsg);
+    }
+
     try {
       const response = await messageService.uploadFile(file);
       if (response && response.data) {
-        const type = file.type.startsWith('image/') ? 'image' : 'voice';
+        let type = 'file';
+        if (file.type.startsWith('image/')) {
+          type = 'image';
+        } else if (file.type.startsWith('video/')) {
+          type = 'video';
+        } else if (file.type.startsWith('audio/')) {
+          type = 'voice';
+        }
+
         handleSendMessage(file.name, type, { 
           url: response.data.url,
           mimetype: file.type,
-          size: file.size
+          size: file.size,
+          name: file.name
         });
         return response.data.url;
       }
     } catch (error: any) {
-      toast.error("Failed to upload file");
+      let errMsg = "Failed to upload file. Please try again.";
+      if (typeof error === 'string') {
+        errMsg = error;
+      } else if (error?.message) {
+        errMsg = Array.isArray(error.message) ? error.message.join(', ') : error.message;
+      }
+      toast.error(errMsg);
       throw error;
     }
   };
