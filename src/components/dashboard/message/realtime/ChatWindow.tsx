@@ -6,7 +6,7 @@ import {
   Send, MoreVertical, Loader2, Circle, 
   Image as ImageIcon, Mic, Calendar, Paperclip, X,
   Play, Pause, MapPin, Smile, Pin, Undo, Trash2, Navigation,
-  ChevronLeft
+  ChevronLeft, Download, FileText, Video
 } from "lucide-react";
 import { getImageUrl } from "@/configs/api.config";
 import { format } from "date-fns";
@@ -401,6 +401,47 @@ const ChatWindow: FC<ChatWindowProps> = ({
                               <img src={getImageUrl(msg.metadata?.url) || ""} alt="Shared" className="max-w-full rounded-xl max-h-[300px] object-cover cursor-pointer" />
                             </div>
                           )}
+
+                          {msg.type === "video" && (
+                            <div className="p-1 max-w-sm sm:max-w-md">
+                              <video 
+                                src={getImageUrl(msg.metadata?.url) || ""} 
+                                controls 
+                                playsInline
+                                className="w-full max-h-[320px] rounded-xl object-cover bg-black shadow-inner" 
+                              />
+                            </div>
+                          )}
+
+                          {msg.type === "file" && (
+                            <div className="p-4 flex items-center gap-3 min-w-[220px]">
+                              <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                                isMe ? 'bg-white/20 text-white' : 'bg-orange-50 text-primary'
+                              }`}>
+                                <FileText size={20} />
+                              </div>
+                              <div className="flex-1 min-w-0 pr-2">
+                                <p className="text-xs font-bold truncate">{msg.content || msg.metadata?.name || "Attached File"}</p>
+                                {msg.metadata?.size && (
+                                  <p className="text-[10px] opacity-75">
+                                    {(msg.metadata.size / (1024 * 1024)).toFixed(2)} MB
+                                  </p>
+                                )}
+                              </div>
+                              <a
+                                href={getImageUrl(msg.metadata?.url) || "#"}
+                                target="_blank"
+                                rel="noreferrer"
+                                download
+                                className={`p-2 rounded-xl transition-all flex items-center justify-center ${
+                                  isMe ? 'hover:bg-white/20 text-white' : 'hover:bg-gray-100 text-gray-700'
+                                }`}
+                                title="Download File"
+                              >
+                                <Download size={18} />
+                              </a>
+                            </div>
+                          )}
                           
                           {msg.type === "voice" && (
                             <VoicePlayer url={msg.metadata?.url} isMe={isMe} />
@@ -583,7 +624,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
         )}
 
         <form onSubmit={handleSubmit} className='flex items-center gap-2 sm:gap-4 relative'>
-          <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*,audio/*" />
+          <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.xls,.xlsx,.csv,.ppt,.pptx,.zip,.rar" />
           
           <div className='flex-1 relative group min-w-0'>
             {showEmojiPicker && (
