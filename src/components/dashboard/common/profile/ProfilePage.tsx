@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useProfile, useUpdateProfile } from "@/hooks/useProfile";
+import { useMyPosts } from "@/hooks/usePosts";
 import ProfileHeader from "./ProfileHeader";
 import NotificationPreferencesCard from "./Notificationpreferencescard";
 import QuickActionsCard from "./QuickActionsCard";
@@ -16,6 +17,7 @@ import { useRouter } from "next/navigation";
 export default function ProfilePage() {
   const { user, setUser } = useAuth();
   const { data: profileData, isLoading } = useProfile();
+  const { data: myPosts } = useMyPosts();
   const { mutate: updateProfile, isPending } = useUpdateProfile();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [notifPrefs, setNotifPrefs] = useState({
@@ -38,6 +40,23 @@ export default function ProfilePage() {
   }
 
   const userData = profileData || user;
+  const userPostsArray = Array.isArray(myPosts) ? myPosts : [];
+
+  const realTotalPosts = userPostsArray.length > 0
+    ? userPostsArray.length
+    : (userData?.stats?.totalPosts ?? 0);
+
+  const realActivePosts = userPostsArray.length > 0
+    ? userPostsArray.filter((p: any) => p.status === 'active' || p.postState === 'active').length
+    : (userData?.stats?.activePosts ?? 0);
+
+  const realCompletedJobs = userPostsArray.length > 0
+    ? userPostsArray.filter((p: any) => p.status === 'completed').length
+    : (userData?.stats?.completedJobs ?? (userData?.profile?.jobsCompleted || 0));
+
+  const realTotalHires = userPostsArray.length > 0
+    ? userPostsArray.filter((p: any) => !!p.assignedToId || p.status === 'assigned').length
+    : (userData?.stats?.totalHires ?? 0);
 
   const profileHeaderData = {
     name: `${userData?.firstName} ${userData?.lastName}`,
@@ -59,10 +78,10 @@ export default function ProfilePage() {
   };
 
   const accountOverviewData = {
-    totalPosts: 0, // Should come from actual stats API
-    activePosts: 0,
-    completedJobs: userData?.profile?.jobsCompleted || 0,
-    totalHires: 0,
+    totalPosts: realTotalPosts,
+    activePosts: realActivePosts,
+    completedJobs: realCompletedJobs,
+    totalHires: realTotalHires,
     memberSince: userData?.createdAt ? new Date(userData.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : "New",
   };
 

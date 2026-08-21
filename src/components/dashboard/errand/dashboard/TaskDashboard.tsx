@@ -68,9 +68,11 @@ const TaskDashboard: FC<TaskDashboardProps> = ({
 
     return {
       hiredBanner: {
-        clientName: connections[0]?.client.name || "System",
-        hiredDate: connections[0] ? new Date(connections[0].createdAt).toLocaleString() : "N/A",
-        message: "You have new activity in your connections. Reply to keep the conversation going!",
+        clientName: connections[0]?.client.name || "",
+        hiredDate: connections[0] ? new Date(connections[0].createdAt).toLocaleString() : "",
+        message: connections[0]
+          ? "You have new activity in your connections. Click view messages to continue the conversation."
+          : "Welcome to your Errand Hub dashboard! Browse available tasks, complete your profile, and connect with clients to start earning.",
         clientId: connections[0]?.client.id || "",
       },
       connections,

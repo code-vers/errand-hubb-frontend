@@ -1,7 +1,7 @@
 "use client";
 
 import { FC } from "react";
-import { PartyPopper, CornerUpLeft, User, Clock } from "lucide-react";
+import { Sparkles, MessageSquare, User, Clock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { HiredBanner as HiredBannerType } from "@/types/dashboard";
 
@@ -16,38 +16,44 @@ const HiredBanner: FC<HiredBannerProps> = ({ data, onReplyClick }) => {
       <div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-3 sm:gap-4 mb-4'>
         <div className='flex items-center gap-2.5 sm:gap-3'>
           <div className='text-[var(--color-primary)] shrink-0'>
-            <PartyPopper className='w-5 h-5 sm:w-6 sm:h-6' />
+            <Sparkles className='w-5 h-5 sm:w-6 sm:h-6' />
           </div>
           <h1 className='text-base sm:text-xl md:text-2xl font-bold text-[var(--color-primary)] uppercase tracking-wide'>
-            Congratulations.. You&apos;re hired!
+            WELCOME TO ERRAND HUB!
           </h1>
         </div>
 
-        <Button
-          variant='outline'
-          size='md'
-          onClick={onReplyClick}
-          className='w-full md:w-auto justify-center flex items-center gap-2 cursor-pointer text-xs sm:text-sm shrink-0'>
-          <CornerUpLeft className='w-4 h-4 sm:w-5 sm:h-5' />
-          REPLY TO CLIENT HERE
-        </Button>
+        {data.clientId && (
+          <Button
+            variant='outline'
+            size='md'
+            onClick={onReplyClick}
+            className='w-full md:w-auto justify-center flex items-center gap-2 cursor-pointer text-xs sm:text-sm shrink-0'>
+            <MessageSquare className='w-4 h-4 sm:w-5 sm:h-5' />
+            VIEW MESSAGES
+          </Button>
+        )}
       </div>
 
-      <div className='flex flex-wrap items-center gap-6 text-sm text-[#6B7280] mb-4'>
-        <div className='flex items-center gap-2'>
-          <User className='w-4 h-4 text-foreground' />
-          <span className='text-foreground'>Client:</span>
-          {data.clientName}
-        </div>
+      {data.clientName && data.clientName !== "System" && (
+        <div className='flex flex-wrap items-center gap-6 text-sm text-[#6B7280] mb-4'>
+          <div className='flex items-center gap-2'>
+            <User className='w-4 h-4 text-foreground' />
+            <span className='text-foreground'>Latest Connection:</span>
+            {data.clientName}
+          </div>
 
-        <div className='flex items-center gap-2'>
-          <Clock className='w-4 h-4 text-foreground' />
-          <span className='text-foreground'>{data.hiredDate}</span>
+          {data.hiredDate && data.hiredDate !== "N/A" && (
+            <div className='flex items-center gap-2'>
+              <Clock className='w-4 h-4 text-foreground' />
+              <span className='text-foreground'>{data.hiredDate}</span>
+            </div>
+          )}
         </div>
-      </div>
+      )}
 
       <p className='text-[#4B5563] text-sm md:text-base leading-relaxed'>
-        {data.message}
+        {data.message || "Welcome to your Errand Hub dashboard! Connect with clients, manage your errands, and grow your tasks seamlessly."}
       </p>
     </section>
   );

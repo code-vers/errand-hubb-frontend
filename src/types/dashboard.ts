@@ -37,6 +37,7 @@ export interface HiredBanner {
   clientName: string;
   hiredDate: string;
   message: string;
+  clientId?: string;
 }
 
 export interface DashboardData {
