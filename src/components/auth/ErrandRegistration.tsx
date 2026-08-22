@@ -42,7 +42,6 @@ const ErrandRegistrationPage = () => {
     categoryIds: [] as string[],
   });
   const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const profileInputRef = useRef<HTMLInputElement>(null);
   const [images, setImages] = useState<File[]>([]);
   const [existingGallery, setExistingGallery] = useState<string[]>([]);
@@ -99,45 +98,39 @@ const ErrandRegistrationPage = () => {
     };
   };
 
-  // Clean up preview URL
-  useEffect(() => {
-    let url: string | null = null;
-    if (profileImage) {
-      url = URL.createObjectURL(profileImage);
-      setPreviewUrl(url);
-    }
-    return () => {
-      if (url) URL.revokeObjectURL(url);
-    };
-  }, [profileImage]);
+  // Compute image preview URL
+  const imagePreviewUrl = profileImage
+    ? URL.createObjectURL(profileImage)
+    : profileData?.profileImage
+    ? getImageUrl(profileData.profileImage)
+    : null;
 
   // Pre-fill if logged in
   useEffect(() => {
-    if (user && profileData) {
-      setFormData({
-        firstName: profileData.firstName || "",
-        lastName: profileData.lastName || "",
-        email: profileData.email || "",
-        phone: profileData.profile?.phone || "",
-        city: profileData.profile?.city || "",
-        state: profileData.profile?.state || "",
-        bio: profileData.profile?.bio || "",
-        services: profileData.profile?.services || "",
-        youtubeLink: profileData.profile?.youtubeLink || "",
-        rate: profileData.profile?.ratePerHour
-          ? String(profileData.profile.ratePerHour)
-          : "",
-        password: "",
-        confirmPassword: "",
-        categoryIds: profileData.profile?.categoryIds || [],
-      });
-      if (profileData.profileImage) {
-        setPreviewUrl(getImageUrl(profileData.profileImage));
+    const prefill = async () => {
+      if (user && profileData) {
+        setFormData((prev) => ({
+          ...prev,
+          firstName: profileData.firstName || "",
+          lastName: profileData.lastName || "",
+          email: profileData.email || "",
+          phone: profileData.profile?.phone || "",
+          city: profileData.profile?.city || "",
+          state: profileData.profile?.state || "",
+          bio: profileData.profile?.bio || "",
+          services: profileData.profile?.services || "",
+          youtubeLink: profileData.profile?.youtubeLink || "",
+          rate: profileData.profile?.ratePerHour
+            ? String(profileData.profile.ratePerHour)
+            : "",
+          categoryIds: profileData.profile?.categoryIds || [],
+        }));
+        if (profileData.profile?.gallery) {
+          setExistingGallery(profileData.profile.gallery);
+        }
       }
-      if (profileData.profile?.gallery) {
-        setExistingGallery(profileData.profile.gallery);
-      }
-    }
+    };
+    prefill();
   }, [profileData, user]);
 
   const handleChange = (
@@ -270,11 +263,11 @@ const ErrandRegistrationPage = () => {
 
   return (
     <div
-      className='min-h-screen py-8 flex justify-center p-4 w-full'
+      className='min-h-screen py-6 sm:py-8 flex justify-center p-4 w-full max-w-full overflow-x-hidden'
       style={{ backgroundColor: "var(--color-surface-dim)" }}>
-      <div className='flex flex-col lg:flex-row items-start justify-center gap-12 max-w-[1200px] w-full'>
+      <div className='flex flex-col lg:flex-row items-start justify-center gap-8 sm:gap-12 max-w-[1200px] w-full'>
       <main
-        className='w-full max-w-240 rounded-lg p-6'
+        className='w-full max-w-5xl rounded-xl p-4 sm:p-6'
         style={{
           backgroundColor: "var(--color-background)",
           boxShadow:
@@ -310,9 +303,9 @@ const ErrandRegistrationPage = () => {
             <div
               onClick={() => profileInputRef.current?.click()}
               className='relative w-24 h-24 rounded-full border-2 border-dashed border-gray-200 flex items-center justify-center cursor-pointer hover:border-primary transition-colors bg-gray-50 overflow-hidden'>
-              {previewUrl ? (
+              {imagePreviewUrl ? (
                 <img
-                  src={previewUrl}
+                  src={imagePreviewUrl}
                   alt='profile'
                   className='w-full h-full object-cover'
                 />

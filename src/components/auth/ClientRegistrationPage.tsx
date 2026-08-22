@@ -23,7 +23,6 @@ const ClientRegistrationPage = () => {
     confirmPassword: '',
   });
   const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -69,18 +68,9 @@ const ClientRegistrationPage = () => {
 
   const { mutate: register, isPending } = useRegisterClient();
 
-  // Clean up preview URL to prevent memory leaks
-  useEffect(() => {
-    let url: string | null = null;
-    if (profileImage) {
-      url = URL.createObjectURL(profileImage);
-      setPreviewUrl(url);
-    } else {
-      setPreviewUrl(null);
-    }
-    return () => {
-      if (url) URL.revokeObjectURL(url);
-    };
+  const previewUrl = React.useMemo(() => {
+    if (!profileImage) return null;
+    return URL.createObjectURL(profileImage);
   }, [profileImage]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,12 +129,12 @@ const ClientRegistrationPage = () => {
 
   return (
     <div
-      className=' flex justify-center p-4 py-12 w-full'
+      className='flex justify-center p-4 py-8 sm:py-12 w-full max-w-full overflow-x-hidden'
       style={{ backgroundColor: 'var(--color-surface-dim)' }}
     >
-      <div className='flex flex-col lg:flex-row items-start justify-center gap-12 max-w-[1200px] w-full'>
+      <div className='flex flex-col lg:flex-row items-start justify-center gap-8 sm:gap-12 max-w-[1200px] w-full'>
         <main
-          className='w-full max-w-230 rounded-lg p-8'
+          className='w-full max-w-4xl rounded-xl p-4 sm:p-8'
           style={{
             backgroundColor: 'var(--color-background)',
             boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)',

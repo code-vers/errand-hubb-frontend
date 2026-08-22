@@ -187,24 +187,24 @@ export default function Header() {
 
   return (
     <header
-      className='w-full sticky top-0 z-50 bg-white font-sans shadow-sm'
+      className='w-full sticky top-0 z-50 bg-white font-sans shadow-sm max-w-full overflow-x-clip'
       data-purpose='main-header'>
       {/* Background split layer for desktop */}
       <div className='absolute inset-0 hidden md:flex pointer-events-none'>
         <div className='flex-1 bg-white'></div>
-        <div className='w-full max-w-385 mx-auto flex'>
-          <div className='w-62.5 bg-white'></div>
+        <div className='w-full max-w-[1540px] mx-auto flex'>
+          <div className='w-56 bg-white'></div>
           <div className='flex-1 bg-white'></div>
         </div>
         <div className='flex-1 bg-white'></div>
       </div>
 
       {/* Main Content Area */}
-      <div className='mx-auto w-full relative z-10'>
+      <div className='mx-auto w-full max-w-[1540px] relative z-10'>
         <div className='flex flex-col md:flex-row w-full relative'>
           {/* Logo Section */}
           <div
-            className='bg-white flex items-center justify-between py-3.5 px-6 md:w-62.5 shrink-0 z-50'
+            className='bg-white flex items-center justify-between py-3.5 px-4 lg:px-6 md:w-56 shrink-0 z-50'
             data-purpose='logo-section'>
             <Link href='/' className='flex flex-col items-center no-underline'>
               <Image src={logo} alt='ErrandHubb Logo' className='h-11 w-auto' priority />
@@ -221,17 +221,17 @@ export default function Header() {
 
           {/* Desktop Navigation Bar (hidden on mobile) */}
           <nav
-            className='bg-white flex-1 items-center hidden md:flex whitespace-nowrap'
+            className='bg-white flex-1 items-center hidden md:flex min-w-0'
             data-purpose='main-navigation'>
-            <div className='flex flex-row w-full justify-between items-center px-6 min-h-15'>
+            <div className='flex flex-row w-full justify-between items-center px-2 lg:px-6 min-h-15 overflow-x-auto scrollbar-hide'>
 
               {/* Left Nav Group */}
-              <ul className='flex flex-row items-center gap-2'>
+              <ul className='flex flex-row items-center gap-1 xl:gap-2 shrink-0'>
                 {/* 1. Home */}
-                <li className='px-3 border-r border-gray-200'>
+                <li className='px-1.5 lg:px-3 border-r border-gray-200'>
                   <Link
                     href='/'
-                    className='text-[13px] font-bold text-slate-800 hover:text-primary transition-colors block uppercase tracking-wider'>
+                    className='text-xs lg:text-[13px] font-bold text-slate-800 hover:text-primary transition-colors block uppercase tracking-wider whitespace-nowrap'>
                     Home
                   </Link>
                 </li>
