@@ -35,7 +35,7 @@ const ErrandDetailsForm = ({
 
   const { errors, touched, handleBlur, validateForm } = useFormValidation({
     title: (v) => validateGenericString(v || '', 120, 'Title'),
-    description: (v) => validateTextarea(v || '', 5000, 'Description'),
+    description: (v) => validateTextarea(v || '', 2000, 'Description'),
     city: (v) => validateCityState(v || '', 'City'),
     state: (v) => validateCityState(v || '', 'State'),
     budget: (v) => validateGenericString(String(v || ''), 20, 'Budget'),
@@ -73,10 +73,19 @@ const ErrandDetailsForm = ({
         className='mt-6 flex flex-col gap-4'
         onSubmit={(e) => {
           e.preventDefault();
-          if (validateForm(formData as any)) {
+          const isValid = validateForm(formData as any);
+          if (isValid) {
             onSubmit();
           } else {
-            toast.error('Please fill out all required fields correctly.');
+            const desc = (formData.description || '').trim();
+            if (desc.length > 2000) {
+              toast.error('Description cannot exceed 2000 characters.');
+            } else if (errors.description) {
+              toast.error(errors.description);
+            } else {
+              const firstErr = Object.values(errors).find((err) => Boolean(err));
+              toast.error(firstErr || 'Please fill out all required fields correctly.');
+            }
           }
         }}
       >
@@ -89,9 +98,15 @@ const ErrandDetailsForm = ({
             required
             value={formData.title || ''}
             onChange={(e) => onChange('title', e.target.value)}
+            onBlur={() => handleBlur('title', formData.title || '')}
             placeholder='Enter errand title...'
-            className='h-11 rounded-md border border-gray-200 px-3 text-sm outline-none focus:border-[#1b539c] transition-colors'
+            className={`h-11 rounded-md border px-3 text-sm outline-none transition-colors ${
+              errors.title && touched.title ? 'border-red-400 bg-red-50/20' : 'border-gray-200 focus:border-[#1b539c]'
+            }`}
           />
+          {errors.title && touched.title && (
+            <span className='text-xs text-red-500 font-semibold'>{errors.title}</span>
+          )}
         </label>
 
         {/* Category Dropdown (Synchronized with Sidebar) */}
@@ -174,16 +189,36 @@ const ErrandDetailsForm = ({
         </label>
 
         <label className='flex flex-col gap-1.5'>
-          <span className='text-gray-600 text-xs font-bold uppercase tracking-wide'>
-            Description
-          </span>
+          <div className='flex justify-between items-center'>
+            <span className='text-gray-600 text-xs font-bold uppercase tracking-wide'>
+              Description
+            </span>
+            <span
+              className={`text-[11px] font-bold ${
+                (formData.description?.length || 0) > 2000
+                  ? 'text-red-500 font-extrabold'
+                  : 'text-gray-400'
+              }`}>
+              {formData.description?.length || 0} / 2000 characters
+            </span>
+          </div>
           <textarea
             required
             value={formData.description || ''}
             onChange={(e) => onChange('description', e.target.value)}
+            onBlur={() => handleBlur('description', formData.description || '')}
             placeholder='Describe your errand in detail...'
-            className='min-h-28 rounded-md border border-gray-200 px-3 py-2 text-sm outline-none focus:border-[#1b539c] transition-colors resize-none'
+            className={`min-h-28 rounded-md border px-3 py-2 text-sm outline-none transition-colors resize-none ${
+              errors.description && touched.description
+                ? 'border-red-400 focus:border-red-500 bg-red-50/20'
+                : 'border-gray-200 focus:border-[#1b539c]'
+            }`}
           />
+          {errors.description && touched.description && (
+            <span className='text-xs text-red-500 font-semibold mt-0.5'>
+              {errors.description}
+            </span>
+          )}
         </label>
 
         <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
@@ -248,9 +283,15 @@ const ErrandDetailsForm = ({
             required
             value={formData.contactInfo || ''}
             onChange={(e) => onChange('contactInfo', e.target.value)}
+            onBlur={() => handleBlur('contactInfo', formData.contactInfo || '')}
             placeholder='Phone or email'
-            className='h-11 rounded-md border border-gray-200 px-3 text-sm outline-none focus:border-[#1b539c] transition-colors'
+            className={`h-11 rounded-md border px-3 text-sm outline-none transition-colors ${
+              errors.contactInfo && touched.contactInfo ? 'border-red-400 bg-red-50/20' : 'border-gray-200 focus:border-[#1b539c]'
+            }`}
           />
+          {errors.contactInfo && touched.contactInfo && (
+            <span className='text-xs text-red-500 font-semibold'>{errors.contactInfo}</span>
+          )}
         </label>
 
         <label className='flex flex-col gap-1.5'>
