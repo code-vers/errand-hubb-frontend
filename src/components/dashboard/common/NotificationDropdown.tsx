@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useState, useEffect, useRef } from "react";
+import { FC, useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSocket } from "@/context/SocketContext";
 import { notificationService } from "@/services/notification.service";
@@ -56,8 +56,28 @@ const NotificationDropdown: FC = () => {
   const { socket } = useSocket();
   const router = useRouter();
 
+  const handleNotificationClick = useCallback(async (notification: NotificationItem) => {
+    setIsOpen(false);
+    
+    // Automatically mark as read if not already read
+    if (!notification.isRead) {
+      try {
+        await notificationService.markAsRead(notification.id);
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === notification.id ? { ...n, isRead: true } : n))
+        );
+        setUnreadCount((prev) => Math.max(0, prev - 1));
+      } catch (err) {
+        console.error("Failed to automatically mark notification as read:", err);
+      }
+    }
+
+    const redirectUrl = notification.metadata?.redirectUrl || "/dashboard";
+    router.push(redirectUrl);
+  }, [router]);
+
   // Fetch initial notifications and count
-  const loadNotificationsData = async () => {
+  const loadNotificationsData = useCallback(async () => {
     setIsLoading(true);
     try {
       const [notifsResp, countResp] = await Promise.all([
@@ -76,11 +96,14 @@ const NotificationDropdown: FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    loadNotificationsData();
-  }, []);
+    const fetchData = async () => {
+      await loadNotificationsData();
+    };
+    fetchData();
+  }, [loadNotificationsData]);
 
   // Listen to WebSocket events for real-time notifications
   useEffect(() => {
@@ -127,7 +150,7 @@ const NotificationDropdown: FC = () => {
       socket.off("notification_received", handleNotificationReceived);
       socket.off("unread_notifications_count", handleUnreadCountUpdate);
     };
-  }, [socket]);
+  }, [socket, handleNotificationClick]);
 
   // Handle click outside to close dropdown
   useEffect(() => {
@@ -192,26 +215,6 @@ const NotificationDropdown: FC = () => {
     } catch (err: any) {
       toast.error("Failed to mark all as read");
     }
-  };
-
-  const handleNotificationClick = async (notification: NotificationItem) => {
-    setIsOpen(false);
-    
-    // Automatically mark as read if not already read
-    if (!notification.isRead) {
-      try {
-        await notificationService.markAsRead(notification.id);
-        setNotifications((prev) =>
-          prev.map((n) => (n.id === notification.id ? { ...n, isRead: true } : n))
-        );
-        setUnreadCount((prev) => Math.max(0, prev - 1));
-      } catch (err) {
-        console.error("Failed to automatically mark notification as read:", err);
-      }
-    }
-
-    const redirectUrl = notification.metadata?.redirectUrl || "/dashboard";
-    router.push(redirectUrl);
   };
 
   const formatTime = (dateString: string) => {
