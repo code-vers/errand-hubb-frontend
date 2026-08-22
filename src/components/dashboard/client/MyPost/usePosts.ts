@@ -44,6 +44,12 @@ export function usePosts() {
       icon: post.category?.icon || "shopping-cart",
       categoryId: post.categoryId,
       category: post.category,
+      photoUrl: post.photoUrl || post.imageUrl || null,
+      imageUrl: post.photoUrl || post.imageUrl || null,
+      youtubeLink: post.youtubeLink || null,
+      contactInfo: post.contactInfo || null,
+      user: post.user || null,
+      rawPost: post,
     }));
   }, [response]);
 

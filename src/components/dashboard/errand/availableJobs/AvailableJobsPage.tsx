@@ -6,10 +6,11 @@ import Pagination from "@/components/common/Pagination";
 import { useQuery } from "@tanstack/react-query";
 import { postService } from "@/services/post.service";
 import { categoryService } from "@/services/category.service";
-import { Search, Loader2, Calendar, MapPin, MessageSquare, X } from "lucide-react";
+import { Search, Loader2, Calendar, MapPin, MessageSquare, X, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getImageUrl } from "@/configs/api.config";
 import { useConnect } from "@/hooks/useConnect";
+import JobDetailsModal from "../../common/JobDetailsModal";
 
 export default function AvailableJobsPage() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export default function AvailableJobsPage() {
   });
 
   const [searchInput, setSearchInput] = useState("");
+  const [selectedPost, setSelectedPost] = useState<any>(null);
 
   const updateFilter = (key: string, value: any) => {
     setFilters((prev) => ({
@@ -224,15 +226,37 @@ export default function AvailableJobsPage() {
                     </div>
                   </div>
 
-                  {post.imageUrl && (
-                    <div className="w-full h-36 rounded-xl overflow-hidden mb-3 bg-gray-50 border border-gray-100">
-                      <img src={getImageUrl(post.imageUrl)} alt={post.title} className="w-full h-full object-cover" />
+                  {(post.photoUrl || post.imageUrl) && (
+                    <div
+                      onClick={() => setSelectedPost(post)}
+                      className="w-full h-36 rounded-xl overflow-hidden mb-3 bg-gray-50 border border-gray-100 cursor-pointer group relative shrink-0"
+                    >
+                      <img
+                        src={getImageUrl((post.photoUrl || post.imageUrl)!)}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <span className="bg-white/95 text-gray-900 text-xs font-extrabold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5">
+                          <Eye size={14} className="text-orange-500" />
+                          View Full Post
+                        </span>
+                      </div>
                     </div>
                   )}
 
-                  <p className="text-xs sm:text-[13px] text-[#6B6B6B] mb-4 sm:mb-5 leading-relaxed line-clamp-3 whitespace-pre-line">
-                    {post.description}
-                  </p>
+                  <div className="mb-3">
+                    <p className="text-xs sm:text-[13px] text-[#6B6B6B] leading-relaxed line-clamp-2 sm:line-clamp-3">
+                      {post.description}
+                    </p>
+                    <button
+                      onClick={() => setSelectedPost(post)}
+                      className="text-[11px] font-bold text-orange-500 hover:text-orange-600 hover:underline mt-1 inline-flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>View Details & Photo</span>
+                      <Eye size={12} />
+                    </button>
+                  </div>
 
                   <div className="mb-4 sm:mb-5">
                     <span className="text-[10px] font-medium text-[#6B6B6B] uppercase block">
@@ -268,23 +292,36 @@ export default function AvailableJobsPage() {
                     </div>
                   </div>
 
-                  <button
-                    onClick={() => handleContactClient(post.user?.id || post.userId, post.id)}
-                    disabled={isConnecting && connectingPostId === post.id}
-                    className="w-full py-2.5 sm:py-3 rounded-xl text-xs font-bold text-white bg-primary hover:bg-primary/95 transition-all text-center flex items-center justify-center gap-1 shadow-md shadow-orange-500/10 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
-                  >
-                    {isConnecting && connectingPostId === post.id ? (
-                      <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        Connecting...
-                      </>
-                    ) : (
-                      <>
-                        <MessageSquare size={14} />
-                        Connect
-                      </>
-                    )}
-                  </button>
+                  {/* Action buttons */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedPost(post)}
+                      className="flex-1 py-2.5 sm:py-3 rounded-xl text-xs font-bold text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-200/80 transition-all text-center flex items-center justify-center gap-1.5 shadow-xs active:scale-[0.98] cursor-pointer"
+                    >
+                      <Eye size={14} />
+                      View Details
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleContactClient(post.user?.id || post.userId, post.id)}
+                      disabled={isConnecting && connectingPostId === post.id}
+                      className="flex-1 py-2.5 sm:py-3 rounded-xl text-xs font-bold text-white bg-primary hover:bg-primary/95 transition-all text-center flex items-center justify-center gap-1.5 shadow-md shadow-orange-500/10 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed cursor-pointer"
+                    >
+                      {isConnecting && connectingPostId === post.id ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          Connecting...
+                        </>
+                      ) : (
+                        <>
+                          <MessageSquare size={14} />
+                          Connect
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </article>
               );
             })}
@@ -300,6 +337,18 @@ export default function AvailableJobsPage() {
           />
         </div>
       </div>
+
+      {/* Details Modal */}
+      {selectedPost && (
+        <JobDetailsModal
+          post={selectedPost}
+          onClose={() => setSelectedPost(null)}
+          onConnect={(clientUserId, postId) => {
+            handleContactClient(clientUserId, postId);
+          }}
+          isConnecting={isConnecting && connectingPostId === selectedPost?.id}
+        />
+      )}
     </div>
   );
 }
