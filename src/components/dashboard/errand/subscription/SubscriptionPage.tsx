@@ -27,12 +27,15 @@ const SubscriptionPage = () => {
   }, [searchParams, queryClient]);
 
   useEffect(() => {
-    const amountNum = Number(subscription?.amount);
-    if (amountNum === 50) {
-      setBillingCycle('yearly');
-    } else if (amountNum === 5) {
-      setBillingCycle('monthly');
-    }
+    const syncCycle = async () => {
+      const amountNum = Number(subscription?.amount);
+      if (amountNum === 50) {
+        setBillingCycle('yearly');
+      } else if (amountNum === 5) {
+        setBillingCycle('monthly');
+      }
+    };
+    syncCycle();
   }, [subscription]);
 
   const benefits = [
@@ -160,7 +163,7 @@ const SubscriptionPage = () => {
               <button 
                 onClick={() => manageBilling()}
                 disabled={isManaging}
-                className='w-full py-4 bg-gray-800 text-white rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-gray-900 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 shadow-lg shadow-gray-800/20 disabled:opacity-70 disabled:cursor-not-allowed'>
+                className='w-full py-4 bg-gray-800 text-white rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-gray-900 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 shadow-lg shadow-gray-800/20 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer'>
                 {isManaging ? <Loader2 className="w-4 h-4 animate-spin" /> : <CreditCard className='w-4 h-4' />}
                 Manage Billing
               </button>
@@ -168,7 +171,7 @@ const SubscriptionPage = () => {
               <button 
                 onClick={() => subscribe(billingCycle)}
                 disabled={isSubscribing}
-                className='w-full py-4 bg-[#EC6F27] text-white rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[#d85e1b] transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 shadow-lg shadow-[#EC6F27]/20 disabled:opacity-70 disabled:cursor-not-allowed'>
+                className='w-full py-4 bg-[#EC6F27] text-white rounded-xl font-bold text-sm uppercase tracking-widest hover:bg-[#d85e1b] transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 shadow-lg shadow-[#EC6F27]/20 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer'>
                 {isSubscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className='w-4 h-4' />}
                 Subscribe Now
               </button>
@@ -210,7 +213,7 @@ const SubscriptionPage = () => {
                 </div>
                 <button 
                   onClick={() => manageBilling()}
-                  className='text-[#EC6F27] text-xs font-bold uppercase tracking-widest hover:underline'>
+                  className='text-[#EC6F27] text-xs font-bold uppercase tracking-widest hover:underline cursor-pointer'>
                   Update
                 </button>
               </div>
