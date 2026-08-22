@@ -17,7 +17,7 @@ export const StateDropdown = React.forwardRef<HTMLSelectElement, DropdownProps>(
       <div className="relative w-full">
         <select
           ref={ref}
-          className={`${className || ''} appearance-none bg-white cursor-pointer pr-10`}
+          className={`w-full ${className || ''} appearance-none bg-white cursor-pointer pr-10`}
           {...props}
         >
           <option value="" disabled={!allowAll}>
@@ -58,7 +58,7 @@ export const CityDropdown = React.forwardRef<HTMLSelectElement, CityDropdownProp
           ref={ref as any}
           type="text"
           placeholder="Enter city manually"
-          className={`${className || ''} bg-white`}
+          className={`w-full ${className || ''} bg-white`}
           {...(props as any)}
         />
       );
@@ -71,7 +71,7 @@ export const CityDropdown = React.forwardRef<HTMLSelectElement, CityDropdownProp
         <select 
           ref={ref} 
           disabled={!stateName && !allowAll} 
-          className={`${className || ''} appearance-none bg-white disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${stateName || allowAll ? "cursor-pointer" : ""} pr-10`} 
+          className={`w-full ${className || ''} appearance-none bg-white disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed ${stateName || allowAll ? "cursor-pointer" : ""} pr-10`} 
           {...props}
         >
           <option value="" disabled={!allowAll}>

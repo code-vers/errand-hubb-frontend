@@ -91,10 +91,17 @@
   }
 }
 
+html,
 body {
+  max-width: 100vw;
+  overflow-x: hidden;
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: var(--font-sans);
+}
+
+button:not(:disabled) {
+  cursor: pointer;
 }
 
 @layer components {
