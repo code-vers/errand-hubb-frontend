@@ -129,10 +129,10 @@ export default function Header() {
     ];
 
     if (user?.role === "errand") {
-      links.splice(2, 0, { name: "Post An Errand", href: "/post-errand" });
+      links.splice(2, 0, { name: "Search For ErrandR", href: "/search" });
       links.splice(3, 0, { name: "Errand's Board", href: "/errand-board" });
     } else {
-      links.splice(2, 0, { name: "Search For ErrandR", href: "/search" });
+      links.splice(2, 0, { name: "Post An Errand", href: "/post-errand" });
     }
 
     if (user) {
@@ -194,9 +194,9 @@ export default function Header() {
         <div className='flex-1 bg-white'></div>
         <div className='w-full max-w-385 mx-auto flex'>
           <div className='w-62.5 bg-white'></div>
-          <div className='flex-1 bg-primary'></div>
+          <div className='flex-1 bg-white'></div>
         </div>
-        <div className='flex-1 bg-primary'></div>
+        <div className='flex-1 bg-white'></div>
       </div>
 
       {/* Main Content Area */}
@@ -221,52 +221,52 @@ export default function Header() {
 
           {/* Desktop Navigation Bar (hidden on mobile) */}
           <nav
-            className='bg-primary flex-1 items-center hidden md:flex whitespace-nowrap'
+            className='bg-white flex-1 items-center hidden md:flex whitespace-nowrap'
             data-purpose='main-navigation'>
             <div className='flex flex-row w-full justify-between items-center px-6 min-h-15'>
 
               {/* Left Nav Group */}
               <ul className='flex flex-row items-center gap-2'>
                 {/* 1. Home */}
-                <li className='px-3 border-r border-[#E8670A]/40'>
+                <li className='px-3 border-r border-gray-200'>
                   <Link
                     href='/'
-                    className='text-[13px] font-bold text-white hover:text-white/80 transition-colors block uppercase tracking-wider'>
+                    className='text-[13px] font-bold text-slate-800 hover:text-primary transition-colors block uppercase tracking-wider'>
                     Home
                   </Link>
                 </li>
 
-                {/* 2. Search For ErrandR or Post An Errand */}
-                <li className='px-3 border-r border-[#E8670A]/40'>
+                {/* 2. Post An Errand (for client/guests) or Search For ErrandR (for errand runners) */}
+                <li className='px-3 border-r border-gray-200'>
                   {user?.role === "errand" ? (
                     <Link
-                      href='/post-errand'
-                      className='text-[13px] font-bold text-white hover:text-white/80 transition-colors block uppercase tracking-wider'>
-                      Post An Errand
+                      href='/search'
+                      className='text-[13px] font-bold text-slate-800 hover:text-primary transition-colors block uppercase tracking-wider'>
+                      Search For ErrandR
                     </Link>
                   ) : (
                     <Link
-                      href='/search'
-                      className='text-[13px] font-bold text-white hover:text-white/80 transition-colors block uppercase tracking-wider'>
-                      Search For ErrandR
+                      href='/post-errand'
+                      className='text-[13px] font-bold text-slate-800 hover:text-primary transition-colors block uppercase tracking-wider'>
+                      Post An Errand
                     </Link>
                   )}
                 </li>
 
                 {/* 3. Errands */}
-                <li className='px-3 border-r border-[#E8670A]/40'>
+                <li className='px-3 border-r border-gray-200'>
                   <Link
                     href='/errand'
-                    className='text-[13px] font-bold text-white hover:text-white/80 transition-colors block uppercase tracking-wider'>
+                    className='text-[13px] font-bold text-slate-800 hover:text-primary transition-colors block uppercase tracking-wider'>
                     Errands
                   </Link>
                 </li>
 
                 {/* 4. MORE Popover Dropdown Button */}
-                <li className='px-3 border-r border-[#E8670A]/40 relative' ref={dropdownRef}>
+                <li className='px-3 border-r border-gray-200 relative' ref={dropdownRef}>
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className='inline-flex items-center gap-2 bg-[#e57d38] hover:bg-[#d66f2b] text-white font-black text-xs tracking-wider uppercase px-3.5 py-1.5 rounded-xl border border-white/40 shadow-inner hover:shadow-md transition-all duration-200 cursor-pointer active:scale-95 outline-none'
+                    className='inline-flex items-center gap-2 bg-[#e57d38] hover:bg-[#d66f2b] text-white font-black text-xs tracking-wider uppercase px-3.5 py-1.5 rounded-xl border border-orange-400/30 shadow-sm hover:shadow transition-all duration-200 cursor-pointer active:scale-95 outline-none'
                     aria-label='More options menu'>
                     <Menu className='w-3.5 h-3.5 stroke-[2.5]' />
                     <span className='font-extrabold tracking-wide'>MORE</span>
@@ -312,9 +312,9 @@ export default function Header() {
                   <button
                     type='button'
                     onClick={() => setIsVideoOpen(true)}
-                    className='text-[13px] font-black text-white hover:text-white/80 transition-colors uppercase tracking-widest cursor-pointer flex items-center gap-1.5 bg-transparent border-0 py-1'
+                    className='text-[13px] font-black text-slate-800 hover:text-primary transition-colors uppercase tracking-widest cursor-pointer flex items-center gap-1.5 bg-transparent border-0 py-1'
                     aria-label='Play commercial video'>
-                    <Play className='w-3.5 h-3.5 fill-current stroke-[2]' />
+                    <Play className='w-3.5 h-3.5 fill-primary text-primary stroke-[2]' />
                     <span className='font-black'>PLAY VIDEO</span>
                   </button>
                 </li>
@@ -324,17 +324,17 @@ export default function Header() {
               <ul className='flex flex-row items-center gap-3 ml-auto'>
                 {/* 5. Dashboard (if logged in) */}
                 {user && (
-                  <li className='px-3 border-r border-[#E8670A]/40'>
+                  <li className='px-3 border-r border-gray-200'>
                     <Link
                       href='/dashboard'
-                      className='text-[13px] font-bold text-white hover:text-white/80 transition-colors block uppercase tracking-wider'>
+                      className='text-[13px] font-bold text-slate-800 hover:text-primary transition-colors block uppercase tracking-wider'>
                       Dashboard
                     </Link>
                   </li>
                 )}
 
                 {/* 6. Ads (EXACT original italic blue badge) */}
-                <li className='px-3 border-r border-[#E8670A]/40'>
+                <li className='px-3 border-r border-gray-200'>
                   <Link
                     href='/ads'
                     className='inline-block bg-[#1a3a7a] uppercase text-white font-extrabold italic tracking-wide px-4 py-[5px] rounded-sm text-[20px] shadow-sm hover:bg-[#122856] transition-colors'>
@@ -345,20 +345,20 @@ export default function Header() {
                 {/* 7. User Profile / Logout or Login / Sign Up */}
                 {user ? (
                   <>
-                    <li className='px-3 border-r border-[#E8670A]/40'>
+                    <li className='px-3 border-r border-gray-200'>
                       <Link
                         href='/dashboard/profile'
-                        className='flex items-center gap-2 hover:bg-white/10 px-2.5 py-1 rounded-full transition-all border border-white/20'>
-                        <div className='w-7 h-7 rounded-full overflow-hidden bg-white/20 flex items-center justify-center shrink-0 shadow-sm border border-white/30'>
+                        className='flex items-center gap-2 hover:bg-gray-100 px-2.5 py-1 rounded-full transition-all border border-gray-200'>
+                        <div className='w-7 h-7 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0 shadow-sm border border-primary/20'>
                           {user.profileImage ? (
                             <img src={getImageUrl(user.profileImage)} alt='profile' className='w-full h-full object-cover' />
                           ) : (
-                            <span className='text-white font-bold text-xs uppercase'>
+                            <span className='text-primary font-bold text-xs uppercase'>
                               {user.firstName?.charAt(0) || user.email?.charAt(0) || "U"}
                             </span>
                           )}
                         </div>
-                        <span className='text-white text-[13px] font-extrabold hidden md:inline-block max-w-[120px] truncate'>
+                        <span className='text-slate-800 text-[13px] font-extrabold hidden md:inline-block max-w-[120px] truncate'>
                           {user.firstName ? `${user.firstName} ${user.lastName || ''}` : user.email?.split('@')[0]}
                         </span>
                       </Link>
@@ -374,7 +374,7 @@ export default function Header() {
                   </>
                 ) : (
                   <>
-                    <li className='px-3 border-r border-[#E8670A]/40'>
+                    <li className='px-3 border-r border-gray-200'>
                       <Link
                         href='/login'
                         className='inline-block bg-[#1a3a7a] hover:bg-[#122856] text-white font-bold px-4 py-1.5 rounded-md uppercase tracking-wider active:scale-95 transition-all text-center text-[13px]'>
@@ -385,7 +385,7 @@ export default function Header() {
                     <li className='px-3'>
                       <Link
                         href='/signup'
-                        className='inline-block bg-white hover:bg-gray-100 text-primary font-bold px-4 py-1.5 rounded-md uppercase tracking-wider active:scale-95 transition-all text-center text-[13px]'>
+                        className='inline-block bg-primary hover:bg-primary-dark text-white font-bold px-4 py-1.5 rounded-md uppercase tracking-wider active:scale-95 transition-all text-center text-[13px] shadow-sm'>
                         Sign Up
                       </Link>
                     </li>
@@ -398,8 +398,8 @@ export default function Header() {
 
           {/* Mobile Navigation Drawer (Pure Serial List for Mobile Only) */}
           <nav
-            className={`md:hidden bg-primary flex-1 items-center transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap
-              absolute top-full left-0 w-full z-40
+            className={`md:hidden bg-white flex-1 items-center transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap
+              absolute top-full left-0 w-full z-40 border-b border-gray-200
               ${
                 isMenuOpen
                   ? "max-h-[85vh] overflow-y-auto opacity-100 translate-y-0 visible shadow-2xl"
@@ -413,7 +413,7 @@ export default function Header() {
                   style={{
                     transitionDelay: isMenuOpen ? `${index * 25}ms` : "0ms",
                   }}
-                  className={`w-full py-2.5 border-b border-[#E8670A]/40 last:border-0 transition-all duration-300 ${
+                  className={`w-full py-2.5 border-b border-gray-100 last:border-0 transition-all duration-300 ${
                     isMenuOpen
                       ? "opacity-100 translate-x-0"
                       : "opacity-0 -translate-x-4"
@@ -421,9 +421,9 @@ export default function Header() {
                   {link.isProfile ? (
                     <Link
                       href={link.href}
-                      className='flex items-center gap-2 hover:bg-white/10 px-3 py-1.5 rounded-md transition-colors'
+                      className='flex items-center gap-2 hover:bg-gray-100 px-3 py-1.5 rounded-md transition-colors'
                       onClick={() => setIsMenuOpen(false)}>
-                      <div className='w-8 h-8 rounded-full overflow-hidden bg-white/20 flex items-center justify-center shrink-0 shadow-sm border border-white/30'>
+                      <div className='w-8 h-8 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center shrink-0 shadow-sm border border-primary/20'>
                         {user.profileImage ? (
                           <img
                             src={getImageUrl(user.profileImage)}
@@ -431,12 +431,12 @@ export default function Header() {
                             className='w-full h-full object-cover'
                           />
                         ) : (
-                          <span className='text-white font-bold text-sm uppercase'>
+                          <span className='text-primary font-bold text-sm uppercase'>
                             {user.firstName?.charAt(0) || user.email?.charAt(0) || "U"}
                           </span>
                         )}
                       </div>
-                      <span className='text-white text-[13px] font-bold'>
+                      <span className='text-slate-800 text-[13px] font-bold'>
                         {user.firstName
                           ? `${user.firstName} ${user.lastName || ""}`
                           : user.email?.split("@")[0]}
@@ -460,8 +460,8 @@ export default function Header() {
                           : link.isLogin
                           ? "inline-block bg-[#1a3a7a] hover:bg-[#122856] text-white font-bold px-4 py-1.5 rounded-md uppercase tracking-wider active:scale-95 transition-all text-center"
                           : link.isSignup
-                          ? "inline-block bg-white hover:bg-gray-100 text-primary font-bold px-4 py-1.5 rounded-md uppercase tracking-wider active:scale-95 transition-all text-center md:ml-2 mt-2 md:mt-0"
-                          : "text-white hover:text-white/80"
+                          ? "inline-block bg-primary hover:bg-primary-dark text-white font-bold px-4 py-1.5 rounded-md uppercase tracking-wider active:scale-95 transition-all text-center md:ml-2 mt-2 md:mt-0 shadow-sm"
+                          : "text-slate-800 hover:text-primary"
                       }`}
                       onClick={() => setIsMenuOpen(false)}>
                       {link.name}
