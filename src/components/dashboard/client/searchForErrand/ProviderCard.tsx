@@ -44,8 +44,9 @@ export default function ProviderCard({
   return (
     <article className='bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between h-full hover:shadow-md transition-shadow duration-300 overflow-hidden'>
       {/* Header */}
-      <div className='flex justify-between items-start mb-3 sm:mb-4 px-4 sm:px-6 pt-5 sm:pt-6 gap-2 sm:gap-3'>
-        <div className='flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1'>
+      <div className='px-4 sm:px-6 pt-5 sm:pt-6'>
+        {/* Top Info Row: Avatar + Name, Location, Rating */}
+        <div className='flex items-start gap-3 sm:gap-3.5 min-w-0'>
           <div className='relative shrink-0'>
             <img
               alt={provider.firstName}
@@ -55,31 +56,31 @@ export default function ProviderCard({
                 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=200&h=200&fit=crop'
               }
             />
-            {/* Keeping the verified checkmark for design consistency */}
-            <div className='absolute -bottom-1 -right-1 bg-white text-white rounded-full p-0.5'>
+            <div className='absolute -bottom-1 -right-1 bg-white text-white rounded-full p-0.5 shadow-xs'>
               <CircleCheckBig size={18} className='text-[#FBBC04]' />
             </div>
           </div>
+
           <div className='min-w-0 flex-1'>
-            <h3 className='font-semibold text-foreground text-sm sm:text-[16px] leading-tight truncate'>
+            <h3 className='font-bold text-gray-900 text-base sm:text-[17px] leading-snug break-words'>
               {provider.firstName} {provider.lastName}
             </h3>
-            <p className='text-xs flex items-center py-0.5 sm:py-1 gap-1 font-normal text-[#6B6B6B] truncate'>
+            <p className='text-xs flex items-center mt-0.5 gap-1 font-medium text-[#6B6B6B]'>
               <MapPin size={13} color='#FBBC04' className='shrink-0' />
               <span className='truncate'>
-                {profile.city || 'Remote'}, {profile.state || ''}
+                {profile.city || 'Remote'}{profile.state ? `, ${profile.state}` : ''}
               </span>
             </p>
-            <div className='flex items-center mt-0.5 sm:mt-1'>
+            <div className='flex items-center gap-1.5 mt-1 flex-wrap'>
               {provider.reviewCount > 0 || provider.rating > 0 ? (
                 <>
                   <StarRating rating={provider.rating || 5} size='sm' />
-                  <span className='text-[10px] sm:text-[11px] text-[#6B6B6B] ml-1 shrink-0'>
+                  <span className='text-[11px] sm:text-xs text-[#6B6B6B] font-medium shrink-0'>
                     {provider.rating ? provider.rating.toFixed(1) : "5.0"} ({provider.reviewCount || 1} {provider.reviewCount === 1 ? 'review' : 'reviews'})
                   </span>
                 </>
               ) : (
-                <span className='text-[10px] sm:text-[11px] text-gray-400 font-medium italic'>
+                <span className='text-[11px] text-gray-400 font-medium italic'>
                   No reviews yet
                 </span>
               )}
@@ -87,12 +88,12 @@ export default function ProviderCard({
           </div>
         </div>
 
-        {/* Right Header Section: Services Badge & More Button */}
-        <div className='flex flex-col items-end gap-1.5 shrink-0 max-w-[130px] sm:max-w-[150px]'>
-          <div className='flex items-center gap-1 flex-wrap justify-end'>
+        {/* Sub-Header Row: Service Category Badges & Gallery Action Button */}
+        <div className='flex items-center justify-between gap-2 mt-3.5 pt-2.5 border-t border-gray-100 flex-wrap'>
+          <div className='flex items-center gap-1.5 flex-wrap min-w-0 max-w-full'>
             <span
               onClick={() => onOpenDetails && onOpenDetails(provider)}
-              className='px-2 sm:px-2.5 py-0.5 sm:py-1 text-[#ec6f27] border border-[#ec6f27]/40 bg-[#FDF0E3] rounded-full text-[11px] sm:text-[12px] font-medium max-w-[95px] sm:max-w-[110px] truncate cursor-pointer hover:bg-[#FCE3CE] transition-colors'
+              className='px-2.5 py-1 text-[#ec6f27] border border-[#ec6f27]/40 bg-[#FDF0E3] rounded-full text-xs font-semibold max-w-[170px] sm:max-w-[200px] truncate cursor-pointer hover:bg-[#FCE3CE] transition-colors'
               title={rawServices}
             >
               {displayedServices}
@@ -105,13 +106,14 @@ export default function ProviderCard({
                   e.stopPropagation();
                   if (onOpenDetails) onOpenDetails(provider);
                 }}
-                className='px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-[11px] font-bold text-[#ec6f27] bg-[#FDF0E3] hover:bg-[#FCE3CE] border border-[#ec6f27]/50 rounded-full transition-colors cursor-pointer shrink-0 shadow-2xs'
+                className='px-2 py-0.5 text-[11px] font-bold text-[#ec6f27] bg-[#FDF0E3] hover:bg-[#FCE3CE] border border-[#ec6f27]/50 rounded-full transition-colors cursor-pointer shrink-0'
                 title='Click to see all services and details'
               >
                 +More
               </button>
             )}
           </div>
+
           <button
             onClick={(e) => {
               e.preventDefault();
@@ -122,13 +124,14 @@ export default function ProviderCard({
                 toast.info('No images available for this provider.');
               }
             }}
-            className='text-primary text-[10px] sm:text-[11px] font-semibold hover:underline bg-primary/5 px-2 py-1 rounded-md transition-colors'
+            className='text-primary text-xs font-bold hover:underline bg-primary/10 hover:bg-primary/20 px-2.5 py-1 rounded-md transition-colors shrink-0 cursor-pointer ml-auto'
           >
             More Images
           </button>
         </div>
       </div>
-      <div className='bg-[#f5e9d3] w-full h-px mb-3 sm:mb-4 mt-1'></div>
+
+      <div className='bg-[#f5e9d3] w-full h-px mb-3 sm:mb-4 mt-3'></div>
 
       {/* Body */}
       <div className='grow'>
