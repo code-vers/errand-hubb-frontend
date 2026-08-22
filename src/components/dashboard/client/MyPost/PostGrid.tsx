@@ -9,9 +9,10 @@ interface PostGridProps {
   error: any;
   onEdit: (post: ErrandPost) => void;
   onDelete: (id: string) => void;
+  onOpenDetails?: (post: ErrandPost) => void;
 }
 
-export default function PostGrid({ posts, loading, error, onEdit, onDelete }: PostGridProps) {
+export default function PostGrid({ posts, loading, error, onEdit, onDelete, onOpenDetails }: PostGridProps) {
   if (loading) {
     return (
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
@@ -92,7 +93,13 @@ export default function PostGrid({ posts, loading, error, onEdit, onDelete }: Po
       className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
       data-purpose='post-grid'>
       {posts.map((post) => (
-        <PostCard key={post.id} post={post} onEdit={() => onEdit(post)} onDelete={() => onDelete(post.id)} />
+        <PostCard
+          key={post.id}
+          post={post}
+          onEdit={() => onEdit(post)}
+          onDelete={() => onDelete(post.id)}
+          onOpenDetails={onOpenDetails}
+        />
       ))}
     </main>
   );

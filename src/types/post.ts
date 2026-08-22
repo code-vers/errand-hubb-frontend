@@ -33,6 +33,12 @@ export interface ErrandPost {
   assignedTo: string | null;
   icon: string;
   categoryId: string;
+  photoUrl?: string | null;
+  imageUrl?: string | null;
+  youtubeLink?: string | null;
+  contactInfo?: string | null;
+  user?: any;
+  rawPost?: any;
   category?: {
     id: string;
     name: string;

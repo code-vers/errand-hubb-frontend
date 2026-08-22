@@ -2,16 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { postService } from "@/services/post.service";
-import { Loader2, Plus, Edit, Trash2, MapPin, Calendar, DollarSign } from "lucide-react";
+import { Loader2, Plus, Edit, Trash2, MapPin, Calendar, DollarSign, Eye } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import PageHeader from "../../common/PageHeader";
 import { useConfirm } from "@/context/ConfirmationContext";
+import { getImageUrl } from "@/configs/api.config";
+import JobDetailsModal from "../../common/JobDetailsModal";
 
 const MyPostsPage = () => {
   const confirm = useConfirm();
   const [posts, setPosts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedPost, setSelectedPost] = useState<any>(null);
 
   const fetchPosts = async () => {
     try {
@@ -28,7 +31,10 @@ const MyPostsPage = () => {
   };
 
   useEffect(() => {
-    fetchPosts();
+    const load = async () => {
+      await fetchPosts();
+    };
+    load();
   }, []);
 
   const handleDelete = async (id: string) => {
@@ -79,7 +85,7 @@ const MyPostsPage = () => {
           </div>
           <h3 className='text-xl font-bold text-gray-800'>No posts yet</h3>
           <p className='text-gray-500 mt-2 max-w-xs mx-auto'>
-            You haven't posted any errands yet. Start by creating your first post to offer your services.
+            You have not posted any errands yet. Start by creating your first post to offer your services.
           </p>
           <Link 
             href="/post-errand"
@@ -117,7 +123,33 @@ const MyPostsPage = () => {
                 </div>
 
                 <h3 className='text-lg font-bold text-gray-900 line-clamp-1 mb-2'>{post.title}</h3>
-                <p className='text-sm text-gray-600 line-clamp-3 mb-4 h-15'>{post.description}</p>
+                
+                {(post.photoUrl || post.imageUrl) && (
+                  <div
+                    onClick={() => setSelectedPost(post)}
+                    className='w-full h-36 rounded-xl overflow-hidden mb-3 bg-gray-50 border border-gray-100 cursor-pointer group relative'>
+                    <img
+                      src={getImageUrl((post.photoUrl || post.imageUrl)!)}
+                      alt={post.title}
+                      className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-300'
+                    />
+                    <div className='absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100'>
+                      <span className='bg-white/95 text-gray-900 text-xs font-extrabold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5'>
+                        <Eye size={14} className="text-orange-500" />
+                        View Full Post
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                <p className='text-sm text-gray-600 line-clamp-2 mb-2'>{post.description}</p>
+                
+                <button
+                  onClick={() => setSelectedPost(post)}
+                  className='text-[11px] font-bold text-orange-500 hover:text-orange-600 hover:underline mb-4 inline-flex items-center gap-1 cursor-pointer'>
+                  <span>View Full Details & Photo</span>
+                  <Eye size={12} />
+                </button>
 
                 <div className='space-y-2.5'>
                   <div className='flex items-center gap-2 text-xs text-gray-500 font-medium'>
@@ -145,6 +177,15 @@ const MyPostsPage = () => {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Details Modal */}
+      {selectedPost && (
+        <JobDetailsModal
+          post={selectedPost}
+          onClose={() => setSelectedPost(null)}
+          isOwner={true}
+        />
       )}
     </div>
   );

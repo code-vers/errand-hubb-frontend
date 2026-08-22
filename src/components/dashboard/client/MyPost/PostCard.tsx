@@ -11,6 +11,7 @@ import {
   User,
   Edit2,
   Trash2,
+  Eye,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/configs/api.config";
@@ -20,6 +21,7 @@ interface PostCardProps {
   post: ErrandPost;
   onEdit: () => void;
   onDelete: () => void;
+  onOpenDetails?: (post: ErrandPost) => void;
 }
 
 const statusConfig: Record<string, { bg: string; text: string; dot: string }> =
@@ -56,7 +58,7 @@ const statusConfig: Record<string, { bg: string; text: string; dot: string }> =
     },
   };
 
-export default function PostCard({ post, onEdit, onDelete }: PostCardProps) {
+export default function PostCard({ post, onEdit, onDelete, onOpenDetails }: PostCardProps) {
   const confirm = useConfirm();
   const [showOptions, setShowOptions] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -157,10 +159,31 @@ export default function PostCard({ post, onEdit, onDelete }: PostCardProps) {
         </div>
       </div>
 
+      {/* Attached Photo Preview */}
+      {(post.photoUrl || post.imageUrl) && (
+        <div
+          onClick={() => onOpenDetails && onOpenDetails(post)}
+          className='w-full h-36 rounded-xl overflow-hidden mb-3 bg-gray-50 border border-gray-100 cursor-pointer group relative shrink-0'>
+          <img
+            src={getImageUrl((post.photoUrl || post.imageUrl)!)}
+            alt={post.title}
+            className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-300'
+          />
+          <div className='absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100'>
+            <span className='bg-white/95 text-gray-900 text-xs font-extrabold px-3 py-1.5 rounded-full shadow-md flex items-center gap-1.5'>
+              <Eye size={14} className="text-orange-500" />
+              View Full Post
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* Description */}
-      <p className='text-xs sm:text-[13px] text-[#6B6B6B] mb-4 sm:mb-6 leading-relaxed line-clamp-2 sm:line-clamp-3'>
-        {post.description}
-      </p>
+      <div className='mb-3'>
+        <p className='text-xs sm:text-[13px] text-[#6B6B6B] leading-relaxed line-clamp-2 sm:line-clamp-3'>
+          {post.description}
+        </p>
+      </div>
 
       {/* Reward and Status */}
       <div className='flex justify-between items-end gap-2 mb-4 sm:mb-6'>
@@ -180,7 +203,7 @@ export default function PostCard({ post, onEdit, onDelete }: PostCardProps) {
       </div>
 
       {/* Footer Info */}
-      <div className='pt-3 sm:pt-4 border-t border-[#F5E9D3] text-[10px] text-[#6B6B6B] space-y-2'>
+      <div className='pt-3 sm:pt-4 border-t border-[#F5E9D3] text-[10px] text-[#6B6B6B] space-y-2.5'>
         <div className='flex justify-between items-center gap-2'>
           <span className='flex items-center gap-1 min-w-0 truncate'>
             <Calendar className='w-3 h-3 text-[#FF5A3C] shrink-0' />
@@ -215,6 +238,17 @@ export default function PostCard({ post, onEdit, onDelete }: PostCardProps) {
             </>
           )}
         </div>
+
+        {/* View Details Button */}
+        {onOpenDetails && (
+          <button
+            type='button'
+            onClick={() => onOpenDetails(post)}
+            className='w-full mt-2 py-2 rounded-xl text-xs font-bold text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-200/80 transition-all flex items-center justify-center gap-1.5 cursor-pointer'>
+            <Eye size={14} />
+            <span>View Details</span>
+          </button>
+        )}
       </div>
     </article>
   );

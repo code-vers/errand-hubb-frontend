@@ -10,6 +10,7 @@ import StatsInfo from "./StatsInfo";
 import { usePosts } from "./usePosts";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import JobDetailsModal from "../../common/JobDetailsModal";
 
 const MyPostPage = () => {
   const {
@@ -24,14 +25,11 @@ const MyPostPage = () => {
     setSearch,
     setStatus,
     setPage,
-    addPost,
-    updatePost,
     deletePost,
-    isCreating,
-    isUpdating,
   } = usePosts();
 
   const router = useRouter();
+  const [selectedPost, setSelectedPost] = useState<any>(null);
 
   const handleCreateOpen = () => {
     router.push("/post-errand");
@@ -85,6 +83,7 @@ const MyPostPage = () => {
             error={error} 
             onEdit={handleEditOpen}
             onDelete={deletePost}
+            onOpenDetails={(p) => setSelectedPost(p)}
           />
 
           {/* Pagination */}
@@ -95,6 +94,16 @@ const MyPostPage = () => {
           />
         </div>
       </div>
+
+      {/* Details Modal */}
+      {selectedPost && (
+        <JobDetailsModal
+          post={selectedPost}
+          onClose={() => setSelectedPost(null)}
+          onEdit={handleEditOpen}
+          isOwner={true}
+        />
+      )}
     </div>
   );
 };
