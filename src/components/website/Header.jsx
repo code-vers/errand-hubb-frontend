@@ -187,7 +187,7 @@ export default function Header() {
 
   return (
     <header
-      className='w-full sticky top-0 z-50 bg-white font-sans shadow-sm max-w-full overflow-x-clip'
+      className='w-full sticky top-0 z-50 bg-white font-sans shadow-sm max-w-full'
       data-purpose='main-header'>
       {/* Background split layer for desktop */}
       <div className='absolute inset-0 hidden md:flex pointer-events-none'>
@@ -223,7 +223,7 @@ export default function Header() {
           <nav
             className='bg-white flex-1 items-center hidden md:flex min-w-0'
             data-purpose='main-navigation'>
-            <div className='flex flex-row w-full justify-between items-center px-2 lg:px-6 min-h-15 overflow-x-auto scrollbar-hide'>
+            <div className='flex flex-row w-full justify-between items-center px-2 lg:px-6 min-h-15'>
 
               {/* Left Nav Group */}
               <ul className='flex flex-row items-center gap-1 xl:gap-2 shrink-0'>
@@ -265,9 +265,11 @@ export default function Header() {
                 {/* 4. MORE Popover Dropdown Button */}
                 <li className='px-3 border-r border-gray-200 relative' ref={dropdownRef}>
                   <button
+                    type='button'
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className='inline-flex items-center gap-2 bg-[#e57d38] hover:bg-[#d66f2b] text-white font-black text-xs tracking-wider uppercase px-3.5 py-1.5 rounded-xl border border-orange-400/30 shadow-sm hover:shadow transition-all duration-200 cursor-pointer active:scale-95 outline-none'
-                    aria-label='More options menu'>
+                    aria-label='More options menu'
+                    aria-expanded={isDropdownOpen}>
                     <Menu className='w-3.5 h-3.5 stroke-[2.5]' />
                     <span className='font-extrabold tracking-wide'>MORE</span>
                     <ChevronDown className={`w-3.5 h-3.5 stroke-[3] transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
