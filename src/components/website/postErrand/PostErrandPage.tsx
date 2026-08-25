@@ -184,9 +184,10 @@ const PostErrandPage = () => {
         await postService.create(payload);
       }
 
-      // Invalidate the my-posts and profile queries to force a refetch on the dashboard
+      // Invalidate the my-posts, available-job-posts, and profile queries to force a refetch on the dashboard
       await queryClient.invalidateQueries({ queryKey: ["my-posts"] });
       await queryClient.invalidateQueries({ queryKey: ["profile"] });
+      await queryClient.invalidateQueries({ queryKey: ["available-job-posts"] });
 
       // Completely clear local form & gallery state
       setFormData({

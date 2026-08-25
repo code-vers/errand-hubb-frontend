@@ -97,6 +97,7 @@ export function usePosts() {
       toast.success("Post created successfully");
       queryClient.invalidateQueries({ queryKey: ["my-posts"] });
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["available-job-posts"] });
     },
     onError: (err: any) => {
       if (err.message === "SUBSCRIPTION_REQUIRED") {
@@ -113,6 +114,7 @@ export function usePosts() {
       toast.success("Post updated successfully");
       queryClient.invalidateQueries({ queryKey: ["my-posts"] });
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["available-job-posts"] });
     },
     onError: (err: any) => {
       if (err.message === "SUBSCRIPTION_REQUIRED") {
@@ -128,6 +130,7 @@ export function usePosts() {
       toast.success("Post deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["my-posts"] });
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["available-job-posts"] });
     },
     onError: (err: any) => {
       toast.error(err.response?.data?.message || "Failed to delete post");
