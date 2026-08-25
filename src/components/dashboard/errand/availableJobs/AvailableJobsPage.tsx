@@ -49,6 +49,7 @@ export default function AvailableJobsPage() {
         search: filters.search || undefined,
         userRole: "client", // Only get posts posted by clients
         status: "available",
+        postState: "active",
       });
       return res.data;
     },
