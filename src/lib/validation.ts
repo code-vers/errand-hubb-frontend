@@ -113,7 +113,10 @@ export const validatePhone = (value: string, required: boolean = true): string |
     return null;
   }
 
-  if (trimmed.length > 20) return "Phone number is too long.";
+  const digitsOnly = trimmed.replace(/\D/g, "");
+  if (digitsOnly.length < 7 || digitsOnly.length > 15) {
+    return "Please enter a valid phone number.";
+  }
 
   if (!isValidPhoneNumber(trimmed)) {
     return "Please enter a valid phone number.";
@@ -141,6 +144,21 @@ export const validateRate = (value: string | number, required: boolean = true): 
   
   // Optional: strictly check format for max 2 decimal places
   if (!/^\d+(\.\d{1,2})?$/.test(valStr)) return "Rate can have up to 2 decimal places.";
+  
+  return null;
+};
+
+export const validateBudget = (value: string | number, required: boolean = true): string | null => {
+  const valStr = String(value ?? "").trim();
+  if (!valStr) {
+    if (required) return "Budget is required.";
+    return null;
+  }
+  
+  const num = Number(valStr);
+  if (isNaN(num)) return "Budget must be a valid number.";
+  if (num < 0) return "Budget cannot be negative.";
+  if (num > 100000) return "Budget cannot exceed $100,000.";
   
   return null;
 };

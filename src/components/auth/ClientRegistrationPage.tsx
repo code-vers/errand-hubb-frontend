@@ -89,6 +89,9 @@ const ClientRegistrationPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm(formData)) {
+      return;
+    }
     const strength = evaluatePassword(formData.password);
     if (!strength.hasMinLength) {
       toast.error('Password must be at least 8 characters long');
@@ -123,7 +126,7 @@ const ClientRegistrationPage = () => {
   };
 
   const inputClass =
-    'w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)]';
+    'w-full px-3 py-2 border border-[var(--color-border)] rounded-md text-sm text-[var(--color-foreground)] placeholder:text-[var(--color-text-placeholder)] focus:outline-none focus:ring-1 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-colors bg-[var(--color-background)]';
 
   const labelClass = 'text-xs font-bold text-[var(--color-secondary)] uppercase tracking-wide';
 
@@ -277,6 +280,7 @@ const ClientRegistrationPage = () => {
               <InternationalPhoneInput
                 id='phone'
                 name='phone'
+                placeholder='Enter phone number'
                 required
                 value={formData.phone}
                 onChange={(value) => {

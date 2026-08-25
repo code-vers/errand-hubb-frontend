@@ -29,7 +29,7 @@ function ResetPasswordForm() {
     if (t) {
       setToken(t);
     } else {
-      setError('Invalid or missing reset token.');
+      setError('This password reset link has already been used or has expired. Please request a new reset link.');
     }
   }, [searchParams]);
 
@@ -53,7 +53,12 @@ function ResetPasswordForm() {
         router.push('/login');
       }, 3000);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Something went wrong. Please try again.');
+      const serverMessage = err?.message || err?.response?.data?.message;
+      if (serverMessage && (serverMessage.includes('token') || serverMessage.includes('expired') || serverMessage.includes('used') || serverMessage.includes('Invalid'))) {
+        setError('This password reset link has already been used or has expired. Please request a new reset link.');
+      } else {
+        setError(serverMessage || 'Something went wrong. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -139,8 +144,18 @@ function ResetPasswordForm() {
           )}
 
           {error && (
-            <div className="text-red-600 text-sm text-center font-medium bg-red-50 p-3 rounded-md border border-red-100">
-              {error}
+            <div className="text-red-600 text-sm text-center font-medium bg-red-50 p-4 rounded-md border border-red-100 space-y-2">
+              <p>{error}</p>
+              {(error.includes('expired') || error.includes('used') || error.includes('token') || error.includes('Invalid')) && (
+                <div className="pt-1">
+                  <Link
+                    href="/forgot-password"
+                    className="inline-block text-xs font-bold text-[var(--color-primary)] hover:underline uppercase tracking-wide"
+                  >
+                    Request a new reset link
+                  </Link>
+                </div>
+              )}
             </div>
           )}
 

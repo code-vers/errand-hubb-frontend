@@ -4,40 +4,57 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Trash2, ShoppingBag, Plus, Minus } from 'lucide-react';
+import { toast } from 'sonner';
 import { merchandiseOrdersService } from '@/services/merchandiseOrdersService';
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState([]);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [orderPlaced, setOrderPlaced] = useState(false);
-  const [formData, setFormData] = useState({ name: '', email: '', address: '', city: '', state: '', zipCode: '' });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState(null);
+  const [orderPlaced, setOrderPlaced] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      return searchParams.get('success') === 'true';
+    }
+    return false;
+  });
 
-  useEffect(() => {
-    // Check URL parameters for Stripe callbacks
-    const searchParams = new URLSearchParams(window.location.search);
-    if (searchParams.get('success') === 'true') {
-      setOrderPlaced(true);
-      localStorage.removeItem('merch_cart');
-      setCartItems([]);
-      // Optional: Clean URL
-      window.history.replaceState({}, document.title, window.location.pathname);
-    } else {
-      if (searchParams.get('canceled') === 'true') {
-        setError('Payment was canceled. You can try checking out again.');
-        window.history.replaceState({}, document.title, window.location.pathname);
+  const [cartItems, setCartItems] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.get('success') === 'true') {
+        localStorage.removeItem('merch_cart');
+        return [];
       }
       const savedCart = localStorage.getItem('merch_cart');
       if (savedCart) {
         try {
-          setCartItems(JSON.parse(savedCart));
+          return JSON.parse(savedCart);
         } catch (e) {
           console.error('Failed to parse cart', e);
         }
       }
     }
-    setIsLoaded(true);
+    return [];
+  });
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '', address: '', city: '', state: '', zipCode: '' });
+  const [fieldErrors, setFieldErrors] = useState({ name: '', email: '', address: '', city: '', state: '', zipCode: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.get('canceled') === 'true') {
+        return 'Payment was canceled. You can try checking out again.';
+      }
+    }
+    return null;
+  });
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    if (searchParams.get('success') === 'true' || searchParams.get('canceled') === 'true') {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+    const timer = setTimeout(() => setIsLoaded(true), 0);
+    return () => clearTimeout(timer);
   }, []);
 
   const removeFromCart = (index) => {
@@ -57,18 +74,79 @@ export default function CartPage() {
     }
   };
 
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (fieldErrors[field]) {
+      setFieldErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  const validateForm = () => {
+    const errors = { name: '', email: '', address: '', city: '', state: '', zipCode: '' };
+
+    // Full Name validation
+    const trimmedName = formData.name.trim();
+    if (!trimmedName) {
+      errors.name = 'Please enter your full name.';
+    } else if (trimmedName.length < 2) {
+      errors.name = 'Full name must be at least 2 characters.';
+    }
+
+    // Email Address validation
+    const trimmedEmail = formData.email.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+      errors.email = 'Please enter a valid email address.';
+    }
+
+    // Street Address validation
+    const trimmedAddress = formData.address.trim();
+    if (!trimmedAddress || trimmedAddress.length < 3 || !/[a-zA-Z0-9]/.test(trimmedAddress)) {
+      errors.address = 'Please enter a valid address.';
+    }
+
+    // City validation
+    const trimmedCity = formData.city.trim();
+    if (!trimmedCity || trimmedCity.length < 2) {
+      errors.city = 'Please enter a valid city.';
+    }
+
+    // State validation
+    const trimmedState = formData.state.trim();
+    if (!trimmedState || trimmedState.length < 2) {
+      errors.state = 'Please enter a valid state.';
+    }
+
+    // ZIP Code validation (US/International ZIP format)
+    const trimmedZip = formData.zipCode.trim();
+    const zipRegex = /^[a-zA-Z0-9\s\-]{3,10}$/;
+    const hasChar = /[a-zA-Z0-9]/.test(trimmedZip);
+    if (!trimmedZip || !zipRegex.test(trimmedZip) || !hasChar || trimmedZip.length < 3) {
+      errors.zipCode = 'Please enter a valid ZIP code.';
+    }
+
+    setFieldErrors(errors);
+    return !Object.values(errors).some(err => Boolean(err));
+  };
+
   const handleCheckout = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setError(null);
+
+    if (!validateForm()) {
+      toast.error('Please fix the errors in your shipping details.');
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
       const orderPayload = {
-        name: formData.name,
-        email: formData.email,
-        address: formData.address,
-        city: formData.city,
-        state: formData.state,
-        zipCode: formData.zipCode,
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        address: formData.address.trim(),
+        city: formData.city.trim(),
+        state: formData.state.trim(),
+        zipCode: formData.zipCode.trim(),
         items: cartItems.map(item => ({
           name: item.name,
           quantity: item.quantity,
@@ -124,7 +202,7 @@ export default function CartPage() {
             </div>
             <h2 className="text-3xl font-extrabold text-slate-800 mb-4">Order Confirmed!</h2>
             <p className="text-slate-500 mb-10 text-lg">
-              Thank you for representing ErrandHubb. We're getting your gear ready.
+              Thank you for representing ErrandHubb. We&apos;re getting your gear ready.
             </p>
             <Link 
               href="/merchandise"
@@ -137,7 +215,7 @@ export default function CartPage() {
           <div className="bg-white p-12 md:p-20 rounded-2xl shadow-sm border border-slate-200 text-center max-w-2xl mx-auto mt-12">
             <ShoppingBag className="mx-auto text-slate-300 mb-6" size={64} strokeWidth={1} />
             <h2 className="text-2xl font-bold text-slate-800 mb-3">Your cart is empty</h2>
-            <p className="text-slate-500 mb-8 text-lg">Looks like you haven't added any gear yet.</p>
+            <p className="text-slate-500 mb-8 text-lg">Looks like you haven&apos;t added any gear yet.</p>
             <Link 
               href="/merchandise"
               className="bg-[#f47a22] text-white px-8 py-3.5 rounded-lg font-bold hover:bg-[#d66519] transition-colors inline-block tracking-wide shadow-md"
@@ -225,7 +303,7 @@ export default function CartPage() {
                   Shipping Information
                 </h2>
                 
-                <form id="checkout-form" onSubmit={handleCheckout} className="space-y-6">
+                <form id="checkout-form" onSubmit={handleCheckout} noValidate className="space-y-6">
                   {error && (
                     <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm font-medium border border-red-100 flex items-start gap-2">
                       <span className="mt-0.5">⚠️</span> {error}
@@ -235,49 +313,91 @@ export default function CartPage() {
                   <div className="grid sm:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-slate-700">Full Name</label>
-                      <input required type="text" placeholder="e.g. Jane Doe" 
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22] outline-none transition-all placeholder:text-slate-400" 
-                        value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} 
+                      <input type="text" placeholder="e.g. Jane Doe" 
+                        className={`w-full px-4 py-3 bg-slate-50 border rounded-xl focus:bg-white outline-none transition-all placeholder:text-slate-400 ${
+                          fieldErrors.name
+                            ? 'border-red-500 focus:ring-2 focus:ring-red-500/20 focus:border-red-500'
+                            : 'border-slate-200 focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22]'
+                        }`} 
+                        value={formData.name} onChange={e => handleInputChange('name', e.target.value)} 
                       />
+                      {fieldErrors.name && (
+                        <p className="text-xs text-red-500 font-medium mt-1">{fieldErrors.name}</p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-slate-700">Email Address</label>
-                      <input required type="email" placeholder="jane@example.com" 
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22] outline-none transition-all placeholder:text-slate-400" 
-                        value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} 
+                      <input type="email" placeholder="jane@example.com" 
+                        className={`w-full px-4 py-3 bg-slate-50 border rounded-xl focus:bg-white outline-none transition-all placeholder:text-slate-400 ${
+                          fieldErrors.email
+                            ? 'border-red-500 focus:ring-2 focus:ring-red-500/20 focus:border-red-500'
+                            : 'border-slate-200 focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22]'
+                        }`} 
+                        value={formData.email} onChange={e => handleInputChange('email', e.target.value)} 
                       />
+                      {fieldErrors.email && (
+                        <p className="text-xs text-red-500 font-medium mt-1">{fieldErrors.email}</p>
+                      )}
                     </div>
                   </div>
                   
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-slate-700">Street Address</label>
-                    <input required type="text" placeholder="123 Main St, Apt 4B" 
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22] outline-none transition-all placeholder:text-slate-400" 
-                      value={formData.address} onChange={e => setFormData({...formData, address: e.target.value})} 
+                    <input type="text" placeholder="123 Main St, Apt 4B" 
+                      className={`w-full px-4 py-3 bg-slate-50 border rounded-xl focus:bg-white outline-none transition-all placeholder:text-slate-400 ${
+                        fieldErrors.address
+                          ? 'border-red-500 focus:ring-2 focus:ring-red-500/20 focus:border-red-500'
+                          : 'border-slate-200 focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22]'
+                      }`} 
+                      value={formData.address} onChange={e => handleInputChange('address', e.target.value)} 
                     />
+                    {fieldErrors.address && (
+                      <p className="text-xs text-red-500 font-medium mt-1">{fieldErrors.address}</p>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-slate-700">City</label>
-                      <input required type="text" placeholder="New York" 
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22] outline-none transition-all placeholder:text-slate-400" 
-                        value={formData.city} onChange={e => setFormData({...formData, city: e.target.value})} 
+                      <input type="text" placeholder="New York" 
+                        className={`w-full px-4 py-3 bg-slate-50 border rounded-xl focus:bg-white outline-none transition-all placeholder:text-slate-400 ${
+                          fieldErrors.city
+                            ? 'border-red-500 focus:ring-2 focus:ring-red-500/20 focus:border-red-500'
+                            : 'border-slate-200 focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22]'
+                        }`} 
+                        value={formData.city} onChange={e => handleInputChange('city', e.target.value)} 
                       />
+                      {fieldErrors.city && (
+                        <p className="text-xs text-red-500 font-medium mt-1">{fieldErrors.city}</p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-slate-700">State</label>
-                      <input required type="text" placeholder="NY" 
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22] outline-none transition-all placeholder:text-slate-400" 
-                        value={formData.state} onChange={e => setFormData({...formData, state: e.target.value})} 
+                      <input type="text" placeholder="NY" 
+                        className={`w-full px-4 py-3 bg-slate-50 border rounded-xl focus:bg-white outline-none transition-all placeholder:text-slate-400 ${
+                          fieldErrors.state
+                            ? 'border-red-500 focus:ring-2 focus:ring-red-500/20 focus:border-red-500'
+                            : 'border-slate-200 focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22]'
+                        }`} 
+                        value={formData.state} onChange={e => handleInputChange('state', e.target.value)} 
                       />
+                      {fieldErrors.state && (
+                        <p className="text-xs text-red-500 font-medium mt-1">{fieldErrors.state}</p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <label className="text-sm font-semibold text-slate-700">Zip Code</label>
-                      <input required type="text" placeholder="10001" 
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22] outline-none transition-all placeholder:text-slate-400" 
-                        value={formData.zipCode} onChange={e => setFormData({...formData, zipCode: e.target.value})} 
+                      <input type="text" placeholder="10001" 
+                        className={`w-full px-4 py-3 bg-slate-50 border rounded-xl focus:bg-white outline-none transition-all placeholder:text-slate-400 ${
+                          fieldErrors.zipCode
+                            ? 'border-red-500 focus:ring-2 focus:ring-red-500/20 focus:border-red-500'
+                            : 'border-slate-200 focus:ring-2 focus:ring-[#f47a22]/20 focus:border-[#f47a22]'
+                        }`} 
+                        value={formData.zipCode} onChange={e => handleInputChange('zipCode', e.target.value)} 
                       />
+                      {fieldErrors.zipCode && (
+                        <p className="text-xs text-red-500 font-medium mt-1">{fieldErrors.zipCode}</p>
+                      )}
                     </div>
                   </div>
                 </form>
