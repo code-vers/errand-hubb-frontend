@@ -89,6 +89,9 @@ const ClientRegistrationPage = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateForm(formData)) {
+      return;
+    }
     const strength = evaluatePassword(formData.password);
     if (!strength.hasMinLength) {
       toast.error('Password must be at least 8 characters long');

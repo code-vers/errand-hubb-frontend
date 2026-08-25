@@ -113,7 +113,10 @@ export const validatePhone = (value: string, required: boolean = true): string |
     return null;
   }
 
-  if (trimmed.length > 20) return "Phone number is too long.";
+  const digitsOnly = trimmed.replace(/\D/g, "");
+  if (digitsOnly.length < 7 || digitsOnly.length > 15) {
+    return "Please enter a valid phone number.";
+  }
 
   if (!isValidPhoneNumber(trimmed)) {
     return "Please enter a valid phone number.";
