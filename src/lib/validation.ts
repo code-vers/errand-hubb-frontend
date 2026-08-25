@@ -147,3 +147,18 @@ export const validateRate = (value: string | number, required: boolean = true): 
   
   return null;
 };
+
+export const validateBudget = (value: string | number, required: boolean = true): string | null => {
+  const valStr = String(value ?? "").trim();
+  if (!valStr) {
+    if (required) return "Budget is required.";
+    return null;
+  }
+  
+  const num = Number(valStr);
+  if (isNaN(num)) return "Budget must be a valid number.";
+  if (num < 0) return "Budget cannot be negative.";
+  if (num > 100000) return "Budget cannot exceed $100,000.";
+  
+  return null;
+};

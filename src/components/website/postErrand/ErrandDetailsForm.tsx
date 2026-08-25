@@ -1,7 +1,7 @@
 import { CityDropdown, StateDropdown } from '@/components/shared/StateCityDropdown';
 import { getImageUrl } from '@/configs/api.config';
 import { useFormValidation } from '@/hooks/useFormValidation';
-import { validateCityState, validateGenericString, validateTextarea } from '@/lib/validation';
+import { validateCityState, validateGenericString, validateTextarea, validateBudget } from '@/lib/validation';
 import { Category } from '@/types/categories';
 import { Errand } from '@/types/errand';
 import { ChevronDown, Loader2, PlayCircle, Upload, X } from 'lucide-react';
@@ -38,7 +38,7 @@ const ErrandDetailsForm = ({
     description: (v) => validateTextarea(v || '', 2000, 'Description'),
     city: (v) => validateCityState(v || '', 'City'),
     state: (v) => validateCityState(v || '', 'State'),
-    budget: (v) => validateGenericString(String(v || ''), 20, 'Budget'),
+    budget: (v) => validateBudget(v || '', true),
     contactInfo: (v) => validateGenericString(v || '', 150, 'Contact Info'),
     youtubeLink: (v) => validateGenericString(v || '', 200, 'YouTube Link', false),
   });
@@ -253,11 +253,18 @@ const ErrandDetailsForm = ({
           <input
             type='number'
             required
+            min='0'
             value={formData.budget || ''}
             onChange={(e) => onChange('budget', e.target.value)}
+            onBlur={() => handleBlur('budget', formData.budget || '')}
             placeholder='e.g. 25'
-            className='h-11 rounded-md border border-gray-200 px-3 text-sm outline-none focus:border-[#1b539c] transition-colors'
+            className={`h-11 rounded-md border px-3 text-sm outline-none transition-colors ${
+              errors.budget && touched.budget ? 'border-red-400 bg-red-50/20' : 'border-gray-200 focus:border-[#1b539c]'
+            }`}
           />
+          {errors.budget && touched.budget && (
+            <span className='text-xs text-red-500 font-semibold'>{errors.budget}</span>
+          )}
         </label>
 
         <label className='flex flex-col gap-1.5'>
