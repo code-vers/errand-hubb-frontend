@@ -25,11 +25,23 @@ import logo from "../../../public/logo2.svg";
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [dropdownCoords, setDropdownCoords] = useState({ top: 0, left: 0 });
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const { user, logout } = useAuth();
   const dropdownRef = useRef(null);
 
-  // Close dropdown when clicking outside on desktop
+  const toggleDropdown = () => {
+    if (!isDropdownOpen && dropdownRef.current) {
+      const rect = dropdownRef.current.getBoundingClientRect();
+      setDropdownCoords({
+        top: rect.bottom + 8,
+        left: Math.max(16, Math.min(rect.left, window.innerWidth - 336)),
+      });
+    }
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  // Close dropdown when clicking outside on desktop & reposition on scroll/resize
   useEffect(() => {
     function handleClickOutside(event) {
       if (
@@ -39,11 +51,28 @@ export default function Header() {
         setIsDropdownOpen(false);
       }
     }
+
+    function handleScrollOrResize() {
+      if (isDropdownOpen && dropdownRef.current) {
+        const rect = dropdownRef.current.getBoundingClientRect();
+        setDropdownCoords({
+          top: rect.bottom + 8,
+          left: Math.max(16, Math.min(rect.left, window.innerWidth - 336)),
+        });
+      }
+    }
+
     document.addEventListener("mousedown", handleClickOutside);
+    if (isDropdownOpen) {
+      window.addEventListener("scroll", handleScrollOrResize, true);
+      window.addEventListener("resize", handleScrollOrResize);
+    }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScrollOrResize, true);
+      window.removeEventListener("resize", handleScrollOrResize);
     };
-  }, []);
+  }, [isDropdownOpen]);
 
   // Secondary links inside Desktop MORE Popover Dropdown
   const hamburgerItems = [
@@ -221,9 +250,9 @@ export default function Header() {
 
           {/* Desktop Navigation Bar (hidden on mobile) */}
           <nav
-            className='bg-white flex-1 items-center hidden md:flex min-w-0'
+            className='bg-white flex-1 items-center hidden md:flex min-w-0 overflow-x-auto header-nav-scroll py-1'
             data-purpose='main-navigation'>
-            <div className='flex flex-row w-full justify-between items-center px-2 lg:px-6 min-h-15'>
+            <div className='flex flex-row w-full justify-between items-center px-2 lg:px-6 min-h-15 min-w-max'>
 
               {/* Left Nav Group */}
               <ul className='flex flex-row items-center gap-1 xl:gap-2 shrink-0'>
@@ -266,7 +295,7 @@ export default function Header() {
                 <li className='px-3 border-r border-gray-200 relative' ref={dropdownRef}>
                   <button
                     type='button'
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    onClick={toggleDropdown}
                     className='inline-flex items-center gap-2 bg-[#e57d38] hover:bg-[#d66f2b] text-white font-black text-xs tracking-wider uppercase px-3.5 py-1.5 rounded-xl border border-orange-400/30 shadow-sm hover:shadow transition-all duration-200 cursor-pointer active:scale-95 outline-none'
                     aria-label='More options menu'
                     aria-expanded={isDropdownOpen}>
@@ -277,7 +306,13 @@ export default function Header() {
 
                   {/* Popover Card */}
                   {isDropdownOpen && (
-                    <div className='absolute left-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150 text-gray-900'>
+                    <div
+                      style={{
+                        position: "fixed",
+                        top: `${dropdownCoords.top}px`,
+                        left: `${dropdownCoords.left}px`,
+                      }}
+                      className='w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 p-2.5 z-50 animate-in fade-in zoom-in-95 duration-150 text-gray-900'>
                       <div className='text-[11px] font-extrabold uppercase tracking-widest text-gray-400 px-3 py-1.5 border-b border-gray-100 mb-1'>
                         More Services & Info
                       </div>

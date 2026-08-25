@@ -155,4 +155,19 @@ button:not(:disabled) {
     font-size: 1.1rem;
     font-weight: 600;
   }
+
+  /* Sleek horizontal scrollbar for header navigation under 1100px */
+  .header-nav-scroll::-webkit-scrollbar {
+    height: 4px;
+  }
+  .header-nav-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .header-nav-scroll::-webkit-scrollbar-thumb {
+    background: rgba(203, 213, 225, 0.7);
+    border-radius: 9999px;
+  }
+  .header-nav-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(244, 122, 34, 0.9);
+  }
 }
