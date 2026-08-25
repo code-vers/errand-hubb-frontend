@@ -8,6 +8,7 @@ interface InternationalPhoneInputProps {
   value: string;
   onChange: (value: string) => void;
   name?: string;
+  placeholder?: string;
   required?: boolean;
   onBlur?: (e?: React.FocusEvent<HTMLInputElement>) => void;
   id?: string;
@@ -21,6 +22,7 @@ export const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = (
   value,
   onChange,
   name = "phone",
+  placeholder = "Enter phone number",
   required = false,
   onBlur,
   id = "phone",
@@ -35,12 +37,12 @@ export const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = (
     <div className="relative w-full">
       <PhoneInput
         id={id}
-        international
         defaultCountry="US"
         value={formattedValue}
         onChange={(val) => onChange(val || "")}
         onBlur={onBlur}
         name={name}
+        placeholder={placeholder}
         required={required}
         style={{
           "--PhoneInputCountryFlag-height": "1.2em",
@@ -52,9 +54,10 @@ export const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = (
             : "border-[var(--color-border)] focus-within:ring-[var(--color-primary)]/20 focus-within:border-[var(--color-primary)]"
         } ${className}`}
         numberInputProps={{
-          className: "flex-1 bg-transparent border-none focus:outline-none focus:ring-0 p-0 text-sm placeholder-[var(--color-text-placeholder)]",
+          className: "flex-1 bg-transparent border-none focus:outline-none focus:ring-0 p-0 text-sm placeholder:text-[var(--color-text-placeholder)] placeholder:text-gray-400",
           onBlur: onBlur,
           id: id,
+          placeholder: placeholder,
           "aria-invalid": ariaInvalid,
           "aria-describedby": ariaDescribedBy,
         }}
@@ -67,6 +70,10 @@ export const InternationalPhoneInput: React.FC<InternationalPhoneInputProps> = (
         }
         .PhoneInputCountrySelect {
           outline: none;
+        }
+        .PhoneInputInput::placeholder {
+          color: var(--color-text-placeholder, #9ca3af) !important;
+          opacity: 1 !important;
         }
       `}} />
     </div>
