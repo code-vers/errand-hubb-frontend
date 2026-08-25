@@ -14,7 +14,10 @@ import {
   Users,
   Star,
   Quote,
+  Check,
+  CheckCircle2,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const ProductOptions = ({ productName, availableColors, selections, updateSelection }) => {
   const sizes = ['S', 'M', 'L', 'XL', 'XXL'];
@@ -63,20 +66,22 @@ const ProductOptions = ({ productName, availableColors, selections, updateSelect
 };
 
 export default function MerchandisePage() {
-  const [cartItems, setCartItems] = useState([]);
-  const [selections, setSelections] = useState({});
-
-  useEffect(() => {
-    const savedCart = localStorage.getItem('merch_cart');
-    if (savedCart) {
-      try {
-        setCartItems(JSON.parse(savedCart));
-      } catch (e) {
-        console.error('Failed to parse cart', e);
-        3;
+  const [cartItems, setCartItems] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const savedCart = localStorage.getItem('merch_cart');
+      if (savedCart) {
+        try {
+          return JSON.parse(savedCart);
+        } catch (e) {
+          console.error('Failed to parse cart', e);
+        }
       }
     }
-  }, []);
+    return [];
+  });
+  const [selections, setSelections] = useState({});
+  const [addedMessage, setAddedMessage] = useState(null);
+  const [lastAddedProduct, setLastAddedProduct] = useState(null);
 
   const productDetails = {
     'Classic Logo T-Shirt': { price: 24.99, image: '/merch/merch_tshirt_logo.png' },
@@ -127,7 +132,17 @@ export default function MerchandisePage() {
 
     setCartItems(updatedCart);
     localStorage.setItem('merch_cart', JSON.stringify(updatedCart));
-    console.log(`Added to cart: ${productName} (${color} - ${size})`);
+
+    // Display clear confirmation message using sonner toast
+    toast.success('Item added to cart successfully!');
+
+    // Set banner confirmation message and button visual state
+    setAddedMessage(`"${productName}" (${color}, ${size}) added to cart successfully!`);
+    setLastAddedProduct(productName);
+
+    setTimeout(() => {
+      setLastAddedProduct(prev => (prev === productName ? null : prev));
+    }, 2500);
   };
 
   const scrollToProducts = () => {
@@ -153,14 +168,43 @@ export default function MerchandisePage() {
 
         <Link
           href='/merchandise/cart'
-          className='flex items-center gap-2 border border-gray-300 rounded-md px-4 py-2 hover:bg-gray-50 transition text-gray-900'
+          className={`flex items-center gap-2 border rounded-md px-4 py-2 transition-all text-gray-900 ${
+            addedMessage ? 'border-emerald-500 bg-emerald-50 text-emerald-900 font-bold shadow-sm' : 'border-gray-300 hover:bg-gray-50'
+          }`}
         >
-          <ShoppingCart size={20} />
+          <ShoppingCart size={20} className={addedMessage ? 'text-emerald-600 animate-bounce' : ''} />
           <span className='font-medium'>
             Cart ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})
           </span>
         </Link>
       </header>
+
+      {/* Confirmation Alert Banner */}
+      {addedMessage && (
+        <div className='bg-emerald-50 border-b border-emerald-200 text-emerald-900 px-6 py-3 sticky top-[65px] z-40 shadow-sm flex items-center justify-between animate-in fade-in duration-300'>
+          <div className='max-w-7xl mx-auto w-full flex items-center justify-between'>
+            <div className='flex items-center gap-3'>
+              <CheckCircle2 className='text-emerald-600 shrink-0' size={20} />
+              <span className='font-semibold text-sm md:text-base'>{addedMessage}</span>
+            </div>
+            <div className='flex items-center gap-3'>
+              <Link
+                href='/merchandise/cart'
+                className='bg-emerald-600 hover:bg-emerald-700 text-white text-xs md:text-sm font-bold px-3 py-1.5 rounded transition whitespace-nowrap shadow-sm'
+              >
+                View Cart ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})
+              </Link>
+              <button
+                onClick={() => setAddedMessage(null)}
+                className='text-emerald-600 hover:text-emerald-800 text-sm font-bold px-1'
+                aria-label='Close notification'
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Hero Section */}
       <section className='bg-[#f4f7f9] relative overflow-hidden'>
@@ -282,9 +326,21 @@ export default function MerchandisePage() {
 
             <button
               onClick={() => handleAddToCart('Classic Logo T-Shirt')}
-              className='mt-auto w-full bg-[#063b5c] text-white py-2 rounded font-bold flex items-center justify-center gap-2 hover:bg-[#042840] transition'
+              className={`mt-auto w-full text-white py-2 rounded font-bold flex items-center justify-center gap-2 transition-all duration-200 ${
+                lastAddedProduct === 'Classic Logo T-Shirt'
+                  ? 'bg-emerald-600 hover:bg-emerald-700 shadow-md scale-[1.02]'
+                  : 'bg-[#063b5c] hover:bg-[#042840]'
+              }`}
             >
-              <ShoppingCart size={16} /> ADD TO CART
+              {lastAddedProduct === 'Classic Logo T-Shirt' ? (
+                <>
+                  <Check size={16} /> ADDED TO CART
+                </>
+              ) : (
+                <>
+                  <ShoppingCart size={16} /> ADD TO CART
+                </>
+              )}
             </button>
           </div>
 
@@ -331,9 +387,21 @@ export default function MerchandisePage() {
 
             <button
               onClick={() => handleAddToCart('Elite Driver T-Shirt')}
-              className='mt-auto w-full bg-[#063b5c] text-white py-2 rounded font-bold flex items-center justify-center gap-2 hover:bg-[#042840] transition'
+              className={`mt-auto w-full text-white py-2 rounded font-bold flex items-center justify-center gap-2 transition-all duration-200 ${
+                lastAddedProduct === 'Elite Driver T-Shirt'
+                  ? 'bg-emerald-600 hover:bg-emerald-700 shadow-md scale-[1.02]'
+                  : 'bg-[#063b5c] hover:bg-[#042840]'
+              }`}
             >
-              <ShoppingCart size={16} /> ADD TO CART
+              {lastAddedProduct === 'Elite Driver T-Shirt' ? (
+                <>
+                  <Check size={16} /> ADDED TO CART
+                </>
+              ) : (
+                <>
+                  <ShoppingCart size={16} /> ADD TO CART
+                </>
+              )}
             </button>
           </div>
 
@@ -377,9 +445,21 @@ export default function MerchandisePage() {
 
             <button
               onClick={() => handleAddToCart('Professional Polo Shirt')}
-              className='mt-auto w-full bg-[#063b5c] text-white py-2 rounded font-bold flex items-center justify-center gap-2 hover:bg-[#042840] transition'
+              className={`mt-auto w-full text-white py-2 rounded font-bold flex items-center justify-center gap-2 transition-all duration-200 ${
+                lastAddedProduct === 'Professional Polo Shirt'
+                  ? 'bg-emerald-600 hover:bg-emerald-700 shadow-md scale-[1.02]'
+                  : 'bg-[#063b5c] hover:bg-[#042840]'
+              }`}
             >
-              <ShoppingCart size={16} /> ADD TO CART
+              {lastAddedProduct === 'Professional Polo Shirt' ? (
+                <>
+                  <Check size={16} /> ADDED TO CART
+                </>
+              ) : (
+                <>
+                  <ShoppingCart size={16} /> ADD TO CART
+                </>
+              )}
             </button>
           </div>
 
@@ -429,9 +509,21 @@ export default function MerchandisePage() {
 
             <button
               onClick={() => handleAddToCart('Premium Executive Polo')}
-              className='mt-auto w-full bg-[#063b5c] text-white py-2 rounded font-bold flex items-center justify-center gap-2 hover:bg-[#042840] transition'
+              className={`mt-auto w-full text-white py-2 rounded font-bold flex items-center justify-center gap-2 transition-all duration-200 ${
+                lastAddedProduct === 'Premium Executive Polo'
+                  ? 'bg-emerald-600 hover:bg-emerald-700 shadow-md scale-[1.02]'
+                  : 'bg-[#063b5c] hover:bg-[#042840]'
+              }`}
             >
-              <ShoppingCart size={16} /> ADD TO CART
+              {lastAddedProduct === 'Premium Executive Polo' ? (
+                <>
+                  <Check size={16} /> ADDED TO CART
+                </>
+              ) : (
+                <>
+                  <ShoppingCart size={16} /> ADD TO CART
+                </>
+              )}
             </button>
           </div>
 
@@ -480,9 +572,19 @@ export default function MerchandisePage() {
 
             <button
               onClick={() => handleAddToCart('Driver Bundle')}
-              className='mt-auto w-full bg-[#f47a22] text-white py-3 rounded font-bold uppercase tracking-wider hover:bg-[#d66519] transition'
+              className={`mt-auto w-full text-white py-3 rounded font-bold uppercase tracking-wider transition-all duration-200 ${
+                lastAddedProduct === 'Driver Bundle'
+                  ? 'bg-emerald-600 hover:bg-emerald-700 flex items-center justify-center gap-2 shadow-md scale-[1.02]'
+                  : 'bg-[#f47a22] hover:bg-[#d66519]'
+              }`}
             >
-              GET BUNDLE
+              {lastAddedProduct === 'Driver Bundle' ? (
+                <>
+                  <Check size={18} /> BUNDLE ADDED!
+                </>
+              ) : (
+                'GET BUNDLE'
+              )}
             </button>
           </div>
         </div>
@@ -557,7 +659,7 @@ export default function MerchandisePage() {
               <Star size={18} fill='currentColor' />
             </div>
             <p className='text-gray-800 font-medium italic mb-6'>
-              "Customers recognize me instantly. The polo looks extremely professional."
+              &quot;Customers recognize me instantly. The polo looks extremely professional.&quot;
             </p>
             <div className='mt-auto'>
               <p className='font-bold text-gray-900'>- Marcus D.</p>
@@ -580,7 +682,7 @@ export default function MerchandisePage() {
               <Star size={18} fill='currentColor' />
             </div>
             <p className='text-gray-800 font-medium italic mb-6'>
-              "Comfortable shirts and great quality. Highly recommend!"
+              &quot;Comfortable shirts and great quality. Highly recommend!&quot;
             </p>
             <div className='mt-auto'>
               <p className='font-bold text-gray-900'>- Tasha K.</p>
@@ -603,7 +705,7 @@ export default function MerchandisePage() {
               <Star size={18} fill='currentColor' />
             </div>
             <p className='text-gray-800 font-medium italic mb-6'>
-              "The branding helped me get repeat customers. It works!"
+              &quot;The branding helped me get repeat customers. It works!&quot;
             </p>
             <div className='mt-auto'>
               <p className='font-bold text-gray-900'>- James R.</p>
