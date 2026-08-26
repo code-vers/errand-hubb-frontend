@@ -29,6 +29,14 @@ export const adsService = {
     return api.get('/ads/categories');
   },
 
+  adminCreate: async (data: any) => {
+    return api.post('/ads/admin', data);
+  },
+
+  reorderAds: async (orders: { id: string; position: number }[]) => {
+    return api.patch('/ads/reorder', { orders });
+  },
+
   update: async (id: string, data: any) => {
     return api.patch(`/ads/${id}`, data);
   },
