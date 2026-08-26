@@ -36,6 +36,9 @@ const ErrandRegistrationPage = () => {
     bio: "",
     services: "",
     youtubeLink: "",
+    youtubeLink1: "",
+    youtubeLink2: "",
+    youtubeLink3: "",
     rate: "",
     password: "",
     confirmPassword: "",
@@ -109,6 +112,9 @@ const ErrandRegistrationPage = () => {
   useEffect(() => {
     const prefill = async () => {
       if (user && profileData) {
+        const rawYoutubeLinks = profileData.profile?.youtubeLinks && profileData.profile.youtubeLinks.length > 0
+          ? profileData.profile.youtubeLinks
+          : profileData.profile?.youtubeLink ? [profileData.profile.youtubeLink] : [];
         setFormData((prev) => ({
           ...prev,
           firstName: profileData.firstName || "",
@@ -119,7 +125,10 @@ const ErrandRegistrationPage = () => {
           state: profileData.profile?.state || "",
           bio: profileData.profile?.bio || "",
           services: profileData.profile?.services || "",
-          youtubeLink: profileData.profile?.youtubeLink || "",
+          youtubeLink: rawYoutubeLinks[0] || "",
+          youtubeLink1: rawYoutubeLinks[0] || "",
+          youtubeLink2: rawYoutubeLinks[1] || "",
+          youtubeLink3: rawYoutubeLinks[2] || "",
           rate: profileData.profile?.ratePerHour
             ? String(profileData.profile.ratePerHour)
             : "",
@@ -205,8 +214,22 @@ const ErrandRegistrationPage = () => {
     }
 
     const submitData = new FormData();
+    const youtubeLinksArr = [
+      formData.youtubeLink1,
+      formData.youtubeLink2,
+      formData.youtubeLink3,
+    ].map(l => (l || '').trim()).filter(Boolean);
+
     Object.entries(formData).forEach(([key, value]) => {
-      if (key !== "confirmPassword" && key !== "categoryIds" && value !== "") {
+      if (
+        key !== "confirmPassword" &&
+        key !== "categoryIds" &&
+        key !== "youtubeLink1" &&
+        key !== "youtubeLink2" &&
+        key !== "youtubeLink3" &&
+        key !== "youtubeLink" &&
+        value !== ""
+      ) {
         if (user && key === "password") {
           // Skip password field on update unless it has a value
           return;
@@ -214,6 +237,11 @@ const ErrandRegistrationPage = () => {
         submitData.append(key, value as string);
       }
     });
+
+    if (youtubeLinksArr.length > 0) {
+      submitData.append("youtubeLinks", JSON.stringify(youtubeLinksArr));
+      submitData.append("youtubeLink", youtubeLinksArr[0]);
+    }
 
     if (formData.categoryIds.length > 0) {
       submitData.append("categoryIds", JSON.stringify(formData.categoryIds));
@@ -643,23 +671,43 @@ const ErrandRegistrationPage = () => {
             )}
           </div>
 
-          {/* YouTube Link */}
-          <div className='flex flex-col space-y-1'>
-            <label
-              htmlFor='youtubeLink'
-              className={labelClass + " flex items-center gap-1.5"}>
-              <PlayCircle size={12} className='text-red-500' /> YouTube Video
-              Link (Optional)
+          {/* YouTube Links (Up to 3) */}
+          <div className='flex flex-col space-y-3 p-4 bg-red-50/40 rounded-xl border border-red-100/80'>
+            <label className={labelClass + " flex items-center gap-1.5 font-bold text-gray-800"}>
+              <PlayCircle size={14} className='text-red-500' /> YouTube Video Links (Optional - Up to 3)
             </label>
-            <input
-              id='youtubeLink'
-              name='youtubeLink'
-              type='url'
-              placeholder='https://www.youtube.com/watch?v=...'
-              value={formData.youtubeLink}
-              onChange={handleChange}
-              className={inputClass}
-            />
+            <div className='flex flex-col space-y-2.5'>
+              <input
+                id='youtubeLink1'
+                name='youtubeLink1'
+                type='url'
+                placeholder='YouTube Video Link 1 (e.g. https://www.youtube.com/watch?v=...)'
+                value={formData.youtubeLink1}
+                onChange={handleChange}
+                className={inputClass}
+              />
+              <input
+                id='youtubeLink2'
+                name='youtubeLink2'
+                type='url'
+                placeholder='YouTube Video Link 2 (Optional)'
+                value={formData.youtubeLink2}
+                onChange={handleChange}
+                className={inputClass}
+              />
+              <input
+                id='youtubeLink3'
+                name='youtubeLink3'
+                type='url'
+                placeholder='YouTube Video Link 3 (Optional)'
+                value={formData.youtubeLink3}
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
+            <p className='text-[11px] text-gray-500'>
+              You can provide up to 3 YouTube video URLs to showcase your work and skills to clients.
+            </p>
           </div>
 
           {/* Rate */}

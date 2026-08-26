@@ -23,6 +23,10 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
   onSave,
   isUpdating,
 }) => {
+  const rawLinks = user?.profile?.youtubeLinks && user.profile.youtubeLinks.length > 0
+    ? user.profile.youtubeLinks
+    : user?.profile?.youtubeLink ? [user.profile.youtubeLink] : [];
+
   const [formData, setFormData] = useState({
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
@@ -34,7 +38,10 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
     preferredContact: user?.profile?.preferredContact || "",
     services: user?.profile?.services || "",
     ratePerHour: user?.profile?.ratePerHour || "",
-    youtubeLink: user?.profile?.youtubeLink || "",
+    youtubeLink: rawLinks[0] || "",
+    youtubeLink1: rawLinks[0] || "",
+    youtubeLink2: rawLinks[1] || "",
+    youtubeLink3: rawLinks[2] || "",
     categoryIds: user?.profile?.categoryIds || [],
   });
 
@@ -80,12 +87,27 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
     e.preventDefault();
     if (!validateForm(formData)) return;
     
+    const youtubeLinksArr = [
+      formData.youtubeLink1,
+      formData.youtubeLink2,
+      formData.youtubeLink3,
+    ].map(l => (l || '').trim()).filter(Boolean);
+
     const submitData = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
-      if (key !== "categoryIds") {
+      if (
+        key !== "categoryIds" &&
+        key !== "youtubeLink1" &&
+        key !== "youtubeLink2" &&
+        key !== "youtubeLink3" &&
+        key !== "youtubeLink"
+      ) {
         submitData.append(key, value as string);
       }
     });
+
+    submitData.append("youtubeLinks", JSON.stringify(youtubeLinksArr));
+    submitData.append("youtubeLink", youtubeLinksArr[0] || "");
 
     if (formData.categoryIds.length > 0) {
       submitData.append("categoryIds", JSON.stringify(formData.categoryIds));
@@ -374,18 +396,34 @@ const EditProfileModal: FC<EditProfileModalProps> = ({
               </div>
             )}
 
-            {/* YouTube Link (For Errand role) */}
+            {/* YouTube Links (For Errand role - Up to 3) */}
             {user?.role === 'errand' && (
-              <div className='flex flex-col gap-1.5 md:col-span-2'>
+              <div className='flex flex-col gap-2.5 md:col-span-2 bg-red-50/30 p-4 rounded-xl border border-red-100'>
                 <label className='text-xs font-bold text-text-secondary uppercase tracking-wider flex items-center gap-2'>
-                  <PlayCircle size={14} className="text-red-500" /> YouTube Video Link (Optional)
+                  <PlayCircle size={14} className="text-red-500" /> YouTube Video Links (Optional - Up to 3)
                 </label>
                 <input
                   type='url'
-                  name='youtubeLink'
-                  value={formData.youtubeLink}
+                  name='youtubeLink1'
+                  value={formData.youtubeLink1}
                   onChange={handleChange}
-                  placeholder='https://www.youtube.com/watch?v=...'
+                  placeholder='YouTube Link 1 (e.g. https://www.youtube.com/watch?v=...)'
+                  className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all'
+                />
+                <input
+                  type='url'
+                  name='youtubeLink2'
+                  value={formData.youtubeLink2}
+                  onChange={handleChange}
+                  placeholder='YouTube Link 2 (Optional)'
+                  className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all'
+                />
+                <input
+                  type='url'
+                  name='youtubeLink3'
+                  value={formData.youtubeLink3}
+                  onChange={handleChange}
+                  placeholder='YouTube Link 3 (Optional)'
                   className='w-full px-4 py-2.5 bg-background border border-[#f5ebd8] rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all'
                 />
               </div>

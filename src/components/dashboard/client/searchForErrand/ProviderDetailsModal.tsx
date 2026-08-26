@@ -32,7 +32,13 @@ export default function ProviderDetailsModal({
 
   const profile = provider.profile || {};
   const gallery = profile.gallery || [];
-  const videoId = profile.youtubeLink ? getYoutubeVideoId(profile.youtubeLink) : null;
+  const rawVideoLinks: string[] = profile.youtubeLinks && profile.youtubeLinks.length > 0
+    ? profile.youtubeLinks
+    : profile.youtubeLink ? [profile.youtubeLink] : [];
+
+  const videoIds = rawVideoLinks
+    .map((link: string) => (link ? getYoutubeVideoId(link) : null))
+    .filter((id: string | null): id is string => Boolean(id));
 
   const selectedCategories = categories.filter((c: any) =>
     (profile.categoryIds || []).includes(c.id),
@@ -45,7 +51,7 @@ export default function ProviderDetailsModal({
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200'>
-      <div className='bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl relative animate-in zoom-in-95 duration-200'>
+      <div className={`bg-white rounded-2xl w-full ${videoIds.length > 1 ? 'max-w-4xl' : 'max-w-2xl'} max-h-[90vh] overflow-hidden flex flex-col shadow-2xl relative animate-in zoom-in-95 duration-200`}>
         {/* Header */}
         <div className='flex justify-between items-center p-6 border-b border-gray-100 bg-gray-50/50'>
           <h2 className='text-xl font-bold text-gray-900'>Provider Details</h2>
@@ -223,23 +229,34 @@ export default function ProviderDetailsModal({
               </div>
             )}
 
-            {/* Video Preview */}
-            {videoId && (
+            {/* Video Previews (Up to 3) */}
+            {videoIds.length > 0 && (
               <div>
                 <h4 className='text-lg font-bold text-gray-900 mb-3 flex items-center gap-2'>
                   <PlayCircle size={18} className='text-red-500' />
-                  Video Intro
+                  {videoIds.length > 1 ? `Video Introductions (${videoIds.length})` : 'Video Intro'}
                 </h4>
-                <div className='h-48 rounded-xl overflow-hidden border border-gray-100 shadow-sm'>
-                  <iframe
-                    width='100%'
-                    height='100%'
-                    src={`https://www.youtube.com/embed/${videoId}`}
-                    title='Provider Introduction'
-                    frameBorder='0'
-                    allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                    allowFullScreen
-                  ></iframe>
+                <div className={`grid gap-4 ${videoIds.length === 1 ? 'grid-cols-1' : videoIds.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3'}`}>
+                  {videoIds.map((vId, idx) => (
+                    <div key={vId + idx} className='flex flex-col gap-1.5'>
+                      <div className='h-48 rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-black/5'>
+                        <iframe
+                          width='100%'
+                          height='100%'
+                          src={`https://www.youtube.com/embed/${vId}`}
+                          title={`Provider Introduction ${idx + 1}`}
+                          frameBorder='0'
+                          allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                          allowFullScreen
+                        ></iframe>
+                      </div>
+                      {videoIds.length > 1 && (
+                        <span className='text-xs font-semibold text-gray-500 text-center'>
+                          Video {idx + 1}
+                        </span>
+                      )}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}

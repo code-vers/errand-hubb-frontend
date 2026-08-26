@@ -22,6 +22,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import logo from "../../../public/logo2.svg";
 
+
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
