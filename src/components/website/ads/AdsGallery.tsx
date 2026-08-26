@@ -171,14 +171,14 @@ const AdsGallery = () => {
                     className='flex flex-col gap-3 group animate-in fade-in zoom-in-95 duration-500'
                   >
                     {/* Poster Image */}
-                    <div className='relative w-full rounded-lg overflow-hidden border border-gray-100 shadow-sm bg-gray-50 aspect-[4/5]'>
+                    <div className='relative w-full rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-slate-100 aspect-[3/4] flex items-center justify-center'>
                       <img
                         src={
                           getImageUrl(ad.imageUrl) ||
                           'https://images.unsplash.com/photo-1542831371-29b0f74f9713'
                         }
                         alt={ad.companyName || 'Business Poster'}
-                        className='w-full h-full object-cover block group-hover:scale-105 transition-transform duration-700'
+                        className='w-full h-full object-contain block group-hover:scale-105 transition-transform duration-500'
                       />
                     </div>
 
