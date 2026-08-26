@@ -90,6 +90,12 @@ export const sidebarConfig: SidebarMenuItem[] = [
     roles: ["admin"],
   },
   {
+    title: "Ads Management",
+    path: "/dashboard/ads-management",
+    icon: Megaphone,
+    roles: ["admin"],
+  },
+  {
     title: "System Settings",
     path: "/dashboard/system-settings",
     icon: ShieldAlert,
