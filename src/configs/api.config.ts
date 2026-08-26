@@ -6,6 +6,7 @@ export const API_CONFIG = {
 export const getImageUrl = (path: string | null | undefined): string | null => {
   if (!path) return null;
   if (path.startsWith("http")) return path;
+  if (path.startsWith("/ads/")) return path;
 
   // Ensure path starts with /
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
