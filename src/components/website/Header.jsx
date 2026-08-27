@@ -7,6 +7,7 @@ import {
   Building2,
   ChevronDown,
   CircleHelp,
+  FileText,
   Image as ImageIcon,
   Menu,
   PhoneCall,
@@ -134,6 +135,13 @@ export default function Header() {
       badgeColor: "bg-rose-100/80 text-rose-600",
     },
     {
+      name: "Press Release",
+      subtitle: "Official announcements & media",
+      href: "/press-release",
+      icon: FileText,
+      badgeColor: "bg-red-100/80 text-red-600",
+    },
+    {
       name: "Legal & Policies",
       subtitle: "Terms, privacy & refund policies",
       href: "/legal",
@@ -154,6 +162,7 @@ export default function Header() {
       { name: "FAQ", href: "/faq" },
       { name: "Investor Relations", href: "/investor-relations" },
       { name: "Contact", href: "/contact" },
+      { name: "Press Release", href: "/press-release" },
       { name: "Legal", href: "/legal" },
       { name: "Ads", href: "/ads" },
     ];

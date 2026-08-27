@@ -9,8 +9,6 @@ import {
   Image as ImageIcon,
   Loader2,
   X,
-  Play,
-  Pause,
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -19,6 +17,7 @@ import icon from '../../../public/icon.svg';
 import logo from '../../../public/logo2.svg';
 import icon2 from '../../../public/errand/icon.jpg';
 import { useConnect } from '@/hooks/useConnect';
+import AudioPlayer from '@/components/shared/AudioPlayer';
 
 interface MembershipPlan {
   priceLabel: string;
@@ -240,23 +239,6 @@ const ErrandPage = () => {
   const { connect, isConnecting } = useConnect();
   const [connectingProfileId, setConnectingProfileId] = useState<string | null>(null);
 
-  const [isHeaderAudioPlaying, setIsHeaderAudioPlaying] = useState(false);
-  const headerAudioRef = useRef<HTMLAudioElement | null>(null);
-
-  const toggleHeaderAudio = () => {
-    if (headerAudioRef.current) {
-      if (isHeaderAudioPlaying) {
-        headerAudioRef.current.pause();
-        setIsHeaderAudioPlaying(false);
-      } else {
-        headerAudioRef.current
-          .play()
-          .then(() => setIsHeaderAudioPlaying(true))
-          .catch((err) => console.error('Header audio playback error:', err));
-      }
-    }
-  };
-
   const posts = STATIC_POSTS;
   const isLoading = false;
   const totalPages = 1;
@@ -316,15 +298,15 @@ const ErrandPage = () => {
   const errandProfiles = getErrandProfiles();
 
   return (
-    <section className='w-full bg-(--color-warning-bg)'>
+    <section className='w-full bg-(--color-warning-bg)' style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
       <div className='bg-white py-8 pb-8'>
         <div className='mx-auto  px-6 lg:px-10'>
           <div className='grid grid-cols-1 items-center gap-6 text-center xl:grid-cols-[1fr_auto_1fr] xl:items-end xl:text-left'>
             <div className='flex flex-col items-center gap-4 xl:items-start'>
-              <p className=' text-[18px] lg:whitespace-nowrap font-bold leading-tight tracking-[0.4px] text-(--color-secondary) md:text-[34px]'>
+              <p className=' text-[18px] lg:whitespace-nowrap font-bold leading-tight tracking-[0.4px] text-(--color-secondary) md:text-[34px]' style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
                 MARKET YOURSELF TO PEOPLE WHO NEED
               </p>
-              <p className=' text-[18px] font-bold leading-tight tracking-[0.4px] text-(--color-secondary) md:text-[34px]'>
+              <p className=' text-[18px] font-bold leading-tight tracking-[0.4px] text-(--color-secondary) md:text-[34px]' style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
                 YOUR HELP WITH AN ERRANDR POST
               </p>
               <div className='flex flex-wrap items-center gap-3 justify-center xl:justify-start'>
@@ -343,10 +325,10 @@ const ErrandPage = () => {
             </div>
 
             <div className='flex flex-col  gap-4 xl:items-end'>
-              <p className='text-[44px] leading-[0.95] font-extrabold text-[#171923] md:text-[58px]'>
+              <p className='text-[44px] leading-[0.95] font-extrabold text-[#171923] md:text-[58px]' style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
                 {membershipPlan.priceLabel}
               </p>
-              <p className='text-[22px] leading-none font-semibold text-(--color-secondary) md:text-[30px]'>
+              <p className='text-[22px] leading-none font-semibold text-(--color-secondary) md:text-[30px]' style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
                 {membershipPlan.billingCycle}
               </p>
 
@@ -368,7 +350,7 @@ const ErrandPage = () => {
         <div className='mx-auto  px-6 lg:px-10'>
           <header className='flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8'>
             <div>
-              <h1 className='text-[34px] font-extrabold tracking-[0.5px] text-(--color-secondary) md:text-[46px]'>
+              <h1 className='text-[34px] font-extrabold tracking-[0.5px] text-(--color-secondary) md:text-[46px]' style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
                 ERRANDR&apos;S
               </h1>
               <p className='mt-2 text-[18px] text-[#37556d]'>
@@ -377,7 +359,7 @@ const ErrandPage = () => {
             </div>
 
             {/* Header Lady Photo & Audio Feature */}
-            <div className='flex items-center gap-5 sm:gap-6 self-start md:self-auto relative py-1'>
+            <div className='flex items-center gap-4 sm:gap-5 self-start md:self-auto relative py-1'>
               {/* Female Photo */}
               <div className='relative overflow-hidden rounded-2xl border-4 border-white shadow-xl hover:shadow-2xl transition-all duration-300 w-32 h-36 sm:w-36 sm:h-40 shrink-0 bg-slate-100 group'>
                 <img
@@ -387,42 +369,7 @@ const ErrandPage = () => {
                 />
               </div>
 
-              {/* Play Triangle Button */}
-              <div className='relative flex items-center justify-center shrink-0'>
-                <button
-                  type='button'
-                  onClick={toggleHeaderAudio}
-                  title={isHeaderAudioPlaying ? 'Pause Audio' : 'Play Audio'}
-                  className='relative flex items-center justify-center bg-[#EC6F27] hover:bg-[#d95e18] active:scale-95 text-white font-extrabold transition-all cursor-pointer group'
-                  style={{
-                    clipPath: 'polygon(0% 0%, 100% 50%, 0% 100%)',
-                    width: '92px',
-                    height: '76px',
-                    filter: 'drop-shadow(0 4px 10px rgba(236, 111, 39, 0.4))',
-                  }}
-                >
-                  <span className='absolute left-3.5 flex items-center gap-1 text-[13px] font-black uppercase tracking-widest text-white drop-shadow-sm select-none group-hover:scale-105 transition-transform'>
-                    {isHeaderAudioPlaying ? (
-                      <>
-                        <Pause size={13} fill='white' />
-                        PAUSE
-                      </>
-                    ) : (
-                      <>
-                        <Play size={13} fill='white' />
-                        PLAY
-                      </>
-                    )}
-                  </span>
-                </button>
-              </div>
-
-              <audio
-                ref={headerAudioRef}
-                src='/luvvoice.com-20260825-wCOAcZ.mp3'
-                onEnded={() => setIsHeaderAudioPlaying(false)}
-                preload='metadata'
-              />
+              <AudioPlayer src='/luvvoice.com-20260825-wCOAcZ.mp3' label='Audio Overview' />
             </div>
           </header>
 
@@ -459,7 +406,7 @@ const ErrandPage = () => {
                     </div>
                     <div className='p-4 pb-4.5'>
                       <div className='flex items-center justify-between gap-2.5'>
-                        <h2 className='text-[27px] font-bold text-(--color-secondary)'>
+                        <h2 className='text-[27px] font-bold text-(--color-secondary)' style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
                           {profile.name}
                         </h2>
                         <button
@@ -544,12 +491,13 @@ const ErrandPage = () => {
 
                       <div className='relative mt-3'>
                         <p className='text-[11px] tracking-[0.8px] text-[#757b84]'>PRICES</p>
-                        <p className='mt-1.25 text-[27px] font-medium text-[#1e2329]'>
+                        <p className='mt-1.25 text-[27px] font-medium text-[#1e2329]' style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}>
                           {profile.pricingText}
                         </p>
                         <span
                           aria-hidden='true'
                           className='pointer-events-none absolute right-2 bottom-6 rotate-[-12deg] text-[22px] font-extrabold tracking-[-0.5px] text-[#ef3e32]'
+                          style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}
                         >
                           SAMPLE
                         </span>

@@ -14,6 +14,7 @@ import {
   CircleHelp,
   Clock3,
   DollarSign,
+  FileText,
   Image as ImageIcon,
   Menu,
   MessageCircle,
@@ -88,6 +89,13 @@ const moreMenuItems = [
     href: "/contact",
     icon: PhoneCall,
     badgeColor: "bg-rose-100/80 text-rose-600",
+  },
+  {
+    name: "Press Release",
+    subtitle: "Official announcements & media",
+    href: "/press-release",
+    icon: FileText,
+    badgeColor: "bg-red-100/80 text-red-600",
   },
   {
     name: "Legal & Policies",

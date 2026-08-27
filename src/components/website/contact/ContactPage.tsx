@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import logo from "../../../../public/logo2.svg";
 import { useState } from "react";
 import { useFormValidation } from "@/hooks/useFormValidation";
@@ -83,13 +84,21 @@ const ContactPage = () => {
               </p>
             </div>
 
-            <div className='mt-14 w-[250px] max-w-full'>
+            <div className='mt-14 w-[250px] max-w-full flex flex-col items-center text-center'>
               <Image
                 src={logo}
                 alt='ErrandHubb Logo'
                 className='h-auto w-full'
                 priority
               />
+              <div className='mt-5 w-full text-center'>
+                <Link
+                  href='/press-release'
+                  className='inline-block text-[#e52e2e] hover:text-[#c42323] text-xl font-extrabold italic uppercase tracking-wider transition-all duration-200 hover:scale-105 active:scale-95'
+                >
+                  PRESS RELEASE
+                </Link>
+              </div>
             </div>
           </aside>
 
