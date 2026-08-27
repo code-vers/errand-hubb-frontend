@@ -8,7 +8,7 @@ export const metadata = {
 
 const page = () => {
   return (
-    <div>
+    <div style={{ fontFamily: "Helvetica, Arial, sans-serif" }}>
       <SectionHeroBanner
         title={"Errands"}
         subtitle={
