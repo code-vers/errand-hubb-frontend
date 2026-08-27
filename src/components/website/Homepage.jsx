@@ -199,6 +199,10 @@ function Header({ onHowItWorksClick }) {
             </div>
           )}
         </div>
+
+        <Link href="/errand">
+          Enter
+        </Link>
       </nav>
 
       <div className={styles.headerActions}>
@@ -230,6 +234,9 @@ function Header({ onHowItWorksClick }) {
             }}
           >
             How It Works
+          </Link>
+          <Link href="/errand" onClick={() => setIsOpen(false)}>
+            Enter
           </Link>
 
           <div className="w-full border-t border-gray-100 my-1 pt-2">
