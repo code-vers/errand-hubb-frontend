@@ -4,7 +4,12 @@ export type ErrandStatus =
   | "Scheduled"
   | "In Progress"
   | "Completed"
-  | "Cancelled";
+  | "completed"
+  | "active"
+  | "assigned"
+  | "Cancelled"
+  | "cancelled"
+  | (string & {});
 
 export type PostStatus = "all" | "open" | "pending" | "completed" | "flagged";
 

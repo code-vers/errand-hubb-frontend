@@ -257,7 +257,7 @@ export default function PostCard({ post, onEdit, onDelete, onOpenDetails }: Post
           )}
 
           {/* Mark as Completed Action */}
-          {post.status !== 'Completed' && post.status !== 'completed' && (
+          {String(post.status).toLowerCase() !== 'completed' && (
             <button
               type='button'
               onClick={async () => {
@@ -293,7 +293,7 @@ export default function PostCard({ post, onEdit, onDelete, onOpenDetails }: Post
           )}
 
           {/* Leave Review Action */}
-          {(post.status === 'Completed' || post.status === 'completed') && (
+          {String(post.status).toLowerCase() === 'completed' && (
             <button
               type='button'
               onClick={() => {
