@@ -83,7 +83,11 @@ export default function SearchBar({
             placeholder='Search tasks, keywords, or keywords...'
             type='text'
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              const val = e.target.value;
+              setQuery(val);
+              onSearch(val);
+            }}
             onKeyDown={handleKeyDown}
           />
           {query && (
