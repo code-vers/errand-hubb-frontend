@@ -28,4 +28,8 @@ export const reviewsService = {
       params: { revieweeId, postId, serviceRequestId },
     });
   },
+
+  getAllReviews: async (params?: { page?: number; limit?: number; search?: string; rating?: number; role?: string }) => {
+    return api.get('/reviews/all', { params });
+  },
 };

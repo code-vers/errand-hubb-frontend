@@ -13,7 +13,8 @@ import {
   Users,
   Megaphone,
   MonitorPlay,
-  ShoppingBag
+  ShoppingBag,
+  Star
 } from "lucide-react";
 
 export const sidebarConfig: SidebarMenuItem[] = [
@@ -93,6 +94,12 @@ export const sidebarConfig: SidebarMenuItem[] = [
     title: "Ads Management",
     path: "/dashboard/ads-management",
     icon: Megaphone,
+    roles: ["admin"],
+  },
+  {
+    title: "Review Management",
+    path: "/dashboard/review-management",
+    icon: Star,
     roles: ["admin"],
   },
   {

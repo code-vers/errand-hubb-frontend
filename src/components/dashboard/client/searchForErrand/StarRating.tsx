@@ -1,26 +1,33 @@
+import React from "react";
+import { Star } from "lucide-react";
+
 interface StarRatingProps {
   rating: number;
-  size?: "sm" | "md";
+  size?: "sm" | "md" | "lg";
 }
 
 export default function StarRating({ rating, size = "sm" }: StarRatingProps) {
-  const stars = Array.from({ length: 5 }, (_, index) => {
-    const filled = index < Math.floor(rating);
-    return filled;
-  });
+  const numericRating = Math.max(0, Math.min(5, Number(rating) || 0));
+  const roundedRating = Math.round(numericRating);
 
-  const sizeClass = size === "sm" ? "w-3 h-3" : "w-4 h-4";
+  const starSize = size === "sm" ? 12 : size === "md" ? 16 : 20;
 
   return (
-    <div className='flex text-yellow-400'>
-      {stars.map((filled, index) => (
-        <svg
-          key={index}
-          className={`${sizeClass} fill-current`}
-          viewBox='0 0 20 20'>
-          <path d='M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z' />
-        </svg>
-      ))}
+    <div className="flex items-center gap-0.5 shrink-0">
+      {[1, 2, 3, 4, 5].map((starIndex) => {
+        const isFilled = starIndex <= roundedRating;
+        return (
+          <Star
+            key={starIndex}
+            size={starSize}
+            className={
+              isFilled
+                ? "fill-amber-400 text-amber-400 shrink-0"
+                : "fill-gray-200 text-gray-300 shrink-0"
+            }
+          />
+        );
+      })}
     </div>
   );
 }
