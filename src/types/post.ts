@@ -4,7 +4,12 @@ export type ErrandStatus =
   | "Scheduled"
   | "In Progress"
   | "Completed"
-  | "Cancelled";
+  | "completed"
+  | "active"
+  | "assigned"
+  | "Cancelled"
+  | "cancelled"
+  | (string & {});
 
 export type PostStatus = "all" | "open" | "pending" | "completed" | "flagged";
 
@@ -31,6 +36,8 @@ export interface ErrandPost {
   location: string;
   serviceType: ServiceType;
   assignedTo: string | null;
+  assignedToId?: string | null;
+  userId?: string | null;
   icon: string;
   categoryId: string;
   photoUrl?: string | null;

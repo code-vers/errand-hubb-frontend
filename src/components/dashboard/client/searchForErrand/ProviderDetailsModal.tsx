@@ -84,20 +84,31 @@ export default function ProviderDetailsModal({
                 <MapPin size={16} className='text-[#FBBC04] shrink-0' />
                 <span>{profile.city || 'Remote'}, {profile.state || ''}</span>
               </p>
-              <div className='flex items-center gap-2 mt-2'>
-                {provider.reviewCount > 0 || provider.rating > 0 ? (
-                  <>
-                    <StarRating rating={provider.rating || 5} size='sm' />
-                    <span className='text-sm text-gray-500'>
-                      {provider.rating ? provider.rating.toFixed(1) : "5.0"} ({provider.reviewCount || 1} {provider.reviewCount === 1 ? 'review' : 'reviews'})
-                    </span>
-                  </>
-                ) : (
-                  <span className='text-xs text-gray-400 font-medium italic'>
-                    No reviews yet
+              {provider.reviewCount > 0 ? (
+                <div className='flex items-center gap-2 mt-2 flex-wrap'>
+                  <StarRating rating={provider.rating || 5} size='sm' />
+                  <span className='text-sm text-gray-500'>
+                    {provider.rating ? provider.rating.toFixed(1) : "5.0"} ({provider.reviewCount} {provider.reviewCount === 1 ? 'review' : 'reviews'})
                   </span>
-                )}
-              </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (typeof window !== 'undefined') {
+                        const event = new CustomEvent('open-reviews-list-modal', {
+                          detail: {
+                            userId: provider.id,
+                            userName: `${provider.firstName} ${provider.lastName}`,
+                          },
+                        });
+                        window.dispatchEvent(event);
+                      }
+                    }}
+                    className="px-2.5 py-1 bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 font-extrabold text-xs rounded-md transition-all cursor-pointer ml-1"
+                  >
+                    See Reviews
+                  </button>
+                </div>
+              ) : null}
 
               {/* Services Badges */}
               <div className='mt-3 flex flex-wrap gap-2'>

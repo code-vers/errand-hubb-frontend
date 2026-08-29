@@ -15,8 +15,10 @@ import {
   Tag,
   ImageIcon,
   Maximize2,
+  Star,
 } from "lucide-react";
 import { getImageUrl } from "@/configs/api.config";
+import { useAuth } from "@/context/AuthContext";
 
 interface JobDetailsModalProps {
   post: any;
@@ -35,6 +37,7 @@ export default function JobDetailsModal({
   onEdit,
   isOwner = false,
 }: JobDetailsModalProps) {
+  const { user: currentUser } = useAuth();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   if (!post) return null;
@@ -112,7 +115,7 @@ export default function JobDetailsModal({
               {post.title}
             </h2>
             <div className='flex items-center gap-2 mt-2 text-xs text-gray-500 flex-wrap'>
-              <div className='flex items-center gap-1.5'>
+              <div className='flex items-center gap-1.5 flex-wrap'>
                 <div className='w-6 h-6 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0'>
                   {clientAvatar ? (
                     <img src={clientAvatar} alt={clientName} className='w-full h-full object-cover' />
@@ -121,6 +124,31 @@ export default function JobDetailsModal({
                   )}
                 </div>
                 <span className='font-semibold text-gray-700'>{clientName}</span>
+                {client.reviewCount > 0 && (
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs font-bold text-amber-600">
+                      ★ {client.rating.toFixed(1)} ({client.reviewCount})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const targetUserId = client.id || post.userId;
+                        if (targetUserId && typeof window !== 'undefined') {
+                          const event = new CustomEvent('open-reviews-list-modal', {
+                            detail: {
+                              userId: targetUserId,
+                              userName: clientName,
+                            },
+                          });
+                          window.dispatchEvent(event);
+                        }
+                      }}
+                      className="px-2 py-0.5 bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 font-extrabold text-[10px] rounded-md transition-all flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>See Reviews</span>
+                    </button>
+                  </div>
+                )}
               </div>
               <span>•</span>
               <span className='text-gray-400'>
@@ -281,6 +309,39 @@ export default function JobDetailsModal({
                   Connect / Message Client
                 </>
               )}
+            </button>
+          )}
+
+          {(post.status === 'Completed' || post.status === 'completed') && (
+            <button
+              type='button'
+              onClick={() => {
+                const currentUserId = currentUser?.id;
+                const isClient = currentUser?.role === 'client' || (currentUserId && currentUserId === (post.userId || post.user?.id));
+                
+                const targetRevieweeId = isClient
+                  ? (post.assignedToId || post.assignedTo?.id)
+                  : (post.userId || post.user?.id);
+
+                const targetRevieweeName = isClient
+                  ? (post.assignedTo ? (typeof post.assignedTo === 'object' ? `${post.assignedTo.firstName} ${post.assignedTo.lastName}` : post.assignedTo) : 'Errander')
+                  : (post.user ? `${post.user.firstName} ${post.user.lastName}` : 'Client');
+
+                if (typeof window !== 'undefined' && targetRevieweeId) {
+                  onClose();
+                  const event = new CustomEvent('open-review-modal', {
+                    detail: {
+                      postId: post.id,
+                      revieweeId: targetRevieweeId,
+                      revieweeName: targetRevieweeName,
+                    },
+                  });
+                  window.dispatchEvent(event);
+                }
+              }}
+              className='px-5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold text-white bg-[#ff6900] hover:bg-[#e05d00] transition-all flex items-center gap-1.5 shadow-md cursor-pointer'>
+              <Star size={16} className="fill-white" />
+              <span>Leave a Review</span>
             </button>
           )}
         </div>

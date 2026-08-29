@@ -6,7 +6,7 @@ import Pagination from "@/components/common/Pagination";
 import { useQuery } from "@tanstack/react-query";
 import { postService } from "@/services/post.service";
 import { categoryService } from "@/services/category.service";
-import { Search, Loader2, Calendar, MapPin, MessageSquare, X, Eye } from "lucide-react";
+import { Search, Loader2, Calendar, MapPin, MessageSquare, X, Eye, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getImageUrl } from "@/configs/api.config";
 import { useConnect } from "@/hooks/useConnect";
@@ -38,7 +38,7 @@ export default function AvailableJobsPage() {
     queryFn: () => categoryService.getActive(),
   });
 
-  // Query general posts posted by clients
+  // Query general posts posted on the platform
   const { data: response, isLoading: loading } = useQuery({
     queryKey: ["available-job-posts", filters],
     queryFn: async () => {
@@ -47,9 +47,7 @@ export default function AvailableJobsPage() {
         categoryId: filters.categoryId === "all" ? undefined : filters.categoryId,
         location: filters.location || undefined,
         search: filters.search || undefined,
-        userRole: "client", // Only get posts posted by clients
         status: "available",
-        postState: "active",
       });
       return res.data;
     },
@@ -221,9 +219,37 @@ export default function AvailableJobsPage() {
                       <h3 className="card-title text-xs sm:text-sm font-bold text-gray-900 line-clamp-1 leading-tight truncate">
                         {post.title}
                       </h3>
-                      <p className="text-[10px] text-gray-400 font-bold uppercase mt-1 truncate">
-                        Posted by {clientName}
-                      </p>
+                      <div className="flex items-center justify-between gap-2 mt-1 flex-wrap">
+                        <p className="text-[10px] text-gray-400 font-bold uppercase truncate">
+                          Posted by {clientName}
+                        </p>
+                        {client.reviewCount > 0 && (
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <span className="text-[11px] font-extrabold text-amber-600 flex items-center gap-0.5">
+                              ★ {client.rating.toFixed(1)} ({client.reviewCount})
+                            </span>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const clientId = post.userId || client.id;
+                                if (clientId && typeof window !== 'undefined') {
+                                  const event = new CustomEvent('open-reviews-list-modal', {
+                                    detail: {
+                                      userId: clientId,
+                                      userName: clientName,
+                                    },
+                                  });
+                                  window.dispatchEvent(event);
+                                }
+                              }}
+                              className="px-2 py-0.5 bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 font-extrabold text-[10px] rounded-md transition-all flex items-center gap-1 cursor-pointer"
+                            >
+                              <span>See Reviews</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 

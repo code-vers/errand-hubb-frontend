@@ -24,4 +24,12 @@ export const postService = {
   delete: async (id: string) => {
     return api.delete(`/posts/${id}`);
   },
+
+  markCompleted: async (id: string, assignedToId?: string) => {
+    return api.patch(`/posts/${id}/complete`, { assignedToId });
+  },
+
+  assignPost: async (id: string, assignedToId: string) => {
+    return api.patch(`/posts/${id}/assign`, { assignedToId });
+  },
 };
