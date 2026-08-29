@@ -124,25 +124,31 @@ export default function JobDetailsModal({
                   )}
                 </div>
                 <span className='font-semibold text-gray-700'>{clientName}</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const targetUserId = client.id || post.userId;
-                    if (targetUserId && typeof window !== 'undefined') {
-                      const event = new CustomEvent('open-reviews-list-modal', {
-                        detail: {
-                          userId: targetUserId,
-                          userName: clientName,
-                        },
-                      });
-                      window.dispatchEvent(event);
-                    }
-                  }}
-                  className="px-2 py-0.5 bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 font-extrabold text-[10px] rounded-md transition-all flex items-center gap-1 cursor-pointer"
-                >
-                  <Star size={11} className="fill-orange-500 text-orange-500" />
-                  <span>See Reviews</span>
-                </button>
+                {client.reviewCount > 0 && (
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs font-bold text-amber-600">
+                      ★ {client.rating.toFixed(1)} ({client.reviewCount})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const targetUserId = client.id || post.userId;
+                        if (targetUserId && typeof window !== 'undefined') {
+                          const event = new CustomEvent('open-reviews-list-modal', {
+                            detail: {
+                              userId: targetUserId,
+                              userName: clientName,
+                            },
+                          });
+                          window.dispatchEvent(event);
+                        }
+                      }}
+                      className="px-2 py-0.5 bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 font-extrabold text-[10px] rounded-md transition-all flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>See Reviews</span>
+                    </button>
+                  </div>
+                )}
               </div>
               <span>•</span>
               <span className='text-gray-400'>

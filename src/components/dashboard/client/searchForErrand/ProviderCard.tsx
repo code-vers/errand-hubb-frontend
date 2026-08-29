@@ -71,38 +71,32 @@ export default function ProviderCard({
                 {profile.city || 'Remote'}{profile.state ? `, ${profile.state}` : ''}
               </span>
             </p>
-            <div className='flex items-center gap-1.5 mt-1 flex-wrap'>
-              {provider.reviewCount > 0 || provider.rating > 0 ? (
-                <>
-                  <StarRating rating={provider.rating || 5} size='sm' />
-                  <span className='text-[11px] sm:text-xs text-[#6B6B6B] font-medium shrink-0'>
-                    {provider.rating ? provider.rating.toFixed(1) : "5.0"} ({provider.reviewCount || 1} {provider.reviewCount === 1 ? 'review' : 'reviews'})
-                  </span>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (typeof window !== 'undefined') {
-                        const event = new CustomEvent('open-reviews-list-modal', {
-                          detail: {
-                            userId: provider.id,
-                            userName: `${provider.firstName} ${provider.lastName}`,
-                          },
-                        });
-                        window.dispatchEvent(event);
-                      }
-                    }}
-                    className="text-[10px] font-extrabold text-orange-600 hover:underline cursor-pointer ml-1"
-                  >
-                    See Reviews
-                  </button>
-                </>
-              ) : (
-                <span className='text-[11px] text-gray-400 font-medium italic'>
-                  No reviews yet
+            {provider.reviewCount > 0 ? (
+              <div className='flex items-center gap-1.5 mt-1 flex-wrap'>
+                <StarRating rating={provider.rating || 5} size='sm' />
+                <span className='text-[11px] sm:text-xs text-[#6B6B6B] font-medium shrink-0'>
+                  {provider.rating ? provider.rating.toFixed(1) : "5.0"} ({provider.reviewCount} {provider.reviewCount === 1 ? 'review' : 'reviews'})
                 </span>
-              )}
-            </div>
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (typeof window !== 'undefined') {
+                      const event = new CustomEvent('open-reviews-list-modal', {
+                        detail: {
+                          userId: provider.id,
+                          userName: `${provider.firstName} ${provider.lastName}`,
+                        },
+                      });
+                      window.dispatchEvent(event);
+                    }
+                  }}
+                  className="px-2 py-0.5 bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-600 font-extrabold text-[10px] rounded-md transition-all flex items-center gap-1 cursor-pointer shrink-0"
+                >
+                  <span>See Reviews</span>
+                </button>
+              </div>
+            ) : null}
           </div>
         </div>
 
