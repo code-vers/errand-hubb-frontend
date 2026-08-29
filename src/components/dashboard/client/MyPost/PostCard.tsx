@@ -12,10 +12,14 @@ import {
   Edit2,
   Trash2,
   Eye,
+  Star,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/configs/api.config";
 import { useConfirm } from "@/context/ConfirmationContext";
+import { postService } from "@/services/post.service";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
 
 interface PostCardProps {
   post: ErrandPost;
@@ -60,6 +64,7 @@ const statusConfig: Record<string, { bg: string; text: string; dot: string }> =
 
 export default function PostCard({ post, onEdit, onDelete, onOpenDetails }: PostCardProps) {
   const confirm = useConfirm();
+  const { user: currentUser } = useAuth();
   const [showOptions, setShowOptions] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -239,16 +244,113 @@ export default function PostCard({ post, onEdit, onDelete, onOpenDetails }: Post
           )}
         </div>
 
-        {/* View Details Button */}
-        {onOpenDetails && (
-          <button
-            type='button'
-            onClick={() => onOpenDetails(post)}
-            className='w-full mt-2 py-2 rounded-xl text-xs font-bold text-orange-600 bg-orange-50 hover:bg-orange-100 border border-orange-200/80 transition-all flex items-center justify-center gap-1.5 cursor-pointer'>
-            <Eye size={14} />
-            <span>View Details</span>
-          </button>
-        )}
+        {/* View Details, Mark Completed & Leave Review Buttons */}
+        <div className="flex flex-col gap-2 mt-2">
+          {onOpenDetails && (
+            <button
+              type='button'
+              onClick={() => onOpenDetails(post)}
+              className='w-full py-2 rounded-xl text-xs font-bold text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-all flex items-center justify-center gap-1.5 cursor-pointer'>
+              <Eye size={14} />
+              <span>View Details</span>
+            </button>
+          )}
+
+          {/* Mark as Completed Action */}
+          {post.status !== 'Completed' && post.status !== 'completed' && (
+            <button
+              type='button'
+              onClick={async () => {
+                const assignedErranderId = post.assignedToId || (post as any).rawPost?.assignedToId || (post as any).rawPost?.assignedTo?.id;
+                if (!assignedErranderId) {
+                  toast.error("Please assign an Errander to this task in Chat before marking it as completed.");
+                  return;
+                }
+
+                const isConfirmed = await confirm({
+                  title: "Mark Errand as Completed",
+                  message: "Are you sure this errand has been completed? This will mark the task finished and unlock reviews.",
+                  type: "info",
+                  confirmLabel: "Mark Completed",
+                });
+                if (isConfirmed && postService.markCompleted) {
+                  try {
+                    await postService.markCompleted(post.id);
+                    window.location.reload();
+                  } catch (err: any) {
+                    toast.error(err?.response?.data?.message || 'Failed to complete post');
+                  }
+                }
+              }}
+              className={`w-full py-2 rounded-xl text-xs font-extrabold text-white transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                (post.assignedToId || (post as any).rawPost?.assignedToId || (post as any).rawPost?.assignedTo?.id)
+                  ? 'bg-emerald-600 hover:bg-emerald-700 shadow-xs'
+                  : 'bg-gray-400 hover:bg-gray-500 shadow-xs'
+              }`}>
+              <Check size={14} />
+              <span>{(post.assignedToId || (post as any).rawPost?.assignedToId || (post as any).rawPost?.assignedTo?.id) ? 'Mark as Completed' : 'Assign Errander First'}</span>
+            </button>
+          )}
+
+          {/* Leave Review Action */}
+          {(post.status === 'Completed' || post.status === 'completed') && (
+            <button
+              type='button'
+              onClick={() => {
+                const currentUserId = currentUser?.id;
+                const isClient = currentUser?.role === 'client' || (currentUserId && currentUserId === (post.userId || (post as any).rawPost?.userId));
+
+                let targetRevieweeId: string | null = null;
+                let targetRevieweeName = 'User';
+
+                if (isClient) {
+                  targetRevieweeId =
+                    post.assignedToId ||
+                    (post as any).rawPost?.assignedToId ||
+                    (post as any).rawPost?.assignedTo?.id;
+
+                  targetRevieweeName =
+                    post.assignedTo ||
+                    ((post as any).rawPost?.assignedTo ? `${(post as any).rawPost.assignedTo.firstName} ${(post as any).rawPost.assignedTo.lastName}` : 'Errander');
+
+                  if (!targetRevieweeId) {
+                    toast.error("No Errander was assigned to this task.");
+                    return;
+                  }
+                } else {
+                  targetRevieweeId =
+                    post.userId ||
+                    (post as any).rawPost?.userId ||
+                    (post as any).rawPost?.user?.id;
+
+                  const rawUser = post.user || (post as any).rawPost?.user;
+                  targetRevieweeName = rawUser
+                    ? `${rawUser.firstName || ''} ${rawUser.lastName || ''}`.trim()
+                    : 'Client';
+                }
+
+                if (currentUserId && targetRevieweeId === currentUserId) {
+                  toast.error("You cannot write a review for yourself.");
+                  return;
+                }
+
+                if (typeof window !== 'undefined' && targetRevieweeId) {
+                  const event = new CustomEvent('open-review-modal', {
+                    detail: {
+                      postId: post.id,
+                      revieweeId: targetRevieweeId,
+                      revieweeName: targetRevieweeName,
+                    },
+                  });
+                  window.dispatchEvent(event);
+                }
+              }}
+              className='w-full py-2 rounded-xl text-xs font-extrabold text-white bg-[#ff6900] hover:bg-[#e05d00] shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer'>
+              <Star size={14} className="fill-white" />
+              <span>Leave a Review</span>
+            </button>
+          )}
+        </div>
       </div>
     </article>
   );

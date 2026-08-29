@@ -6,10 +6,13 @@ import {
   Send, MoreVertical, Loader2, Circle, 
   Image as ImageIcon, Mic, Calendar, Paperclip, X,
   Play, Pause, MapPin, Smile, Pin, Undo, Trash2, Navigation,
-  ChevronLeft, Download, FileText, Video
+  ChevronLeft, Download, FileText, Video, Star
 } from "lucide-react";
 import { getImageUrl } from "@/configs/api.config";
 import { format } from "date-fns";
+import ChatTaskBar from "./ChatTaskBar";
+import { postService } from "@/services/post.service";
+import { toast } from "sonner";
 
 interface ChatWindowProps {
   conversation: ChatConversation | null;
@@ -99,9 +102,26 @@ const ChatWindow: FC<ChatWindowProps> = ({
   const [inviteTime, setInviteTime] = useState("");
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   
-  // Pinned messages sidebar
+  const [scheduleTasks, setScheduleTasks] = useState<any[]>([]);
+  const [selectedSchedulePostId, setSelectedSchedulePostId] = useState<string>("");
+
+  // Pinned messages & header menu sidebar
   const [showPinnedSidebar, setShowPinnedSidebar] = useState(false);
   const [showHeaderMenu, setShowHeaderMenu] = useState(false);
+
+  useEffect(() => {
+    if (showCalendar && conversation) {
+      const clientId = conversation.clientId;
+      postService.getMyPosts().then(res => {
+        setScheduleTasks(res.data || []);
+      }).catch(() => {
+        postService.findAll({ limit: '20' }).then(res => {
+          const all = res.data?.data || res.data || [];
+          setScheduleTasks(all.filter((p: any) => p.userId === clientId));
+        }).catch(() => null);
+      });
+    }
+  }, [showCalendar, conversation]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -196,15 +216,50 @@ const ChatWindow: FC<ChatWindowProps> = ({
     if (!inviteDate || !inviteTime) return;
     
     const dateTime = new Date(`${inviteDate}T${inviteTime}`).toISOString();
-    onSendMessage(`Scheduled for ${format(new Date(dateTime), 'PPP p')}`, "calendar", { date: dateTime, event: "Errand Schedule", status: "pending" });
+    const selectedTask = scheduleTasks.find(t => t.id === selectedSchedulePostId);
+
+    const metadata: any = {
+      date: dateTime,
+      event: "Errand Schedule",
+      status: "pending",
+    };
+
+    if (selectedSchedulePostId) {
+      metadata.postId = selectedSchedulePostId;
+      metadata.postTitle = selectedTask?.title || "Errand Task";
+    }
+
+    onSendMessage(
+      `📅 Errand Schedule Invite for ${format(new Date(dateTime), 'PPP p')}${selectedTask ? ` (Task: "${selectedTask.title}")` : ''}`,
+      "calendar",
+      metadata
+    );
+
     setShowCalendar(false);
     setInviteDate("");
     setInviteTime("");
+    setSelectedSchedulePostId("");
   };
 
-  const acceptInvite = (msg: ChatMessage) => {
+  const acceptInvite = async (msg: ChatMessage) => {
     if (!msg.metadata?.date) return;
-    onSendMessage(`✅ I have accepted the invite for ${format(new Date(msg.metadata.date), 'PPP p')}. Looking forward to it!`, "text");
+
+    const targetPostId = msg.metadata?.postId;
+    const erranderId = conversation?.errandId;
+
+    if (targetPostId && erranderId) {
+      try {
+        await postService.assignPost(targetPostId, erranderId);
+        toast.success("Schedule Accepted & Task Assigned!");
+      } catch (err: any) {
+        console.error("Auto assignment on schedule accept error:", err);
+      }
+    }
+
+    onSendMessage(
+      `✅ Schedule Accepted & Task Assigned for ${format(new Date(msg.metadata.date), 'PPP p')}. Looking forward to completing this task!`,
+      "text"
+    );
   };
 
   const sendLocation = (addressStr: string) => {
@@ -336,6 +391,15 @@ const ChatWindow: FC<ChatWindowProps> = ({
         </div>
       </header>
 
+      {/* In-Chat Task Assignment & Tracking Bar */}
+      {conversation && (
+        <ChatTaskBar
+          conversation={conversation}
+          currentUserId={currentUserId}
+          onSendMessage={onSendMessage}
+        />
+      )}
+
       {/* Messages */}
       <div className='flex-1 overflow-y-auto p-6 space-y-8 bg-[#FDFCFB]/50 custom-scrollbar'>
         {isLoading ? (
@@ -462,15 +526,35 @@ const ChatWindow: FC<ChatWindowProps> = ({
                                   Date & Time:<br/>
                                   <span className="font-bold text-[13px]">{format(new Date(msg.metadata?.date || new Date()), 'PPP p')}</span>
                               </div>
-                              {!isMe && (
+                              {msg.metadata?.status === 'accepted' ? (
+                                <button 
+                                  onClick={() => {
+                                    const isClient = currentUserId === conversation.client.id;
+                                    const targetUser = isClient ? conversation.errand : conversation.client;
+                                    if (targetUser && typeof window !== 'undefined') {
+                                      const event = new CustomEvent('open-review-modal', {
+                                        detail: {
+                                          revieweeId: targetUser.id,
+                                          revieweeName: `${targetUser.firstName} ${targetUser.lastName}`,
+                                          revieweeImage: targetUser.profileImage,
+                                        },
+                                      });
+                                      window.dispatchEvent(event);
+                                    }
+                                  }}
+                                  className="w-full py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all bg-[#ff6900] text-white hover:bg-[#e05d00] shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
+                                >
+                                  <Star size={14} className="fill-white" />
+                                  <span>Leave Review</span>
+                                </button>
+                              ) : !isMe ? (
                                 <button 
                                   onClick={() => acceptInvite(msg)}
-                                  className="w-full py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all bg-primary text-white hover:bg-primary-dark shadow-md"
+                                  className="w-full py-2.5 rounded-lg text-xs font-bold uppercase tracking-widest transition-all bg-primary text-white hover:bg-primary-dark shadow-md cursor-pointer"
                                 >
                                   Accept Invite
                                 </button>
-                              )}
-                              {isMe && (
+                              ) : (
                                 <div className="text-center text-xs font-bold uppercase tracking-widest opacity-80">
                                   Awaiting Response
                                 </div>
@@ -559,14 +643,32 @@ const ChatWindow: FC<ChatWindowProps> = ({
         </div>
 
         {showCalendar && (
-           <div className="absolute bottom-32 left-6 bg-white border border-gray-100 shadow-2xl rounded-2xl p-5 z-20 animate-in fade-in slide-in-from-bottom-4 w-72">
-              <div className="flex justify-between items-center mb-4">
-                <h4 className="font-bold text-sm">Schedule Errand</h4>
+           <div className="absolute bottom-32 left-6 bg-white border border-gray-100 shadow-2xl rounded-2xl p-5 z-20 animate-in fade-in slide-in-from-bottom-4 w-80">
+              <div className="flex justify-between items-center mb-3">
+                <h4 className="font-bold text-sm text-gray-900">Schedule Errand</h4>
                 <button onClick={() => setShowCalendar(false)} className="text-gray-400 hover:text-gray-600"><X size={16}/></button>
               </div>
-              <p className="text-xs text-gray-500 mb-4">Select date and time to invite {otherUser.firstName}.</p>
+              <p className="text-xs text-gray-500 mb-4">Select date, time, and optional task to invite {otherUser.firstName}.</p>
               
               <div className="space-y-3 mb-5">
+                {scheduleTasks && scheduleTasks.length > 0 && (
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Link Errand Task</label>
+                    <select
+                      value={selectedSchedulePostId}
+                      onChange={(e) => setSelectedSchedulePostId(e.target.value)}
+                      className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-semibold focus:outline-none focus:border-primary text-gray-800"
+                    >
+                      <option value="">-- Select an active task --</option>
+                      {scheduleTasks.map((t) => (
+                        <option key={t.id} value={t.id}>
+                          {t.title} (${t.budget || t.reward || 0})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
                 <div>
                   <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Date</label>
                   <input type="date" value={inviteDate} onChange={e => setInviteDate(e.target.value)} className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-primary" />
@@ -580,7 +682,7 @@ const ChatWindow: FC<ChatWindowProps> = ({
               <button 
                 onClick={sendCalendarInvite} 
                 disabled={!inviteDate || !inviteTime}
-                className="w-full bg-primary text-white py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-primary-dark transition-all disabled:opacity-50 disabled:grayscale"
+                className="w-full bg-primary text-white py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-primary-dark transition-all disabled:opacity-50 disabled:grayscale cursor-pointer"
               >
                 Send Invite
               </button>

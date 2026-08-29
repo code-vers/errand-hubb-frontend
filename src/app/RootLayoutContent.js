@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Header from "../components/website/Header";
 import Footer from "../components/website/Footer";
+import GlobalReviewModalManager from "../components/common/GlobalReviewModalManager";
 
 export default function RootLayoutContent({ children }) {
   const pathname = usePathname();
@@ -14,6 +15,7 @@ export default function RootLayoutContent({ children }) {
       {!isDashboard && !isHomePage && <Header />}
       <main className={!isDashboard ? '' : 'free'}>{children}</main>
       {!isDashboard && <Footer />}
+      <GlobalReviewModalManager />
     </>
   );
 }

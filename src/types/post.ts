@@ -31,6 +31,8 @@ export interface ErrandPost {
   location: string;
   serviceType: ServiceType;
   assignedTo: string | null;
+  assignedToId?: string | null;
+  userId?: string | null;
   icon: string;
   categoryId: string;
   photoUrl?: string | null;

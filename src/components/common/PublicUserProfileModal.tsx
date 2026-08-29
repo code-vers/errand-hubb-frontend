@@ -1,10 +1,11 @@
-import React from 'react';
-import { X, Image as ImageIcon, Briefcase } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Image as ImageIcon, Briefcase, Star } from 'lucide-react';
 import { getImageUrl } from '@/configs/api.config';
 import { PostUser } from '@/types/search';
 import { useQuery } from '@tanstack/react-query';
 import { categoryService } from '@/services/category.service';
 import Image from 'next/image';
+import ReviewsListModal from './ReviewsListModal';
 
 interface PublicUserProfileModalProps {
   user: PostUser | null;
@@ -17,6 +18,8 @@ const PublicUserProfileModal: React.FC<PublicUserProfileModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const [showReviewsModal, setShowReviewsModal] = useState(false);
+
   if (!isOpen || !user) return null;
 
   const displayImage =
@@ -72,6 +75,14 @@ const PublicUserProfileModal: React.FC<PublicUserProfileModalProps> = ({
                   <h2 className='text-[24px] sm:text-[28px] font-extrabold text-foreground tracking-tight leading-none mb-1'>
                     {user.firstName} {user.lastName}
                   </h2>
+                  <button
+                    type="button"
+                    onClick={() => setShowReviewsModal(true)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/80 hover:bg-white text-xs font-bold text-amber-700 rounded-full shadow-xs mt-1 transition-colors cursor-pointer"
+                  >
+                    <Star size={14} className="fill-amber-400 text-amber-400" />
+                    <span>View Ratings & Reviews</span>
+                  </button>
                 </div>
               </div>
 
@@ -84,6 +95,13 @@ const PublicUserProfileModal: React.FC<PublicUserProfileModalProps> = ({
                 <X className='h-5 w-5 text-gray-700' aria-hidden='true' />
               </button>
             </div>
+
+            <ReviewsListModal
+              isOpen={showReviewsModal}
+              onClose={() => setShowReviewsModal(false)}
+              userId={user.id}
+              userName={`${user.firstName} ${user.lastName}`}
+            />
 
             {/* Modal Body */}
             <div className='bg-white px-6 py-8 sm:px-8 sm:py-10'>

@@ -41,6 +41,8 @@ export function usePosts() {
       location: `${post.city}, ${post.state}`,
       serviceType: post.serviceType || "Delivery",
       assignedTo: post.assignedTo ? `${post.assignedTo.firstName} ${post.assignedTo.lastName}` : null,
+      assignedToId: post.assignedToId || post.assignedTo?.id || null,
+      userId: post.userId || post.user?.id || null,
       icon: post.category?.icon || "shopping-cart",
       categoryId: post.categoryId,
       category: post.category,

@@ -6,7 +6,7 @@ import Pagination from "@/components/common/Pagination";
 import { useQuery } from "@tanstack/react-query";
 import { postService } from "@/services/post.service";
 import { categoryService } from "@/services/category.service";
-import { Search, Loader2, Calendar, MapPin, MessageSquare, X, Eye } from "lucide-react";
+import { Search, Loader2, Calendar, MapPin, MessageSquare, X, Eye, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getImageUrl } from "@/configs/api.config";
 import { useConnect } from "@/hooks/useConnect";
@@ -38,7 +38,7 @@ export default function AvailableJobsPage() {
     queryFn: () => categoryService.getActive(),
   });
 
-  // Query general posts posted by clients
+  // Query general posts posted on the platform
   const { data: response, isLoading: loading } = useQuery({
     queryKey: ["available-job-posts", filters],
     queryFn: async () => {
@@ -47,9 +47,7 @@ export default function AvailableJobsPage() {
         categoryId: filters.categoryId === "all" ? undefined : filters.categoryId,
         location: filters.location || undefined,
         search: filters.search || undefined,
-        userRole: "client", // Only get posts posted by clients
         status: "available",
-        postState: "active",
       });
       return res.data;
     },
