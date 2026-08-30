@@ -17,7 +17,7 @@ import icon from '../../../public/icon.svg';
 import logo from '../../../public/logo2.svg';
 import icon2 from '../../../public/errand/icon.jpg';
 import { useConnect } from '@/hooks/useConnect';
-import AudioPlayer from '@/components/shared/AudioPlayer';
+import ErrandAudioPlayer from '@/components/shared/ErrandAudioPlayer';
 
 interface MembershipPlan {
   priceLabel: string;
@@ -369,7 +369,7 @@ const ErrandPage = () => {
                 />
               </div>
 
-              <AudioPlayer src='/luvvoice.com-20260825-wCOAcZ.mp3' label='Audio Overview' />
+              <ErrandAudioPlayer src='/luvvoice.com-20260825-wCOAcZ.mp3' />
             </div>
           </header>
 

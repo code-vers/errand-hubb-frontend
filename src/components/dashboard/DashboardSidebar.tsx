@@ -126,7 +126,7 @@ const DashboardSidebar = ({ isOpen: externalIsOpen, onClose }: DashboardSidebarP
         style={{ background: "#FFE6B3" }}>
         <div className='flex flex-col h-full px-3 py-8'>
           {/* Nav items */}
-          <nav className='flex-1 flex flex-col gap-3.5 overflow-y-auto'>
+          <nav className='flex-1 flex flex-col gap-3.5 overflow-y-auto custom-scrollbar pr-1'>
             {menuItems.map((item) => (
               <MenuItem key={item.path ?? item.title} item={item} />
             ))}

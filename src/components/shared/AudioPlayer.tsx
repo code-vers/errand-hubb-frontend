@@ -1,29 +1,34 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Pause } from "lucide-react";
+import { Play, Pause, Headphones, Volume2 } from "lucide-react";
 
 interface AudioPlayerProps {
   src: string;
   label?: string;
-  className?: string;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({
-  src,
-  className = "",
-}) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ src, label = "Audio Overview" }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
+    const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
+    const handleLoadedMetadata = () => setDuration(audio.duration || 0);
     const handleEnded = () => setIsPlaying(false);
+
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
     audio.addEventListener("ended", handleEnded);
 
     return () => {
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
       audio.removeEventListener("ended", handleEnded);
     };
   }, []);
@@ -39,48 +44,62 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({
     }
   };
 
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const time = parseFloat(e.target.value);
+    if (audioRef.current) {
+      audioRef.current.currentTime = time;
+      setCurrentTime(time);
+    }
+  };
+
+  const formatTime = (timeSec: number) => {
+    if (isNaN(timeSec) || timeSec === 0) return "0:00";
+    const mins = Math.floor(timeSec / 60);
+    const secs = Math.floor(timeSec % 60);
+    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+  };
+
   return (
-    <div className={`inline-flex items-center ${className}`}>
+    <div className="flex flex-col gap-2 p-3 bg-orange-50/80 border border-orange-200/70 rounded-2xl shadow-sm max-w-xs w-full">
       <audio ref={audioRef} src={src} preload="metadata" />
 
-      <button
-        type="button"
-        onClick={togglePlay}
-        className="inline-flex items-center gap-2.5 group cursor-pointer active:scale-95 transition-all select-none"
-        aria-label={isPlaying ? "Pause Audio" : "Play Audio"}
-      >
-        {/* Fixed Icon Container - 36px x 36px */}
-        <div className="w-9 h-9 relative flex items-center justify-center shrink-0">
-          {isPlaying ? (
-            <div className="w-8.5 h-8.5 rounded-full bg-[#ff6900] text-white flex items-center justify-center shadow-md">
-              <Pause size={18} fill="currentColor" />
-            </div>
-          ) : (
-            <svg
-              className="w-8.5 h-8.5 shrink-0 transition-transform group-hover:scale-110 drop-shadow-xs"
-              viewBox="0 0 32 32"
-              fill="none"
-            >
-              <path
-                d="M7 6.5C7 5.14 8.49 4.3 9.65 5.01L24.8 14.51C25.92 15.2 25.92 16.8 24.8 17.49L9.65 26.99C8.49 27.7 7 26.86 7 25.5V6.5Z"
-                fill="#ff6900"
-              />
-            </svg>
-          )}
-        </div>
+      {/* Header Label - Explicitly Audio Overview */}
+      <div className="flex items-center justify-between text-xs font-bold text-gray-800">
+        <span className="flex items-center gap-1.5 text-[#f47a22]">
+          <Headphones size={15} />
+          <span>{label}</span>
+        </span>
+        <span className="text-[10px] font-medium text-gray-500">
+          {formatTime(currentTime)} / {formatTime(duration)}
+        </span>
+      </div>
 
-        {/* Fixed Text Container - Width 80px */}
-        <div className="w-[80px] text-left shrink-0">
-          <span
-            className={`text-[26px] font-black tracking-wider uppercase transition-colors leading-none block ${
-              isPlaying ? "text-[#ff6900]" : "text-[#14233c] group-hover:text-[#ff6900]"
-            }`}
-            style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}
-          >
-            PLAY
-          </span>
-        </div>
-      </button>
+      {/* Player Controls & Scrubber */}
+      <div className="flex items-center gap-2.5">
+        <button
+          type="button"
+          onClick={togglePlay}
+          className="w-8 h-8 flex items-center justify-center bg-[#f47a22] hover:bg-[#e06812] text-white rounded-full transition-all shadow-sm active:scale-95 shrink-0 cursor-pointer"
+          aria-label={isPlaying ? "Pause Audio Overview" : "Listen to Audio Overview"}
+        >
+          {isPlaying ? (
+            <Pause fill="currentColor" size={14} />
+          ) : (
+            <Play fill="currentColor" size={14} className="ml-0.5" />
+          )}
+        </button>
+
+        {/* Progress bar slider */}
+        <input
+          type="range"
+          min={0}
+          max={duration || 100}
+          value={currentTime}
+          onChange={handleSeek}
+          className="w-full h-1.5 bg-orange-200 rounded-lg appearance-none cursor-pointer accent-[#f47a22]"
+          aria-label="Audio Seek Slider"
+        />
+      </div>
     </div>
   );
 };
