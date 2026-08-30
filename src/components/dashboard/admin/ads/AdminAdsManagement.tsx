@@ -353,11 +353,44 @@ export default function AdminAdsManagement() {
         uploadedUrl = uploadRes?.data?.url || uploadRes?.url || uploadedUrl;
       }
 
-      const payload = {
-        ...formData,
-        imageUrl: uploadedUrl,
+      if (!formData.categoryId) {
+        alert('Please select a category.');
+        setSubmitting(false);
+        return;
+      }
+
+      const payload: any = {
+        title: formData.title.trim(),
+        companyName: formData.companyName.trim(),
+        description: formData.description.trim(),
+        categoryId: formData.categoryId,
         position: Number(formData.position) || 1,
+        status: formData.status,
       };
+
+      if (formData.subcategoryId && formData.subcategoryId.trim() !== '') {
+        payload.subcategoryId = formData.subcategoryId.trim();
+      }
+
+      if (formData.location && formData.location.trim() !== '') {
+        payload.location = formData.location.trim();
+      }
+
+      if (formData.contactInfo && formData.contactInfo.trim() !== '') {
+        payload.contactInfo = formData.contactInfo.trim();
+      }
+
+      if (formData.youtubeLink && formData.youtubeLink.trim() !== '') {
+        let yt = formData.youtubeLink.trim();
+        if (!/^https?:\/\//i.test(yt)) {
+          yt = `https://${yt}`;
+        }
+        payload.youtubeLink = yt;
+      }
+
+      if (uploadedUrl && uploadedUrl.trim() !== '') {
+        payload.imageUrl = uploadedUrl.trim();
+      }
 
       if (editingAd) {
         await adsService.update(editingAd.id, payload);
@@ -370,7 +403,18 @@ export default function AdminAdsManagement() {
       await fetchAllAds();
     } catch (err: any) {
       console.error('Failed to save ad:', err);
-      alert('Failed to save ad. Please check form inputs.');
+      const backendError = err?.response?.data?.message;
+      let errorMsg = 'Failed to save ad. Please check form inputs.';
+      if (Array.isArray(backendError)) {
+        errorMsg = backendError
+          .map((e: any) => (typeof e === 'object' ? e.message || JSON.stringify(e) : e))
+          .join(', ');
+      } else if (typeof backendError === 'string') {
+        errorMsg = backendError;
+      } else if (err?.message) {
+        errorMsg = err.message;
+      }
+      alert(errorMsg);
     } finally {
       setSubmitting(false);
     }
