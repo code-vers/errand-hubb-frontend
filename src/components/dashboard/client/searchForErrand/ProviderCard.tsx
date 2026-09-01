@@ -169,7 +169,7 @@ export default function ProviderCard({
           <div className='flex items-center gap-3 sm:gap-4 text-xs text-gray-400 pb-3 sm:pb-4'>
             <div className='flex items-center gap-1.5'>
               <CheckCircle2 size={15} className='text-green-500' strokeWidth={2.5} />
-              <span>{profile.jobsCompleted ? `${profile.jobsCompleted} jobs` : '15 jobs'}</span>
+              <span>{`${profile.jobsCompleted || 0} jobs`}</span>
             </div>
             <div className='flex items-center gap-1.5'>
               <Clock size={15} className='text-[#FBBC04]' strokeWidth={2.5} />
