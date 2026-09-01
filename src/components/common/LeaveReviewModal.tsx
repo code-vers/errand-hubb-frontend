@@ -61,13 +61,27 @@ export const LeaveReviewModal: React.FC<LeaveReviewModalProps> = ({
     setError(null);
 
     try {
-      await reviewsService.createReview({
+      const createdReview = await reviewsService.createReview({
         revieweeId: revieweeId.trim(),
         rating,
         comment: comment.trim(),
         postId: postId && postId.trim() ? postId.trim() : undefined,
         serviceRequestId: serviceRequestId && serviceRequestId.trim() ? serviceRequestId.trim() : undefined,
       });
+
+      if (typeof window !== 'undefined') {
+        const event = new CustomEvent('review-submitted', {
+          detail: {
+            postId: postId && postId.trim() ? postId.trim() : undefined,
+            serviceRequestId: serviceRequestId && serviceRequestId.trim() ? serviceRequestId.trim() : undefined,
+            revieweeId: revieweeId.trim(),
+            rating,
+            comment,
+            review: createdReview,
+          },
+        });
+        window.dispatchEvent(event);
+      }
 
       setIsSuccess(true);
       if (onReviewSubmitted) onReviewSubmitted();

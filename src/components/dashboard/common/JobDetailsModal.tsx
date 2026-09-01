@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { getImageUrl } from "@/configs/api.config";
 import { useAuth } from "@/context/AuthContext";
+import { reviewsService } from "@/services/reviewsService";
 
 interface JobDetailsModalProps {
   post: any;
@@ -39,6 +40,39 @@ export default function JobDetailsModal({
 }: JobDetailsModalProps) {
   const { user: currentUser } = useAuth();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [hasReviewed, setHasReviewed] = useState(false);
+
+  React.useEffect(() => {
+    const isCompleted = String(post?.status).toLowerCase() === "completed";
+    if (isCompleted && currentUser?.id && post?.id) {
+      const isClient = currentUser?.role === "client" || currentUser?.id === (post.userId || post.user?.id);
+      const targetRevieweeId = isClient
+        ? post.assignedToId || post.assignedTo?.id
+        : post.userId || post.user?.id;
+
+      if (targetRevieweeId) {
+        reviewsService
+          .checkEligibility(targetRevieweeId, post.id)
+          .then((res: any) => {
+            if (res?.data?.eligible === false && res?.data?.reason?.includes("Already reviewed")) {
+              setHasReviewed(true);
+            }
+          })
+          .catch(() => {});
+      }
+    }
+
+    const handleReviewSubmitted = (e: any) => {
+      if (e?.detail?.postId === post?.id) {
+        setHasReviewed(true);
+      }
+    };
+
+    window.addEventListener("review-submitted", handleReviewSubmitted);
+    return () => {
+      window.removeEventListener("review-submitted", handleReviewSubmitted);
+    };
+  }, [post?.id, post?.status, currentUser?.id, currentUser?.role, post?.userId, post?.assignedToId, post?.assignedTo?.id]);
 
   if (!post) return null;
 
@@ -313,36 +347,43 @@ export default function JobDetailsModal({
           )}
 
           {(post.status === 'Completed' || post.status === 'completed') && (
-            <button
-              type='button'
-              onClick={() => {
-                const currentUserId = currentUser?.id;
-                const isClient = currentUser?.role === 'client' || (currentUserId && currentUserId === (post.userId || post.user?.id));
-                
-                const targetRevieweeId = isClient
-                  ? (post.assignedToId || post.assignedTo?.id)
-                  : (post.userId || post.user?.id);
+            hasReviewed ? (
+              <div className='px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 flex items-center gap-1.5'>
+                <CheckCircle2 size={16} className='text-emerald-600' />
+                <span>Review Submitted</span>
+              </div>
+            ) : (
+              <button
+                type='button'
+                onClick={() => {
+                  const currentUserId = currentUser?.id;
+                  const isClient = currentUser?.role === 'client' || (currentUserId && currentUserId === (post.userId || post.user?.id));
+                  
+                  const targetRevieweeId = isClient
+                    ? (post.assignedToId || post.assignedTo?.id)
+                    : (post.userId || post.user?.id);
 
-                const targetRevieweeName = isClient
-                  ? (post.assignedTo ? (typeof post.assignedTo === 'object' ? `${post.assignedTo.firstName} ${post.assignedTo.lastName}` : post.assignedTo) : 'Errander')
-                  : (post.user ? `${post.user.firstName} ${post.user.lastName}` : 'Client');
+                  const targetRevieweeName = isClient
+                    ? (post.assignedTo ? (typeof post.assignedTo === 'object' ? `${post.assignedTo.firstName} ${post.assignedTo.lastName}` : post.assignedTo) : 'Errander')
+                    : (post.user ? `${post.user.firstName} ${post.user.lastName}` : 'Client');
 
-                if (typeof window !== 'undefined' && targetRevieweeId) {
-                  onClose();
-                  const event = new CustomEvent('open-review-modal', {
-                    detail: {
-                      postId: post.id,
-                      revieweeId: targetRevieweeId,
-                      revieweeName: targetRevieweeName,
-                    },
-                  });
-                  window.dispatchEvent(event);
-                }
-              }}
-              className='px-5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold text-white bg-[#ff6900] hover:bg-[#e05d00] transition-all flex items-center gap-1.5 shadow-md cursor-pointer'>
-              <Star size={16} className="fill-white" />
-              <span>Leave a Review</span>
-            </button>
+                  if (typeof window !== 'undefined' && targetRevieweeId) {
+                    onClose();
+                    const event = new CustomEvent('open-review-modal', {
+                      detail: {
+                        postId: post.id,
+                        revieweeId: targetRevieweeId,
+                        revieweeName: targetRevieweeName,
+                      },
+                    });
+                    window.dispatchEvent(event);
+                  }
+                }}
+                className='px-5 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold text-white bg-[#ff6900] hover:bg-[#e05d00] transition-all flex items-center gap-1.5 shadow-md cursor-pointer'>
+                <Star size={16} className="fill-white" />
+                <span>Leave a Review</span>
+              </button>
+            )
           )}
         </div>
       </div>

@@ -534,6 +534,8 @@ const ChatWindow: FC<ChatWindowProps> = ({
                                     if (targetUser && typeof window !== 'undefined') {
                                       const event = new CustomEvent('open-review-modal', {
                                         detail: {
+                                          postId: msg.metadata?.postId || (conversation as any).postId,
+                                          serviceRequestId: msg.metadata?.serviceRequestId || (conversation as any).serviceRequestId,
                                           revieweeId: targetUser.id,
                                           revieweeName: `${targetUser.firstName} ${targetUser.lastName}`,
                                           revieweeImage: targetUser.profileImage,

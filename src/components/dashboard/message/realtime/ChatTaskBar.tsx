@@ -51,6 +51,15 @@ export const ChatTaskBar: React.FC<ChatTaskBarProps> = ({
     if (conversation?.id) {
       fetchClientTasks();
     }
+
+    const handleReviewSubmitted = () => {
+      fetchClientTasks();
+    };
+
+    window.addEventListener('review-submitted', handleReviewSubmitted);
+    return () => {
+      window.removeEventListener('review-submitted', handleReviewSubmitted);
+    };
   }, [conversation?.id, isClient, clientId]);
 
   const handleAssignPost = async (post: any) => {

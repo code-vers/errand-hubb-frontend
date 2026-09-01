@@ -18,6 +18,7 @@ import { useState, useRef, useEffect } from "react";
 import { getImageUrl } from "@/configs/api.config";
 import { useConfirm } from "@/context/ConfirmationContext";
 import { postService } from "@/services/post.service";
+import { reviewsService } from "@/services/reviewsService";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
@@ -66,6 +67,7 @@ export default function PostCard({ post, onEdit, onDelete, onOpenDetails }: Post
   const confirm = useConfirm();
   const { user: currentUser } = useAuth();
   const [showOptions, setShowOptions] = useState(false);
+  const [hasReviewed, setHasReviewed] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const statusStyle =
@@ -89,6 +91,38 @@ export default function PostCard({ post, onEdit, onDelete, onOpenDetails }: Post
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    const isCompleted = String(post.status).toLowerCase() === "completed";
+    if (isCompleted && currentUser?.id) {
+      const isClient = currentUser?.role === "client" || currentUser?.id === (post.userId || (post as any).rawPost?.userId);
+      const targetRevieweeId = isClient
+        ? post.assignedToId || (post as any).rawPost?.assignedToId || (post as any).rawPost?.assignedTo?.id
+        : post.userId || (post as any).rawPost?.userId || (post as any).rawPost?.user?.id;
+
+      if (targetRevieweeId) {
+        reviewsService
+          .checkEligibility(targetRevieweeId, post.id)
+          .then((res: any) => {
+            if (res?.data?.eligible === false && res?.data?.reason?.includes("Already reviewed")) {
+              setHasReviewed(true);
+            }
+          })
+          .catch(() => {});
+      }
+    }
+
+    const handleReviewSubmitted = (e: any) => {
+      if (e?.detail?.postId === post.id) {
+        setHasReviewed(true);
+      }
+    };
+
+    window.addEventListener("review-submitted", handleReviewSubmitted);
+    return () => {
+      window.removeEventListener("review-submitted", handleReviewSubmitted);
+    };
+  }, [post.id, post.status, currentUser?.id, currentUser?.role, post.userId, post.assignedToId]);
 
   return (
     <article className='bg-white rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col justify-between border border-gray-50 hover:shadow-md transition-shadow duration-300 relative overflow-hidden'>
@@ -294,61 +328,68 @@ export default function PostCard({ post, onEdit, onDelete, onOpenDetails }: Post
 
           {/* Leave Review Action */}
           {String(post.status).toLowerCase() === 'completed' && (
-            <button
-              type='button'
-              onClick={() => {
-                const currentUserId = currentUser?.id;
-                const isClient = currentUser?.role === 'client' || (currentUserId && currentUserId === (post.userId || (post as any).rawPost?.userId));
+            hasReviewed ? (
+              <div className='w-full py-2 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 flex items-center justify-center gap-1.5'>
+                <Check size={14} className='text-emerald-600' />
+                <span>Review Submitted</span>
+              </div>
+            ) : (
+              <button
+                type='button'
+                onClick={() => {
+                  const currentUserId = currentUser?.id;
+                  const isClient = currentUser?.role === 'client' || (currentUserId && currentUserId === (post.userId || (post as any).rawPost?.userId));
 
-                let targetRevieweeId: string | null = null;
-                let targetRevieweeName = 'User';
+                  let targetRevieweeId: string | null = null;
+                  let targetRevieweeName = 'User';
 
-                if (isClient) {
-                  targetRevieweeId =
-                    post.assignedToId ||
-                    (post as any).rawPost?.assignedToId ||
-                    (post as any).rawPost?.assignedTo?.id;
+                  if (isClient) {
+                    targetRevieweeId =
+                      post.assignedToId ||
+                      (post as any).rawPost?.assignedToId ||
+                      (post as any).rawPost?.assignedTo?.id;
 
-                  targetRevieweeName =
-                    post.assignedTo ||
-                    ((post as any).rawPost?.assignedTo ? `${(post as any).rawPost.assignedTo.firstName} ${(post as any).rawPost.assignedTo.lastName}` : 'Errander');
+                    targetRevieweeName =
+                      post.assignedTo ||
+                      ((post as any).rawPost?.assignedTo ? `${(post as any).rawPost.assignedTo.firstName} ${(post as any).rawPost.assignedTo.lastName}` : 'Errander');
 
-                  if (!targetRevieweeId) {
-                    toast.error("No Errander was assigned to this task.");
+                    if (!targetRevieweeId) {
+                      toast.error("No Errander was assigned to this task.");
+                      return;
+                    }
+                  } else {
+                    targetRevieweeId =
+                      post.userId ||
+                      (post as any).rawPost?.userId ||
+                      (post as any).rawPost?.user?.id;
+
+                    const rawUser = post.user || (post as any).rawPost?.user;
+                    targetRevieweeName = rawUser
+                      ? `${rawUser.firstName || ''} ${rawUser.lastName || ''}`.trim()
+                      : 'Client';
+                  }
+
+                  if (currentUserId && targetRevieweeId === currentUserId) {
+                    toast.error("You cannot write a review for yourself.");
                     return;
                   }
-                } else {
-                  targetRevieweeId =
-                    post.userId ||
-                    (post as any).rawPost?.userId ||
-                    (post as any).rawPost?.user?.id;
 
-                  const rawUser = post.user || (post as any).rawPost?.user;
-                  targetRevieweeName = rawUser
-                    ? `${rawUser.firstName || ''} ${rawUser.lastName || ''}`.trim()
-                    : 'Client';
-                }
-
-                if (currentUserId && targetRevieweeId === currentUserId) {
-                  toast.error("You cannot write a review for yourself.");
-                  return;
-                }
-
-                if (typeof window !== 'undefined' && targetRevieweeId) {
-                  const event = new CustomEvent('open-review-modal', {
-                    detail: {
-                      postId: post.id,
-                      revieweeId: targetRevieweeId,
-                      revieweeName: targetRevieweeName,
-                    },
-                  });
-                  window.dispatchEvent(event);
-                }
-              }}
-              className='w-full py-2 rounded-xl text-xs font-extrabold text-white bg-[#ff6900] hover:bg-[#e05d00] shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer'>
-              <Star size={14} className="fill-white" />
-              <span>Leave a Review</span>
-            </button>
+                  if (typeof window !== 'undefined' && targetRevieweeId) {
+                    const event = new CustomEvent('open-review-modal', {
+                      detail: {
+                        postId: post.id,
+                        revieweeId: targetRevieweeId,
+                        revieweeName: targetRevieweeName,
+                      },
+                    });
+                    window.dispatchEvent(event);
+                  }
+                }}
+                className='w-full py-2 rounded-xl text-xs font-extrabold text-white bg-[#ff6900] hover:bg-[#e05d00] shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer'>
+                <Star size={14} className="fill-white" />
+                <span>Leave a Review</span>
+              </button>
+            )
           )}
         </div>
       </div>

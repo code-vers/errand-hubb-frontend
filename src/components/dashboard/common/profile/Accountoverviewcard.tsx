@@ -2,7 +2,12 @@ import { AccountOverview } from "@/types/profile";
 import React from "react";
 
 interface AccountOverviewCardProps {
-  overview: AccountOverview;
+  overview: AccountOverview & {
+    rating?: number;
+    reviewCount?: number;
+    userId?: string;
+    userName?: string;
+  };
 }
 
 interface StatRowProps {
@@ -12,6 +17,7 @@ interface StatRowProps {
   value: string | number;
   isPill?: boolean;
   isLast?: boolean;
+  onClick?: () => void;
 }
 
 const StatRow: React.FC<StatRowProps> = ({
@@ -21,9 +27,12 @@ const StatRow: React.FC<StatRowProps> = ({
   value,
   isPill,
   isLast,
+  onClick,
 }) => (
   <div
-    className={`flex items-center justify-between px-3.5 sm:px-4.5 py-3 gap-2 ${!isLast ? "border-b border-[#F5E9D3]" : ""}`}>
+    className={`flex items-center justify-between px-3.5 sm:px-4.5 py-3 gap-2 ${!isLast ? "border-b border-[#F5E9D3]" : ""} ${onClick ? "cursor-pointer hover:bg-orange-50/50 transition-colors" : ""}`}
+    onClick={onClick}
+  >
     <div className='flex items-center gap-2 sm:gap-2.5 min-w-0 flex-1 overflow-hidden'>
       <div
         className='w-7 h-7 rounded-lg flex items-center justify-center shrink-0'
@@ -35,7 +44,7 @@ const StatRow: React.FC<StatRowProps> = ({
       </span>
     </div>
 
-    <span className='text-[11px] sm:text-[12px] text-[#EC6F27] bg-[#fdf3e8] rounded-full px-2.5 sm:px-3 py-0.5 border border-[#ec6f27] shrink-0 font-semibold max-w-[140px] truncate text-center'>
+    <span className={`text-[11px] sm:text-[12px] text-[#EC6F27] bg-[#fdf3e8] rounded-full px-2.5 sm:px-3 py-0.5 border border-[#ec6f27] shrink-0 font-semibold max-w-[140px] truncate text-center ${onClick ? "hover:underline" : ""}`}>
       {value}
     </span>
   </div>
@@ -45,6 +54,38 @@ const AccountOverviewCard: React.FC<AccountOverviewCardProps> = ({
   overview,
 }) => {
   const stats: StatRowProps[] = [
+    {
+      label: "Rating & Reviews",
+      value:
+        overview.rating && overview.rating > 0
+          ? `★ ${overview.rating.toFixed(1)} (${overview.reviewCount || 0})`
+          : "No reviews yet",
+      iconBg: "#fef8ee",
+      onClick: overview.userId
+        ? () => {
+            if (typeof window !== "undefined") {
+              const event = new CustomEvent("open-reviews-list-modal", {
+                detail: {
+                  userId: overview.userId,
+                  userName: overview.userName || "User",
+                },
+              });
+              window.dispatchEvent(event);
+            }
+          }
+        : undefined,
+      icon: (
+        <svg
+          width='13'
+          height='13'
+          viewBox='0 0 24 24'
+          fill='#f59e0b'
+          stroke='#f59e0b'
+          strokeWidth='1'>
+          <polygon points='12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2' />
+        </svg>
+      ),
+    },
     {
       label: "Total Posts",
       value: overview.totalPosts,

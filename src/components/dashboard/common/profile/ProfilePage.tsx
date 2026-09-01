@@ -82,6 +82,10 @@ export default function ProfilePage() {
     activePosts: realActivePosts,
     completedJobs: realCompletedJobs,
     totalHires: realTotalHires,
+    rating: userData?.rating || userData?.stats?.rating || 0,
+    reviewCount: userData?.reviewCount || userData?.stats?.reviewCount || 0,
+    userId: userData?.id,
+    userName: `${userData?.firstName || ''} ${userData?.lastName || ''}`.trim(),
     memberSince: userData?.createdAt ? new Date(userData.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : "New",
   };
 
