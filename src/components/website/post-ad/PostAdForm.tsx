@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useMemo } from "react";
-import { Upload, Video, Building2, MapPin, Phone, Mail, Tag, Send, AlertCircle, Loader2 } from "lucide-react";
+import { Upload, Video, Building2, MapPin, Phone, Mail, Tag, Send, AlertCircle, Loader2, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { useAdsSubscription } from "@/hooks/useAdsSubscription";
 import { useAdsCategories } from "@/hooks/useAdsCategories";
@@ -25,6 +25,7 @@ const PostAdPage = () => {
     email: "",
     categoryId: "",
     subcategoryId: "",
+    websiteUrl: "",
     youtubeLink: "",
     description: "",
   });
@@ -40,6 +41,7 @@ const PostAdPage = () => {
     address: (v) => validateAddress(v),
     telephone: (v) => validatePhone(v, true),
     email: (v) => validateEmail(v),
+    websiteUrl: (v) => validateGenericString(v, 255, "Website URL", false),
     description: (v) => validateTextarea(v, 2000, "Description"),
     youtubeLink: (v) => validateGenericString(v, 200, "YouTube Link", false),
   });
@@ -78,6 +80,11 @@ const PostAdPage = () => {
       const uploadRes = await adsService.uploadImage(imageFormData);
       const imageUrl = uploadRes.data.url;
 
+      let formattedWebsite = formData.websiteUrl?.trim();
+      if (formattedWebsite && !/^https?:\/\//i.test(formattedWebsite)) {
+        formattedWebsite = `https://${formattedWebsite}`;
+      }
+
       // 2. Submit Ad
       const adData = {
         title: formData.title,
@@ -87,6 +94,7 @@ const PostAdPage = () => {
         subcategoryId: formData.subcategoryId || undefined,
         location: formData.address,
         contactInfo: `${formData.telephone} | ${formData.email}`,
+        websiteUrl: formattedWebsite || undefined,
         youtubeLink: formData.youtubeLink || undefined,
         imageUrl: imageUrl,
       };
@@ -369,6 +377,32 @@ const PostAdPage = () => {
                 {touched.description && errors.description && (
                   <p id="description-error" className="text-red-500 text-xs mt-1 font-medium">{errors.description}</p>
                 )}
+              </div>
+
+              {/* Business Website URL */}
+              <div className="flex flex-col md:col-span-2">
+                <label className={labelClass}>
+                  <Globe size={14} className="text-[var(--color-primary)]" />
+                  Business Website URL (Optional)
+                </label>
+                <input
+                  name="websiteUrl"
+                  type="url"
+                  placeholder="https://yourbusiness.com"
+                  value={formData.websiteUrl}
+                  onChange={handleChange}
+                  className={`${inputClass} ${touched.websiteUrl && errors.websiteUrl ? "border-red-500 focus:ring-red-500" : ""}`}
+                  maxLength={255}
+                  onBlur={(e) => handleBlur('websiteUrl', e.target.value)}
+                  aria-invalid={touched.websiteUrl && !!errors.websiteUrl}
+                  aria-describedby={touched.websiteUrl && errors.websiteUrl ? "websiteUrl-error" : undefined}
+                />
+                {touched.websiteUrl && errors.websiteUrl && (
+                  <p id="websiteUrl-error" className="text-red-500 text-xs mt-1 font-medium">{errors.websiteUrl}</p>
+                )}
+                <p className="text-[10px] text-[var(--color-muted)] mt-2 italic">
+                  Include your official business website link so visitors can directly visit your site.
+                </p>
               </div>
 
               {/* Youtube Link */}

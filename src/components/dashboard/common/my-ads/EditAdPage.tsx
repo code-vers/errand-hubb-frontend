@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect, useMemo } from "react";
-import { Upload, Video, Building2, MapPin, Phone, Mail, Tag, Save, Loader2, ArrowLeft } from "lucide-react";
+import { Upload, Video, Building2, MapPin, Phone, Mail, Tag, Save, Loader2, ArrowLeft, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { useAdsCategories } from "@/hooks/useAdsCategories";
 import { adsService } from "@/services/ads.service";
@@ -12,6 +12,7 @@ import { getImageUrl } from "@/configs/api.config";
 import { InternationalPhoneInput } from "@/components/shared/InternationalPhoneInput";
 import { useFormValidation } from "@/hooks/useFormValidation";
 import { validateEmail, validateAddress, validateBusinessName, validateGenericString, validateTextarea, validatePhone } from "@/lib/validation";
+import { parseAdContactInfo } from "@/utils/ads.utils";
 
 export default function EditAdPage({ id }: { id: string }) {
   const router = useRouter();
@@ -24,6 +25,7 @@ export default function EditAdPage({ id }: { id: string }) {
     address: "",
     telephone: "",
     email: "",
+    websiteUrl: "",
     categoryId: "",
     subcategoryId: "",
     youtubeLink: "",
@@ -43,6 +45,7 @@ export default function EditAdPage({ id }: { id: string }) {
     address: (v) => validateAddress(v),
     telephone: (v) => validatePhone(v, true),
     email: (v) => validateEmail(v),
+    websiteUrl: (v) => validateGenericString(v, 255, "Website URL", false),
     description: (v) => validateTextarea(v, 2000, "Description"),
     youtubeLink: (v) => validateGenericString(v, 200, "YouTube Link", false),
   });
@@ -53,20 +56,15 @@ export default function EditAdPage({ id }: { id: string }) {
         const res = await adsService.findOne(id);
         const ad = res.data;
         
-        let phone = "";
-        let email = "";
-        if (ad.contactInfo) {
-          const parts = ad.contactInfo.split(" | ");
-          phone = parts[0] || "";
-          email = parts[1] || "";
-        }
+        const contact = parseAdContactInfo(ad);
 
         setFormData({
           title: ad.title || "",
           companyName: ad.companyName || "",
           address: ad.location || "",
-          telephone: phone,
-          email: email,
+          telephone: contact.phone || "",
+          email: contact.email || "",
+          websiteUrl: ad.websiteUrl || contact.websiteUrl || "",
           categoryId: ad.categoryId || "",
           subcategoryId: ad.subcategoryId || "",
           youtubeLink: ad.youtubeLink || "",
@@ -120,6 +118,11 @@ export default function EditAdPage({ id }: { id: string }) {
         imageUrl = uploadRes.data.url;
       }
 
+      let formattedWebsite = formData.websiteUrl?.trim();
+      if (formattedWebsite && !/^https?:\/\//i.test(formattedWebsite)) {
+        formattedWebsite = `https://${formattedWebsite}`;
+      }
+
       // Submit Ad
       const adData = {
         title: formData.title,
@@ -129,6 +132,7 @@ export default function EditAdPage({ id }: { id: string }) {
         subcategoryId: formData.subcategoryId || undefined,
         location: formData.address,
         contactInfo: `${formData.telephone} | ${formData.email}`,
+        websiteUrl: formattedWebsite || undefined,
         youtubeLink: formData.youtubeLink || undefined,
         status: formData.status,
         ...(imageUrl && { imageUrl }),
@@ -409,6 +413,32 @@ export default function EditAdPage({ id }: { id: string }) {
                 {touched.description && errors.description && (
                   <p id="description-error" className="text-red-500 text-xs mt-1 font-medium">{errors.description}</p>
                 )}
+            </div>
+
+            {/* Business Website URL */}
+            <div className="flex flex-col md:col-span-2">
+              <label className={labelClass}>
+                <Globe size={14} className="text-[var(--color-primary)]" />
+                Business Website URL (Optional)
+              </label>
+              <input
+                name="websiteUrl"
+                type="url"
+                placeholder="https://yourbusiness.com"
+                value={formData.websiteUrl}
+                onChange={handleChange}
+                className={`${inputClass} ${touched.websiteUrl && errors.websiteUrl ? "border-red-500 focus:ring-red-500" : ""}`}
+                maxLength={255}
+                onBlur={(e) => handleBlur('websiteUrl', e.target.value)}
+                aria-invalid={touched.websiteUrl && !!errors.websiteUrl}
+                aria-describedby={touched.websiteUrl && errors.websiteUrl ? "websiteUrl-error" : undefined}
+              />
+              {touched.websiteUrl && errors.websiteUrl && (
+                <p id="websiteUrl-error" className="text-red-500 text-xs mt-1 font-medium">{errors.websiteUrl}</p>
+              )}
+              <p className="text-[10px] text-[var(--color-muted)] mt-2 italic">
+                Include your official business website link so visitors can directly visit your site.
+              </p>
             </div>
 
             {/* Youtube Link */}
