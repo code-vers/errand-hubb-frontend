@@ -1,12 +1,13 @@
 'use client';
 
-import { Play, Plus, Search, Loader2, AlertCircle, RotateCcw, X } from 'lucide-react';
+import { Play, Plus, Search, Loader2, AlertCircle, RotateCcw, X, Eye } from 'lucide-react';
 import Link from 'next/link';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useAds } from '@/hooks/useAds';
 import { useAdsCategories } from '@/hooks/useAdsCategories';
 import { getImageUrl } from '@/configs/api.config';
 import Pagination from '@/components/common/Pagination';
+import AdDetailsModal from './AdDetailsModal';
 
 const AdsGallery = () => {
   const {
@@ -25,6 +26,7 @@ const AdsGallery = () => {
   } = useAds(12);
 
   const { categories, loading: categoriesLoading } = useAdsCategories();
+  const [selectedAd, setSelectedAd] = useState<any | null>(null);
 
   const safeCategories = useMemo(() => {
     return Array.isArray(categories) ? categories : [];
@@ -171,7 +173,11 @@ const AdsGallery = () => {
                     className='flex flex-col gap-3 group animate-in fade-in zoom-in-95 duration-500'
                   >
                     {/* Poster Image */}
-                    <div className='relative w-full rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-slate-100 aspect-[3/4] flex items-center justify-center'>
+                    <div
+                      onClick={() => setSelectedAd(ad)}
+                      className='relative w-full rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-slate-100 aspect-[3/4] flex items-center justify-center cursor-pointer group/poster'
+                      title='Click to view poster details'
+                    >
                       <img
                         src={
                           getImageUrl(ad.imageUrl) ||
@@ -180,11 +186,18 @@ const AdsGallery = () => {
                         alt={ad.companyName || 'Business Poster'}
                         className='w-full h-full object-contain block group-hover:scale-105 transition-transform duration-500'
                       />
+                      {/* Floating Eye Badge */}
+                      <div
+                        className='absolute top-3 right-3 bg-white/90 hover:bg-white text-gray-700 hover:text-[var(--color-primary)] p-2 rounded-full shadow-md transition-all group-hover/poster:scale-110'
+                        title='View Details'
+                      >
+                        <Eye size={16} />
+                      </div>
                     </div>
 
                     {/* Poster Info & Action */}
                     <div className='flex justify-between items-start px-1'>
-                      <div className='flex-1 pr-4'>
+                      <div className='flex-1 pr-3 min-w-0'>
                         <h3 className='font-bold text-gray-800 leading-tight mb-0.5 line-clamp-1'>
                           {ad.companyName}
                         </h3>
@@ -205,18 +218,30 @@ const AdsGallery = () => {
                         </div>
                       </div>
 
-                      {ad.youtubeLink && (
-                        <a
-                          href={ad.youtubeLink}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='flex items-center gap-1.5 bg-red-50 text-red-600 px-3 py-1.5 rounded-full text-[11px] font-bold hover:bg-red-100 transition-colors border border-red-100 shrink-0'
-                          title='Watch Video'
+                      <div className='flex items-center gap-1.5 shrink-0'>
+                        <button
+                          type='button'
+                          onClick={() => setSelectedAd(ad)}
+                          className='flex items-center gap-1 bg-orange-50 hover:bg-orange-100 text-[var(--color-primary)] px-2.5 py-1.5 rounded-full text-[11px] font-bold transition-colors border border-orange-200 cursor-pointer shadow-2xs'
+                          title='View Details'
                         >
-                          <Play size={12} fill='currentColor' />
-                          Video
-                        </a>
-                      )}
+                          <Eye size={12} />
+                          <span>Details</span>
+                        </button>
+
+                        {ad.youtubeLink && (
+                          <a
+                            href={ad.youtubeLink}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='flex items-center gap-1.5 bg-red-50 text-red-600 px-3 py-1.5 rounded-full text-[11px] font-bold hover:bg-red-100 transition-colors border border-red-100'
+                            title='Watch Video'
+                          >
+                            <Play size={12} fill='currentColor' />
+                            Video
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -249,6 +274,13 @@ const AdsGallery = () => {
             )}
           </>
         )}
+
+        {/* Ad Details Modal */}
+        <AdDetailsModal
+          isOpen={!!selectedAd}
+          onClose={() => setSelectedAd(null)}
+          ad={selectedAd}
+        />
       </div>
     </div>
   );

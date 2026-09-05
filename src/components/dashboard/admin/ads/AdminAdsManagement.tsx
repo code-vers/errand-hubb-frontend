@@ -23,11 +23,15 @@ import {
   List,
   GripVertical,
   Layers,
+  Eye,
+  Globe,
 } from 'lucide-react';
 import { adsService } from '@/services/ads.service';
 import { useAdsCategories } from '@/hooks/useAdsCategories';
 import { getImageUrl } from '@/configs/api.config';
 import PageHeader from '@/components/dashboard/common/PageHeader';
+import AdDetailsModal from '@/components/website/ads/AdDetailsModal';
+import { parseAdContactInfo } from '@/utils/ads.utils';
 
 interface AdItem {
   id: string;
@@ -37,6 +41,7 @@ interface AdItem {
   imageUrl?: string;
   location?: string;
   contactInfo?: string;
+  websiteUrl?: string;
   youtubeLink?: string;
   status: 'active' | 'inactive';
   position: number;
@@ -67,6 +72,7 @@ export default function AdminAdsManagement() {
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingAd, setEditingAd] = useState<AdItem | null>(null);
+  const [previewAd, setPreviewAd] = useState<AdItem | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   // Form State
@@ -77,7 +83,9 @@ export default function AdminAdsManagement() {
     categoryId: '',
     subcategoryId: '',
     location: '',
-    contactInfo: '',
+    contactPhone: '',
+    contactEmail: '',
+    websiteUrl: '',
     youtubeLink: '',
     imageUrl: '',
     position: 1,
@@ -300,7 +308,9 @@ export default function AdminAdsManagement() {
       categoryId: safeCategories[0]?.id || '',
       subcategoryId: '',
       location: '',
-      contactInfo: '',
+      contactPhone: '',
+      contactEmail: '',
+      websiteUrl: '',
       youtubeLink: '',
       imageUrl: '',
       position: ads.length + 1,
@@ -313,6 +323,7 @@ export default function AdminAdsManagement() {
 
   const openEditModal = (ad: AdItem) => {
     setEditingAd(ad);
+    const contact = parseAdContactInfo(ad);
     setFormData({
       title: ad.title || '',
       companyName: ad.companyName || '',
@@ -320,7 +331,9 @@ export default function AdminAdsManagement() {
       categoryId: ad.category?.id || safeCategories[0]?.id || '',
       subcategoryId: ad.subcategory?.id || '',
       location: ad.location || '',
-      contactInfo: ad.contactInfo || '',
+      contactPhone: contact.phone || '',
+      contactEmail: contact.email || '',
+      websiteUrl: ad.websiteUrl || contact.websiteUrl || '',
       youtubeLink: ad.youtubeLink || '',
       imageUrl: ad.imageUrl || '',
       position: ad.position || 1,
@@ -376,8 +389,27 @@ export default function AdminAdsManagement() {
         payload.location = formData.location.trim();
       }
 
-      if (formData.contactInfo && formData.contactInfo.trim() !== '') {
-        payload.contactInfo = formData.contactInfo.trim();
+      const phone = formData.contactPhone.trim();
+      const email = formData.contactEmail.trim();
+      let contactStr = '';
+      if (phone && email) {
+        contactStr = `${phone} | ${email}`;
+      } else if (phone) {
+        contactStr = phone;
+      } else if (email) {
+        contactStr = email;
+      }
+
+      if (contactStr) {
+        payload.contactInfo = contactStr;
+      }
+
+      if (formData.websiteUrl && formData.websiteUrl.trim() !== '') {
+        let web = formData.websiteUrl.trim();
+        if (!/^https?:\/\//i.test(web)) {
+          web = `https://${web}`;
+        }
+        payload.websiteUrl = web;
       }
 
       if (formData.youtubeLink && formData.youtubeLink.trim() !== '') {
@@ -684,6 +716,15 @@ export default function AdminAdsManagement() {
 
                       <button
                         type='button'
+                        onClick={() => setPreviewAd(ad)}
+                        className='p-1.5 text-slate-600 hover:text-[#F47A22] hover:bg-orange-50 rounded-lg transition-colors cursor-pointer'
+                        title='Preview Ad Details'
+                      >
+                        <Eye size={16} />
+                      </button>
+
+                      <button
+                        type='button'
                         onClick={() => openEditModal(ad)}
                         className='p-1.5 text-slate-600 hover:text-[#F47A22] hover:bg-orange-50 rounded-lg transition-colors cursor-pointer'
                         title='Edit Ad'
@@ -897,6 +938,14 @@ export default function AdminAdsManagement() {
                         <div className='flex items-center justify-end gap-1.5'>
                           <button
                             type='button'
+                            onClick={() => setPreviewAd(ad)}
+                            className='p-1.5 text-slate-600 hover:text-[#F47A22] hover:bg-orange-50 rounded-lg transition-colors cursor-pointer'
+                            title='Preview Ad Details'
+                          >
+                            <Eye size={16} />
+                          </button>
+                          <button
+                            type='button'
                             onClick={() => openEditModal(ad)}
                             className='p-1.5 text-slate-600 hover:text-[#F47A22] hover:bg-orange-50 rounded-lg transition-colors cursor-pointer'
                             title='Edit Ad'
@@ -1037,9 +1086,35 @@ export default function AdminAdsManagement() {
               </div>
 
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                {/* Contact Phone */}
+                <div>
+                  <label className='block text-xs font-bold text-slate-600 mb-1'>Contact Phone / Tel</label>
+                  <input
+                    type='text'
+                    value={formData.contactPhone}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, contactPhone: e.target.value }))}
+                    placeholder='e.g. +1 (555) 123-4567'
+                    className='w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#F47A22]'
+                  />
+                </div>
+
+                {/* Contact Email */}
+                <div>
+                  <label className='block text-xs font-bold text-slate-600 mb-1'>Business Email</label>
+                  <input
+                    type='email'
+                    value={formData.contactEmail}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, contactEmail: e.target.value }))}
+                    placeholder='e.g. contact@business.com'
+                    className='w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#F47A22]'
+                  />
+                </div>
+              </div>
+
+              <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                 {/* Location */}
                 <div>
-                  <label className='block text-xs font-bold text-slate-600 mb-1'>Location</label>
+                  <label className='block text-xs font-bold text-slate-600 mb-1'>Location / Service Area</label>
                   <input
                     type='text'
                     value={formData.location}
@@ -1049,17 +1124,29 @@ export default function AdminAdsManagement() {
                   />
                 </div>
 
-                {/* YouTube Link */}
+                {/* Business Website URL */}
                 <div>
-                  <label className='block text-xs font-bold text-slate-600 mb-1'>YouTube Video Link</label>
+                  <label className='block text-xs font-bold text-slate-600 mb-1'>Business Website URL</label>
                   <input
                     type='url'
-                    value={formData.youtubeLink}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, youtubeLink: e.target.value }))}
-                    placeholder='https://www.youtube.com/watch?v=...'
+                    value={formData.websiteUrl}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, websiteUrl: e.target.value }))}
+                    placeholder='https://business.com'
                     className='w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#F47A22]'
                   />
                 </div>
+              </div>
+
+              {/* YouTube Link */}
+              <div>
+                <label className='block text-xs font-bold text-slate-600 mb-1'>YouTube Video Link</label>
+                <input
+                  type='url'
+                  value={formData.youtubeLink}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, youtubeLink: e.target.value }))}
+                  placeholder='https://www.youtube.com/watch?v=...'
+                  className='w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#F47A22]'
+                />
               </div>
 
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
@@ -1152,6 +1239,13 @@ export default function AdminAdsManagement() {
           </div>
         </div>
       )}
+
+      {/* Admin Ad Preview Modal */}
+      <AdDetailsModal
+        isOpen={!!previewAd}
+        onClose={() => setPreviewAd(null)}
+        ad={previewAd}
+      />
     </div>
   );
 }
