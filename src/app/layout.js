@@ -2,6 +2,8 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/common/Providers";
 import RootLayoutContent from "./RootLayoutContent";
+import FacebookPixel from "@/components/common/FacebookPixel";
+import { FB_PIXEL_ID } from "@/lib/fpixel";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -28,6 +30,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang='en' className="h-full antialiased" suppressHydrationWarning>
       <body className={`min-h-screen flex flex-col font-sans ${montserrat.variable}`} suppressHydrationWarning>
+        <FacebookPixel />
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: 'none' }}
+            src={`https://www.facebook.com/tr?id=${FB_PIXEL_ID}&ev=PageView&noscript=1`}
+            alt=""
+          />
+        </noscript>
         <Providers>
           <RootLayoutContent>{children}</RootLayoutContent>
         </Providers>
